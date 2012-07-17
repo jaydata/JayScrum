@@ -1,0 +1,38 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{ECD6D718-D1CF-4119-97F3-97C25A0DFBF9}") = "JayScrumServer_ls", "JayScrumServer_ls\JayScrumServer_ls.lsproj", "{A17C7621-7F69-4A16-AA0B-47CD49EF6B2F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JayScrum", "JayScrum\JayScrum.csproj", "{1D6CB6B9-1A62-420C-84E5-54CB2EFC3C72}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{15042709-FC50-4954-BFDA-5F74F95AD62F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{15042709-FC50-4954-BFDA-5F74F95AD62F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{15042709-FC50-4954-BFDA-5F74F95AD62F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{15042709-FC50-4954-BFDA-5F74F95AD62F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1D6CB6B9-1A62-420C-84E5-54CB2EFC3C72}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1D6CB6B9-1A62-420C-84E5-54CB2EFC3C72}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1D6CB6B9-1A62-420C-84E5-54CB2EFC3C72}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1D6CB6B9-1A62-420C-84E5-54CB2EFC3C72}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A17C7621-7F69-4A16-AA0B-47CD49EF6B2F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A17C7621-7F69-4A16-AA0B-47CD49EF6B2F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A17C7621-7F69-4A16-AA0B-47CD49EF6B2F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A17C7621-7F69-4A16-AA0B-47CD49EF6B2F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C79C3A13-F2BB-4FFE-9197-DB3C1A844F4E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C79C3A13-F2BB-4FFE-9197-DB3C1A844F4E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C79C3A13-F2BB-4FFE-9197-DB3C1A844F4E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C79C3A13-F2BB-4FFE-9197-DB3C1A844F4E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EC92A73E-8D43-450B-993F-A4C8748FF22E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EC92A73E-8D43-450B-993F-A4C8748FF22E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EC92A73E-8D43-450B-993F-A4C8748FF22E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EC92A73E-8D43-450B-993F-A4C8748FF22E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

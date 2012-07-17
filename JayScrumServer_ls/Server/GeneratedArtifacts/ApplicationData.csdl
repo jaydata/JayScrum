@@ -1,0 +1,108 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata" Namespace="LightSwitchApplication" Alias="Self" xmlns="http://schemas.microsoft.com/ado/2008/09/edm">
+  <EntityType Name="WorkItem">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Edm.Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="RowVersion" Type="Edm.Binary" Nullable="false" ConcurrencyMode="Fixed" annotation:StoreGeneratedPattern="Computed" />
+    <Property Name="Title" Type="Edm.String" Nullable="false" MaxLength="255" />
+    <Property Name="Type" Type="Edm.String" Nullable="false" MaxLength="255" />
+    <Property Name="Description" Type="Edm.String" MaxLength="255" />
+    <Property Name="CreatedDate" Type="Edm.DateTime" Nullable="false" />
+    <Property Name="CreatedBy" Type="Edm.String" Nullable="false" MaxLength="255" />
+    <Property Name="ChangedDate" Type="Edm.DateTime" Nullable="false" />
+    <Property Name="ChangedBy" Type="Edm.String" Nullable="false" MaxLength="255" />
+    <Property Name="Priority" Type="Edm.Int32" />
+    <Property Name="AssignedTo" Type="Edm.String" MaxLength="255" />
+    <Property Name="State" Type="Edm.String" MaxLength="255" />
+    <Property Name="Effort" Type="Edm.Int32" />
+    <Property Name="BusinessValue" Type="Edm.Int32" />
+    <Property Name="IsBlocked" Type="Edm.Boolean" />
+    <Property Name="RemainingWork" Type="Edm.Int32" />
+    <Property Name="Reason" Type="Edm.String" MaxLength="255" />
+    <Property Name="ParentName" Type="Edm.String" MaxLength="255" />
+    <Property Name="ProjectName" Type="Edm.String" MaxLength="255" />
+    <Property Name="WorkItem_Project" Type="Edm.Int32" />
+    <Property Name="WorkItem_Sprint" Type="Edm.Int32" />
+    <Property Name="WorkItem_WorkItem" Type="Edm.Int32" />
+    <NavigationProperty Name="Project" Relationship="LightSwitchApplication.WorkItem_Project" ToRole="Project" FromRole="WorkItem" />
+    <NavigationProperty Name="Sprint" Relationship="LightSwitchApplication.WorkItem_Sprint" ToRole="Sprint" FromRole="WorkItem" />
+    <NavigationProperty Name="Parent" Relationship="LightSwitchApplication.WorkItem_WorkItem" ToRole="WorkItem2" FromRole="WorkItem1" />
+    <NavigationProperty Name="Children" Relationship="LightSwitchApplication.WorkItem_WorkItem" ToRole="WorkItem1" FromRole="WorkItem2" />
+  </EntityType>
+  <EntityType Name="Project">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Edm.Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="RowVersion" Type="Edm.Binary" Nullable="false" ConcurrencyMode="Fixed" annotation:StoreGeneratedPattern="Computed" />
+    <Property Name="Name" Type="Edm.String" Nullable="false" MaxLength="255" />
+    <Property Name="Description" Type="Edm.String" MaxLength="255" />
+    <NavigationProperty Name="WorkItems" Relationship="LightSwitchApplication.WorkItem_Project" ToRole="WorkItem" FromRole="Project" />
+  </EntityType>
+  <EntityType Name="Sprint">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Edm.Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="RowVersion" Type="Edm.Binary" Nullable="false" ConcurrencyMode="Fixed" annotation:StoreGeneratedPattern="Computed" />
+    <Property Name="Name" Type="Edm.String" Nullable="false" MaxLength="255" />
+    <Property Name="StartDate" Type="Edm.DateTime" Nullable="false" />
+    <Property Name="FinishDate" Type="Edm.DateTime" Nullable="false" />
+    <NavigationProperty Name="WorkItems" Relationship="LightSwitchApplication.WorkItem_Sprint" ToRole="WorkItem" FromRole="Sprint" />
+  </EntityType>
+  <Association Name="WorkItem_Project">
+    <End Role="Project" Type="LightSwitchApplication.Project" Multiplicity="0..1" />
+    <End Role="WorkItem" Type="LightSwitchApplication.WorkItem" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Project">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="WorkItem">
+        <PropertyRef Name="WorkItem_Project" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="WorkItem_Sprint">
+    <End Role="Sprint" Type="LightSwitchApplication.Sprint" Multiplicity="0..1" />
+    <End Role="WorkItem" Type="LightSwitchApplication.WorkItem" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Sprint">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="WorkItem">
+        <PropertyRef Name="WorkItem_Sprint" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="WorkItem_WorkItem">
+    <End Role="WorkItem2" Type="LightSwitchApplication.WorkItem" Multiplicity="0..1" />
+    <End Role="WorkItem1" Type="LightSwitchApplication.WorkItem" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="WorkItem2">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="WorkItem1">
+        <PropertyRef Name="WorkItem_WorkItem" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="ApplicationDataObjectContext" m:IsDefaultEntityContainer="true">
+    <EntitySet Name="WorkItems" EntityType="LightSwitchApplication.WorkItem" />
+    <EntitySet Name="Projects" EntityType="LightSwitchApplication.Project" />
+    <EntitySet Name="Sprints" EntityType="LightSwitchApplication.Sprint" />
+    <AssociationSet Name="WorkItem_Project" Association="LightSwitchApplication.WorkItem_Project">
+      <End Role="Project" EntitySet="Projects" />
+      <End Role="WorkItem" EntitySet="WorkItems" />
+    </AssociationSet>
+    <AssociationSet Name="WorkItem_Sprint" Association="LightSwitchApplication.WorkItem_Sprint">
+      <End Role="Sprint" EntitySet="Sprints" />
+      <End Role="WorkItem" EntitySet="WorkItems" />
+    </AssociationSet>
+    <AssociationSet Name="WorkItem_WorkItem" Association="LightSwitchApplication.WorkItem_WorkItem">
+      <End Role="WorkItem2" EntitySet="WorkItems" />
+      <End Role="WorkItem1" EntitySet="WorkItems" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

@@ -1,0 +1,102 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" Namespace="ApplicationDataStore" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2005" xmlns="http://schemas.microsoft.com/ado/2009/02/edm/ssdl">
+  <EntityContainer Name="ApplicationDataStore">
+    <EntitySet Name="WorkItems" EntityType="ApplicationDataStore.WorkItem" store:Type="Tables" Schema="dbo" Table="WorkItems" />
+    <EntitySet Name="Projects" EntityType="ApplicationDataStore.Project" store:Type="Tables" Schema="dbo" Table="Projects" />
+    <EntitySet Name="Sprints" EntityType="ApplicationDataStore.Sprint" store:Type="Tables" Schema="dbo" Table="Sprints" />
+    <AssociationSet Name="WorkItem_Project" Association="ApplicationDataStore.WorkItem_Project">
+      <End Role="Project" EntitySet="Projects" />
+      <End Role="WorkItem" EntitySet="WorkItems" />
+    </AssociationSet>
+    <AssociationSet Name="WorkItem_Sprint" Association="ApplicationDataStore.WorkItem_Sprint">
+      <End Role="Sprint" EntitySet="Sprints" />
+      <End Role="WorkItem" EntitySet="WorkItems" />
+    </AssociationSet>
+    <AssociationSet Name="WorkItem_WorkItem" Association="ApplicationDataStore.WorkItem_WorkItem">
+      <End Role="WorkItem2" EntitySet="WorkItems" />
+      <End Role="WorkItem1" EntitySet="WorkItems" />
+    </AssociationSet>
+  </EntityContainer>
+  <EntityType Name="WorkItem">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="RowVersion" Type="rowversion" Nullable="false" StoreGeneratedPattern="Computed" />
+    <Property Name="Title" Type="nvarchar" Nullable="false" MaxLength="255" />
+    <Property Name="Type" Type="nvarchar" Nullable="false" MaxLength="255" />
+    <Property Name="Description" Type="nvarchar" MaxLength="255" />
+    <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+    <Property Name="CreatedBy" Type="nvarchar" Nullable="false" MaxLength="255" />
+    <Property Name="ChangedDate" Type="datetime" Nullable="false" />
+    <Property Name="ChangedBy" Type="nvarchar" Nullable="false" MaxLength="255" />
+    <Property Name="Priority" Type="int" />
+    <Property Name="AssignedTo" Type="nvarchar" MaxLength="255" />
+    <Property Name="State" Type="nvarchar" MaxLength="255" />
+    <Property Name="Effort" Type="int" />
+    <Property Name="BusinessValue" Type="int" />
+    <Property Name="IsBlocked" Type="bit" />
+    <Property Name="RemainingWork" Type="int" />
+    <Property Name="Reason" Type="nvarchar" MaxLength="255" />
+    <Property Name="ParentName" Type="nvarchar" MaxLength="255" />
+    <Property Name="ProjectName" Type="nvarchar" MaxLength="255" />
+    <Property Name="WorkItem_Project" Type="int" />
+    <Property Name="WorkItem_Sprint" Type="int" />
+    <Property Name="WorkItem_WorkItem" Type="int" />
+  </EntityType>
+  <EntityType Name="Project">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="RowVersion" Type="rowversion" Nullable="false" StoreGeneratedPattern="Computed" />
+    <Property Name="Name" Type="nvarchar" Nullable="false" MaxLength="255" />
+    <Property Name="Description" Type="nvarchar" MaxLength="255" />
+  </EntityType>
+  <EntityType Name="Sprint">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="RowVersion" Type="rowversion" Nullable="false" StoreGeneratedPattern="Computed" />
+    <Property Name="Name" Type="nvarchar" Nullable="false" MaxLength="255" />
+    <Property Name="StartDate" Type="datetime" Nullable="false" />
+    <Property Name="FinishDate" Type="datetime" Nullable="false" />
+  </EntityType>
+  <Association Name="WorkItem_Project">
+    <End Role="Project" Type="ApplicationDataStore.Project" Multiplicity="0..1" />
+    <End Role="WorkItem" Type="ApplicationDataStore.WorkItem" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Project">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="WorkItem">
+        <PropertyRef Name="WorkItem_Project" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="WorkItem_Sprint">
+    <End Role="Sprint" Type="ApplicationDataStore.Sprint" Multiplicity="0..1" />
+    <End Role="WorkItem" Type="ApplicationDataStore.WorkItem" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Sprint">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="WorkItem">
+        <PropertyRef Name="WorkItem_Sprint" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="WorkItem_WorkItem">
+    <End Role="WorkItem2" Type="ApplicationDataStore.WorkItem" Multiplicity="0..1" />
+    <End Role="WorkItem1" Type="ApplicationDataStore.WorkItem" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="WorkItem2">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="WorkItem1">
+        <PropertyRef Name="WorkItem_WorkItem" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+</Schema>

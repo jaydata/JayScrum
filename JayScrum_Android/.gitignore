@@ -2,6 +2,8 @@
 bin
 obj
 *.suo
+*.user
+assets/www
 
 # mstest test results
 TestResults

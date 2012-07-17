@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<ModelDocumentManifest xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Documents>
+    <Document FullPath="D:\_GitRepo\jayscrum\JayScrumServer_ls\Common\Properties\Common.lsml" Checksum="5C11FA2E084DB1D11731BFD4EAE16E70273080218A48956B3C68658C04798BF3" />
+    <Document FullPath="D:\_GitRepo\jayscrum\JayScrumServer_ls\Server\Properties\Service.lsml" Checksum="61C96F29B1EB339D94A49939C7E47C01367FCC5644BCBEC3FD0A09F175DBD6D5" />
+  </Documents>
+</ModelDocumentManifest>
