@@ -3,6 +3,7 @@ bin
 obj
 *.suo
 *.user
+www
 
 # mstest test results
 TestResults
