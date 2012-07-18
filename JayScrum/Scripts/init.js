@@ -1,3 +1,4 @@
+$data.ajax = $.ajax;
 document.addEventListener('touchmove', function (e) { e.preventDefault(); }, false);
 
 var page = document.getElementById('page'),

@@ -1,4 +1,4 @@
-﻿// JayData 1.0.4
+﻿// JayData 0.0.0
 // Dual licensed under MIT and GPL v2
 // Copyright JayStack Technologies (http://jaydata.org/licensing)
 //
@@ -11,6 +11,13 @@
 //     Zoltán Gyebrovszki
 //
 // More info: http://jaydata.org
+(function (global) {
+    if (typeof window === "undefined") {
+        window = this;
+    }
+    $data = window["$data"] || (window["$data"] = {});
+})(this);
+
 if (typeof console === 'undefined') {
     console = {
         warn: function () { },
@@ -25,46 +32,23 @@ if (typeof console === 'undefined') {
 if (!console.warn) console.warn = function () { };
 if (!console.error) console.error = function () { };
 
-(function (global) {
-    /// <summary>NodeJS detecting, handling, and module export.</summary>
-
-    //$ = typeof $ !== 'undefined' && $ || require('jquery');
-
-    if (typeof window === "undefined") {
-        window = this;
-    }
-
-    $data = window["$data"] || (window["$data"] = {});
-
-    if (typeof module !== "undefined" && module.exports) {
-        try {
-            sqLiteModule = require('sqlite3');
-            if (sqLiteModule) window['openDatabase'] = true;
-        }
-        catch (e) { }
-        module.exports = $data;
-    }
-
-})(this);
-
 (function ($data) {
     ///<summary>
     /// Collection of JayData services
     ///</summary>
     $data.__namespace = true;
-    $data.version = "JayData 1.0.4";
-    $data.versionNumber = "1.0.4";
+    $data.version = "JayData 0.0.0";
+    $data.versionNumber = "0.0.0";
     $data.root = {};
 
 })($data);
-
 
 // Do not remove this block, it is used by jsdoc 
 /**
     @name $data.Base
     @class base class
 */
-var Guard = {};
+Guard = {};
 Guard.requireValue = function (name, value) {
     if (typeof value === 'undefined' || value === null) {
         Guard.raise(name + " requires a value other than undefined or null");
@@ -606,7 +590,7 @@ yellowgreen, 'z-index', '|', '~'
 // value is the JSLINT function itself. That function is also an object that
 // can contain data and other functions.
 
-var JAYLINT = (function () {
+JAYLINT = (function () {
     'use strict';
 
     var adsafe_id,      // The widget's ADsafe id.
@@ -7132,7 +7116,8 @@ var JAYLINT = (function () {
 
     return itself;
 
-}()); (function init($data, global) {
+}());
+(function init($data, global) {
 
     function il(msg) {
         if (typeof intellisense !== 'undefined') {
@@ -7279,6 +7264,16 @@ var JAYLINT = (function () {
                 }
             }
             return this.pubMapPropsCache;// || (this.pubMapPropsCache = this.asArray().filter(function (m) { return m.kind == 'property' && !m.notMapped && m.enumerable; }));
+        },
+        getPublicMappedPropertyNames: function () {
+            if (!this.pubMapPropNamesCache) {
+                this.pubMapPropNamesCache = [];
+                for (var i in this) {
+                    if (i.indexOf(memberDefinitionPrefix) === 0 && this[i].kind == 'property' && !this[i].notMapped && this[i].enumerable)
+                        this.pubMapPropNamesCache.push(this[i].name);
+                }
+            }
+            return this.pubMapPropNamesCache;
         },
         getKeyProperties: function () {
             if (!this.keyPropsCache) {
@@ -8027,16 +8022,16 @@ var JAYLINT = (function () {
 
         var c;
         global["Container"] = $data.Container = c = global["C$"] = new ContainerCtor();
-        c.registerType(["$data.Number", "number", "float", "real", "decimal", "JayNumber"], $data.Number);
-        c.registerType(["$data.Integer", "int", "integer", "int16", "int32", "int64", "JayInteger"], $data.Integer);
-        c.registerType(["$data.String", "string", "text", "character", "JayString"], $data.String);
-        c.registerType(["$data.Array", "array", "Array", "[]", "JayArray"], $data.Array, function () {
+        c.registerType(["$data.Number", "number", "float", "real", "decimal"], $data.Number);
+        c.registerType(["$data.Integer", "int", "integer", "int16", "int32", "int64"], $data.Integer);
+        c.registerType(["$data.String", "string", "text", "character"], $data.String);
+        c.registerType(["$data.Array", "array", "Array", "[]"], $data.Array, function () {
             return $data.Array.apply(undefined, arguments);
         });
-        c.registerType(["$data.Date", "datetime", "date", "JayDate"], $data.Date);
-        c.registerType(["$data.Boolean", "bool", "boolean", "JayBoolean"], $data.Boolean);
-        c.registerType(["$data.Blob", "blob", "JayBlob"], $data.Blob);
-        c.registerType(["$data.Object", "Object", "object", "{}", "JayObject"], $data.Object);
+        c.registerType(["$data.Date", "datetime", "date"], $data.Date);
+        c.registerType(["$data.Boolean", "bool", "boolean"], $data.Boolean);
+        c.registerType(["$data.Blob", "blob"], $data.Blob);
+        c.registerType(["$data.Object", "Object", "object"], $data.Object);
         c.registerType(["$data.Function", "Function", "function"], $data.Function);
 
 
@@ -8200,7 +8195,7 @@ $data.typeSystem = {
         }
     }
 };
-function ASTNode() {
+$data.ASTNode = function () {
     ///<field name="arity" type="string">represents the kind of the AST node</field>
     ///<field name="edge" type="Boolean" />
     ///<field name="identifier" type="Boolean" />
@@ -8209,33 +8204,33 @@ function ASTNode() {
     ///<field name="type" type="String" />
 }
 
-function FunctionASTNode() {
+$data.FunctionASTNode = function () {
     ///<field name="value" type="string">The name of the function</field>
     ///<field name="first" type="Array" elementType="ASTNode">Contains the function parameters</field>
     ///<field name="block" type="ASTNode">The function body</field>
 }
-FunctionASTNode.prototype = new ASTNode();
+$data.FunctionASTNode.prototype = new $data.ASTNode();
 
-function ParameterASTNode() {
+$data.ParameterASTNode = function () {
     ///<field name="value" type="string">The name of the parameter</field>
     ///<field name="type" type="string" />
     ///<field name="func" type="" />
 }
-function MemberAccessASTNode() {
+$data.MemberAccessASTNode = function () {
     ///<field name="value" type="string">The name of the parameter</field>
     ///<field name="type" type="string" />
     ///<field name="first" type="ASTNode" />
     ///<field name="second" type="ParameterASTNode" />
 }
-MemberAccessASTNode.prototype = new ASTNode();
+$data.MemberAccessASTNode.prototype = new $data.ASTNode();
 
-function ConstantASTNode() {
+$data.ConstantASTNode = function () {
     ///<field name="type" type="string">The datatype of the constant value</field>
     ///<field name="value" type="Object">The constant value</field>
 }
 
 
-function ASTParserResult(result, tree, errors) {
+$data.ASTParserResult = function (result, tree, errors) {
     ///<field name="success" type="boolean"></field>
     this.success = (tree != '');
     this.result = result;
@@ -8243,14 +8238,14 @@ function ASTParserResult(result, tree, errors) {
     this.errors = errors;
 }
 
-function ASTParser() {
+$data.ASTParser = function () {
 }
 
-ASTParser.parseCode = function (code) {
+$data.ASTParser.parseCode = function (code) {
     var codeStr;
 
     if (!code || (codeStr = code.toString()) === '') {
-        return new ASTParserResult(false, null, null);
+        return new $data.ASTParserResult(false, null, null);
     }
 
     if (typeof JAYLINT === 'undefined') {
@@ -8258,243 +8253,176 @@ ASTParser.parseCode = function (code) {
     }
 
     var jsLint = JAYLINT(codeStr);
-    var result = new ASTParserResult(jsLint, JAYLINT.tree, JAYLINT.errors);
+    var result = new $data.ASTParserResult(jsLint, JAYLINT.tree, JAYLINT.errors);
 
     return result;
-}; function ASTNode() {
-    ///<field name="arity" type="string">represents the kind of the AST node</field>
-    ///<field name="edge" type="Boolean" />
-    ///<field name="identifier" type="Boolean" />
-    ///<field name="first" type="ASTNode">Contains the first part of the expression</field>
-    ///<field name="id" type="String" />
-    ///<field name="type" type="String" />
-}
+};
+//TODO: Finish refactoring ExpressionNode.js
 
-function FunctionASTNode() {
-    ///<field name="value" type="string">The name of the function</field>
-    ///<field name="first" type="Array" elementType="ASTNode">Contains the function parameters</field>
-    ///<field name="block" type="ASTNode">The function body</field>
-}
-FunctionASTNode.prototype = new ASTNode();
+$data.Class.define("$data.Expressions.ExpressionType", null, null, {}, {
+    Constant: "constant", // { type:LITERAL, executable:true, valueType:, value: }
+    Variable: "variable", // { type:VARIABLE, executable:true, name: }
+    MemberAccess: "memberAccess",    // { type:MEMBERACCESS, executable:true, expression:, member: }
+    Call: "call",
 
-function ParameterASTNode() {
-    ///<field name="value" type="string">The name of the parameter</field>
-    ///<field name="type" type="string" />
-    ///<field name="func" type="" />
-}
-function MemberAccessASTNode() {
-    ///<field name="value" type="string">The name of the parameter</field>
-    ///<field name="type" type="string" />
-    ///<field name="first" type="ASTNode" />
-    ///<field name="second" type="ParameterASTNode" />
-}
-MemberAccessASTNode.prototype = new ASTNode();
-
-function ConstantASTNode() {
-    ///<field name="type" type="string">The datatype of the constant value</field>
-    ///<field name="value" type="Object">The constant value</field>
-}
+    /* binary operators */
+    Equal: "equal",
+    NotEqual: "notEqual",
+    EqualTyped: "equalTyped",
+    NotEqualTyped: "notEqualTyped",
+    GreaterThen: "greaterThan",
+    LessThen: "lessThan",
+    GreaterThenOrEqual: "greaterThanOrEqual",
+    LessThenOrEqual: "lessThenOrEqual",
+    Or: "or",
+    OrBitwise: "orBitwise",
+    And: "and",
+    AndBitwise: "andBitwise",
 
 
-function ASTParserResult(result, tree, errors) {
-    ///<field name="success" type="boolean"></field>
-    this.success = (tree != '');
-    this.result = result;
-    this.tree = tree;
-    this.errors = errors;
-}
+    In: "in",
 
-function ASTParser() {
-}
+    Add: "add",
+    Divide: "divide",
+    Multiply: "multiply",
+    Subtract: "subtract",
+    Modulo: "modulo",
+    ArrayIndex: "arrayIndex",
 
-ASTParser.parseCode = function (code) {
-    var codeStr;
-
-    if (!code || (codeStr = code.toString()) === '') {
-        return new ASTParserResult(false, null, null);
-    }
-
-    if (typeof JAYLINT === 'undefined') {
-        Guard.raise(new Exception('JAYLINT is required', 'Not Found!'));
-    }
-
-    var jsLint = JAYLINT(codeStr);
-    var result = new ASTParserResult(jsLint, JAYLINT.tree, JAYLINT.errors);
-
-    return result;
-};//TODO: Finish refactoring ExpressionNode.js
-
-$data.Class.define("$data.Expressions.ExpressionType", null, null, {}, {});
+    /* unary operators */
+    New: "new",
+    Positive: "positive",
+    Negative: "negative",
+    Increment: "increment",
+    Decrement: "decrement",
+    Not: "not",
 
 
-var ExpressionType = $data.Expressions.ExpressionType;
+    This: "this",
+    LambdaParameterReference: "lambdaParameterReference",
+    LambdaParameter: "lambdaParameter",
+    Parameter: "parameter",
 
-ExpressionType.Constant = "constant"; // { type:LITERAL, executable:true, valueType:, value: }
-ExpressionType.Variable = "variable"; // { type:VARIABLE, executable:true, name: }
-ExpressionType.MemberAccess = "memberAccess";    // { type:MEMBERACCESS, executable:true, expression:, member: }
-ExpressionType.Call = "call";
+    ArrayLiteral: "arrayLiteral",
+    ObjectLiteral: "objectLiteral",
+    ObjectField: "objectField",
+    Function: "Function",
+    Unknown: "UNKNOWN",
 
-/* binary operators */
-ExpressionType.Equal = "equal";
-ExpressionType.NotEqual = "notEqual";
-ExpressionType.EqualTyped = "equalTyped";
-ExpressionType.NotEqualTyped = "notEqualTyped";
-ExpressionType.GreaterThen = "greaterThan";
-ExpressionType.LessThen = "lessThan";
-ExpressionType.GreaterThenOrEqual = "greaterThanOrEqual";
-ExpressionType.LessThenOrEqual = "lessThenOrEqual";
-ExpressionType.Or = "or";
-ExpressionType.OrBitwise = "orBitwise";
-ExpressionType.And = "and";
-ExpressionType.AndBitwise = "andBitwise";
+    EntitySet: "EntitySet",
+    ServiceOperation: "ServiceOperation",
+    EntityField: "EntityField",
+    EntityContext: "EntityContext",
+    Entity: "Entity",
+    Filter: "Filter",
+    First: "First",
+    Count: "Count",
+    Single: "Single",
+    Some: "Some",
+    Every: "Every",
+    ToArray: "ToArray",
+    ForEach: "ForEach",
+    Projection: "Projection",
+    EntityMember: "EntityMember",
+    EntityFieldOperation: "EntityFieldOperation",
+    FrameOperation: "FrameOperation",
+    EntityBinary: "EntityBinary",
+    Code: "Code",
+    ParametricQuery: "ParametricQuery",
+    MemberInfo: "MemberInfo",
+    QueryParameter: "QueryParameter",
+    ComplexEntityField: "ComplexEntityField",
 
+    Take: "Take",
+    Skip: "Skip",
+    OrderBy: "OrderBy",
+    OrderByDescending: "OrderByDescending",
+    Include: "Include",
+    Count: "Count"
+});
 
-ExpressionType.In = "in";
-
-ExpressionType.Add = "add";
-ExpressionType.Divide = "divide";
-ExpressionType.Multiply = "multiply";
-ExpressionType.Subtract = "subtract";
-ExpressionType.Modulo = "modulo";
-ExpressionType.ArrayIndex = "arrayIndex";
-
-/* unary operators */
-ExpressionType.New = "new";
-ExpressionType.Positive = "positive";
-ExpressionType.Negative = "negative";
-ExpressionType.Increment = "increment";
-ExpressionType.Decrement = "decrement";
-ExpressionType.Not = "not";
-
-
-ExpressionType.This = "this";
-ExpressionType.LambdaParameterReference = "lambdaParameterReference";
-ExpressionType.LambdaParameter = "lambdaParameter";
-ExpressionType.Parameter = "parameter";
-
-ExpressionType.ArrayLiteral = "arrayLiteral";
-ExpressionType.ObjectLiteral = "objectLiteral";
-ExpressionType.ObjectField = "objectField";
-ExpressionType.Function = "Function";
-ExpressionType.Unknown = "UNKNOWN";
-
-ExpressionType.EntitySet = "EntitySet";
-ExpressionType.ServiceOperation = "ServiceOperation";
-ExpressionType.EntityField = "EntityField";
-ExpressionType.EntityContext = "EntityContext";
-ExpressionType.Entity = "Entity";
-ExpressionType.Filter = "Filter";
-ExpressionType.First = "First";
-ExpressionType.Count = "Count";
-ExpressionType.Single = "Single";
-ExpressionType.Some = "Some";
-ExpressionType.Every = "Every";
-ExpressionType.ToArray = "ToArray";
-ExpressionType.ForEach = "ForEach";
-ExpressionType.Projection = "Projection";
-ExpressionType.EntityMember = "EntityMember";
-ExpressionType.EntityFieldOperation = "EntityFieldOperation";
-ExpressionType.FrameOperation = "FrameOperation";
-ExpressionType.EntityBinary = "EntityBinary";
-ExpressionType.Code = "Code";
-ExpressionType.ParametricQuery = "ParametricQuery";
-ExpressionType.MemberInfo = "MemberInfo";
-ExpressionType.QueryParameter = "QueryParameter";
-ExpressionType.ComplexEntityField = "ComplexEntityField";
-
-
-ExpressionType.Take = "Take";
-ExpressionType.Skip = "Skip";
-ExpressionType.OrderBy = "OrderBy";
-ExpressionType.OrderByDescending = "OrderByDescending";
-ExpressionType.Include = "Include";
-ExpressionType.Count = "Count";
-
-
-
-$data.Expressions.ExpressionType = ExpressionType;
-
-function BinaryOperator() {
+$data.BinaryOperator = function () {
     ///<field name="operator" type="string" />
     ///<field name="expressionType" type="$data.ExpressionType" />
     ///<field name="type" type="string" />
 }
 
-var binaryOperators = [
-    { operator: "==", expressionType: ExpressionType.Equal, type: "boolean", implementation: function (a, b) { return a == b; } },
-    { operator: "===", expressionType: ExpressionType.EqualTyped, type: "boolean", implementation: function (a, b) { return a === b; } },
-    { operator: "!=", expressionType: ExpressionType.NotEqual, type: "boolean", implementation: function (a, b) { return a != b; } },
-    { operator: "!==", expressionType: ExpressionType.NotEqualTyped, type: "boolean", implementation: function (a, b) { return a !== b; } },
-    { operator: ">", expressionType: ExpressionType.GreaterThen, type: "boolean", implementation: function (a, b) { return a > b; } },
-    { operator: ">=", expressionType: ExpressionType.GreaterThenOrEqual, type: "boolean", implementation: function (a, b) { return a >= b; } },
-    { operator: "<=", expressionType: ExpressionType.LessThenOrEqual, type: "boolean", implementation: function (a, b) { return a <= b; } },
-    { operator: "<", expressionType: ExpressionType.LessThen, type: "boolean", implementation: function (a, b) { return a < b; } },
-    { operator: "&&", expressionType: ExpressionType.And, type: "boolean", implementation: function (a, b) { return a && b; } },
-    { operator: "||", expressionType: ExpressionType.Or, type: "boolean", implementation: function (a, b) { return a || b; } },
-    { operator: "&", expressionType: ExpressionType.AndBitwise, type: "number", implementation: function (a, b) { return a & b; } },
-    { operator: "|", expressionType: ExpressionType.OrBitwise, type: "number", implementation: function (a, b) { return a | b; } },
-    { operator: "+", expressionType: ExpressionType.Add, type: "number", implementation: function (a, b) { return a + b; } },
-    { operator: "-", expressionType: ExpressionType.Subtract, type: "number", implementation: function (a, b) { return a - b; } },
-    { operator: "/", expressionType: ExpressionType.Divide, type: "number", implementation: function (a, b) { return a / b; } },
-    { operator: "%", expressionType: ExpressionType.Modulo, type: "number", implementation: function (a, b) { return a % b; } },
-    { operator: "*", expressionType: ExpressionType.Multiply, type: "number", implementation: function (a, b) { return a * b; } },
-    { operator: "[", expressionType: ExpressionType.ArrayIndex, type: "number", implementation: function (a, b) { return a[b]; } },
-    { operator: "in", expressionType: ExpressionType.In, type: 'boolean', implementation: function (a, b) { return a in b; } }
+$data.binaryOperators = [
+    { operator: "==", expressionType: $data.Expressions.ExpressionType.Equal, type: "boolean", implementation: function (a, b) { return a == b; } },
+    { operator: "===", expressionType: $data.Expressions.ExpressionType.EqualTyped, type: "boolean", implementation: function (a, b) { return a === b; } },
+    { operator: "!=", expressionType: $data.Expressions.ExpressionType.NotEqual, type: "boolean", implementation: function (a, b) { return a != b; } },
+    { operator: "!==", expressionType: $data.Expressions.ExpressionType.NotEqualTyped, type: "boolean", implementation: function (a, b) { return a !== b; } },
+    { operator: ">", expressionType: $data.Expressions.ExpressionType.GreaterThen, type: "boolean", implementation: function (a, b) { return a > b; } },
+    { operator: ">=", expressionType: $data.Expressions.ExpressionType.GreaterThenOrEqual, type: "boolean", implementation: function (a, b) { return a >= b; } },
+    { operator: "<=", expressionType: $data.Expressions.ExpressionType.LessThenOrEqual, type: "boolean", implementation: function (a, b) { return a <= b; } },
+    { operator: "<", expressionType: $data.Expressions.ExpressionType.LessThen, type: "boolean", implementation: function (a, b) { return a < b; } },
+    { operator: "&&", expressionType: $data.Expressions.ExpressionType.And, type: "boolean", implementation: function (a, b) { return a && b; } },
+    { operator: "||", expressionType: $data.Expressions.ExpressionType.Or, type: "boolean", implementation: function (a, b) { return a || b; } },
+    { operator: "&", expressionType: $data.Expressions.ExpressionType.AndBitwise, type: "number", implementation: function (a, b) { return a & b; } },
+    { operator: "|", expressionType: $data.Expressions.ExpressionType.OrBitwise, type: "number", implementation: function (a, b) { return a | b; } },
+    { operator: "+", expressionType: $data.Expressions.ExpressionType.Add, type: "number", implementation: function (a, b) { return a + b; } },
+    { operator: "-", expressionType: $data.Expressions.ExpressionType.Subtract, type: "number", implementation: function (a, b) { return a - b; } },
+    { operator: "/", expressionType: $data.Expressions.ExpressionType.Divide, type: "number", implementation: function (a, b) { return a / b; } },
+    { operator: "%", expressionType: $data.Expressions.ExpressionType.Modulo, type: "number", implementation: function (a, b) { return a % b; } },
+    { operator: "*", expressionType: $data.Expressions.ExpressionType.Multiply, type: "number", implementation: function (a, b) { return a * b; } },
+    { operator: "[", expressionType: $data.Expressions.ExpressionType.ArrayIndex, type: "number", implementation: function (a, b) { return a[b]; } },
+    { operator: "in", expressionType: $data.Expressions.ExpressionType.In, type: 'boolean', implementation: function (a, b) { return a in b; } }
 ];
 
 
-binaryOperators.resolve = function (operator) {
-    var result = binaryOperators.filter(function (item) { return item.operator == operator; });
+$data.binaryOperators.resolve = function (operator) {
+    var result = $data.binaryOperators.filter(function (item) { return item.operator == operator; });
     if (result.length > 0)
         return operator;
     //Guard.raise("Unknown operator: " + operator);
 };
 
-binaryOperators.contains = function (operator) {
-    return binaryOperators.some(function (item) { return item.operator == operator; });
+$data.binaryOperators.contains = function (operator) {
+    return $data.binaryOperators.some(function (item) { return item.operator == operator; });
 };
 
-binaryOperators.getOperator = function (operator) {
+$data.binaryOperators.getOperator = function (operator) {
     ///<returns type="BinaryOperator" />
-    var result = binaryOperators.filter(function (item) { return item.operator == operator; });
+    var result = $data.binaryOperators.filter(function (item) { return item.operator == operator; });
     if (result.length < 1)
         Guard.raise("Unknown operator: " + operator);
     return result[0];
 };
 
 
-var unaryOperators = [
-    { operator: "+", arity: "prefix", expressionType: ExpressionType.Positive, type: "number", implementation: function (operand) { return +operand; } },
-    { operator: "-", arity: "prefix", expressionType: ExpressionType.Negative, type: "number", implementation: function (operand) { return -operand; } },
-    { operator: "++", arity: "prefix", expressionType: ExpressionType.Increment, type: "number", implementation: function (operand) { return ++operand; } },
-    { operator: "--", arity: "prefix", expressionType: ExpressionType.Decrement, type: "number", implementation: function (operand) { return --operand; } },
-    { operator: "++", arity: "suffix", expressionType: ExpressionType.Increment, type: "number", implementation: function (operand) { return operand++; } },
-    { operator: "!", arity: "prefix", expressionType: ExpressionType.Not, type: "boolean", implementation: function (operand) { return !operand; } },
-    { operator: "--", arity: "suffix", expressionType: ExpressionType.Decrement, type: "number", implementation: function (operand) { return operand--; } }
+$data.unaryOperators = [
+    { operator: "+", arity: "prefix", expressionType: $data.Expressions.ExpressionType.Positive, type: "number", implementation: function (operand) { return +operand; } },
+    { operator: "-", arity: "prefix", expressionType: $data.Expressions.ExpressionType.Negative, type: "number", implementation: function (operand) { return -operand; } },
+    { operator: "++", arity: "prefix", expressionType: $data.Expressions.ExpressionType.Increment, type: "number", implementation: function (operand) { return ++operand; } },
+    { operator: "--", arity: "prefix", expressionType: $data.Expressions.ExpressionType.Decrement, type: "number", implementation: function (operand) { return --operand; } },
+    { operator: "++", arity: "suffix", expressionType: $data.Expressions.ExpressionType.Increment, type: "number", implementation: function (operand) { return operand++; } },
+    { operator: "!", arity: "prefix", expressionType: $data.Expressions.ExpressionType.Not, type: "boolean", implementation: function (operand) { return !operand; } },
+    { operator: "--", arity: "suffix", expressionType: $data.Expressions.ExpressionType.Decrement, type: "number", implementation: function (operand) { return operand--; } }
 
-    //{ operator: "new", expressionType : ExpressionType.New, type: "object", implementation: function(operand) { return new operand; }
+    //{ operator: "new", expressionType : $data.Expressions.ExpressionType.New, type: "object", implementation: function(operand) { return new operand; }
 ];
-unaryOperators.resolve = function (operator) {
-    var result = unaryOperators.filter(function (item) { return item.operator == operator; });
+
+$data.unaryOperators.resolve = function (operator) {
+    var result = $data.unaryOperators.filter(function (item) { return item.operator == operator; });
     if (result.length > 0)
         return operator;
     //Guard.raise("Unknown operator: " + operator);
 };
 
-unaryOperators.contains = function (operator) {
-    return unaryOperators.some(function (item) { return item.operator == operator; });
+$data.unaryOperators.contains = function (operator) {
+    return $data.unaryOperators.some(function (item) { return item.operator == operator; });
 };
 
-unaryOperators.getOperator = function (operator, arity) {
+$data.unaryOperators.getOperator = function (operator, arity) {
     ///<returns type="BinaryOperator" />
-    var result = unaryOperators.filter(function (item) { return item.operator == operator && (!arity || item.arity == arity); });
+    var result = $data.unaryOperators.filter(function (item) { return item.operator == operator && (!arity || item.arity == arity); });
     if (result.length < 1)
         Guard.raise("Unknown operator: " + operator);
     return result[0];
 };
 
 
-function timeIt(fn, iterations) {
+$data.timeIt = function (fn, iterations) {
     iterations = iterations || 1;
 
     console.time("!");
@@ -8504,16 +8432,18 @@ function timeIt(fn, iterations) {
     console.timeEnd("!");
 }
 
-var UNARY = "UNARY";                  // { type:UNARY, executable:true, operator:, operand: }
-var INCDEC = "INCDEC";                // { type:INCDEC, executable:true, operator:, operand:, suffix: }
-var DECISION = "DECISION";            // { type:DECISION, executable:true, expression:, left:, right: }
-var METHODCALL = "METHODCALL";        // { type:METHODCALL, executable:true, object:, method:, args: }
-var NEW = "NEW";                      // { type:NEW, executable:true, values: [] };
-var JSONASSIGN = "JSONASSIGN";        // { type:JSONASSIGN, executable:true, left:, right: }
-var ARRAYACCESS = "ARRAYACCESS";      // { type:ARRAYACCESS, executable:true, array:, index: }
-var UNKNOWN = "UNKNOWN";
+$data.Expressions.OperatorTypes = {
+    UNARY: "UNARY",                  // { type:UNARY, executable:true, operator:, operand: }
+    INCDEC: "INCDEC",                // { type:INCDEC, executable:true, operator:, operand:, suffix: }
+    DECISION: "DECISION",            // { type:DECISION, executable:true, expression:, left:, right: }
+    METHODCALL: "METHODCALL",        // { type:METHODCALL, executable:true, object:, method:, args: }
+    NEW: "NEW",                      // { type:NEW, executable:true, values: [] };
+    JSONASSIGN: "JSONASSIGN",        // { type:JSONASSIGN, executable:true, left:, right: }
+    ARRAYACCESS: "ARRAYACCESS",      // { type:ARRAYACCESS, executable:true, array:, index: }
+    UNKNOWN: "UNKNOWN"
+};
 
-var executable = true;
+$data.executable = true;
 
 function jsonify(obj) { return JSON.stringify(obj, null, "\t"); }
 
@@ -8525,9 +8455,9 @@ $C('$data.Expressions.ExpressionNode', $data.Entity, null, {
         ///</field>
         ///<field name="type" type="Function">The result type of the expression</field>
         ///<field name="executable" type="boolean">True if the expression can be evaluated to yield a result</field>
-        ///this.nodeType = ExpressionType.Unknown;
+        ///this.nodeType = $data.Expressions.ExpressionType.Unknown;
         ///this.type = type;
-        ///this.nodeType = ExpressionType.Unknown;
+        ///this.nodeType = $data.Expressions.ExpressionType.Unknown;
         ///this.executable = (executable === undefined || executable === null) ? true : executable;
         ///TODO
         this.expressionType = this.constructor;
@@ -8566,7 +8496,7 @@ $C('$data.Expressions.ExpressionNode', $data.Entity, null, {
     },
 
     ///toString: function () { },
-    nodeType: { value: ExpressionType.Unknown, writable: false },
+    nodeType: { value: $data.Expressions.ExpressionType.Unknown, writable: false },
 
     type: {},
 
@@ -8596,14 +8526,15 @@ $C('$data.Expressions.UnaryExpression', $data.Expressions.ExpressionNode, null, 
     operator: { value: undefined, writable: true },
     operand: { value: undefined, writable: true },
     nodeType: { value: undefined, writable: true }
-}); $C('$data.Expressions.ArrayLiteralExpression', $data.Expressions.ExpressionNode, null, {
+});
+$C('$data.Expressions.ArrayLiteralExpression', $data.Expressions.ExpressionNode, null, {
     constructor: function (items) {
         ///<param name="name" type="string" />
         ///<field name="name" type="string" />
         ///<field name="items" type="Array" elementType="$data.Expression.ExpressionNode" />
         this.items = items || [];
     },
-    nodeType: { value: ExpressionType.ArrayLiteral, writable: true },
+    nodeType: { value: $data.Expressions.ExpressionType.ArrayLiteral, writable: true },
 
     items: { value: undefined, dataType: Array, elementType: $data.Expressions.ExpressionNode },
 
@@ -8628,7 +8559,7 @@ $C('$data.Expressions.CallExpression', $data.Expressions.ExpressionNode, null, {
     },
 
     nodeType: {
-        value: ExpressionType.Call
+        value: $data.Expressions.ExpressionType.Call
     },
 
     expression: {
@@ -8697,7 +8628,7 @@ $C('$data.Expressions.CodeParser', null, null, {
             errorDetails: ''
         };
         ///<var name="AST" type="Date" />
-        var AST = ASTParser.parseCode(code);
+        var AST = $data.ASTParser.parseCode(code);
         this.log({ event: "AST", data: AST });
         if (!AST.success) {
             return {
@@ -8749,7 +8680,7 @@ $C('$data.Expressions.CodeParser', null, null, {
                     case "[":
                         n = this.BuildArrayLiteral(node);
                         break;
-                    case unaryOperators.resolve(node.value):
+                    case $data.unaryOperators.resolve(node.value):
                         n = this.BuildUnary(node);
                         break;
                         //TODO: default case
@@ -8757,7 +8688,7 @@ $C('$data.Expressions.CodeParser', null, null, {
                 break;
             case "suffix":
                 switch (node.value) {
-                    case unaryOperators.resolve(node.value):
+                    case $data.unaryOperators.resolve(node.value):
                         n = this.BuildUnary(node);
                         break;
                     default:
@@ -8769,7 +8700,7 @@ $C('$data.Expressions.CodeParser', null, null, {
                     case "[":
                         n = this.BuildArray(node);
                         break;
-                    case binaryOperators.resolve(node.value):
+                    case $data.binaryOperators.resolve(node.value):
                         n = this.BuildSimpleBinary(node);
                         break;
                     case "function":
@@ -8854,12 +8785,12 @@ $C('$data.Expressions.CodeParser', null, null, {
         var paramName = node.value;
         //TODO
         //var paramType = this.resolver.resolveParameterType(node);
-        var nodeType = node.funct ? ExpressionType.LambdaParameter :
+        var nodeType = node.funct ? $data.Expressions.ExpressionType.LambdaParameter :
                                     this.lambdaParams.indexOf(node.value) > -1 ?
-                                                ExpressionType.LambdaParameterReference : ExpressionType.Parameter;
+                                                $data.Expressions.ExpressionType.LambdaParameterReference : $data.Expressions.ExpressionType.Parameter;
         var result = new $data.Expressions.ParameterExpression(node.value, null, nodeType);
 
-        if (nodeType == ExpressionType.LambdaParameterReference) {
+        if (nodeType == $data.Expressions.ExpressionType.LambdaParameterReference) {
             result.paramIndex = this.lambdaParams.indexOf(node.value);
         }
 
@@ -8959,7 +8890,7 @@ $C('$data.Expressions.CodeParser', null, null, {
 
 
     BuildUnary: function (node) {
-        var operator = unaryOperators.getOperator(node.value, node.arity);
+        var operator = $data.unaryOperators.getOperator(node.value, node.arity);
         var nodeType = operator.expressionType;
         var operand = this.Build2(node.first);
         var result = new $data.Expressions.UnaryExpression(operand, operator, nodeType);
@@ -8969,7 +8900,7 @@ $C('$data.Expressions.CodeParser', null, null, {
     BuildSimpleBinary: function (node) {
         ///<param name="node" type="LintInflixNode" />
 
-        var operator = binaryOperators.getOperator(node.value);
+        var operator = $data.binaryOperators.getOperator(node.value);
         var nodeType = operator.expressionType;
 
         var left = this.Build2(node.first || node.left);
@@ -9003,7 +8934,7 @@ $C('$data.Expressions.ConstantExpression', $data.Expressions.ExpressionNode, nul
         this.type = Container.getTypeName(value);
         this.name = name;
     },
-    nodeType: { value: ExpressionType.Constant, enumerable: true },
+    nodeType: { value: $data.Expressions.ExpressionType.Constant, enumerable: true },
     type: { value: Object, writable: true },
     value: { value: undefined, writable: true },
     toString: function (debug) {
@@ -9037,7 +8968,7 @@ $C('$data.Expressions.FunctionExpression', $data.Expressions.ExpressionNode, nul
         var bodyString = (this.body ? this.body.toString(debug) : '');
         return "function " + this.name + "(" + paramStrings + ") { " + bodyString + "}";
     },
-    nodeType: { value: ExpressionType.Function, writable: true },
+    nodeType: { value: $data.Expressions.ExpressionType.Function, writable: true },
     parameters: { value: undefined, dataType: Array, elementType: $data.Expressions.ParameterExpression },
     body: { value: undefined, dataType: $data.Expressions.ExpressionNode },
     type: {}
@@ -9049,7 +8980,7 @@ $C('$data.Expressions.ObjectFieldExpression', $data.Expressions.ExpressionNode, 
         this.fieldName = fieldName;
         this.expression = expression;
     },
-    nodeType: { value: ExpressionType.ObjectField, writable: true },
+    nodeType: { value: $data.Expressions.ExpressionType.ObjectField, writable: true },
 
     toString: function (debug) {
         //var result;
@@ -9066,7 +8997,7 @@ $C('$data.Expressions.ObjectLiteralExpression', $data.Expressions.ExpressionNode
         ///<param name="member" type="Array" elementType="$data.Expressions.ObjectFieldExpression" />
         this.members = members;
     },
-    nodeType: { value: ExpressionType.ObjectLiteral, writable: true },
+    nodeType: { value: $data.Expressions.ExpressionType.ObjectLiteral, writable: true },
 
     toString: function (debug) {
         //var result;
@@ -9090,7 +9021,8 @@ $C('$data.Expressions.ObjectLiteralExpression', $data.Expressions.ExpressionNode
         }
     }
 
-}, null); $C('$data.Expressions.PagingExpression', $data.Expressions.ExpressionNode, null, {
+}, null);
+$C('$data.Expressions.PagingExpression', $data.Expressions.ExpressionNode, null, {
     constructor: function (source, expression, nType) {
         ///<param name="name" type="string" />
         ///<field name="name" type="string" />
@@ -9098,7 +9030,7 @@ $C('$data.Expressions.ObjectLiteralExpression', $data.Expressions.ExpressionNode
         this.amount = expression;
         this.nodeType = nType;
     },
-    nodeType: { value: ExpressionType.Unknown, writable: true },
+    nodeType: { value: $data.Expressions.ExpressionType.Unknown, writable: true },
 
     toString: function (debug) {
         //var result;
@@ -9107,20 +9039,21 @@ $C('$data.Expressions.ObjectLiteralExpression', $data.Expressions.ExpressionNode
         var result = "unimplemented";
         return result;
     }
-}, null); $C('$data.Expressions.ParameterExpression', $data.Expressions.ExpressionNode, null, {
+}, null);
+$C('$data.Expressions.ParameterExpression', $data.Expressions.ExpressionNode, null, {
     constructor: function (name, type, nodeType) {
         ///<param name="name" type="string" />
         ///<field name="name" type="string" />
         //this.writePropertyValue("name", name);
         //this.writePropertyValue("type", type);
-        this.nodeType = nodeType || ExpressionType.Parameter;
+        this.nodeType = nodeType || $data.Expressions.ExpressionType.Parameter;
         this.name = name;
         this.type = type || "unknown";
         var _owningFunction;
     },
 
     owningFunction: { value: undefined, enumerable: false },
-    nodeType: { value: ExpressionType.Parameter, writable: true },
+    nodeType: { value: $data.Expressions.ExpressionType.Parameter, writable: true },
     name: { value: undefined, dataType: String, writable: true },
     type: { value: undefined, dataType: "object", writable: true },
     toString: function (debug) {
@@ -9143,7 +9076,7 @@ $C('$data.Expressions.PropertyExpression', $data.Expressions.ExpressionNode, nul
     },
 
     nodeType: {
-        value: ExpressionType.MemberAccess
+        value: $data.Expressions.ExpressionType.MemberAccess
     },
 
     expression: {
@@ -9180,6 +9113,7 @@ $C('$data.Expressions.PropertyExpression', $data.Expressions.ExpressionNode, nul
     }
 
 });
+
 $C('$data.Expressions.SimpleBinaryExpression', $data.Expressions.ExpressionNode, null, {
     constructor: function (left, right, nodeType, operator, type, resolution) {
         ///<summary>Represents a bin operation with left and right operands and an operator///</summary>
@@ -9196,16 +9130,16 @@ $C('$data.Expressions.SimpleBinaryExpression', $data.Expressions.ExpressionNode,
 
     implementation: {
         get: function () {
-            return binaryOperators.getOperator(this.operator).implementation;
+            return $data.binaryOperators.getOperator(this.operator).implementation;
         },
         set: function () { }
 
     },
-    //nodeType: { value: ExpressionType },
+    //nodeType: { value: $data.Expressions.ExpressionType },
     type: { value: "number", writable: true }
 });
 $C('$data.Expressions.ThisExpression', $data.Expressions.ExpressionNode, null, {
-    nodeType: { value: ExpressionType.This }
+    nodeType: { value: $data.Expressions.ExpressionType.This }
 });
 $C('$data.Expressions.ExpressionVisitor', null, null,
     {
@@ -9710,7 +9644,7 @@ $C('$data.Expressions.ParameterResolverVisitor', $data.Expressions.ExpressionVis
         ///<return type="$data.Expressions.ExpressionNodeTypes.BinaryExpressionNode"/>
 
         var operand = this.Visit(eNode.operand, context);
-        //var imp = unaryOperators.getOperator(
+        //var imp = $data.unaryOperators.getOperator(
         var expr = $data.Expressions;
         if (operand instanceof expr.ConstantExpression) {
             var result = eNode.operator.implementation(operand.value);
@@ -11168,7 +11102,7 @@ $C('$data.Expressions.EveryExpression', $data.Expressions.FrameOperator, null, {
 }); $C('$data.Expressions.IncludeExpression', $data.Expressions.EntitySetExpression, null, {
     constructor: function (source, selector) {
     },
-    nodeType: { value: ExpressionType.Include, writable: true },
+    nodeType: { value: $data.Expressions.ExpressionType.Include, writable: true },
 
     toString: function (debug) {
         //var result;
@@ -11177,7 +11111,8 @@ $C('$data.Expressions.EveryExpression', $data.Expressions.FrameOperator, null, {
         var result = "unimplemented";
         return result;
     }
-}, null); $C('$data.Expressions.MemberInfoExpression', $data.Expressions.ExpressionNode, null, {
+}, null);
+$C('$data.Expressions.MemberInfoExpression', $data.Expressions.ExpressionNode, null, {
     constructor: function (memberDefinition) {
         this.memberDefinition = memberDefinition;
         this.memberName = memberDefinition.name;
@@ -11192,7 +11127,7 @@ $C('$data.Expressions.EveryExpression', $data.Expressions.FrameOperator, null, {
         //this.selector = expression;
         this.nodeType = nType;
     },
-    nodeType: { value: ExpressionType.OrderBy, writable: true },
+    nodeType: { value: $data.Expressions.ExpressionType.OrderBy, writable: true },
 
     toString: function (debug) {
         //var result;
@@ -11201,7 +11136,8 @@ $C('$data.Expressions.EveryExpression', $data.Expressions.FrameOperator, null, {
         var result = "unimplemented";
         return result;
     }
-}, null); $C('$data.Expressions.ParametricQueryExpression', $data.Expressions.ExpressionNode, null, {
+}, null);
+$C('$data.Expressions.ParametricQueryExpression', $data.Expressions.ExpressionNode, null, {
     constructor: function (expression, parameters) {
         this.expression = expression;
         this.parameters = parameters;
@@ -11318,7 +11254,46 @@ $C('$data.Expressions.QueryExpressionCreator', $data.Expressions.EntityExpressio
     nodeType: { value: $data.Expressions.ExpressionType.Entity }
 });
 
+$C('$data.Expressions.ServiceOperationExpression', $data.Expressions.ExpressionNode, null, {
+    constructor: function (source, selector, params, cfg) {
+        ///<signature>
+        ///<param name="source" type="$data.Expressions.EntityContextExpression" />
+        ///<param name="selector" type="$data.Expressions.MemberInfoExpression" />
+        ///<param name="params" type="$data.Array" />
+        ///<param name="cfg" type="$data.Object" />
+        ///</signature>
+        Guard.requireType("source", source, [$data.Expressions.EntityContextExpression]);
+        Guard.requireType("selector", source, [$data.Expressions.MemberInfoExpression]);
 
+        Object.defineProperty(this, "source", { value: source, enumerable: true, writable: true });
+        Object.defineProperty(this, "selector", { value: selector, enumerable: true, writable: true });
+        Object.defineProperty(this, "params", { value: params, enumerable: true, writable: true });
+        Object.defineProperty(this, "cfg", { value: cfg, enumerable: false, writable: true });
+
+        function findContext() {
+            //TODO: use source from function parameter and return a value at the end of the function
+            var r = source;
+            while (r) {
+                if (r instanceof $data.Expressions.EntityContextExpression) {
+                    return r;
+                }
+                r = r.source;
+            }
+        }
+
+        var c = findContext();
+        switch (true) {
+            case this.source instanceof $data.Expressions.EntityContextExpression:
+                this.elementType = cfg.elementType ? Container.resolveType(cfg.elementType) : Container.resolveType(cfg.returnType);
+                this.storageModel = cfg.elementType ? c.instance._storageModel.getStorageModel(Container.resolveType(cfg.elementType)) : null;
+                break;
+            default:
+                Guard.raise("Unknown source type for EntitySetExpression: " + this.source.getType().name);
+        }
+
+    },
+    nodeType: { value: $data.Expressions.ExpressionType.ServiceOperation, enumerable: true }
+});
 $data.Class.define('$data.Validation.ValidationError', null, null, {
     constructor: function (message, propertyDefinition, type) {
         ///<param name="message" type="string" />
@@ -11617,229 +11592,6 @@ $data.Class.define('$data.Notifications.ChangeCollector', $data.Notifications.Ch
     Delete: 8,
     Execute: 16
 });
-Function.prototype.extend = function (extend) {
-    for (var i in extend) {
-        this[i] = extend[i];
-    }
-
-    return this;
-};
-
-$data.ServiceOperation = function () {
-    var fn = arguments.callee;
-
-    var virtualEntitySet = fn.elementType ? this.getEntitySetFromElementType(Container.resolveType(fn.elementType)) : null;
-
-    var paramConstExpression = null;
-    if (fn.params) {
-        paramConstExpression = [];
-        for (var i = 0; i < fn.params.length; i++) {
-            //TODO: check params type
-            for (var name in fn.params[i]) {
-                paramConstExpression.push(Container.createConstantExpression(arguments[i], Container.resolveType(fn.params[i][name]), name));
-            }
-        }
-    }
-
-    var ec = Container.createEntityContextExpression(this);
-    var memberdef = this.getType().getMemberDefinition(fn.serviceName);
-    var es = Container.createServiceOperationExpression(ec,
-            Container.createMemberInfoExpression(memberdef),
-            paramConstExpression,
-            fn);
-
-    //Get callback function
-    var clb = arguments[arguments.length - 1];
-    if (typeof clb !== 'function') {
-        clb = undefined;
-    }
-
-    if (virtualEntitySet) {
-        var q = Container.createQueryable(virtualEntitySet, es);
-        if (clb) {
-            es.isTerminated = true;
-            return q._runQuery(clb);
-        }
-        return q;
-    }
-    else {
-        var returnType = Container.resolveType(fn.returnType);
-
-        var q = Container.createQueryable(this, es);
-        q.defaultType = returnType;
-
-        if (returnType === $data.Queryable) {
-            q.defaultType = Container.resolveType(fn.elementType);
-            if (clb) {
-                es.isTerminated = true;
-                return q._runQuery(clb);
-            }
-            return q;
-        }
-        es.isTerminated = true;
-        return q._runQuery(clb);
-    }
-};
-
-Function.prototype.chain = function (before, after) {
-    var fn = this;
-
-    var ret = function () {
-        var chain = arguments.callee.chainFn;
-        var args = [];
-        if (arguments.length) {
-            for (var i = 0; i < arguments.length; i++) {
-                args.push(arguments[i]);
-            }
-        }
-        var argsCount = args.length;
-        var i = 0;
-
-        var readyFn = function () {
-            if (args[args.length - 1] && args[args.length - 1].success && typeof args[args.length - 1].success === 'function') {
-                var fn = args[args.length - 1].success;
-                fn.apply(this, arguments);
-            } else return arguments.length ? arguments[0] : undefined;
-        };
-
-        var callbackFn = function () {
-            var fn = chain[i];
-            i++;
-
-            var r = fn.apply(this, args);
-            if (typeof r === 'function') {
-                var argsFn = arguments;
-                args[argsCount] = (i < chain.length ? (function () { return callbackFn.apply(this, argsFn); }) : (function () { return readyFn.apply(this, argsFn); }));
-                r.apply(this, args);
-            } else {
-                if (i < chain.length) {
-                    callbackFn.apply(this, arguments);
-                } else readyFn(this, arguments);
-            }
-        }
-
-        callbackFn();
-    };
-
-    if (!ret.chainFn) ret.chainFn = (before || []).concat([fn].concat(after || []));
-
-    return ret;
-};
-
-Function.prototype.before = function (on) {
-    var ret = this;
-
-    if (!this.chainFn) ret = ret.chain();
-    ret.chainFn.unshift(on);
-
-    return ret;
-};
-
-Function.prototype.after = function (on) {
-    var ret = this;
-
-    if (!this.chainFn) ret = ret.chain();
-    ret.chainFn.push(on);
-
-    return ret;
-};
-
-Function.prototype.contentType = function (mime) {
-    return this.extend({
-        contentType: mime
-    });
-};
-
-Function.prototype.returns = function (type, elementType) {
-    if (typeof type === 'string')
-        type = Container.resolveType(type);
-
-    if (typeof elementType === 'string')
-        elementType = Container.resolveType(elementType);
-
-    return this.extend({
-        returnType: type,
-        elementType: elementType
-    });
-};
-
-Function.prototype.params = function (params) {
-    /*for (var p in params){
-        if (typeof params[p] === 'string')
-            params[p] = Container.resolveType(params[p]);
-    }*/
-
-    return this.extend({
-        params: params
-    });
-};
-
-Function.prototype.serviceName = function (serviceName) {
-    return this.extend({
-        serviceName: serviceName
-    });
-};
-
-Function.prototype.method = function (method) {
-    return this.extend({
-        method: method
-    });
-};
-
-Function.prototype.webGet = function () {
-    return this.method('GET');
-};
-
-Function.prototype.webInvoke = function () {
-    return this.method('POST');
-};
-
-Function.prototype.authorize = function (roles, callback) {
-    var r = {};
-    if (roles instanceof Array) {
-        for (var i = 0; i < roles.length; i++) {
-            if (typeof roles[i] === 'string') r[roles[i]] = true;
-        }
-    } else r = roles;
-
-    this.roles = r;
-
-    var fn = this;
-
-    ret = function () {
-        var pHandler = new $data.PromiseHandler();
-        var clbWrapper = pHandler.createCallback(callback);
-        var pHandlerResult = pHandler.getPromise();
-        var args = arguments;
-
-        clbWrapper.success = clbWrapper.success.after(function () {
-            fn.apply(this, args);
-        });
-
-        $data.Access.isAuthorized($data.Access.Execute, this.user, fn.roles, clbWrapper);
-
-        return pHandlerResult;
-    };
-
-    return ret;
-};
-
-Function.prototype.promise = function (callback) {
-    var fn = this;
-
-    var ret = function () {
-        var pHandler = new $data.PromiseHandler();
-        var clbWrapper = pHandler.createCallback(callback);
-        var pHandlerResult = pHandler.getPromise();
-
-        arguments[arguments.length++] = clbWrapper;
-        fn.apply(this, arguments);
-
-        return pHandlerResult;
-    };
-
-    return ret;
-};
 $data.Class.define('$data.Promise', null, null, {
     always: function () { Guard.raise(new Exception('$data.Promise.always', 'Not implemented!')); },
     done: function () { Guard.raise(new Exception('$data.Promise.done', 'Not implemented!')); },
@@ -12016,9 +11768,16 @@ $data.Entity = Entity = $data.Class.define("$data.Entity", null, null, {
         var ctx = null;
         Object.defineProperty(this, 'context', { enumerable: false, configurable: false, get: function () { return ctx; }, set: function (value) { ctx = value; } });
         if (arguments.length == 1 && typeof initData === "object") {
-            var memDefNames = this.getType().memberDefinitions.getPublicMappedProperties().map(function (memDef) { return memDef.name; });
-            if (Object.keys(initData).every(function (key) { return memDefNames.indexOf(key) != -1; })) {
+            var typeMemDefs = this.getType().memberDefinitions;
+            var memDefNames = typeMemDefs.getPublicMappedPropertyNames();//.map(function (memDef) { return memDef.name; });
+            /*if (Object.keys(initData).every(function (key) { return memDefNames.indexOf(key) != -1; })) {
                 this.initData = initData;
+            }*/
+
+            for (var i in initData) {
+                if (memDefNames.indexOf(i) > -1) {
+                    this[i] = Container.resolveType(typeMemDefs.getMember(i).type) === $data.Date && typeof initData[i] === 'string' ? new Date(initData[i]) : initData[i];
+                }
             }
         }
     },
@@ -14125,7 +13884,7 @@ $data.Class.define('$data.Queryable', null, null,
 
         this._checkOperation('take');
         var constExp = Container.createConstantExpression(amount, "number");
-        var takeExp = Container.createPagingExpression(this.expression, constExp, ExpressionType.Take);
+        var takeExp = Container.createPagingExpression(this.expression, constExp, $data.Expressions.ExpressionType.Take);
         return Container.createQueryable(this, takeExp);
     },
     skip: function (amount) {
@@ -14146,7 +13905,7 @@ $data.Class.define('$data.Queryable', null, null,
 
         this._checkOperation('skip');
         var constExp = Container.createConstantExpression(amount, "number");
-        var takeExp = Container.createPagingExpression(this.expression, constExp, ExpressionType.Skip);
+        var takeExp = Container.createPagingExpression(this.expression, constExp, $data.Expressions.ExpressionType.Skip);
         return Container.createQueryable(this, takeExp);
     },
 
@@ -14181,7 +13940,7 @@ $data.Class.define('$data.Queryable', null, null,
 
         this._checkOperation('orderBy');
         var codeExpression = Container.createCodeExpression(selector, thisArg);
-        var exp = Container.createOrderExpression(this.expression, codeExpression, ExpressionType.OrderBy);
+        var exp = Container.createOrderExpression(this.expression, codeExpression, $data.Expressions.ExpressionType.OrderBy);
         var q = Container.createQueryable(this, exp);
         return q;
     },
@@ -14216,7 +13975,7 @@ $data.Class.define('$data.Queryable', null, null,
 
         this._checkOperation('orderByDescending');
         var codeExpression = Container.createCodeExpression(selector, thisArg);
-        var exp = Container.createOrderExpression(this.expression, codeExpression, ExpressionType.OrderByDescending);
+        var exp = Container.createOrderExpression(this.expression, codeExpression, $data.Expressions.ExpressionType.OrderByDescending);
         var q = Container.createQueryable(this, exp);
         return q;
     },
@@ -14713,7 +14472,7 @@ $data.EntityState = {
     reset: function () {
         this.trackedEntities = [];
     }
-}, null); function Exception(message, name, data) {
+}, null); Exception = function (message, name, data) {
     Error.call(this);
     if (Error.captureStackTrace)
         Error.captureStackTrace(this, this.constructor);
@@ -14784,7 +14543,231 @@ Exception.prototype._getStackTrace = function () {
     //    }
     //}
     return callstack.join("\n\r");	 */
-}; $data.ConcurrencyMode = { Fixed: 'fixed', None: 'nonde' };
+};
+Function.prototype.extend = function (extend) {
+    for (var i in extend) {
+        this[i] = extend[i];
+    }
+
+    return this;
+};
+
+$data.ServiceOperation = function () {
+    var fn = arguments.callee;
+
+    var virtualEntitySet = fn.elementType ? this.getEntitySetFromElementType(Container.resolveType(fn.elementType)) : null;
+
+    var paramConstExpression = null;
+    if (fn.params) {
+        paramConstExpression = [];
+        for (var i = 0; i < fn.params.length; i++) {
+            //TODO: check params type
+            for (var name in fn.params[i]) {
+                paramConstExpression.push(Container.createConstantExpression(arguments[i], Container.resolveType(fn.params[i][name]), name));
+            }
+        }
+    }
+
+    var ec = Container.createEntityContextExpression(this);
+    var memberdef = this.getType().getMemberDefinition(fn.serviceName);
+    var es = Container.createServiceOperationExpression(ec,
+            Container.createMemberInfoExpression(memberdef),
+            paramConstExpression,
+            fn);
+
+    //Get callback function
+    var clb = arguments[arguments.length - 1];
+    if (typeof clb !== 'function') {
+        clb = undefined;
+    }
+
+    if (virtualEntitySet) {
+        var q = Container.createQueryable(virtualEntitySet, es);
+        if (clb) {
+            es.isTerminated = true;
+            return q._runQuery(clb);
+        }
+        return q;
+    }
+    else {
+        var returnType = Container.resolveType(fn.returnType);
+
+        var q = Container.createQueryable(this, es);
+        q.defaultType = returnType;
+
+        if (returnType === $data.Queryable) {
+            q.defaultType = Container.resolveType(fn.elementType);
+            if (clb) {
+                es.isTerminated = true;
+                return q._runQuery(clb);
+            }
+            return q;
+        }
+        es.isTerminated = true;
+        return q._runQuery(clb);
+    }
+};
+
+Function.prototype.chain = function (before, after) {
+    var fn = this;
+
+    var ret = function () {
+        var chain = arguments.callee.chainFn;
+        var args = [];
+        if (arguments.length) {
+            for (var i = 0; i < arguments.length; i++) {
+                args.push(arguments[i]);
+            }
+        }
+        var argsCount = args.length;
+        var i = 0;
+
+        var readyFn = function () {
+            if (args[args.length - 1] && args[args.length - 1].success && typeof args[args.length - 1].success === 'function') {
+                var fn = args[args.length - 1].success;
+                fn.apply(this, arguments);
+            } else return arguments.length ? arguments[0] : undefined;
+        };
+
+        var callbackFn = function () {
+            var fn = chain[i];
+            i++;
+
+            var r = fn.apply(this, args);
+            if (typeof r === 'function') {
+                var argsFn = arguments;
+                args[argsCount] = (i < chain.length ? (function () { return callbackFn.apply(this, argsFn); }) : (function () { return readyFn.apply(this, argsFn); }));
+                r.apply(this, args);
+            } else {
+                if (i < chain.length) {
+                    callbackFn.apply(this, arguments);
+                } else readyFn(this, arguments);
+            }
+        }
+
+        callbackFn();
+    };
+
+    if (!ret.chainFn) ret.chainFn = (before || []).concat([fn].concat(after || []));
+
+    return ret;
+};
+
+Function.prototype.before = function (on) {
+    var ret = this;
+
+    if (!this.chainFn) ret = ret.chain();
+    ret.chainFn.unshift(on);
+
+    return ret;
+};
+
+Function.prototype.after = function (on) {
+    var ret = this;
+
+    if (!this.chainFn) ret = ret.chain();
+    ret.chainFn.push(on);
+
+    return ret;
+};
+
+Function.prototype.contentType = function (mime) {
+    return this.extend({
+        contentType: mime
+    });
+};
+
+Function.prototype.returns = function (type, elementType) {
+    if (typeof type === 'string')
+        type = Container.resolveType(type);
+
+    if (typeof elementType === 'string')
+        elementType = Container.resolveType(elementType);
+
+    return this.extend({
+        returnType: type,
+        elementType: elementType
+    });
+};
+
+Function.prototype.params = function (params) {
+    /*for (var p in params){
+        if (typeof params[p] === 'string')
+            params[p] = Container.resolveType(params[p]);
+    }*/
+
+    return this.extend({
+        params: params
+    });
+};
+
+Function.prototype.serviceName = function (serviceName) {
+    return this.extend({
+        serviceName: serviceName
+    });
+};
+
+Function.prototype.method = function (method) {
+    return this.extend({
+        method: method
+    });
+};
+
+Function.prototype.webGet = function () {
+    return this.method('GET');
+};
+
+Function.prototype.webInvoke = function () {
+    return this.method('POST');
+};
+
+Function.prototype.authorize = function (roles, callback) {
+    var r = {};
+    if (roles instanceof Array) {
+        for (var i = 0; i < roles.length; i++) {
+            if (typeof roles[i] === 'string') r[roles[i]] = true;
+        }
+    } else r = roles;
+
+    this.roles = r;
+
+    var fn = this;
+
+    ret = function () {
+        var pHandler = new $data.PromiseHandler();
+        var clbWrapper = pHandler.createCallback(callback);
+        var pHandlerResult = pHandler.getPromise();
+        var args = arguments;
+
+        clbWrapper.success = clbWrapper.success.after(function () {
+            fn.apply(this, args);
+        });
+
+        $data.Access.isAuthorized($data.Access.Execute, this.user, fn.roles, clbWrapper);
+
+        return pHandlerResult;
+    };
+
+    return ret;
+};
+
+Function.prototype.promise = function (callback) {
+    var fn = this;
+
+    var ret = function () {
+        var pHandler = new $data.PromiseHandler();
+        var clbWrapper = pHandler.createCallback(callback);
+        var pHandlerResult = pHandler.getPromise();
+
+        arguments[arguments.length++] = clbWrapper;
+        fn.apply(this, arguments);
+
+        return pHandlerResult;
+    };
+
+    return ret;
+};
+$data.ConcurrencyMode = { Fixed: 'fixed', None: 'nonde' };
 $data.Class.define('$data.StorageProviderBase', null, null,
 {
     constructor: function (schemaConfiguration) {
@@ -15037,7 +15020,9 @@ $data.Class.define('$data.StorageProviderBase', null, null,
     }
 }); if (typeof jQuery !== 'undefined' && jQuery.ajax) {
     $data.ajax = $data.ajax || jQuery.ajax;
-} if (typeof WinJS !== 'undefined' && WinJS.xhr) {
+}
+
+if (typeof WinJS !== 'undefined' && WinJS.xhr) {
     $data.ajax = $data.ajax || function (options) {
         $data.typeSystem.extend(options, {
             dataType: 'json',
@@ -15085,19 +15070,19 @@ $data.Class.define('$data.StorageProviderBase', null, null,
         WinJS.xhr(options)
         .done(success, error, progress);
     }
-} if (typeof Ext !== 'undefined' && typeof Ext.Ajax) {
+}
+
+if (typeof Ext !== 'undefined' && typeof Ext.Ajax) {
     $data.ajax = $data.ajax || function (options) {
         Ext.Ajax.request(options);
-    }
+    };
 }
-if (typeof $.ajax !== 'undefined') {
-    $data.ajax = $.ajax;
-}
+
 $data.ajax = $data.ajax || function () {
     var cfg = arguments[arguments.length - 1];
     var clb = $data.typeSystem.createCallbackSetting(cfg);
     clb.error("Not implemented");
-}
+};
 $data.Class.define('$data.dbClient.DbCommand', null, null,
 {
     connection: {},
@@ -15396,2707 +15381,7 @@ $data.Class.define('$data.dbClient.DbCommand', null, null,
         var cmd = new $data.dbClient.sqLiteNJClient.SqLiteNjCommand(this, queryStr, params);
         return cmd;
     }
-}, null); $data.Class.define('$data.storageProviders.sqLite.SqLiteStorageProvider', $data.StorageProviderBase, null,
-{
-    constructor: function (cfg, context) {
-        this.SqlCommands = [];
-        this.context = context;
-        this.providerConfiguration = $data.typeSystem.extend({
-            databaseName: "JayDataDemo",
-            version: "",
-            displayName: "JayData demo db",
-            maxSize: 1024 * 1024,
-            dbCreation: $data.storageProviders.sqLite.DbCreationType.DropTableIfChanged
-        }, cfg);
-
-        if (this.context && this.context._buildDbType_generateConvertToFunction && this.buildDbType_generateConvertToFunction) {
-            this.context._buildDbType_generateConvertToFunction = this.buildDbType_generateConvertToFunction;
-        }
-        if (this.context && this.context._buildDbType_modifyInstanceDefinition && this.buildDbType_modifyInstanceDefinition) {
-            this.context._buildDbType_modifyInstanceDefinition = this.buildDbType_modifyInstanceDefinition;
-        }
-    },
-    _createSqlConnection: function () {
-        var ctorParm = {
-            fileName: this.providerConfiguration.databaseName,
-            version: "",
-            displayName: this.providerConfiguration.displayName,
-            maxSize: this.providerConfiguration.maxSize,
-            storage: this.providerConfiguration.storage
-        };
-
-        if (this.connection) return this.connection;
-
-        var connection = null;
-        if (this.providerConfiguration.storage) {
-            connection = new $data.dbClient.jayStorageClient.JayStorageConnection(ctorParm);
-        } else if (typeof sqLiteModule !== 'undefined') {
-            connection = new $data.dbClient.sqLiteNJClient.SqLiteNjConnection(ctorParm);
-        } else {
-            connection = new $data.dbClient.openDatabaseClient.OpenDbConnection(ctorParm);
-        }
-
-        this.connection = connection;
-
-        return connection;
-    },
-    supportedDataTypes: { value: [$data.Integer, $data.String, $data.Number, $data.Blob, $data.Boolean, $data.Date], writable: false },
-    fieldConverter: {
-        value: {
-            fromDb: {
-                "$data.Integer": function (number) { return number; },
-                "$data.Number": function (number) { return number; },
-                "$data.Date": function (dbData) { return new Date(dbData); },
-                "$data.String": function (text) { return text; },
-                "$data.Boolean": function (b) { return b === 1 ? true : false; },
-                "$data.Blob": function (blob) { return blob; }
-            },
-            toDb: {
-                "$data.Integer": function (number) { return number; },
-                "$data.Number": function (number) { return number; },
-                "$data.Date": function (date) { return date ? date.valueOf() : null; },
-                "$data.String": function (text) { return text; },
-                "$data.Boolean": function (b) { return b ? 1 : 0; },
-                "$data.Blob": function (blob) { return blob; }
-            }
-        }
-    },
-
-    supportedFieldOperations: {
-        value: {
-            length: {
-                dataType: "number", allowedIn: [$data.Expressions.FilterExpression, $data.Expressions.ProjectionExpression]
-            },
-            substr: {
-                dataType: "string",
-                allowedIn: $data.Expressions.FilterExpression,
-                parameters: [{ name: "startFrom", dataType: "number" }, { name: "length", dataType: "number" }]
-            },
-            toLowerCase: {
-                dataType: "string", mapTo: "lower"
-            },
-            toUpperCase: {
-                dataType: "string", mapTo: "upper"
-            },
-            contains: {
-                mapTo: "like",
-                dataType: "boolean",
-                allowedIn: $data.Expressions.FilterExpression,
-                parameters: [{ name: "strFragment", dataType: "string", prefix: "%", suffix: "%" }]
-            },
-            startsWith: {
-                mapTo: "like",
-                dataType: "boolean",
-                allowedIn: [$data.Expressions.FilterExpression, $data.Expressions.ProjectionExpression],
-                parameters: [{ name: "strFragment", dataType: "string", suffix: "%" }]
-            },
-            endsWith: {
-                mapTo: "like",
-                dataType: "boolean",
-                allowedIn: [$data.Expressions.FilterExpression, $data.Expressions.ProjectionExpression],
-                parameters: [{ name: "strFragment", dataType: "string", prefix: "%" }]
-            },
-            'trim': {
-                dataType: $data.String,
-                allowedIn: [$data.Expressions.FilterExpression, $data.Expressions.ProjectionExpression],
-                mapTo: 'trim',
-                parameters: [{ name: '@expression', dataType: $data.String }, { name: 'chars', dataType: $data.String }]
-            },
-            'ltrim': {
-                dataType: $data.String,
-                allowedIn: [$data.Expressions.FilterExpression, $data.Expressions.ProjectionExpression],
-                mapTo: 'ltrim',
-                parameters: [{ name: '@expression', dataType: $data.String }, { name: 'chars', dataType: $data.String }]
-            },
-            'rtrim': {
-                dataType: $data.String,
-                allowedIn: [$data.Expressions.FilterExpression, $data.Expressions.ProjectionExpression],
-                mapTo: 'rtrim',
-                parameters: [{ name: '@expression', dataType: $data.String }, { name: 'chars', dataType: $data.String }]
-            }
-        },
-        enumerable: true,
-        writable: true
-    },
-
-    supportedBinaryOperators: {
-        value: {
-            equal: { mapTo: '=', dataType: "boolean" },
-            notEqual: { mapTo: '!=', dataType: "boolean" },
-            equalTyped: { mapTo: '=', dataType: "boolean" },
-            notEqualTyped: { mapTo: '!=', dataType: "boolean" },
-            greaterThan: { mapTo: '>', dataType: "boolean" },
-            greaterThanOrEqual: { mapTo: '>=', dataType: "boolean" },
-
-            lessThan: { mapTo: '<', dataType: "boolean" },
-            lessThenOrEqual: { mapTo: '<=', dataType: "boolean" },
-            or: { mapTo: 'OR', dataType: "boolean" },
-            and: { mapTo: 'AND', dataType: "boolean" },
-
-            add: { mapTo: '+', dataType: "number" },
-            divide: { mapTo: '/' },
-            multiply: { mapTo: '*' },
-            subtract: { mapTo: '-' },
-            modulo: { mapTo: '%' },
-
-            orBitwise: { maptTo: "|" },
-            andBitwsise: { mapTo: "&" },
-
-            "in": { mapTo: "in", dataType: "boolean" }
-        }
-    },
-
-    supportedUnaryOperators: {
-        value: {
-            not: { mapTo: 'not' },
-            positive: { mapTo: '+' },
-            negative: { maptTo: '-' }
-        }
-    },
-
-    supportedSetOperations: {
-        value: {
-            filter: {},
-            map: {},
-            length: {},
-            forEach: {},
-            toArray: {},
-            single: {},
-            take: {},
-            skip: {},
-            orderBy: {},
-            orderByDescending: {},
-            first: {},
-            include: {}
-        },
-        enumerable: true,
-        writable: true
-    },
-
-    buildDbType_modifyInstanceDefinition: function (instanceDefinition, storageModel) {
-        var buildDbType_copyPropertyDefinition = function (propertyDefinition) {
-            var cPropertyDef = JSON.parse(JSON.stringify(propertyDefinition));
-            cPropertyDef.dataType = Container.resolveType(propertyDefinition.dataType);
-            cPropertyDef.key = false;
-            cPropertyDef.computed = false;
-            return cPropertyDef;
-        };
-        var buildDbType_createConstrain = function (foreignType, dataType, propertyName, prefix) {
-            var constrain = new Object();
-            constrain[foreignType.name] = propertyName;
-            constrain[dataType.name] = prefix + '__' + propertyName;
-            return constrain;
-        };
-
-        if (storageModel.Associations) {
-            storageModel.Associations.forEach(function (association) {
-                var addToEntityDef = false;
-                var foreignType = association.FromType;
-                var dataType = association.ToType;
-                var foreignPropName = association.ToPropertyName;
-
-                association.ReferentialConstraint = association.ReferentialConstraint || [];
-
-                if ((association.FromMultiplicity == "*" && association.ToMultiplicity == "0..1") || (association.FromMultiplicity == "0..1" && association.ToMultiplicity == "1")) {
-                    foreignType = association.ToType;
-                    dataType = association.FromType;
-                    foreignPropName = association.FromPropertyName;
-                    addToEntityDef = true;
-                }
-
-                foreignType.memberDefinitions.getPublicMappedProperties().filter(function (d) { return d.key }).forEach(function (d) {
-                    if (addToEntityDef) {
-                        instanceDefinition[foreignPropName + '__' + d.name] = buildDbType_copyPropertyDefinition(d);
-                    }
-                    association.ReferentialConstraint.push(buildDbType_createConstrain(foreignType, dataType, d.name, foreignPropName));
-                }, this);
-            }, this);
-        }
-        //Copy complex type properties
-        if (storageModel.ComplexTypes) {
-            storageModel.ComplexTypes.forEach(function (complexType) {
-                complexType.ReferentialConstraint = complexType.ReferentialConstraint || [];
-
-                complexType.ToType.memberDefinitions.getPublicMappedProperties().forEach(function (d) {
-                    instanceDefinition[complexType.FromPropertyName + '__' + d.name] = buildDbType_copyPropertyDefinition(d);
-                    complexType.ReferentialConstraint.push(buildDbType_createConstrain(complexType.ToType, complexType.FromType, d.name, complexType.FromPropertyName));
-                }, this);
-            }, this);
-        }
-    },
-    buildDbType_generateConvertToFunction: function (storageModel) {
-        return function (logicalEntity) {
-            var dbInstance = new storageModel.PhysicalType();
-            dbInstance.entityState = logicalEntity.entityState;
-
-            //logicalEntity.changedProperties.forEach(function(memberDef){
-            //}, this);
-            storageModel.PhysicalType.memberDefinitions.getPublicMappedProperties().forEach(function (property) {
-                dbInstance[property.name] = logicalEntity[property.name];
-            }, this);
-
-            if (storageModel.Associations) {
-                storageModel.Associations.forEach(function (association) {
-                    if ((association.FromMultiplicity == "*" && association.ToMultiplicity == "0..1") || (association.FromMultiplicity == "0..1" && association.ToMultiplicity == "1")) {
-                        var complexInstance = logicalEntity[association.FromPropertyName];
-                        if (complexInstance !== undefined) {
-                            association.ReferentialConstraint.forEach(function (constrain) {
-                                if (complexInstance !== null) {
-                                    dbInstance[constrain[association.From]] = complexInstance[constrain[association.To]];
-                                } else {
-                                    dbInstance[constrain[association.From]] = null;
-                                }
-                            }, this);
-                        }
-                    }
-                }, this);
-            }
-            if (storageModel.ComplexTypes) {
-                storageModel.ComplexTypes.forEach(function (cmpType) {
-                    var complexInstance = logicalEntity[cmpType.FromPropertyName];
-                    if (complexInstance !== undefined) {
-                        cmpType.ReferentialConstraint.forEach(function (constrain) {
-                            if (complexInstance !== null) {
-                                dbInstance[constrain[cmpType.From]] = complexInstance[constrain[cmpType.To]];
-                            } else {
-                                dbInstance[constrain[cmpType.From]] = null;
-                            }
-                        }, this);
-                    }
-                }, this);
-            }
-            return dbInstance;
-        };
-    },
-    initializeStore: function (callBack) {
-        // callBack.success(this.context); return;
-
-
-
-        callBack = $data.typeSystem.createCallbackSetting(callBack);
-        this.context._storageModel.forEach(function (item, index) {
-            this.SqlCommands.push(this.createSqlFromStorageModel(item) + " ");
-        }, this);
-
-        var sqlConnection = this._createSqlConnection();
-        var cmd = sqlConnection.createCommand("SELECT * FROM sqlite_master WHERE type = 'table'", null);
-        var that = this;
-
-        cmd.executeQuery({
-            success: function (result) {
-                var existObjectInDB = {};
-                for (var i = 0; i < result.rows.length; i++) {
-                    var item = result.rows[i];
-                    existObjectInDB[item.tbl_name] = item;
-                }
-                switch (that.providerConfiguration.dbCreation) {
-                    case $data.storageProviders.sqLite.DbCreationType.Merge:
-                        Guard.raise(new Exception('Not supported db creation type'));
-                        break;
-                    case $data.storageProviders.sqLite.DbCreationType.DropTableIfChanged:
-                        var deleteCmd = [];
-                        for (var i = 0; i < that.SqlCommands.length; i++) {
-                            if (that.SqlCommands[i] == "") { continue; }
-                            var regEx = /^CREATE TABLE IF NOT EXISTS ([^ ]*) (\(.*\))/g;
-                            var data = regEx.exec(that.SqlCommands[i]);
-                            if (data) {
-                                var tableName = data[1];
-                                var tableDef = data[2];
-                                if (existObjectInDB[tableName.slice(1, tableName.length - 1)]) {
-                                    var existsRegEx = /^CREATE TABLE ([^ ]*) (\(.*\))/g;
-                                    var existTableDef = existsRegEx.exec(existObjectInDB[tableName.slice(1, tableName.length - 1)].sql)[2];
-                                    if (tableDef.toLowerCase() != existTableDef.toLowerCase()) {
-                                        deleteCmd.push("DROP TABLE IF EXISTS [" + existObjectInDB[tableName.slice(1, tableName.length - 1)].tbl_name + "];");
-                                    }
-                                }
-                            }
-                            else {
-                                console.dir(regEx);
-                                console.dir(that.SqlCommands[i]);
-                            }
-                        }
-                        that.SqlCommands = that.SqlCommands.concat(deleteCmd);
-                        console.log(deleteCmd);
-                        break;
-                    case $data.storageProviders.sqLite.DbCreationType.DropAllExistingTables:
-                        for (var objName in existObjectInDB) {
-                            if (objName && !objName.match('^__') && !objName.match('^sqlite_')) {
-                                that.SqlCommands.push("DROP TABLE IF EXISTS [" + existObjectInDB[objName].tbl_name + "];");
-                            }
-                        }
-                        break;
-                }
-                that._runSqlCommands(sqlConnection, { success: callBack.success, error: callBack.error });
-            },
-            error: callBack.error
-        });
-    },
-    executeQuery: function (query, callBack) {
-        callBack = $data.typeSystem.createCallbackSetting(callBack);
-        var sqlConnection = this._createSqlConnection();
-        var sql = this._compile(query);
-        query.actionPack = sql.actions;
-        query.sqlConvertMetadata = sql.converter;
-        query.modelBinderConfig = sql.modelBinderConfig;
-        var sqlCommand = sqlConnection.createCommand(sql.sqlText, sql.params);
-        var that = this;
-        sqlCommand.executeQuery({
-            success: function (sqlResult) {
-                if (callBack.success) {
-                    query.rawDataList = sqlResult.rows;
-                    callBack.success(query);
-                }
-            },
-            error: callBack.error
-        });
-    },
-    _compile: function (query, params) {
-        var compiler = new $data.storageProviders.sqLite.SQLiteCompiler();
-        var compiled = compiler.compile(query);
-        //console.dir(compiled);
-        compiled.hasSelect = compiler.select != null;
-        return compiled;
-    },
-    getTraceString: function (query) {
-        var sqlText = this._compile(query);
-        return sqlText;
-    },
-    _runSqlCommands: function (sqlConnection, callBack) {
-        if (this.SqlCommands && this.SqlCommands.length > 0) {
-            var cmdStr = this.SqlCommands.pop();
-            var command = sqlConnection.createCommand(cmdStr, null);
-            var that = this;
-            var okFn = function (result) { that._runSqlCommands.apply(that, [sqlConnection, callBack]); };
-            command.executeQuery({ success: okFn, error: callBack.error });
-        } else {
-            callBack.success(this.context);
-        }
-    },
-    setContext: function (ctx) {
-        this.context = ctx;
-    },
-    saveChanges: function (callback, changedItems) {
-        var sqlConnection = this._createSqlConnection();
-        var provider = this;
-        var independentBlocks = this.buildIndependentBlocks(changedItems);
-        this.saveIndependentBlocks(changedItems, independentBlocks, sqlConnection, callback);
-    },
-    saveIndependentBlocks: function (changedItems, independentBlocks, sqlConnection, callback) {
-        /// <summary>
-        /// Saves the sequentially independent items to the database.
-        /// </summary>
-        /// <param name="independentBlocks">Array of independent block of items.</param>
-        /// <param name="sqlConnection">sqlConnection to use</param>
-        /// <param name="callback">Callback on finish</param>
-        var provider = this;
-        var t = [].concat(independentBlocks);
-        function saveNextIndependentBlock() {
-            if (t.length === 0) {
-                callback.success();
-                return;
-            }
-            var currentBlock = t.shift();
-            // Converting items to their physical equivalent (?)
-            var convertedItems = currentBlock.map(function (item) {
-                var dbType = provider.context._storageModel.getStorageModel(item.data.getType()).PhysicalType;
-                item.physicalData = dbType.convertTo(item.data);
-                return item;
-            }, this);
-            provider.saveIndependentItems(convertedItems, sqlConnection, {
-                success: function () {
-                    provider.postProcessItems(convertedItems);
-                    saveNextIndependentBlock();
-                },
-                error: callback.error
-            });
-        }
-        saveNextIndependentBlock();
-    },
-
-    saveIndependentItems: function (items, sqlConnection, callback) {
-        var provider = this;
-        var queries = items.map(function (item) {
-            return provider.saveEntitySet(item);
-        });
-        queries = queries.filter(function (item) { return item; });
-        if (queries.length === 0) {
-            callback.success(items);
-            return;
-        }
-        function toCmd(sqlConnection, queries) {
-            var cmdParams = { query: [], param: [] };
-            queries.forEach(function (item, i) {
-                if (item) {
-                    if (item.query)
-                        cmdParams.query[i] = item.query;
-                    if (item.param)
-                        cmdParams.param[i] = item.param;
-                }
-            });
-            return sqlConnection.createCommand(cmdParams.query, cmdParams.param);
-        }
-        var cmd = toCmd(sqlConnection, queries);
-        cmd.executeQuery({
-            success: function (results) {
-                var reloadQueries = results.map(function (result, i) {
-                    if (result && result.insertId) {
-                        return provider.save_reloadSavedEntity(result.insertId, items[i].entitySet.tableName, sqlConnection);
-                    } else {
-                        return null;
-                    }
-                })
-                var cmd = toCmd(sqlConnection, reloadQueries);
-                if (cmd.query.length > 0) {
-                    cmd.executeQuery(function (results) {
-                        results.forEach(function (item, i) {
-                            if (item && item.rows) {
-                                items[i].physicalData.initData = item.rows[0];
-                            }
-                        });
-                        callback.success(items);
-                    });
-                } else {
-                    callback.success(0);//TODO Zenima: fixed this!
-                }
-            },
-            error: callback.error
-        });
-    },
-    postProcessItems: function (changedItems) {
-        var pmpCache = {};
-        function getPublicMappedProperties(type) {
-            var key = type.name;
-            if (pmpCache.hasOwnProperty(key))
-                return pmpCache[key];
-            else {
-                var pmp = type.memberDefinitions.getPublicMappedProperties().filter(function (memDef) {
-                    return memDef.computed;
-                });
-                return (pmpCache[key] = pmp);
-            }
-
-        }
-        changedItems.forEach(function (item) {
-            if (item.physicalData) {
-                getPublicMappedProperties(item.data.getType()).forEach(function (memDef) {
-                    item.data[memDef.name] = item.physicalData[memDef.name];
-                }, this);
-            }
-        }, this);
-    },
-
-    saveEntitySet: function (item) {
-        switch (item.data.entityState) {
-            case $data.EntityState.Added: return this.save_NewEntity(item); break;
-            case $data.EntityState.Deleted: return this.save_DeleteEntity(item); break;
-            case $data.EntityState.Modified: return this.save_UpdateEntity(item); break;
-            case $data.EntityState.Unchanged: return; break;
-            default: Guard.raise(new Exception('Not supported entity state'));
-        }
-    },
-    save_DeleteEntity: function (item) {
-        ///DELETE FROM Posts WHERE Id=1;
-        var deleteSqlString = "DELETE FROM [" + item.entitySet.name + "] WHERE(";
-        var hasCondition = false;
-        var addAllField = false;
-        var deleteParam = [];
-        while (!hasCondition) {
-            item.physicalData.constructor.memberDefinitions.getPublicMappedProperties().forEach(function (fieldDef, i) {
-
-                if (hasCondition && !deleteSqlString.match(" AND $")) {
-                    deleteSqlString += " AND ";
-                }
-                if (fieldDef.key || addAllField) {
-                    deleteSqlString += "([" + fieldDef.name + "] == ?)";
-                    deleteParam.push(this.fieldConverter.toDb[Container.resolveName(fieldDef.dataType)](item.data[fieldDef.name]));
-                    hasCondition = true;
-                }
-
-            }, this);
-            if (!hasCondition) {
-                addAllField = true;
-            }
-        }
-        if (deleteSqlString.match(" AND $")) {
-            deleteSqlString = deleteSqlString.slice(0, deleteSqlString.length - 5);
-        }
-        deleteSqlString += ");";
-        return { query: deleteSqlString, param: deleteParam };
-    },
-    save_UpdateEntity: function (item) {
-        var setSection = " SET ";
-        var whereSection = "WHERE(";
-
-        var fieldsMaxIndex = item.entitySet.createNew.memberDefinitions.length;
-        var hasCondition = false;
-        var addAllField = false;
-        var whereParam = [];
-        var setParam = [];
-        item.physicalData.constructor.memberDefinitions.getPublicMappedProperties().forEach(function (fieldDef, i) {
-            if (item.physicalData[fieldDef.name] !== undefined) {
-                if (hasCondition && !whereSection.match(" AND $")) {
-                    whereSection += " AND ";
-                }
-                if (setSection.length > 5 && !setSection.match(',$')) {
-                    setSection += ',';
-                }
-                if (fieldDef.key) {
-                    whereSection += '([' + fieldDef.name + '] == ?)';
-                    whereParam.push(this.fieldConverter.toDb[Container.resolveName(fieldDef.dataType)](item.physicalData[fieldDef.name]));
-                    hasCondition = true;
-                }
-                else {
-                    setSection += "[" + fieldDef.name + "] = ?";
-                    setParam.push(this.fieldConverter.toDb[Container.resolveName(fieldDef.dataType)](item.physicalData[fieldDef.name]));
-                }
-            }
-        }, this);
-        if (!hasCondition) {
-            Guard.raise(new Exception('Not supported UPDATE function without primary key!'));
-        }
-
-        if (whereSection.match(" AND $")) { whereSection = whereSection.slice(0, whereSection.length - 5); }
-        if (setSection.match(",$")) { setSection = setSection.slice(0, setSection.length - 1); }
-        var updateSqlString = "UPDATE [" + item.entitySet.tableName + "]" + setSection + " " + whereSection + ");";
-        return { query: updateSqlString, param: setParam.concat(whereParam) };
-    },
-    save_NewEntity: function (item) {
-        var insertSqlString = "INSERT INTO [" + item.entitySet.tableName + "](";
-        var fieldList = "";
-        var fieldValue = "";
-        var fieldParam = [];
-        item.physicalData.constructor.memberDefinitions.getPublicMappedProperties().forEach(function (fieldDef, i) {
-            if (fieldList.length > 0 && fieldList[fieldList.length - 1] != ",") { fieldList += ","; fieldValue += ","; }
-            var fieldName = fieldDef.name;
-            if (/*item.physicalData[fieldName] !== null && */item.physicalData[fieldName] !== undefined) {
-                if (fieldDef.dataType && (!fieldDef.dataType.isAssignableTo || (fieldDef.dataType.isAssignableTo && !fieldDef.dataType.isAssignableTo($data.EntitySet)))) {
-                    fieldValue += '?';
-                    fieldList += "[" + fieldName + "]";
-                    fieldParam.push(this.fieldConverter.toDb[Container.resolveName(fieldDef.dataType)](item.physicalData[fieldName]));
-                }
-            }
-
-        }, this);
-        if (fieldParam.length < 1) { Guard.raise(new Exception('None of the fields contain values in the entity to be saved.')); }
-        if (fieldList[fieldList.length - 1] == ",") { fieldList = fieldList.slice(0, fieldList.length - 1); }
-        if (fieldValue[fieldValue.length - 1] == ",") { fieldValue = fieldValue.slice(0, fieldValue.length - 1); }
-        insertSqlString += fieldList + ") VALUES(" + fieldValue + ");";
-        return { query: insertSqlString, param: fieldParam };
-    },
-    save_reloadSavedEntity: function (rowid, tableName) {
-        return { query: "SELECT * FROM " + tableName + " WHERE rowid=?", param: [rowid] };
-    },
-    createSqlFromStorageModel: function (memberDef) {
-        ///<param name="memberDef" type="$data.StorageModel">StorageModel object wich contains physical entity definition</param>
-        if (memberDef === undefined || memberDef === null || memberDef.PhysicalType === undefined) { Guard.raise("StorageModel not contains physical entity definition"); }
-
-        var keyFieldNumber = 0;
-        var autoincrementFieldNumber = 0;
-
-        memberDef.PhysicalType.memberDefinitions.getPublicMappedProperties().forEach(function (item, index) {
-
-            if (item.key) { keyFieldNumber++; }
-            if (item.computed) {
-                //if (!item.key) {
-                //    Guard.raise(new Exception('Only key field can be computed field!'));
-                //}
-                autoincrementFieldNumber++;
-            }
-
-        }, this);
-
-        if (autoincrementFieldNumber === 1 && keyFieldNumber > 1) {
-            Guard.raise(new Exception('Do not use computed field with multiple primary key!'));
-        }
-        if (autoincrementFieldNumber > 1 && keyFieldNumber > 1) {
-            Guard.raise(new Exception('Do not use multiple computed field!'));
-        }
-
-        var sql = "CREATE TABLE IF NOT EXISTS [" + memberDef.TableName + "] (";
-        var pkFragment = ',PRIMARY KEY (';
-
-        memberDef.PhysicalType.memberDefinitions.getPublicMappedProperties().forEach(function (item, index) {
-
-            if (index > 0 && !sql.match(', $') && !sql.match('\\($'))
-                sql += ', ';
-            //var field = memberDef.createNew.memberDefinitions[fieldIndex];
-            sql += this.createSqlFragmentFromField(item, autoincrementFieldNumber === 1, memberDef);
-            if (autoincrementFieldNumber === 0 && item.key) {
-                if (pkFragment.length > 14 && !pkFragment.match(', $'))
-                    pkFragment += ', ';
-                pkFragment += "[" + item.name + "]";
-            }
-
-        }, this);
-
-        if (sql.match(', $'))
-            sql = sql.substr(0, sql.length - 2);
-        if (autoincrementFieldNumber === 0 && pkFragment.length > 14) {
-            sql += pkFragment + ')';
-        }
-        sql += ');';
-        return sql;
-    },
-    createSqlFragmentFromField: function (field, parsePk, storageModelObject) {
-        if (('schemaCreate' in field) && (field['schemaCreate']))
-            return field.schemaCreate(field);
-
-        var fldBuilder = new this.FieldTypeBuilder(field, this, parsePk, storageModelObject);
-        return fldBuilder.build();
-    },
-    FieldTypeBuilder: function (field, prov, parseKey, storageModelObject) {
-        this.fieldDef = "";
-        this.fld = field;
-        this.provider = prov;
-        this.parsePk = parseKey;
-        this.entitySet = storageModelObject;
-        this.build = function () {
-
-            switch (Container.resolveType(this.fld.dataType)) {
-                case $data.String: case "text": case "string": this.buildFieldNameAndType("TEXT"); break;
-                case $data.Boolean: case $data.Integer: case "bool": case "boolean": case "int": case "integer": this.buildFieldNameAndType("INTEGER"); break;
-                case $data.Number: case $data.Date: case "number": case "datetime": case "date": this.buildFieldNameAndType("REAL"); break;
-                case $data.Blob: case "blob": this.buildFieldNameAndType("BLOB"); break;
-                default: this.buildRelations(); break;
-            }
-
-            return this.fieldDef;
-        };
-        this.buildFieldNameAndType = function (type) {
-            this.fieldDef = "[" + this.fld.name + "] " + type;
-            this.parsePk ? this.buildPrimaryKey() : this.buildNotNull();
-        };
-        this.buildPrimaryKey = function () {
-            if (this.fld.key) {
-                this.fieldDef += " PRIMARY KEY";
-                this.buildAutoIncrement();
-            }
-            else {
-                this.buildNotNull();
-            }
-        };
-        this.buildNotNull = function () {
-            if (this.fld.required)
-                this.fieldDef += " NOT NULL";
-        };
-        this.buildAutoIncrement = function () {
-            if (this.fld.computed)
-                this.fieldDef += " AUTOINCREMENT";
-        };
-    }
-}, {
-    isSupported: {
-        get: function () { return "openDatabase" in window; },
-        set: function () { }
-    }
-});
-$data.storageProviders.sqLite.DbCreationType = {
-    //Default: 20,
-    Merge: 10,
-    DropTableIfChanged: 20,
-    DropAllExistingTables: 30
-};
-
-if ($data.storageProviders.sqLite.SqLiteStorageProvider.isSupported) {
-    $data.StorageProviderBase.registerProvider("webSql", $data.storageProviders.sqLite.SqLiteStorageProvider);
-    $data.StorageProviderBase.registerProvider("sqLite", $data.storageProviders.sqLite.SqLiteStorageProvider);
-    $data.webSqlProvider = $data.storageProviders.sqLite.SqLiteStorageProvider;
-}
-var SqlStatementBlocks = {
-    beginGroup: "(",
-    endGroup: ")",
-    nameSeparator: ".",
-    valueSeparator: ", ",
-    select: "SELECT ",
-    where: " WHERE ",
-    from: " FROM ",
-    skip: " OFFSET ",
-    take: " LIMIT ",
-    parameter: "?",
-    order: " ORDER BY ",
-    as: " AS ",
-    scalarFieldName: 'd',
-    rowIdName: 'rowid$$',
-    count: 'select count(*) cnt from ('
-};
-$C('$data.queryBuilder', null, null, {
-    constructor: function () {
-        this._fragments = {};
-        this.selectedFragment = null;
-        this._binderConfig = {};
-        this.modelBinderConfig = this._binderConfig;
-        this._binderConfigPropertyStack = [];
-    },
-    selectTextPart: function (name) {
-        if (!this._fragments[name]) {
-            this._fragments[name] = { text: '', params: [] };
-        }
-        this.selectedFragment = this._fragments[name];
-    },
-    getTextPart: function (name) {
-        return this._fragments[name];
-    },
-    addText: function (textParticle) {
-        this.selectedFragment.text += textParticle;
-    },
-    addParameter: function (param) {
-        this.selectedFragment.params.push(param);
-    },
-    selectModelBinderProperty: function (name) {
-        this._binderConfigPropertyStack.push(this.modelBinderConfig);
-        if (!(name in this.modelBinderConfig)) {
-            this.modelBinderConfig[name] = {};
-        }
-        this.modelBinderConfig = this.modelBinderConfig[name];
-    },
-    popModelBinderProperty: function () {
-        if (this._binderConfigPropertyStack.length === 0) {
-            this.modelBinderConfig = this._binderConfig();
-        } else {
-            this.modelBinderConfig = this._binderConfigPropertyStack.pop();
-        }
-    },
-    resetModelBinderProperty: function (name) {
-        this._binderConfigPropertyStack = [];
-        this.modelBinderConfig = this._binderConfig;
-    },
-    addKeyField: function (name) {
-        if (!this.modelBinderConfig['$keys']) {
-            this.modelBinderConfig['$keys'] = new Array();
-        }
-        this.modelBinderConfig['$keys'].push(name);
-    }
-});
-$C('$data.sqLite.SqlBuilder', $data.queryBuilder, null, {
-    constructor: function (sets, context) {
-        this.sets = sets;
-        this.entityContext = context;
-
-    },
-    getExpressionAlias: function (setExpression) {
-        var idx = this.sets.indexOf(setExpression);
-        if (idx == -1) {
-            idx = this.sets.push(setExpression) - 1;
-        }
-        return "T" + idx;
-    }
-});
-
-$C('$data.sqLite.SqlCompiler', $data.Expressions.EntityExpressionVisitor, null, {
-    constructor: function (queryExpression, context) {
-        this.queryExpression = queryExpression;
-        this.sets = context.sets;
-        this.infos = context.infos;
-        this.entityContext = context.entityContext;
-        this.associations = [];
-        this.filters = [];
-        this.newFilters = {};
-        this.sortedFilterPart = ['projection', 'from', 'filter', 'order', 'take', 'skip'];
-    },
-    compile: function () {
-        var sqlBuilder = Container.createSqlBuilder(this.sets, this.entityContext);
-        this.Visit(this.queryExpression, sqlBuilder);
-
-        if (sqlBuilder.getTextPart('projection') === undefined) {
-            this.VisitDefaultProjection(sqlBuilder);
-        }
-        sqlBuilder.selectTextPart("result");
-        this.sortedFilterPart.forEach(function (part) {
-            var part = sqlBuilder.getTextPart(part);
-            if (part) {
-                sqlBuilder.addText(part.text);
-                sqlBuilder.selectedFragment.params = sqlBuilder.selectedFragment.params.concat(part.params);
-            }
-        }, this);
-        var countPart = sqlBuilder.getTextPart('count');
-        if (countPart !== undefined) {
-            sqlBuilder.selectedFragment.text = countPart.text + sqlBuilder.selectedFragment.text;
-            sqlBuilder.addText(SqlStatementBlocks.endGroup);
-            sqlBuilder.selectedFragment.params = sqlBuilder.selectedFragment.params.concat(countPart.params);
-        }
-        sqlBuilder.resetModelBinderProperty();
-        this.filters.push(sqlBuilder);
-    },
-
-    VisitToArrayExpression: function (expression, sqlBuilder) {
-        this.Visit(expression.source, sqlBuilder);
-    },
-    VisitCountExpression: function (expression, sqlBuilder) {
-        this.Visit(expression.source, sqlBuilder);
-        sqlBuilder.selectTextPart('count');
-        sqlBuilder.addText(SqlStatementBlocks.count);
-    },
-    VisitFilterExpression: function (expression, sqlBuilder) {
-        this.Visit(expression.source, sqlBuilder);
-        sqlBuilder.selectTextPart('filter');
-        sqlBuilder.addText(SqlStatementBlocks.where);
-        var filterCompiler = Container.createSqlFilterCompiler();
-        filterCompiler.Visit(expression.selector, sqlBuilder);
-        return expression;
-    },
-
-    VisitOrderExpression: function (expression, sqlBuilder) {
-        this.Visit(expression.source, sqlBuilder);
-        sqlBuilder.selectTextPart('order');
-        if (this.addOrders) {
-            sqlBuilder.addText(SqlStatementBlocks.valueSeparator);
-        } else {
-            this.addOrders = true;
-            sqlBuilder.addText(SqlStatementBlocks.order);
-        }
-        var orderCompiler = Container.createSqlOrderCompiler();
-        orderCompiler.Visit(expression, sqlBuilder);
-
-        return expression;
-    },
-    VisitPagingExpression: function (expression, sqlBuilder) {
-        this.Visit(expression.source, sqlBuilder);
-
-        switch (expression.nodeType) {
-            case ExpressionType.Skip:
-                sqlBuilder.selectTextPart('skip');
-                sqlBuilder.addText(SqlStatementBlocks.skip); break;
-            case ExpressionType.Take:
-                sqlBuilder.selectTextPart('take');
-                sqlBuilder.addText(SqlStatementBlocks.take); break;
-            default: Guard.raise("Not supported nodeType"); break;
-        }
-        var pagingCompiler = Container.createSqlPagingCompiler();
-        pagingCompiler.Visit(expression, sqlBuilder);
-        return expression;
-    },
-    VisitProjectionExpression: function (expression, sqlBuilder) {
-        this.Visit(expression.source, sqlBuilder);
-        sqlBuilder.selectTextPart('projection');
-        this.hasProjection = true;
-        sqlBuilder.addText(SqlStatementBlocks.select);
-        var projectonCompiler = Container.createSqlProjectionCompiler();
-        projectonCompiler.Visit(expression, sqlBuilder);
-    },
-    VisitIncludeExpression: function (expression) {
-        var includeBuilder = Container.createSqlBuilder(this.sets, this.entityContext);
-        this.Visit(expression.source, includeBuilder);
-
-        this.newFilters['include'] = projectionBuilder;
-    },
-    VisitEntitySetExpression: function (expression, sqlBuilder) {
-        sqlBuilder.selectTextPart('from');
-        sqlBuilder.addText(SqlStatementBlocks.from);
-        sqlBuilder.sets.forEach(function (es, setIndex) {
-
-            if (setIndex > 0) {
-                sqlBuilder.addText(" \n\tLEFT OUTER JOIN ");
-            }
-
-            var alias = sqlBuilder.getExpressionAlias(es);
-            sqlBuilder.addText(es.instance.tableName + ' ');
-            sqlBuilder.addText(alias);
-
-            if (setIndex > 0) {
-                sqlBuilder.addText(" ON (");
-                var toSet = this.infos[setIndex];
-                var toPrefix = "T" + toSet.AliasNumber;
-                var fromSetName = toSet.NavigationPath.substring(0, toSet.NavigationPath.lastIndexOf('.'));
-                var temp = this.infos.filter(function (inf) { return inf.NavigationPath == fromSetName; }, this);
-                var fromPrefix = "T0";
-                if (temp.length > 0) {
-                    fromPrefix = "T" + temp[0].AliasNumber;
-                }
-                toSet.Association.associationInfo.ReferentialConstraint.forEach(function (constrain, index) {
-                    sqlBuilder.addText(fromPrefix + "." + constrain[toSet.Association.associationInfo.From]);
-                    sqlBuilder.addText(" = ");
-                    sqlBuilder.addText(toPrefix + "." + constrain[toSet.Association.associationInfo.To]);
-                }, this);
-                sqlBuilder.addText(")");
-            }
-        }, this);
-    },
-    VisitDefaultProjection: function (sqlBuilder) {
-        sqlBuilder.selectTextPart('projection');
-        if (sqlBuilder.sets.length > 1) {
-            sqlBuilder.addText(SqlStatementBlocks.select);
-            sqlBuilder.sets[0].storageModel.PhysicalType.memberDefinitions.getPublicMappedProperties().forEach(function (memberDef, index) {
-                if (index > 0) {
-                    sqlBuilder.addText(SqlStatementBlocks.valueSeparator);
-                }
-                sqlBuilder.addText("T0.");
-                sqlBuilder.addText(memberDef.name);
-            }, this);
-        }
-        else {
-            sqlBuilder.addText("SELECT *");
-        }
-    }
-});
-
-$data.Expressions.ExpressionNode.prototype.monitor = function (monitorDefinition, context) {
-    var m = Container.createExpressionMonitor(monitorDefinition);
-    return m.Visit(this, context);
-};
-
-$C('$data.storageProviders.sqLite.SQLiteCompiler', null, null, {
-    compile: function (query) {
-        /// <param name="query" type="$data.Query" />
-        var expression = query.expression;
-        var context = { sets: [], infos: [], entityContext: query.context };
-        var optimizedExpression = expression.monitor({
-
-            MonitorEntitySetExpression: function (expression, context) {
-                if (expression.source instanceof $data.Expressions.EntityContextExpression && context.sets.indexOf(expression) == -1) {
-                    context.sets.push(expression);
-                    context.infos.push({ AliasNumber: 0, Association: null, FromType: null, FromPropertyName: null });
-                }
-            },
-
-            MutateEntitySetExpression: function (expression, context) {
-                if (expression.source instanceof $data.Expressions.EntityContextExpression) {
-                    this.backupContextExpression = expression.source;
-                    this.path = "";
-                    return expression;
-                }
-                if (expression.selector.associationInfo.FromMultiplicity == "0..1" && expression.selector.associationInfo.FromMultiplicity == "*") {
-                    Guard.raise("Not supported query on this navigation property: " + expression.selector.associationInfo.From + " " + expression.selector.associationInfo.FromPropertyName);
-                }
-
-                this.path += '.' + expression.selector.associationInfo.FromPropertyName;
-                var info = context.infos.filter(function (inf) {
-                    return inf.NavigationPath == this.path;
-                }, this);
-                if (info.length > 0) {
-                    return context.sets[info[0].AliasNumber];
-                }
-                var memberDefinitions = this.backupContextExpression.instance.getType().memberDefinitions.getMember(expression.storageModel.EntitySetReference.name);
-                if (!memberDefinitions) {
-                    Guard.raise("Context schema error");
-                }
-                var mi = Container.createMemberInfoExpression(memberDefinitions);
-                var result = Container.createEntitySetExpression(this.backupContextExpression, mi);
-                result.instance = this.backupContextExpression.instance[expression.storageModel.EntitySetReference.name];
-                var aliasNum = context.sets.push(result);
-                context.infos.push({
-                    AliasNumber: aliasNum - 1,
-                    Association: expression.selector,
-                    NavigationPath: this.path
-                });
-                return result;
-            }
-        }, context);
-
-        var compiler = Container.createSqlCompiler(optimizedExpression, context);
-        compiler.compile();
-
-        var sqlBuilder = Container.createSqlBuilder(this.sets, this.entityContext);
-
-        query.modelBinderConfig = {};
-        var modelBinder = Container.createsqLite_ModelBinderCompiler(query, []);
-        modelBinder.Visit(optimizedExpression);
-
-        var result = {
-            sqlText: compiler.filters[0].selectedFragment.text,
-            params: compiler.filters[0].selectedFragment.params,
-            modelBinderConfig: query.modelBinderConfig
-        };
-
-        return result;
-    }
-}, null); $C('$data.sqLite.SqlPagingCompiler', $data.Expressions.EntityExpressionVisitor, null, {
-    constructor: function (provider) {
-        this.provider = provider;
-    },
-    compile: function (expression, context) {
-        this.Visit(expression, context);
-    },
-    VisitPagingExpression: function (expression, sqlBuilder) {
-        this.Visit(expression.amount, sqlBuilder);
-    },
-    VisitConstantExpression: function (expression, sqlBuilder) {
-        sqlBuilder.addParameter(expression.value);
-        sqlBuilder.addText(SqlStatementBlocks.parameter);
-    }
-}); $C('$data.sqLite.SqlOrderCompiler', $data.Expressions.EntityExpressionVisitor, null, {
-    constructor: function (provider) {
-        this.provider = provider;
-    },
-    compile: function (expression, sqlBuilder) {
-        this.Visit(expression, sqlBuilder);
-    },
-    VisitEntitySetExpression: function (expression, sqlBuilder) {
-        /// <param name="expression" type="$data.Expressions.EntitySetExpression"></param>
-        /// <param name="sqlBuilder" type="$data.sqLite.SqlBuilder"></param>
-
-        var alias = sqlBuilder.getExpressionAlias(expression);
-        sqlBuilder.addText(alias);
-        sqlBuilder.addText(SqlStatementBlocks.nameSeparator);
-    },
-    VisitOrderExpression: function (expression, sqlBuilder) {
-        this.Visit(expression.selector, sqlBuilder);
-        if (expression.nodeType == ExpressionType.OrderByDescending) {
-            sqlBuilder.addText(" DESC");
-        } else {
-            sqlBuilder.addText(" ASC");
-        }
-    },
-    VisitParametricQueryExpression: function (expression, sqlBuilder) {
-        this.Visit(expression.expression, sqlBuilder);
-    },
-    VisitEntityFieldExpression: function (expression, sqlBuilder) {
-        this.Visit(expression.source, sqlBuilder);
-        this.Visit(expression.selector, sqlBuilder);
-    },
-    VisitMemberInfoExpression: function (expression, sqlBuilder) {
-        sqlBuilder.addText(expression.memberName);
-    },
-    VisitComplexTypeExpression: function (expression, sqlBuilder) {
-        this.Visit(expression.source, sqlBuilder);
-        this.Visit(expression.selector, sqlBuilder);
-        sqlBuilder.addText('__');
-    }
-}); $C('$data.sqLite.SqlProjectionCompiler', $data.Expressions.EntityExpressionVisitor, null,
-{
-    constructor: function () {
-        this.anonymFiledPrefix = "";
-        this.currentObjectLiteralName = null;
-    },
-    VisitProjectionExpression: function (expression, sqlBuilder) {
-        this.Visit(expression.selector, sqlBuilder);
-    },
-
-    VisitParametricQueryExpression: function (expression, sqlBuilder) {
-        if (expression.expression instanceof $data.Expressions.EntityExpression) {
-            this.VisitEntityExpressionAsProjection(expression, sqlBuilder);
-        } else if (expression.expression instanceof $data.Expressions.ObjectLiteralExpression) {
-            this.Visit(expression.expression, sqlBuilder);
-        } else {
-            this.VisitEntitySetExpression(sqlBuilder.sets[0], sqlBuilder);
-            sqlBuilder.addText("rowid");
-            sqlBuilder.addText(SqlStatementBlocks.as);
-            sqlBuilder.addText(SqlStatementBlocks.rowIdName);
-            sqlBuilder.addText(', ');
-            sqlBuilder.addKeyField(SqlStatementBlocks.rowIdName);
-            this.Visit(expression.expression, sqlBuilder);
-            sqlBuilder.addText(SqlStatementBlocks.as);
-            sqlBuilder.addText(SqlStatementBlocks.scalarFieldName);
-        }
-    },
-
-    VisitEntityExpressionAsProjection: function (expression, sqlBuilder) {
-        var ee = expression.expression;
-        var alias = sqlBuilder.getExpressionAlias(ee.source);
-
-        var localPrefix = this.anonymFiledPrefix + (expression.fieldName ? expression.fieldName : '');
-        localPrefix = localPrefix ? localPrefix + '__' : '';
-
-        ee.storageModel.PhysicalType.memberDefinitions.getPublicMappedProperties().forEach(function (memberInfo, index) {
-            if (index > 0) {
-                sqlBuilder.addText(SqlStatementBlocks.valueSeparator);
-            }
-
-            var fieldName = localPrefix + memberInfo.name;
-
-            sqlBuilder.addText(alias);
-            sqlBuilder.addText(SqlStatementBlocks.nameSeparator);
-            sqlBuilder.addText(memberInfo.name);
-            sqlBuilder.addText(SqlStatementBlocks.as);
-            sqlBuilder.addText(fieldName);
-        }, this);
-    },
-
-    VisitEntityFieldOperationExpression: function (expression, sqlBuilder) {
-        /// <param name="expression" type="$data.Expressions.EntityFieldOperationExpression"></param>
-        /// <param name="sqlBuilder"></param>
-
-        Guard.requireType("expression.operation", expression.operation, $data.Expressions.MemberInfoExpression);
-        var opDefinition = expression.operation.memberDefinition;
-        var opName = opDefinition.mapTo || opDefinition.name;
-
-        sqlBuilder.addText(opName);
-        sqlBuilder.addText(SqlStatementBlocks.beginGroup);
-        if (opName === "like") {
-            var builder = Container.createSqlBuilder();
-            this.Visit(expression.parameters[0], builder);
-            builder.params.forEach(function (p) {
-                var v = p;
-                var paramDef = opDefinition.parameters[0];
-                var v = paramDef.prefix ? paramDef.prefix + v : v;
-                v = paramDef.suffix ? v + paramDef.suffix : v;
-                sqlBuilder.addParameter(v);
-            });
-            sqlBuilder.addText(builder.sql);
-            sqlBuilder.addText(" , ");
-            this.Visit(expression.source, sqlBuilder);
-        } else {
-            this.Visit(expression.source, sqlBuilder);
-            expression.parameters.forEach(function (p) {
-                sqlBuilder.addText(" , ");
-                this.Visit(p, sqlBuilder);
-            }, this);
-        };
-
-        sqlBuilder.addText(SqlStatementBlocks.endGroup);
-    },
-
-    VisitUnaryExpression: function (expression, sqlBuilder) {
-        /// <param name="expression" type="$data.Expressions.SimpleBinaryExpression"></param>
-        /// <param name="sqlBuilder" type="$data.sqLite.SqlBuilder"></param>
-        sqlBuilder.addText(expression.resolution.mapTo);
-        sqlBuilder.addText(SqlStatementBlocks.beginGroup);
-        this.Visit(expression.operand, sqlBuilder);
-        sqlBuilder.addText(SqlStatementBlocks.endGroup);
-    },
-
-    VisitSimpleBinaryExpression: function (expression, sqlBuilder) {
-        sqlBuilder.addText(SqlStatementBlocks.beginGroup);
-        this.Visit(expression.left, sqlBuilder);
-        var self = this;
-        sqlBuilder.addText(" " + expression.resolution.mapTo + " ");
-        if (expression.nodeType == "in") {
-            //TODO: refactor and generalize
-            Guard.requireType("expression.right", expression.right, $data.Expressions.ConstantExpression);
-            var set = expression.right.value;
-            if (set instanceof Array) {
-                sqlBuilder.addText(SqlStatementBlocks.beginGroup);
-                set.forEach(function (item, i) {
-                    if (i > 0) sqlBuilder.addText(SqlStatementBlocks.valueSeparator);
-                    var c = Container.createConstantExpression(item);
-                    self.Visit(c, sqlBuilder);
-                });
-                sqlBuilder.addText(SqlStatementBlocks.endGroup);
-            } else if (set instanceof $data.Queryable) {
-                Guard.raise("not yet... but coming");
-            } else {
-                Guard.raise(new Exception("Only constant arrays and Queryables can be on the right side of 'in' operator", "UnsupportedType"));
-            };
-        } else {
-            this.Visit(expression.right, sqlBuilder);
-        }
-        sqlBuilder.addText(SqlStatementBlocks.endGroup);
-    },
-
-    VisitConstantExpression: function (expression, sqlBuilder) {
-        var value = expression.value;
-        sqlBuilder.addParameter(value);
-        sqlBuilder.addText(SqlStatementBlocks.parameter);
-    },
-
-    VisitEntityFieldExpression: function (expression, sqlBuilder) {
-        this.Visit(expression.source, sqlBuilder);
-        this.Visit(expression.selector, sqlBuilder);
-    },
-
-    VisitEntitySetExpression: function (expression, sqlBuilder) {
-        var alias = sqlBuilder.getExpressionAlias(expression);
-        sqlBuilder.addText(alias);
-        sqlBuilder.addText(SqlStatementBlocks.nameSeparator);
-    },
-
-    VisitComplexTypeExpression: function (expression, sqlBuilder) {
-        var alias = sqlBuilder.getExpressionAlias(expression.source.source);
-        var storageModel = expression.source.storageModel.ComplexTypes[expression.selector.memberName];
-        storageModel.ReferentialConstraint.forEach(function (constrain, index) {
-            if (index > 0) {
-                sqlBuilder.addText(SqlStatementBlocks.valueSeparator);
-            }
-            sqlBuilder.addText(alias);
-            sqlBuilder.addText(SqlStatementBlocks.nameSeparator);
-            sqlBuilder.addText(constrain[storageModel.From]);
-            sqlBuilder.addText(SqlStatementBlocks.as);
-            sqlBuilder.addText(this.anonymFiledPrefix + constrain[storageModel.To]);
-        }, this);
-    },
-
-    VisitMemberInfoExpression: function (expression, sqlBuilder) {
-        /// <param name="expression" type="$data.Expressions.MemberInfoExpression"></param>
-        /// <param name="sqlBuilder" type="$data.sqLite.SqlBuilder"></param>
-        sqlBuilder.addText(expression.memberName);
-    },
-
-    VisitObjectLiteralExpression: function (expression, sqlBuilder) {
-        //this.hasObjectLiteral = true;
-        this.VisitEntitySetExpression(sqlBuilder.sets[0], sqlBuilder);
-        sqlBuilder.addText("rowid AS " + this.anonymFiledPrefix + SqlStatementBlocks.rowIdName + ", ");
-
-        var membersNumber = expression.members.length;
-        for (var i = 0; i < membersNumber; i++) {
-            if (i != 0) {
-                sqlBuilder.addText(SqlStatementBlocks.valueSeparator);
-            }
-            this.Visit(expression.members[i], sqlBuilder);
-        }
-    },
-
-    VisitObjectFieldExpression: function (expression, sqlBuilder) {
-
-        var tempObjectLiteralName = this.currentObjectLiteralName;
-        if (this.currentObjectLiteralName) {
-            this.currentObjectLiteralName += '.' + expression.fieldName;
-        } else {
-            this.currentObjectLiteralName = expression.fieldName;
-        }
-
-        if (expression.expression instanceof $data.Expressions.EntityExpression) {
-            this.VisitEntityExpressionAsProjection(expression, sqlBuilder);
-        } else {
-
-            var tmpPrefix = this.anonymFiledPrefix;
-            this.anonymFiledPrefix += expression.fieldName + "__";
-
-
-            this.Visit(expression.expression, sqlBuilder);
-
-            this.anonymFiledPrefix = tmpPrefix;
-
-            if (!(expression.expression instanceof $data.Expressions.ObjectLiteralExpression) && !(expression.expression instanceof $data.Expressions.ComplexTypeExpression)) {
-                sqlBuilder.addText(SqlStatementBlocks.as);
-                sqlBuilder.addText(this.anonymFiledPrefix + expression.fieldName);
-            }
-        }
-        this.currentObjectLiteralName = tempObjectLiteralName;
-    }
-
-}, null); $C('$data.sqLite.ExpressionMonitor', $data.Expressions.EntityExpressionVisitor, null, {
-    constructor: function (monitorDefinition) {
-
-        this.Visit = function (expression, context) {
-
-            var result = expression;
-            var methodName;
-            if (this.canVisit(expression)) {
-
-                //if (monitorDefinition.FilterExpressionNode) {
-
-                //};
-
-                if (monitorDefinition.VisitExpressionNode) {
-                    monitorDefinition.VisitExpressionNode.apply(monitorDefinition, arguments);
-                };
-
-                methodName = "Visit" + expression.getType().name;
-                if (methodName in monitorDefinition) {
-                    result = monitorDefinition[methodName].apply(monitorDefinition, arguments);
-                }
-            }
-
-
-            //apply is about 3-4 times faster then call on webkit
-
-            var args = arguments;
-            if (result !== expression) args = [result, context];
-            result = $data.Expressions.EntityExpressionVisitor.prototype.Visit.apply(this, args);
-
-            args = [result, context];
-
-            if (this.canVisit(result)) {
-                var expressionTypeName = result.getType().name;
-                if (monitorDefinition.MonitorExpressionNode) {
-                    monitorDefinition.MonitorExpressionNode.apply(monitorDefinition, args);
-                }
-                methodName = "Monitor" + expressionTypeName;
-                if (methodName in monitorDefinition) {
-                    monitorDefinition[methodName].apply(monitorDefinition, args);
-                }
-
-                if (monitorDefinition.MutateExpressionNode) {
-                    monitorDefinition.MutateExpressionNode.apply(monitorDefinition, args);
-                }
-                methodName = "Mutate" + expressionTypeName;
-                if (methodName in monitorDefinition) {
-                    result = monitorDefinition[methodName].apply(monitorDefinition, args);
-                }
-
-            }
-            return result;
-        };
-    }
-
-}); $C('$data.sqLite.SqlFilterCompiler', $data.Expressions.EntityExpressionVisitor, null, {
-    VisitParametricQueryExpression: function (expression, sqlBuilder) {
-        this.Visit(expression.expression, sqlBuilder);
-    },
-
-    VisitUnaryExpression: function (expression, sqlBuilder) {
-        /// <param name="expression" type="$data.Expressions.SimpleBinaryExpression"></param>
-        /// <param name="sqlBuilder" type="$data.sqLite.SqlBuilder"></param>
-        sqlBuilder.addText(expression.resolution.mapTo);
-        sqlBuilder.addText(SqlStatementBlocks.beginGroup);
-        this.Visit(expression.operand, sqlBuilder);
-        sqlBuilder.addText(SqlStatementBlocks.endGroup);
-    },
-
-    VisitSimpleBinaryExpression: function (expression, sqlBuilder) {
-        /// <param name="expression" type="$data.Expressions.SimpleBinaryExpression"></param>
-        /// <param name="sqlBuilder" type="$data.sqLite.SqlBuilder"></param>
-        var self = this;
-
-        if (expression.nodeType == "arrayIndex") {
-            this.Visit(expression.left, sqlBuilder);
-        } else {
-            sqlBuilder.addText(SqlStatementBlocks.beginGroup);
-            this.Visit(expression.left, sqlBuilder);
-            sqlBuilder.addText(" " + expression.resolution.mapTo + " ");
-
-            if (expression.nodeType == "in") {
-                //TODO: refactor and generalize
-                Guard.requireType("expression.right", expression.right, $data.Expressions.ConstantExpression);
-                var set = expression.right.value;
-                if (set instanceof Array) {
-                    sqlBuilder.addText(SqlStatementBlocks.beginGroup);
-                    set.forEach(function (item, i) {
-                        if (i > 0) sqlBuilder.addText(SqlStatementBlocks.valueSeparator);
-                        var c = Container.createConstantExpression(item);
-                        self.Visit(c, sqlBuilder);
-                    });
-                    sqlBuilder.addText(SqlStatementBlocks.endGroup);
-                } else if (set instanceof $data.Queryable) {
-                    sqlBuilder.addText("(SELECT d FROM (" + set.toTraceString().sqlText + "))");
-                    //Guard.raise("Not yet... but coming!");
-                } else {
-                    Guard.raise(new Exception("Only constant arrays and Queryables can be on the right side of 'in' operator", "UnsupportedType"));
-                };
-            } else {
-                this.Visit(expression.right, sqlBuilder);
-            }
-
-            sqlBuilder.addText(SqlStatementBlocks.endGroup);
-        }
-    },
-
-    VisitEntitySetExpression: function (expression, sqlBuilder) {
-        /// <param name="expression" type="$data.Expressions.EntitySetExpression"></param>
-        /// <param name="sqlBuilder" type="$data.sqLite.SqlBuilder"></param>
-
-        var alias = sqlBuilder.getExpressionAlias(expression);
-        sqlBuilder.addText(alias);
-        sqlBuilder.addText(SqlStatementBlocks.nameSeparator);
-    },
-    VisitEntityFieldOperationExpression: function (expression, sqlBuilder) {
-        /// <param name="expression" type="$data.Expressions.EntityFieldOperationExpression"></param>
-        /// <param name="sqlBuilder"></param>
-
-        //this.Visit(expression.operation);
-
-        Guard.requireType("expression.operation", expression.operation, $data.Expressions.MemberInfoExpression);
-        var opDefinition = expression.operation.memberDefinition;
-        var opName = opDefinition.mapTo || opDefinition.name;
-
-        sqlBuilder.addText(opName);
-        sqlBuilder.addText(SqlStatementBlocks.beginGroup);
-        if (opName === "like") {
-            var builder = Container.createSqlBuilder([], sqlBuilder.entityContext);
-            builder.selectTextPart("fragment");
-            this.Visit(expression.parameters[0], builder);
-            var fragment = builder.getTextPart("fragment");
-            fragment.params.forEach(function (p) {
-                var v = p;
-                var paramDef = opDefinition.parameters[0];
-                var v = paramDef.prefix ? paramDef.prefix + v : v;
-                v = paramDef.suffix ? v + paramDef.suffix : v;
-                sqlBuilder.addParameter(v);
-            });
-            sqlBuilder.addText(fragment.text);
-            sqlBuilder.addText(" , ");
-            this.Visit(expression.source, sqlBuilder);
-        } else {
-            this.Visit(expression.source, sqlBuilder);
-            expression.parameters.forEach(function (p) {
-                sqlBuilder.addText(" , ");
-                this.Visit(p, sqlBuilder);
-            }, this);
-        };
-
-        sqlBuilder.addText(SqlStatementBlocks.endGroup);
-    },
-    VisitMemberInfoExpression: function (expression, sqlBuilder) {
-        /// <param name="expression" type="$data.Expressions.MemberInfoExpression"></param>
-        /// <param name="sqlBuilder" type="$data.sqLite.SqlBuilder"></param>
-
-        sqlBuilder.addText(expression.memberName);
-    },
-    VisitQueryParameterExpression: function (expression, sqlBuilder) {
-        var value = null;
-        if (expression.type == "array") {
-            value = expression.value[expression.index];
-        } else {
-            value = expression.value;
-        }
-        sqlBuilder.addParameter(value);
-        sqlBuilder.addText(SqlStatementBlocks.parameter);
-    },
-
-    VisitConstantExpression: function (expression, sqlBuilder) {
-        var typeNameHintFromValue = Container.getTypeName(expression.value);
-        var value = sqlBuilder.entityContext.storageProvider.fieldConverter.toDb[Container.resolveName(Container.resolveType(typeNameHintFromValue))](expression.value);;
-        sqlBuilder.addParameter(value);
-        sqlBuilder.addText(SqlStatementBlocks.parameter);
-    },
-
-    VisitEntityFieldExpression: function (expression, sqlBuilder) {
-        this.Visit(expression.source, sqlBuilder);
-        this.Visit(expression.selector, sqlBuilder);
-    },
-    VisitComplexTypeExpression: function (expression, sqlBuilder) {
-        this.Visit(expression.source, sqlBuilder);
-        this.Visit(expression.selector, sqlBuilder);
-        sqlBuilder.addText("__");
-    }
-}); $C('$data.sqLite.sqLite_ModelBinderCompiler', $data.Expressions.EntityExpressionVisitor, null, {
-    constructor: function (query, includes) {
-        this._query = query;
-        this._includes = includes;
-    },
-    VisitSingleExpression: function (expression) {
-        this._defaultModelBinder(expression);
-    },
-    VisitSomeExpression: function (expression) {
-        this._defaultModelBinder(expression);
-    },
-    VisitEveryExpression: function (expression) {
-        this._defaultModelBinder(expression);
-    },
-    VisitToArrayExpression: function (expression) {
-        this._defaultModelBinder(expression);
-    },
-    VisitFirstExpression: function (expression) {
-        this._defaultModelBinder(expression);
-    },
-    VisitForEachExpression: function (expression) {
-        this._defaultModelBinder(expression);
-    },
-    VisitCountExpression: function (expression) {
-        var builder = Container.createqueryBuilder();
-
-        builder.modelBinderConfig['$type'] = $data.Array;
-        builder.selectModelBinderProperty('$item');
-        builder.modelBinderConfig['$type'] = $data.Integer;
-        builder.modelBinderConfig['$source'] = 'cnt';
-        builder.resetModelBinderProperty();
-        this._query.modelBinderConfig = builder.modelBinderConfig;
-    },
-
-    VisitExpression: function (expression, builder) {
-        var projVisitor = Container.createFindProjectionVisitor();
-        projVisitor.Visit(expression);
-
-        if (projVisitor.projectionExpression) {
-            this.Visit(projVisitor.projectionExpression, builder);
-        } else {
-            this.DefaultSelection(builder);
-        }
-    },
-    _defaultModelBinder: function (expression) {
-        var builder = Container.createqueryBuilder();
-        builder.modelBinderConfig['$type'] = $data.Array;
-        builder.modelBinderConfig['$item'] = {};
-        builder.selectModelBinderProperty('$item');
-
-        this.VisitExpression(expression, builder);
-
-        builder.resetModelBinderProperty();
-        this._query.modelBinderConfig = builder.modelBinderConfig;
-    },
-    _addPropertyToModelBinderConfig: function (elementType, builder) {
-        var storageModel = this._query.context._storageModel.getStorageModel(elementType);
-        elementType.memberDefinitions.getPublicMappedProperties().forEach(function (prop) {
-            if ((!storageModel) || (storageModel && !storageModel.Associations[prop.name] && !storageModel.ComplexTypes[prop.name])) {
-                if (prop.key) {
-                    if (this.currentObjectFieldName) {
-                        builder.addKeyField(this.currentObjectFieldName + '__' + prop.name);
-                    } else {
-                        builder.addKeyField(prop.name);
-                    }
-                }
-                if (this.currentObjectFieldName) {
-                    builder.modelBinderConfig[prop.name] = this.currentObjectFieldName + '__' + prop.name;
-                } else {
-                    builder.modelBinderConfig[prop.name] = prop.name;
-                }
-            }
-        }, this);
-        if (storageModel) {
-            this._addComplexTypeProperties(storageModel.ComplexTypes, builder);
-        }
-    },
-    _addComplexTypeProperties: function (complexTypes, builder) {
-        complexTypes.forEach(function (ct) {
-
-            builder.selectModelBinderProperty(ct.FromPropertyName);
-            builder.modelBinderConfig['$type'] = ct.ToType;
-            var tmpPrefix = this.currentObjectFieldName;
-            if (this.currentObjectFieldName) {
-                this.currentObjectFieldName += '__';
-            } else {
-                this.currentObjectFieldName = '';
-            }
-            this.currentObjectFieldName += ct.FromPropertyName;
-            //recursion
-            this._addPropertyToModelBinderConfig(ct.ToType, builder);
-            //reset model binder property
-            builder.popModelBinderProperty();
-            this.currentObjectFieldName = tmpPrefix;
-
-        }, this);
-    },
-    DefaultSelection: function (builder) {
-        //no projection, get all item from entitySet
-        builder.modelBinderConfig['$type'] = this._query.defaultType;
-        var storageModel = this._query.context._storageModel.getStorageModel(this._query.defaultType);
-
-        this._addPropertyToModelBinderConfig(this._query.defaultType, builder);
-        if (this._includes) {
-            this._includes.forEach(function (include) {
-                var includes = include.name.split('.');
-                var association = null;
-                var tmpStorageModel = storageModel;
-                for (var i = 0; i < includes.length; i++) {
-                    builder.selectModelBinderProperty(includes[i]);
-                    association = tmpStorageModel.Associations[includes[i]];
-                    tmpStorageModel = this._query.context._storageModel.getStorageModel(association.ToType);
-                }
-
-                builder.modelBinderConfig['$selector'] = 'json:' + include.name;
-                if (association.ToMultiplicity === '*') {
-                    builder.modelBinderConfig['$type'] = $data.Array;
-                    builder.selectModelBinderProperty('$item');
-                    builder.modelBinderConfig['$type'] = include.type;
-                    this._addPropertyToModelBinderConfig(include.type, builder);
-                    builder.popModelBinderProperty();
-                } else {
-                    builder.modelBinderConfig['$type'] = include.type;
-                    this._addPropertyToModelBinderConfig(include.type, builder);
-                }
-
-                for (var i = 0; i < includes.length; i++) {
-                    builder.popModelBinderProperty();
-                }
-            }, this);
-        }
-    },
-    VisitProjectionExpression: function (expression, builder) {
-        this.hasProjection = true;
-        this.Visit(expression.selector, builder);
-    },
-    VisitParametricQueryExpression: function (expression, builder) {
-        if (expression.expression instanceof $data.Expressions.EntityExpression) {
-            this.VisitEntityAsProjection(expression.expression, builder);
-        } else {
-            this.Visit(expression.expression, builder);
-            if (expression.expression instanceof $data.Expressions.EntityFieldExpression) {
-                builder.modelBinderConfig['$source'] = 'd';
-                builder.modelBinderConfig['$keys'] = ['rowid$$'];
-            }
-        }
-
-    },
-    VisitConstantExpression: function (expression, builder) {
-        builder.modelBinderConfig['$type'] = expression.type;
-        builder.modelBinderConfig['$source'] = this.currentObjectFieldName;
-    },
-    VisitEntityAsProjection: function (expression, builder) {
-        this.Visit(expression.source, builder);
-        builder.modelBinderConfig['$type'] = expression.entityType;
-        this._addPropertyToModelBinderConfig(expression.entityType, builder);
-    },
-
-    VisitEntityFieldExpression: function (expression, builder) {
-        this.Visit(expression.source, builder);
-        this.Visit(expression.selector, builder);
-    },
-    VisitMemberInfoExpression: function (expression, builder) {
-        if (expression.memberDefinition instanceof $data.MemberDefinition) {
-            builder.modelBinderConfig['$type'] = expression.memberDefinition.type;
-            if (expression.memberName in expression.memberDefinition.storageModel.ComplexTypes) {
-                this._addPropertyToModelBinderConfig(Container.resolveType(expression.memberDefinition.type), builder);
-            } else {
-                builder.modelBinderConfig['$source'] = this.currentObjectFieldName;
-            }
-        }
-    },
-    VisitEntitySetExpression: function (expression, builder) {
-        if (expression.source instanceof $data.Expressions.EntityExpression) {
-            this.Visit(expression.source, builder);
-            this.Visit(expression.selector, builder);
-        }
-
-    },
-    VisitEntityExpression: function (expression, builder) {
-        this.Visit(expression.source, builder);
-    },
-    VisitAssociationInfoExpression: function (expression, builder) {
-        if (('$selector' in builder.modelBinderConfig) && (builder.modelBinderConfig.$selector.length > 0)) {
-            builder.modelBinderConfig.$selector += '.';
-        } else {
-            builder.modelBinderConfig['$selector'] = 'json:';
-        }
-        builder.modelBinderConfig['$selector'] += expression.associationInfo.FromPropertyName;
-    },
-    VisitSimpleBinaryExpression: function (expression, builder) {
-        this.Visit(expression.left, builder);
-        this.Visit(expression.right, builder);
-        builder.modelBinderConfig['$type'] = undefined;
-    },
-    VisitObjectLiteralExpression: function (expression, builder) {
-        if (this.currentObjectFieldName) {
-            builder.modelBinderConfig['$keys'] = [this.currentObjectFieldName + '__rowid$$'];
-        } else {
-            builder.modelBinderConfig['$keys'] = ['rowid$$'];
-        }
-        builder.modelBinderConfig['$type'] = $data.Object;
-        expression.members.forEach(function (of) {
-            this.Visit(of, builder);
-        }, this);
-    },
-    VisitObjectFieldExpression: function (expression, builder) {
-        var tempFieldName = this.currentObjectFieldName;
-        builder.selectModelBinderProperty(expression.fieldName);
-        if (this.currentObjectFieldName) {
-            this.currentObjectFieldName += '__';
-        } else {
-            this.currentObjectFieldName = '';
-        }
-        this.currentObjectFieldName += expression.fieldName;
-
-        if (expression.expression instanceof $data.Expressions.EntityExpression) {
-            this.VisitEntityAsProjection(expression.expression, builder);
-        } else {
-            this.Visit(expression.expression, builder);
-        }
-
-        this.currentObjectFieldName = tempFieldName;
-
-        builder.popModelBinderProperty();
-    }
-});
-$C('$data.storageProviders.oData.oDataProvider', $data.StorageProviderBase, null,
-{
-    constructor: function (cfg, ctx) {
-        if (typeof OData === 'undefined') {
-            Guard.raise(new Exception('datajs is required', 'Not Found!'));
-        }
-
-        this.SqlCommands = [];
-        this.context = ctx;
-        this.providerConfiguration = $data.typeSystem.extend({
-            dbCreation: $data.storageProviders.sqLite.DbCreationType.DropTableIfChanged,
-            oDataServiceHost: "/odata.svc",
-            serviceUrl: "",
-            maxDataServiceVersion: '2.0',
-            user: null,
-            password: null
-        }, cfg);
-        if (this.context && this.context._buildDbType_generateConvertToFunction && this.buildDbType_generateConvertToFunction) {
-            this.context._buildDbType_generateConvertToFunction = this.buildDbType_generateConvertToFunction;
-        }
-        if (this.context && this.context._buildDbType_modifyInstanceDefinition && this.buildDbType_modifyInstanceDefinition) {
-            this.context._buildDbType_modifyInstanceDefinition = this.buildDbType_modifyInstanceDefinition;
-        }
-    },
-    initializeStore: function (callBack) {
-        callBack = $data.typeSystem.createCallbackSetting(callBack);
-        switch (this.providerConfiguration.dbCreation) {
-            case $data.storageProviders.sqLite.DbCreationType.DropAllExistingTables:
-                var that = this;
-                if (this.providerConfiguration.serviceUrl) {
-
-                    var requestData = [{
-                        requestUri: that.providerConfiguration.serviceUrl + "/Delete",
-                        method: 'POST'
-                    }, function (d) {
-                        console.log("RESET oData database");
-                        callBack.success(that.context);
-                    }, function (error) {
-                        callBack.success(that.context);
-                    }];
-
-                    if (this.providerConfiguration.user) {
-                        requestData[0].user = this.providerConfiguration.user;
-                        requestData[0].password = this.providerConfiguration.password || "";
-                    }
-
-                    this.context.prepareRequest.call(this, requestData);
-                    OData.request.apply(this, requestData);
-                } else {
-                    callBack.success(that.context);
-                }
-                break;
-            default:
-                callBack.success(this.context);
-                break;
-        }
-    },
-    buildDbType_generateConvertToFunction: function (storageModel, context) {
-        return function (logicalEntity, convertedItems) {
-            var dbInstance = new storageModel.PhysicalType();
-            dbInstance.entityState = logicalEntity.entityState;
-
-            storageModel.PhysicalType.memberDefinitions.getPublicMappedProperties().forEach(function (property) {
-                dbInstance[property.name] = logicalEntity[property.name];
-            }, this);
-
-            if (storageModel.Associations) {
-                storageModel.Associations.forEach(function (association) {
-                    if ((association.FromMultiplicity == "*" && association.ToMultiplicity == "0..1") ||
-                        (association.FromMultiplicity == "0..1" && association.ToMultiplicity == "1") ||
-                        (association.FromMultiplicity == '$$unbound')) {
-                        var refValue = logicalEntity[association.FromPropertyName];
-                        if (refValue !== null && refValue !== undefined) {
-                            if (refValue instanceof $data.Array) {
-                                dbInstance[association.FromPropertyName] = dbInstance[association.FromPropertyName] || [];
-                                refValue.forEach(function (rv) {
-                                    var contentId = convertedItems.indexOf(rv);
-                                    if (contentId < 0) { Guard.raise("Dependency graph error"); }
-                                    dbInstance[association.FromPropertyName].push({ __metadata: { uri: "$" + (contentId + 1) } });
-                                }, this);
-                            } else {
-                                if (refValue.entityState === $data.EntityState.Modified) {
-                                    var tblName = context._storageModel.getStorageModel(refValue.getType()).TableName;
-                                    var pk = '(';
-                                    refValue.getType().memberDefinitions.getKeyProperties().forEach(function (k, index) {
-                                        if (index > 0) { pk += ','; }
-                                        pk += refValue[k.name];
-                                    }, this);
-                                    pk += ')';
-                                    dbInstance[association.FromPropertyName] = { __metadata: { uri: tblName + pk } };
-                                } else {
-                                    var contentId = convertedItems.indexOf(refValue);
-                                    if (contentId < 0) { Guard.raise("Dependency graph error"); }
-                                    dbInstance[association.FromPropertyName] = { __metadata: { uri: "$" + (contentId + 1) } };
-                                }
-                            }
-                        }
-                    }
-                }, this);
-            }
-            if (storageModel.ComplexTypes) {
-                storageModel.ComplexTypes.forEach(function (cmpType) {
-                    dbInstance[cmpType.FromPropertyName] = logicalEntity[cmpType.FromPropertyName];
-                }, this);
-            }
-            return dbInstance;
-        };
-    },
-    executeQuery: function (query, callBack) {
-        callBack = $data.typeSystem.createCallbackSetting(callBack);
-
-        var sql;
-        try {
-            sql = this._compile(query);
-        } catch (e) {
-            callBack.error(e);
-            return;
-        }
-        var schema = this.context;
-
-        var requestData = [
-            {
-                requestUri: this.providerConfiguration.oDataServiceHost + sql.queryText,
-                headers: {
-                    MaxDataServiceVersion: this.providerConfiguration.maxDataServiceVersion
-                }
-            },
-            function (data, textStatus, jqXHR) {
-                if (callBack.success) {
-                    query.rawDataList = typeof data === 'string' ? [{ cnt: data }] : data;
-                    callBack.success(query);
-                }
-            },
-            function (jqXHR, textStatus, errorThrow) {
-                callBack.error(errorThrow);
-            }
-        ];
-
-        if (this.providerConfiguration.user) {
-            requestData[0].user = this.providerConfiguration.user;
-            requestData[0].password = this.providerConfiguration.password || "";
-        }
-
-        this.context.prepareRequest.call(this, requestData);
-        //$data.ajax(requestData);
-        //OData.request(requestData, requestData.success, requestData.error);
-        OData.request.apply(this, requestData);
-    },
-    _compile: function (queryable, params) {
-        var compiler = new $data.storageProviders.oData.oDataCompiler();
-        var compiled = compiler.compile(queryable);
-        return compiled;
-    },
-    saveChanges: function (callBack, changedItems) {
-        if (changedItems.length > 0) {
-            var independentBlocks = this.buildIndependentBlocks(changedItems);
-            this.saveInternal(independentBlocks, 0, callBack);
-        }
-        else {
-            callBack.success(0);
-        }
-    },
-    saveInternal: function (independentBlocks, index2, callBack) {
-        batchRequests = [];
-        convertedItem = [];
-        for (var index = 0; index < independentBlocks.length; index++) {
-            for (var i = 0; i < independentBlocks[index].length; i++) {
-                convertedItem.push(independentBlocks[index][i].data);
-                var request = {};
-                request.headers = { "Content-Id": convertedItem.length };
-                switch (independentBlocks[index][i].data.entityState) {
-                    case $data.EntityState.Unchanged: continue; break;
-                    case $data.EntityState.Added:
-                        request.method = "POST";
-                        request.requestUri = independentBlocks[index][i].entitySet.name;
-                        request.data = this.save_getInitData(independentBlocks[index][i], convertedItem);
-                        break;
-                    case $data.EntityState.Modified:
-                        request.method = "MERGE";
-                        request.requestUri = independentBlocks[index][i].entitySet.name;
-                        request.requestUri += "(" + this.getEntityKeysValue(independentBlocks[index][i]) + ")";
-                        this.save_addConcurrencyHeader(independentBlocks[index][i], request.headers);
-                        request.data = this.save_getInitData(independentBlocks[index][i], convertedItem);
-                        break;
-                    case $data.EntityState.Deleted:
-                        request.method = "DELETE";
-                        request.requestUri = independentBlocks[index][i].entitySet.name;
-                        request.requestUri += "(" + this.getEntityKeysValue(independentBlocks[index][i]) + ")";
-                        this.save_addConcurrencyHeader(independentBlocks[index][i], request.headers);
-                        break;
-                    default: Guard.raise(new Exception("Not supported Entity state"));
-                }
-                batchRequests.push(request);
-            }
-        }
-        var that = this;
-
-        var requestData = [{
-            requestUri: this.providerConfiguration.oDataServiceHost + "/$batch",
-            method: "POST",
-            data: {
-                __batchRequests: [{ __changeRequests: batchRequests }]
-            }
-        }, function (data, response) {
-            if (response.statusCode == 202) {
-                var result = data.__batchResponses[0].__changeResponses;
-                var resultEntities = [];
-                for (var i = 0; i < result.length; i++) {
-                    var item = convertedItem[i];
-                    if (result[i].statusCode == 204) {
-                        if (result[i].headers.ETag) {
-                            var property = item.getType().memberDefinitions.getPublicMappedProperties().filter(function (memDef) { return memDef.concurrencyMode === $data.ConcurrencyMode.Fixed });
-                            if (property && property[0]) {
-                                item[property[0].name] = result[i].headers.ETag;
-                            }
-                        }
-                        continue;
-                    }
-
-                    item.getType().memberDefinitions.getPublicMappedProperties().forEach(function (memDef) {
-                        if (memDef.computed) {
-                            if (memDef.concurrencyMode === $data.ConcurrencyMode.Fixed) {
-                                item[memDef.name] = result[i].headers.ETag;
-                            } else {
-                                item[memDef.name] = result[i].data[memDef.name];
-                            }
-                        }
-                    }, this);
-                }
-                if (callBack.success) {
-                    callBack.success(convertedItem.length);
-                }
-            } else {
-                callBack.error(response);
-            }
-
-        }, callBack.error, OData.batchHandler];
-
-        if (this.providerConfiguration.user) {
-            requestData[0].user = this.providerConfiguration.user;
-            requestData[0].password = this.providerConfiguration.password || "";
-        }
-
-        this.context.prepareRequest.call(this, requestData);
-        OData.request.apply(this, requestData);
-    },
-    save_getInitData: function (item, convertedItems) {
-        item.physicalData = this.context._storageModel.getStorageModel(item.data.getType()).PhysicalType.convertTo(item.data, convertedItems);
-        var serializableObject = {}
-        item.physicalData.getType().memberDefinitions.asArray().forEach(function (memdef) {
-            if (memdef.kind == $data.MemberTypes.navProperty || memdef.kind == $data.MemberTypes.complexProperty || (memdef.kind == $data.MemberTypes.property && !memdef.notMapped)) {
-                serializableObject[memdef.name] = item.physicalData[memdef.name];
-            }
-        }, this);
-        return serializableObject;
-    },
-    save_addConcurrencyHeader: function (item, headers) {
-        var property = item.data.getType().memberDefinitions.getPublicMappedProperties().filter(function (memDef) { return memDef.concurrencyMode === $data.ConcurrencyMode.Fixed });
-        if (property && property[0]) {
-            headers['If-Match'] = item.data[property[0].name];
-            item.data[property[0].name] = "";
-        }
-        //if (item.data.RowVersion || item.data.RowVersion === 0) {
-        //    headers['If-Match'] = item.data.RowVersion.toString();
-        //    item.data.RowVersion = "";
-        //}
-    },
-    getTraceString: function (queryable) {
-        var sqlText = this._compile(queryable);
-        return queryable;
-    },
-    supportedDataTypes: { value: [$data.Integer, $data.String, $data.Number, $data.Blob, $data.Boolean, $data.Date], writable: false },
-
-    supportedBinaryOperators: {
-        value: {
-            equal: { mapTo: 'eq', dataType: "boolean", allowedIn: [$data.Expressions.FilterExpression, $data.Expressions.OrderExpression] },
-            notEqual: { mapTo: 'ne', dataType: "boolean", allowedIn: [$data.Expressions.FilterExpression, $data.Expressions.OrderExpression] },
-            equalTyped: { mapTo: 'eq', dataType: "boolean", allowedIn: [$data.Expressions.FilterExpression, $data.Expressions.OrderExpression] },
-            notEqualTyped: { mapTo: 'ne', dataType: "boolean", allowedIn: [$data.Expressions.FilterExpression, $data.Expressions.OrderExpression] },
-            greaterThan: { mapTo: 'gt', dataType: "boolean", allowedIn: [$data.Expressions.FilterExpression, $data.Expressions.OrderExpression] },
-            greaterThanOrEqual: { mapTo: 'ge', dataType: "boolean", allowedIn: [$data.Expressions.FilterExpression, $data.Expressions.OrderExpression] },
-
-            lessThan: { mapTo: 'lt', dataType: "boolean", allowedIn: [$data.Expressions.FilterExpression, $data.Expressions.OrderExpression] },
-            lessThenOrEqual: { mapTo: 'le', dataType: "boolean", allowedIn: [$data.Expressions.FilterExpression, $data.Expressions.OrderExpression] },
-            or: { mapTo: 'or', dataType: "boolean", allowedIn: [$data.Expressions.FilterExpression, $data.Expressions.OrderExpression] },
-            and: { mapTo: 'and', dataType: "boolean", allowedIn: [$data.Expressions.FilterExpression, $data.Expressions.OrderExpression] },
-
-            add: { mapTo: 'add', dataType: "number", allowedIn: [$data.Expressions.FilterExpression, $data.Expressions.OrderExpression] },
-            divide: { mapTo: 'div', allowedIn: [$data.Expressions.FilterExpression, $data.Expressions.OrderExpression] },
-            multiply: { mapTo: 'mul', allowedIn: [$data.Expressions.FilterExpression, $data.Expressions.OrderExpression] },
-            subtract: { mapTo: 'sub', allowedIn: [$data.Expressions.FilterExpression, $data.Expressions.OrderExpression] },
-            modulo: { mapTo: 'mod', allowedIn: [$data.Expressions.FilterExpression, $data.Expressions.OrderExpression] },
-
-            "in": { mapTo: "in", allowedIn: [$data.Expressions.FilterExpression, $data.Expressions.OrderExpression] }
-        }
-    },
-
-    supportedUnaryOperators: {
-        value: {
-            not: { mapTo: 'not' }
-        }
-    },
-
-    supportedFieldOperations: {
-        value: {
-            /* string functions */
-
-            contains: {
-                mapTo: "substringof",
-                dataType: "boolean", allowedIn: [$data.Expressions.FilterExpression, $data.Expressions.OrderExpression],
-                parameters: [{ name: "substring", dataType: "string" }, { name: "@expression" }]
-            },
-
-            startsWith: {
-                mapTo: "startswith",
-                dataType: "string", allowedIn: [$data.Expressions.FilterExpression, $data.Expressions.OrderExpression],
-                parameters: [{ name: "@expression", dataType: "string" }, { name: "strFragment", dataType: "string" }]
-            },
-
-            endsWith: {
-                mapTo: "endswith",
-                dataType: "string", allowedIn: [$data.Expressions.FilterExpression, $data.Expressions.OrderExpression],
-                parameters: [{ name: "@expression", dataType: "string" }, { name: "strFragment", dataType: "string" }]
-            },
-
-            length: {
-                dataType: "number", allowedIn: [$data.Expressions.FilterExpression, $data.Expressions.ProjectionExpression],
-                parameters: [{ name: "@expression", dataType: "string" }]
-            },
-
-            indexOf: {
-                dataType: "number", allowedIn: [$data.Expressions.FilterExpression, $data.Expressions.OrderExpression],
-                mapTo: "indexof",
-                baseIndex: 1,
-                parameters: [{ name: '@expression', dataType: "string" }, { name: 'strFragment', dataType: 'string' }]
-            },
-
-            replace: {
-                dataType: "string", allowedIn: [$data.Expressions.FilterExpression, $data.Expressions.OrderExpression],
-                parameters: [{ name: '@expression', dataType: "string" }, { name: 'strFrom', dataType: 'string' }, { name: 'strTo', dataType: 'string' }]
-            },
-
-            substr: {
-                mapTo: "substring",
-                dataType: "string", allowedIn: [$data.Expressions.FilterExpression, $data.Expressions.OrderExpression],
-                parameters: [{ name: "@expression", dataType: "string" }, { name: "startFrom", dataType: "number" }, { name: "length", dataType: "number", optional: "true" }]
-            },
-
-            toLowerCase: {
-                mapTo: "tolower",
-                dataType: "string", allowedIn: [$data.Expressions.FilterExpression, $data.Expressions.OrderExpression],
-                parameters: [{ name: "@expression", dataType: "string" }]
-            },
-
-            toUpperCase: {
-                mapTo: "toupper",
-                dataType: "string", allowedIn: [$data.Expressions.FilterExpression, $data.Expressions.OrderExpression],
-                parameters: [{ name: "@expression", dataType: "string" }]
-
-            },
-
-            trim: {
-                dataType: "string", allowedIn: [$data.Expressions.FilterExpression, $data.Expressions.OrderExpression],
-                parameters: [{ name: "@expression", dataType: "string" }]
-            },
-
-
-            concat: {
-                dataType: "string", allowedIn: [$data.Expressions.FilterExpression, $data.Expressions.OrderExpression],
-                parameters: [{ name: "@expression", dataType: "string" }, { name: "strFragment", dataType: "string" }]
-            },
-
-
-            /* data functions */
-
-            day: {
-                allowedIn: [$data.Expressions.FilterExpression, $data.Expressions.OrderExpression],
-                parameters: [{ name: "@expression", dataType: "date" }]
-            },
-            hour: {
-                allowedIn: [$data.Expressions.FilterExpression, $data.Expressions.OrderExpression],
-                parameters: [{ name: "@expression", dataType: "date" }]
-            },
-            minute: {
-                allowedIn: [$data.Expressions.FilterExpression, $data.Expressions.OrderExpression],
-                parameters: [{ name: "@expression", dataType: "date" }]
-            },
-            month: {
-                allowedIn: [$data.Expressions.FilterExpression, $data.Expressions.OrderExpression],
-                parameters: [{ name: "@expression", dataType: "date" }]
-            },
-            second: {
-                allowedIn: [$data.Expressions.FilterExpression, $data.Expressions.OrderExpression],
-                parameters: [{ name: "@expression", dataType: "date" }]
-            },
-            year: {
-                allowedIn: [$data.Expressions.FilterExpression, $data.Expressions.OrderExpression],
-                parameters: [{ name: "@expression", dataType: "date" }]
-            },
-
-            /* number functions */
-            round: {
-                allowedIn: [$data.Expressions.FilterExpression, $data.Expressions.OrderExpression],
-                parameters: [{ name: "@expression", dataType: "date" }]
-            },
-            floor: {
-                allowedIn: [$data.Expressions.FilterExpression, $data.Expressions.OrderExpression],
-                parameters: [{ name: "@expression", dataType: "date" }]
-            },
-            ceiling: {
-                allowedIn: [$data.Expressions.FilterExpression, $data.Expressions.OrderExpression],
-                parameters: [{ name: "@expression", dataType: "date" }]
-            }
-        },
-        enumerable: true,
-        writable: true
-    },
-    supportedSetOperations: {
-        value: {
-            filter: {},
-            map: {},
-            length: {},
-            forEach: {},
-            toArray: {},
-            single: {},
-            some: {
-                invokable: false,
-                allowedIn: [$data.Expressions.FilterExpression],
-                parameters: [{ name: "filter", dataType: "$data.Queryable" }],
-                mapTo: 'any',
-                frameType: $data.Expressions.SomeExpression
-            },
-            every: {
-                invokable: false,
-                allowedIn: [$data.Expressions.FilterExpression],
-                parameters: [{ name: "filter", dataType: "$data.Queryable" }],
-                mapTo: 'all',
-                frameType: $data.Expressions.EveryExpression
-            },
-            take: {},
-            skip: {},
-            orderBy: {},
-            orderByDescending: {},
-            first: {},
-            include: {}
-        },
-        enumerable: true,
-        writable: true
-    },
-    fieldConverter: {
-        value: {
-            fromDb: {
-                '$data.Integer': function (number) { return number; },
-                '$data.Number': function (number) { return number; },
-                '$data.Date': function (dbData) { return dbData ? new Date(parseInt(dbData.substr(6))) : undefined; },
-                '$data.String': function (text) { return text; },
-                '$data.Boolean': function (bool) { return bool; },
-                '$data.Blob': function (blob) { return blob; },
-                '$data.Object': function (o) { if (o === undefined) { return new $data.Object(); } return JSON.parse(o); },
-                '$data.Array': function (o) { if (o === undefined) { return new $data.Array(); } return JSON.parse(o); }
-            },
-            toDb: {
-                '$data.Integer': function (number) { return number; },
-                '$data.Number': function (number) { return number % 1 == 0 ? number : number + 'm'; },
-                '$data.Date': function (date) { return date ? "datetime'" + date.toISOString() + "'" : null; },
-                '$data.String': function (text) { return "'" + text.replace(/'/g, "''") + "'"; },
-                '$data.Boolean': function (bool) { return bool ? 'true' : 'false'; },
-                '$data.Blob': function (blob) { return blob; },
-                '$data.Object': function (o) { return JSON.stringify(o); },
-                '$data.Array': function (o) { return JSON.stringify(o); }
-            }
-        }
-    },
-    getEntityKeysValue: function (entity) {
-        var result = [];
-        var keyValue = undefined;
-        var memDefs = entity.entitySet.createNew.memberDefinitions.asArray();
-        for (var i = 0, l = memDefs.length; i < l; i++) {
-            var field = memDefs[i];
-            if (field.key) {
-                keyValue = entity.data[field.name];
-                switch (field.dataType) {
-                    case "Edm.Guid":
-                        keyValue = ("guid'" + keyValue + "'");
-                        break;
-                    case "Edm.Binary":
-                        keyValue = ("binary'" + keyValue + "'");
-                        break;
-                    case "Edm.Byte":
-                        var hexDigits = '0123456789ABCDEF';
-                        keyValue = (hexDigits[(i >> 4) & 15] + hexDigits[i & 15]);
-                        break;
-                    case "Edm.DateTime":
-                        keyValue = ("datetime'" + keyValue.toISOString() + "'");
-                        break;
-                    case "Edm.Decimal":
-                        keyValue = (keyValue + "M");
-                        break;
-                    case "Edm.Single":
-                        keyValue = (keyValue + "f");
-                        break;
-                    case "Edm.Int64":
-                        keyValue = (keyValue + "L");
-                        break;
-                    case 'Edm.String':
-                    case "string":
-                        keyValue = ("'" + keyValue + "'");
-                        break;
-                }
-                result.push(field.name + "=" + keyValue);
-            }
-        }
-        if (result.length > 1) {
-            return result.join(",");
-        }
-        return keyValue;
-    }/*,
-    getServiceMetadata: function () {
-        $data.ajax(this._setAjaxAuthHeader({
-            url: this.providerConfiguration.oDataServiceHost + "/$metadata",
-            dataType: "xml",
-            success: function (d) {
-                console.log("OK");
-                console.dir(d);
-                console.log(typeof d);
-                window["s"] = d;
-                window["k"] = this.nsResolver;
-                //s.evaluate("edmx:Edmx/edmx:DataServices/Schema", s, $data.storageProviders.oData.oDataProvider.prototype.nsResolver, XPathResult.ANY_TYPE, null).iterateNext()
-
-            },
-            error: function (error) {
-                console.log("error:");
-                console.dir(error);
-            }
-        }));
-    },
-    nsResolver: function (sPrefix) {
-        switch (sPrefix) {
-            case "edmx":
-                return "http://schemas.microsoft.com/ado/2007/06/edmx";
-                break;
-            case "m":
-                return "http://schemas.microsoft.com/ado/2007/08/dataservices/metadata";
-                break;
-            case "d":
-                return "http://schemas.microsoft.com/ado/2007/08/dataservices";
-                break;
-            default:
-                return "http://schemas.microsoft.com/ado/2008/09/edm";
-                break;
-        }
-    }
-    */
 }, null);
-
-$data.StorageProviderBase.registerProvider("oData", $data.storageProviders.oData.oDataProvider);
-$C('$data.storageProviders.oData.oDataCompiler', $data.Expressions.EntityExpressionVisitor, null, {
-    constructor: function () {
-        this.context = {};
-        this.provider = {};
-        //this.logicalType = null;
-        this.includes = null;
-        this.mainEntitySet = null;
-    },
-    compile: function (query) {
-
-        this.provider = query.context.storageProvider;
-        this.context = query.context;
-        this.mainEntitySet = query.context.getEntitySetFromElementType(query.defaultType);
-
-        var queryFragments = { urlText: "" };
-
-        this.Visit(query.expression, queryFragments);
-
-        query.modelBinderConfig = {};
-        var modelBinder = Container.createModelBinderConfigCompiler(query, this.includes, true);
-        modelBinder.Visit(query.expression);
-
-
-        var queryText = queryFragments.urlText;
-        var addAmp = false;
-        for (var name in queryFragments) {
-            if (name != "urlText" && name != "actionPack" && name != "data" && name != "lambda" && queryFragments[name] != "") {
-                if (addAmp) { queryText += "&"; } else { queryText += "?"; }
-                addAmp = true;
-                if (name != "$urlParams") {
-                    queryText += name + '=' + queryFragments[name];
-                } else {
-                    queryText += queryFragments[name];
-                }
-            }
-        }
-        query.queryText = queryText;
-
-        return {
-            queryText: queryText,
-            params: []
-        };
-    },
-    VisitOrderExpression: function (expression, context) {
-        this.Visit(expression.source, context);
-
-        var orderCompiler = Container.createoDataOrderCompiler(this.provider);
-        orderCompiler.compile(expression, context);
-    },
-    VisitPagingExpression: function (expression, context) {
-        this.Visit(expression.source, context);
-
-        var pagingCompiler = Container.createoDataPagingCompiler();
-        pagingCompiler.compile(expression, context);
-    },
-    VisitIncludeExpression: function (expression, context) {
-        this.Visit(expression.source, context);
-        if (!context['$select']) {
-            if (context['$expand']) { context['$expand'] += ','; } else { context['$expand'] = ''; }
-            context['$expand'] += expression.selector.value.replace('.', '/');
-
-            this.includes = this.includes || [];
-            var includeFragment = expression.selector.value.split('.');
-            var tempData = null;
-            var storageModel = this.mainEntitySet.entityContext._storageModel.getStorageModel(this.mainEntitySet.createNew);
-            for (var i = 0; i < includeFragment.length; i++) {
-                if (tempData) { tempData += '.' + includeFragment[i]; } else { tempData = includeFragment[i]; }
-                var association = storageModel.Associations[includeFragment[i]];
-                if (association) {
-                    if (!this.includes.some(function (include) { return include.name == tempData }, this)) {
-                        this.includes.push({ name: tempData, type: association.ToType });
-                    }
-                }
-                else {
-                    Guard.raise(new Exception("The given include path is invalid: " + expression.selector.value + ", invalid point: " + tempData));
-                }
-                storageModel = this.mainEntitySet.entityContext._storageModel.getStorageModel(association.ToType);
-            }
-        }
-    },
-    VisitProjectionExpression: function (expression, context) {
-        this.Visit(expression.source, context);
-
-        var projectionCompiler = Container.createoDataProjectionCompiler(this.context);
-        projectionCompiler.compile(expression, context);
-    },
-    VisitFilterExpression: function (expression, context) {
-        ///<param name="expression" type="$data.Expressions.FilterExpression" />
-
-        this.Visit(expression.source, context);
-
-        var filterCompiler = Container.createoDataWhereCompiler(this.provider);
-        context.data = "";
-        filterCompiler.compile(expression.selector, context);
-        context["$filter"] = context.data;
-        context.data = "";
-
-    },
-    VisitEntitySetExpression: function (expression, context) {
-        context.urlText += "/" + expression.instance.tableName;
-        //this.logicalType = expression.instance.elementType;
-        if (expression.params) {
-            for (var i = 0; i < expression.params.length; i++) {
-                this.Visit(expression.params[i], context);
-            }
-        }
-    },
-    VisitServiceOperationExpression: function (expression, context) {
-        context.urlText += "/" + expression.cfg.serviceName;
-        //this.logicalType = expression.returnType;
-        if (expression.params) {
-            for (var i = 0; i < expression.params.length; i++) {
-                this.Visit(expression.params[i], context);
-            }
-        }
-    },
-    VisitConstantExpression: function (expression, context) {
-        if (context['$urlParams']) { context['$urlParams'] += '&'; } else { context['$urlParams'] = ''; }
-
-        var valueType = Container.getTypeName(expression.value);
-        context['$urlParams'] += expression.name + '=' + this.provider.fieldConverter.toDb[Container.resolveName(Container.resolveType(valueType))](expression.value);
-    },
-    VisitCountExpression: function (expression, context) {
-        this.Visit(expression.source, context);
-        context.urlText += '/$count';
-    }
-}, {}); $C('$data.storageProviders.oData.oDataWhereCompiler', $data.Expressions.EntityExpressionVisitor, null, {
-    constructor: function (provider, lambdaPrefix) {
-        this.provider = provider;
-        this.lambdaPrefix = lambdaPrefix;
-    },
-
-    compile: function (expression, context) {
-        this.Visit(expression, context);
-    },
-
-    VisitParametricQueryExpression: function (expression, context) {
-        this.Visit(expression.expression, context);
-    },
-
-    VisitUnaryExpression: function (expression, context) {
-        context.data += expression.resolution.mapTo;
-        context.data += "(";
-        this.Visit(expression.operand, context);
-        context.data += ")";
-    },
-
-
-    VisitSimpleBinaryExpression: function (expression, context) {
-        context.data += "(";
-        //TODO refactor!!!
-        if (expression.nodeType == "in") {
-            Guard.requireType("expression.right", expression.type, $data.Expressions.ConstantExpression);
-            var paramValue = expression.right.value;
-            if (!paramValue instanceof Array) { Guard.raise(new Exception("Right to the 'in' operator must be an array value")); }
-            var result = null;
-            var orResolution = { mapTo: "or", dataType: "boolean", name: "or" };
-            var eqResolution = { mapTo: "eq", dataType: "boolean", name: "equal" };
-
-            paramValue.forEach(function (item) {
-                var idValue = Container.createConstantExpression(item);
-                var idCheck = Container.createSimpleBinaryExpression(expression.left, idValue,
-                    $data.Expressions.ExpressionType.Equal, "==", "boolean", eqResolution);
-                if (result) {
-                    result = Container.createSimpleBinaryExpression(result, idCheck,
-                    $data.Expressions.ExpressionType.Or, "||", "boolean", orResolution);
-                } else {
-                    result = idCheck;
-                };
-            });
-            var temp = context.data;
-            context.data = '';
-            this.Visit(result, context);
-            context.data = temp + context.data.replace(/\(/g, '').replace(/\)/g, '');
-        } else {
-            this.Visit(expression.left, context);
-            context.data += " ";
-            context.data += expression.resolution.mapTo;
-            context.data += " ";
-            this.Visit(expression.right, context);
-        };
-        context.data += ")";
-
-    },
-
-    VisitEntityFieldExpression: function (expression, context) {
-        this.Visit(expression.source, context);
-        this.Visit(expression.selector, context);
-    },
-
-    VisitAssociationInfoExpression: function (expression, context) {
-        context.data += expression.associationInfo.FromPropertyName;
-    },
-
-    VisitMemberInfoExpression: function (expression, context) {
-        context.data += expression.memberName;
-    },
-
-    VisitQueryParameterExpression: function (expression, context) {
-        context.data += this.provider.fieldConverter.toDb[expression.type](expression.value);
-    },
-
-    VisitEntityFieldOperationExpression: function (expression, context) {
-        Guard.requireType("expression.operation", expression.operation, $data.Expressions.MemberInfoExpression);
-
-        //TODO refactor!
-        var opDef = expression.operation.memberDefinition;
-        var opName = opDef.mapTo || opDef.name;
-        context.data += opName;
-        context.data += "(";
-        var paramCounter = 0;
-        var params = opDef.parameters || [{ name: "@expression" }];
-
-        var args = params.map(function (item, index) {
-            if (item.name === "@expression") {
-                return expression.source;
-            } else {
-                return expression.parameters[paramCounter++]
-            };
-        });
-
-        args.forEach(function (arg, index) {
-            if (index > 0) {
-                context.data += ",";
-            };
-            this.Visit(arg, context);
-        }, this);
-        context.data += ")";
-    },
-
-    VisitConstantExpression: function (expression, context) {
-        var valueType = Container.getTypeName(expression.value);
-        context.data += this.provider.fieldConverter.toDb[Container.resolveName(Container.resolveType(valueType))](expression.value);
-    },
-
-    VisitEntityExpression: function (expression, context) {
-        this.Visit(expression.source, context);
-
-        if (this.lambdaPrefix && expression.selector.lambda) {
-            context.lambda = expression.selector.lambda;
-            context.data += (expression.selector.lambda + '/');
-        }
-
-        //if (expression.selector instanceof $data.Expressions.EntityExpression) {
-        //    this.Visit(expression.selector, context);
-        //}
-    },
-
-    VisitEntitySetExpression: function (expression, context) {
-        this.Visit(expression.source, context);
-        if (expression.selector instanceof $data.Expressions.AssociationInfoExpression) {
-            this.Visit(expression.selector, context);
-            context.data += "/";
-        }
-    },
-
-    VisitFrameOperationExpression: function (expression, context) {
-        this.Visit(expression.source, context);
-
-        Guard.requireType("expression.operation", expression.operation, $data.Expressions.MemberInfoExpression);
-
-        //TODO refactor!
-        var opDef = expression.operation.memberDefinition;
-        var opName = opDef.mapTo || opDef.name;
-        context.data += opName;
-        context.data += "(";
-        var paramCounter = 0;
-        var params = opDef.parameters || [{ name: "@expression" }];
-
-        var args = params.map(function (item, index) {
-            if (item.name === "@expression") {
-                return expression.source;
-            } else {
-                return expression.parameters[paramCounter++]
-            };
-        });
-
-        for (var i = 0; i < args.length; i++) {
-            var arg = args[i];
-            if (arg && arg.value instanceof $data.Queryable) {
-                var frameExpression = new opDef.frameType(arg.value.expression);
-                var preparator = Container.createQueryExpressionCreator(arg.value.entityContext);
-                var prep_expression = preparator.Visit(frameExpression);
-
-                var compiler = new $data.storageProviders.oData.oDataWhereCompiler(this.provider, true);
-                var frameContext = { data: "" };
-                var compiled = compiler.compile(prep_expression, frameContext);
-
-                context.data += (frameContext.lambda + ': ' + frameContext.data);
-            };
-        }
-        context.data += ")";
-    }
-}); $C('$data.storageProviders.oData.oDataOrderCompiler', $data.storageProviders.oData.oDataWhereCompiler, null, {
-    constructor: function (provider) {
-        this.provider = provider;
-    },
-
-    compile: function (expression, context) {
-        this.Visit(expression, context);
-    },
-    VisitOrderExpression: function (expression, context) {
-        var orderContext = { data: "" };
-        this.Visit(expression.selector, orderContext);
-        if (context['$orderby']) { context['$orderby'] += ','; } else { context['$orderby'] = ''; }
-        context['$orderby'] += orderContext.data
-                           + (expression.nodeType == ExpressionType.OrderByDescending ? " desc" : "");
-    },
-    VisitParametricQueryExpression: function (expression, context) {
-        this.Visit(expression.expression, context);
-    },
-    VisitEntityFieldExpression: function (expression, context) {
-        this.Visit(expression.source, context);
-        this.Visit(expression.selector, context);
-    },
-    VisitComplexTypeExpression: function (expression, context) {
-        this.Visit(expression.source, context);
-        this.Visit(expression.selector, context);
-        context.data += "/";
-    },
-    VisitEntitySetExpression: function (expression, context) {
-        if (expression.selector instanceof $data.Expressions.AssociationInfoExpression) {
-            this.Visit(expression.source, context);
-            this.Visit(expression.selector, context);
-        }
-    },
-    VisitAssociationInfoExpression: function (expression, context) {
-        context.data += expression.associationInfo.FromPropertyName + '/';
-    },
-    VisitEntityExpression: function (expression, context) {
-        this.Visit(expression.source, context);
-        this.Visit(expression.selector, context);
-    },
-    VisitMemberInfoExpression: function (expression, context) {
-        context.data += expression.memberName;
-    }
-}); $C('$data.storageProviders.oData.oDataPagingCompiler', $data.Expressions.EntityExpressionVisitor, null, {
-    constructor: function (provider) {
-        this.provider = provider;
-    },
-
-    compile: function (expression, context) {
-        this.Visit(expression, context);
-    },
-    VisitPagingExpression: function (expression, context) {
-        var pagingContext = { data: "" };
-        this.Visit(expression.amount, pagingContext);
-        switch (expression.nodeType) {
-            case ExpressionType.Skip: context['$skip'] = pagingContext.data; break;
-            case ExpressionType.Take: context['$top'] = pagingContext.data; break;
-            default: Guard.raise("Not supported nodeType"); break;
-        }
-    },
-    VisitConstantExpression: function (expression, context) {
-        context.data += expression.value;
-    }
-}); $C('$data.storageProviders.oData.oDataProjectionCompiler', $data.Expressions.EntityExpressionVisitor, null, {
-    constructor: function (entityContext) {
-        this.entityContext = entityContext;
-        this.hasObjectLiteral = false;
-        this.ObjectLiteralPath = "";
-        this.modelBinderMapping = [];
-    },
-
-    compile: function (expression, context) {
-        this.Visit(expression, context);
-    },
-    VisitProjectionExpression: function (expression, context) {
-        ///<summary></summary>
-        ///<param name="expression" type="$data.Expressions.ProjectionExpression" mayBeNull="false"></param>
-        ///<param name="context" mayBeNull="false"></param>
-        context.data = "";
-        this.mapping = "";
-
-        this.Visit(expression.selector, context);
-        if (context['$select']) { context['$select'] += ','; } else { context['$select'] = ''; }
-        context["$select"] += context.data;
-        context.data = "";
-    },
-    VisitParametricQueryExpression: function (expression, context) {
-        this.Visit(expression.expression, context);
-        if (expression.expression instanceof $data.Expressions.EntityExpression) {
-            if (context['$expand']) { context['$expand'] += ','; } else { context['$expand'] = ''; }
-            context['$expand'] += this.mapping.replace(/\./g, '/')
-        } if (expression.expression instanceof $data.Expressions.ComplexTypeExpression) {
-            var m = this.mapping.split('.');
-            m.pop();
-            if (m.length > 0) {
-                if (context['$expand']) { context['$expand'] += ','; } else { context['$expand'] = ''; }
-                context['$expand'] += m.join('/');
-            }
-        } else {
-            var m = this.mapping.split('.');
-            m.pop();
-            if (m.length > 0) {
-                if (context['$expand']) { context['$expand'] += ','; } else { context['$expand'] = ''; }
-                context['$expand'] += m.join('/');
-            }
-        }
-    },
-    VisitObjectLiteralExpression: function (expression, context) {
-        ///<summary></summary>
-        ///<param name="expression" type="$data.Expressions.ObjectLiteralExpression" mayBeNull="false"></param>
-        ///<param name="context" mayBeNull="false"></param>
-        var tempObjectLiteralPath = this.ObjectLiteralPath;
-        this.hasObjectLiteral = true;
-        expression.members.forEach(function (member, index) {
-            this.Visit(member, context);
-            if (index < expression.members.length - 1) { context.data += ','; }
-            this.mapping = '';
-        }, this);
-        this.ObjectLiteralPath = tempObjectLiteralPath;
-    },
-    VisitObjectFieldExpression: function (expression, context) {
-
-
-        if (this.ObjectLiteralPath) { this.ObjectLiteralPath += '.' + expression.fieldName; } else { this.ObjectLiteralPath = expression.fieldName; }
-        this.Visit(expression.expression, context);
-
-        if (expression.expression instanceof $data.Expressions.EntityExpression) {
-            if (context['$expand']) { context['$expand'] += ','; } else { context['$expand'] = ''; }
-            context['$expand'] += this.mapping.replace(/\./g, '/')
-        } else {
-            var m = this.mapping.split('.');
-            m.pop();
-            if (m.length > 0) {
-                if (context['$expand']) { context['$expand'] += ','; } else { context['$expand'] = ''; }
-                context['$expand'] += m.join('/');
-            }
-        }
-    },
-
-    VisitComplexTypeExpression: function (expression, context) {
-        this.Visit(expression.source, context);
-        this.Visit(expression.selector, context);
-    },
-
-    VisitEntityFieldExpression: function (expression, context) {
-        this.Visit(expression.source, context);
-        this.Visit(expression.selector, context);
-    },
-    VisitEntityExpression: function (expression, context) {
-        ///<summary></summary>
-        ///<param name="expression" type="$data.Expressions.EntityExpression" mayBeNull="false"></param>
-        ///<param name="context" mayBeNull="false"></param>
-        this.Visit(expression.source, context);
-    },
-    VisitEntitySetExpression: function (expression, context) {
-        ///<summary></summary>
-        ///<param name="expression" type="$data.Expressions.EntitySetExpression" mayBeNull="false"></param>
-        ///<param name="context" mayBeNull="false"></param>
-        if (expression.source instanceof $data.Expressions.EntityExpression) {
-            this.Visit(expression.source, context);
-        }
-        if (expression.selector instanceof $data.Expressions.AssociationInfoExpression) {
-            this.Visit(expression.selector, context);
-        }
-    },
-    VisitAssociationInfoExpression: function (expression, context) {
-        if (context.data && context.data.length > 0 && context.data[context.data.length - 1] != ',') { context.data += '/'; }
-        context.data += expression.associationInfo.FromPropertyName;
-        if (this.mapping && this.mapping.length > 0) { this.mapping += '.'; }
-        this.mapping += expression.associationInfo.FromPropertyName;
-    },
-    VisitMemberInfoExpression: function (expression, context) {
-        if (context.data && context.data.length > 0 && context.data[context.data.length - 1] != ',') { context.data += '/'; }
-        context.data += expression.memberName;
-        if (this.mapping && this.mapping.length > 0) { this.mapping += '.'; }
-        this.mapping += expression.memberName;
-    },
-    VisitConstantExpression: function (expression, context) {
-        //Guard.raise(new Exception('Constant value is not supported in Projection.', 'Not supported!'));
-        //context.data += expression.value;
-        context.data = context.data.slice(0, context.data.length - 1);
-    }
-});
 $C('$data.modelBinder.FindProjectionVisitor', $data.Expressions.EntityExpressionVisitor, null, {
     VisitProjectionExpression: function (expression) {
         this.projectionExpression = expression;
@@ -18367,3620 +15652,187 @@ $C('$data.modelBinder.ModelBinderConfigCompiler', $data.Expressions.EntityExpres
         builder.popModelBinderProperty();
     }
 });
-$data.Class.define('$data.storageProviders.indexedDb.IndexedDBStorageProvider', $data.StorageProviderBase, null,
-{
+$data.Class.define("$data.Authentication.AuthenticationBase", null, null, {
     constructor: function (cfg) {
-        // mapping IndexedDB types to browser invariant name
-        this.indexedDB = window.indexedDB || window.webkitIndexedDB || window.mozIndexedDB || window.msIndexedDB;
-        this.IDBRequest = window.IDBRequest || window.webkitIDBRequest || window.mozIDBRequest || window.msIDBRequest;
-        this.IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction || window.mozIDBTransaction || window.msIDBTransaction;
-        this.IDBKeyRange = window.IDBKeyRange || window.webkitIDBKeyRange || window.mozIDBKeyRange || window.msIDBKeyRange;
-        this.IDBDatabaseException = window.IDBDatabaseException || window.webkitIDBDatabaseException || window.mozIDBDatabaseException || window.msIDBDatabaseException;
-        this.IDBOpenDBRequest = window.IDBOpenDBRequest || window.webkitIDBOpenDBRequest || window.mozIDBOpenDBRequest || window.msIDBOpenDBRequest;
-        this.newVersionAPI = !!(window.IDBFactory && IDBFactory.prototype.deleteDatabase);
-        this.sequenceStore = '__jayData_sequence';
-        this.SqlCommands = [];
-        this.context = {};
-        this.providerConfiguration = $data.typeSystem.extend({
-            databaseName: 'JayDataDemo',
-            version: 1,
-            dbCreation: $data.storageProviders.indexedDb.DbCreationType.Default
+        this.configuration = cfg || {};
+        this.Authenticated = false;
+    },
+    /// { error:, abort:, pending:, success: }
+    Login: function (callbacks) {
+        Guard.raise("Pure class");
+    },
+    Logout: function () {
+        Guard.raise("Pure class");
+    },
+    CreateRequest: function (cfg) {
+        Guard.raise("Pure class");
+    }
+
+}, null); $data.Class.define("$data.Authentication.Anonymous", $data.Authentication.AuthenticationBase, null, {
+    constructor: function (cfg) {
+        this.configuration = cfg || {};
+        this.Authenticated = false;
+    },
+    /// { error:, abort:, pending:, success: }
+    Login: function (callbacks) {
+    },
+    Logout: function () {
+    },
+    CreateRequest: function (cfg) {
+        $data.ajax(cfg);
+    }
+
+}, null); $data.Class.define("$data.Authentication.FacebookAuth", $data.Authentication.AuthenticationBase, null, {
+    constructor: function (cfg) {
+        this.configuration = $data.typeSystem.extend({
+            Url_code: '',
+            type_code: '',
+            scope: '',
+            Url_token: '',
+            type_token: '',
+            access_token: '',
+            app_id: ''
         }, cfg);
-        this._setupExtensionMethods();
     },
-    supportedBinaryOperators: {
-        value: {
-            equal: { mapTo: ' == ', dataType: $data.Boolean },
-            notEqual: { mapTo: ' != ', dataType: $data.Boolean },
-            equalTyped: { mapTo: ' == ', dataType: $data.Boolean },
-            notEqualTyped: { mapTo: ' != ', dataType: $data.Boolean },
-            greaterThan: { mapTo: ' > ', dataType: $data.Boolean },
-            greaterThanOrEqual: { mapTo: ' >= ', dataType: $data.Boolean },
-
-            lessThan: { mapTo: ' < ', dataType: $data.Boolean },
-            lessThenOrEqual: { mapTo: ' <= ', dataType: $data.Boolean },
-            or: { mapTo: ' || ', dataType: $data.Boolean },
-            and: { mapTo: ' && ', dataType: $data.Boolean }
-            //'in': { mapTo: ' in ', dataType: $data.Boolean, resolvableType: [$data.Array, $data.Queryable] }
-        }
-    },
-    supportedSetOperations: {
-        value: {
-            length: {},
-            toArray: {},
-            forEach: {}
-        },
-        enumerable: true,
-        writable: true
-    },
-    _setupExtensionMethods: function () {
-        /// <summary>
-        /// Sets the extension method 'setCallback' on IDBRequest, IDBOpenDBRequest, and IDBTransaction types
-        /// </summary>
-        var self = this;
-        var idbRequest = this.IDBRequest;
-        var idbTran = this.IDBTransaction;
-        var idbOpenDBRequest = this.IDBOpenDBRequest;
-        var setCallbacks = function (callbackSettings) {
-            /// <summary>
-            /// Sets the callbacks on the object.
-            /// </summary>
-            /// <param name="callbackSettings">Named value pairs of the callbacks</param>
-            if (typeof callbackSettings !== 'object')
-                Guard.raise(new Exception('Invalid callbackSettings', null, callbackSettings));
-            for (var i in callbackSettings) {
-                if (typeof this[i] === 'undefined' || typeof callbackSettings[i] !== 'function')
-                    continue;
-                this[i] = callbackSettings[i];
-            }
-
-            if (this.readyState == self.IDBRequest.DONE)
-                console.log('WARNING: request finished before setCallbacks. Do not use breakpoints between creating the request object and finishing the setting of callbacks');
-            return this;
-        };
-        if (typeof idbRequest.prototype.setCallbacks !== 'function')
-            idbRequest.prototype.setCallbacks = setCallbacks;
-        if (typeof idbTran.prototype.setCallbacks !== 'function')
-            idbTran.prototype.setCallbacks = setCallbacks;
-        if (idbOpenDBRequest && typeof idbOpenDBRequest.prototype.setCallbacks !== 'function')
-            idbOpenDBRequest.prototype.setCallbacks = setCallbacks;
-    },
-    supportedDataTypes: {
-        value: [$data.Integer, $data.Number, $data.Date, $data.String, $data.Boolean, $data.Blob, $data.Array, $data.Object],
-        writable: false
-    },
-    fieldConverter: {
-        value: {
-            fromDb: {
-                '$data.Integer': function (i) { return i; },
-                '$data.Number': function (number) { return number; },
-                '$data.Date': function (date) { return date; },
-                '$data.String': function (string) { return string; },
-                '$data.Boolean': function (b) { return b; },
-                '$data.Blob': function (blob) { return blob; },
-                '$data.Array': function (arr) { if (arr === undefined) { return new $data.Array(); } return arr; },
-                '$data.Object': function (obj) { return obj; }
-            },
-            toDb: {
-                '$data.Integer': function (i) { return i; },
-                '$data.Number': function (number) { return number; },
-                '$data.Date': function (date) { return date; },
-                '$data.String': function (string) { return string; },
-                '$data.Boolean': function (b) { return b; },
-                '$data.Blob': function (blob) { return blob; },
-                '$data.Array': function (arr) { return arr; },
-                '$data.Object': function (obj) { return obj; }
-            }
-        }
-    },
-    initializeStore: function (callBack) {
-        callBack = $data.typeSystem.createCallbackSetting(callBack);
-        var self = this;
-        var initDb = function (db) {
-            db.onversionchange = function (event) {
-                var ret = event.target.close();
-                return ret;
-            };
-            var newSequences = [];
-            self.context._storageModel.forEach(function (memDef) {
-                function createStore() {
-                    /// <summary>
-                    /// Creates a store for 'memDef'
-                    /// </summary>
-                    var osParam = {};
-                    var keySettings = self._getKeySettings(memDef);
-                    if (self.newVersionAPI) {
-                        if (keySettings.autoIncrement)
-                            newSequences.push(memDef.TableName);
-                    } else {
-                        osParam.autoIncrement = keySettings.autoIncrement;
-                    }
-                    if (keySettings.keyPath !== undefined)
-                        osParam.keyPath = keySettings.keyPath;
-                    db.createObjectStore(memDef.TableName, osParam);
-                }
-                if (db.objectStoreNames.contains(memDef.TableName)) {
-                    // ObjectStore already present.
-                    if (self.providerConfiguration.dbCreation === $data.storageProviders.indexedDb.DbCreationType.DropStoreIfExists) {
-                        // Force drop and recreate object store
-                        db.deleteObjectStore(memDef.TableName);
-                        createStore();
-                    }
-                } else {
-                    // Store does not exists yet, we need to create it
-                    createStore();
-                }
-            });
-            if (newSequences.length > 0 && !db.objectStoreNames.contains(self.sequenceStore)) {
-                // Sequence store does not exists yet, we create it
-                db.createObjectStore(self.sequenceStore, { keyPath: 'store' });
-                newSequences = [];
-            }
-            return newSequences;
-        }
-        var newSequences = null;
-        // Creating openCallbacks settings for both type of db.open() method
-        var openCallbacks = {
-            onupgradeneeded: function (event) {
-                newSequences = initDb(event.target.result);
-            },
-            onerror: callBack.error,
-            onblocked: callBack.error,
-            onsuccess: function (event) {
-                self.db = event.target.result;
-                self.db.onversionchange = function (event) {
-                    event.target.close();
-                }
-                if (self.newVersionAPI) {
-                    if (newSequences && newSequences.length > 0) {
-                        var store = self.db.transaction([self.sequenceStore], self.IDBTransaction.READ_WRITE).setCallbacks({
-                            onerror: callBack.error,
-                            oncomplete: function () {
-                                callBack.success(self.context);
-                            }
-                        }).objectStore(self.sequenceStore);
-                        switch (self.providerConfiguration.dbCreation) {
-                            case $data.storageProviders.indexedDb.DbCreationType.DropStoreIfExists:
-                            case $data.storageProviders.indexedDb.DbCreationType.DropStoreIfOlderVersion:
-                                // Clearing all data
-                                store.clear();
-                                break;
-                            default:
-                                // Removing data for newly created stores, if they previously existed
-                                newSequences.forEach(function (item) {
-                                    store['delete'](item);
-                                });
-                                break;
-                        }
-                    }
-                    callBack.success(self.context);
-                }
-                else {
-                    // Calling setVersion on webkit
-                    self.db.setVersion(self.providerConfiguration.version).setCallbacks({
-                        onerror: callBack.error,
-                        onblocked: callBack.error,
-                        onsuccess: function (event) {
-                            initDb(self.db);
-                            callBack.success(self.context);
-                        }
-                    });
-                }
-            }
-        };
-        // For Firefox we need to pass the version here
-        if (self.newVersionAPI)
-            self.indexedDB.open(self.providerConfiguration.databaseName, parseInt(self.providerConfiguration.version, 10)).setCallbacks(openCallbacks);
-        else
-            self.indexedDB.open(self.providerConfiguration.databaseName).setCallbacks(openCallbacks);
-    },
-    executeQuery: function (query, callBack) {
-        callBack = $data.typeSystem.createCallbackSetting(callBack);
-        var self = this;
-
-        //var compiledQuery = self._compile(query);
-
-        // Creating read only transaction for query. Results are passed in transaction's oncomplete event
-        var entitySet = query.context.getEntitySetFromElementType(query.defaultType);
-        var store = self.db.transaction([entitySet.tableName], self.IDBTransaction.READ_ONLY).setCallbacks({
-            onerror: callBack.error,
-            onabort: callBack.error,
-            oncomplete: function (event) {
-                callBack.success(query);
-            }
-        }).objectStore(entitySet.tableName);
-        var modelBinderCompiler = Container.createModelBinderConfigCompiler(query, []);
-        modelBinderCompiler.Visit(query.expression);
-        switch (query.expression.nodeType) {
-            case $data.Expressions.ExpressionType.Count:
-
-                //query.actionPack.push({ op: 'buildType', context: self.context, tempObjectName: 'lulz', propertyMapping: [{ from: 'count', dataType: $data.Integer }] });
-                //query.actionPack.push({ op: 'copyToResult', tempObjectName: 'lulz' });
-                store.count().onsuccess = function (event) {
-                    var count = event.target.result;
-                    query.rawDataList.push({ cnt: count });
-                }
-                break;
-            default:
-                //query.actionPack.push({ op: 'buildType', context: self.context, logicalType: query.entitySet.createNew, tempObjectName: 'lulz' });
-                //query.actionPack.push({ op: 'copyToResult', tempObjectName: 'lulz' });
-                store.openCursor().onsuccess = function (event) {
-                    // We currently support only toArray() so let's just dump all data
-                    var cursor = event.target.result;
-                    if (cursor) {
-                        var value = cursor.value;
-                        //if (!compiledQuery.filterFunc || compiledQuery.filterFunc(value))
-                        query.rawDataList.push(cursor.value);
-                        cursor['continue']();
-                    }
-                };
-                break;
-        }
-    },
-    _getKeySettings: function (memDef) {
-        /// <summary>
-        /// Gets key settings for item type's member definition
-        /// </summary>
-        /// <param name="memDef">memDef of item</param>
-        /// <returns>KeySettings object</returns>
-        var self = this;
-        var settings = { autoIncrement: false };
-        var keys = [];
-        memDef.PhysicalType.memberDefinitions
-            .getPublicMappedProperties().forEach(function (item) {
-                if (item.key) {
-                    // We found a key
-                    keys.push(item.name);
-                }
-                if (item.computed) {
-                    // AutoIncrement field, must be key
-                    if (!item.key)
-                        Guard.raise(new Exception('Only key field can be a computed field!'));
-                    settings.autoIncrement = true;
-                }
-            });
-        if (keys.length > 1) {
-            if (settings.autoIncrement)
-                Guard.raise(new Exception('Auto increment is only valid for a single key!'));
-            // Setting key fields (composite key)
-            settings.keys = keys;
-        } else if (keys.length == 1) {
-                // Simple key
-            settings.keyPath = keys[0];
-        } else {
-            Guard.raise(new Exception('No valid key found!'));
-        }
-        return settings;
-    },
-    saveChanges: function (callBack, changedItems) {
-        var self = this;
-        // Building independent blocks and processing them sequentially
-        var independentBlocks = self.buildIndependentBlocks(changedItems);
-        function saveNextIndependentBlock() {
-            /// <summary>
-            /// Saves the next independent block
-            /// </summary>
-            if (independentBlocks.length === 0) {
-                // No more blocks left, calling success callback
-                callBack.success();
-            } else {
-                // 'Popping' next block
-                var currentBlock = independentBlocks.shift();
-                // Collecting stores of items for transaction initialize
-                var storesObj = {};
-                // Generating physicalData
-                var convertedItems = currentBlock.map(function (item) {
-                    storesObj[item.entitySet.tableName] = true;
-                    item.physicalData = {};
-                    self.context._storageModel.getStorageModel(item.data.getType())
-                        .PhysicalType.memberDefinitions
-                        .getPublicMappedProperties().forEach(function (memDef) {
-                            if (memDef.key && memDef.computed && item.data[memDef.name] == undefined) {
-                                // Autogenerated fields for new items should not be present in the physicalData
-                                return;
-                            }
-                            item.physicalData[memDef.name] = item.data[memDef.name];
-                        });
-                    return item;
-                });
-                var stores = [];
-                for (var i in storesObj) {
-                    stores.push(i);
-                }
-                var tran = self.db.transaction(stores, self.IDBTransaction.READ_WRITE).setCallbacks({
-                    onerror: function (event) {
-                        // Only call the error callback when it's not because of an abort
-                        // aborted cases should call the error callback there
-                        if (event.target.errorCode !== self.IDBDatabaseException.ABORT_ERR)
-                            callBack.error(event);
-                    },
-                    oncomplete: function (event) {
-                        // Moving to next block
-                        saveNextIndependentBlock();
-                    }
-                });
-                function KeySettingsCache() {
-                    /// <summary>
-                    /// Simple cache for key settings of types
-                    /// </summary>
-                    var cache = {};
-                    this.getSettingsForItem = function (item) {
-                        var typeName = item.data.getType().fullName;
-                        if (!cache.hasOwnProperty(typeName)) {
-                            cache[typeName] = self._getKeySettings(self.context._storageModel.getStorageModel(item.data.getType()));
-                        }
-                        return cache[typeName]
-                    }
-                }
-                var ksCache = new KeySettingsCache();
-                convertedItems.forEach(function (item) {
-                    // Getting store and keysettings for the current item
-                    var store = tran.objectStore(item.entitySet.tableName);
-                    var keySettings = ksCache.getSettingsForItem(item);
-                    // Contains the keys that should be passed for create, update and delete (composite keys)
-                    var itemKeys = keySettings.keys && keySettings.keys.map(function (key) { return item.physicalData[key]; }) || null;
-                    try {
-                        var cursorAction = function (action) {
-                            /// <summary>
-                            /// Find the current item in the store, and calls the action on it. Error raised when item was not found
-                            /// </summary>
-                            /// <param name="action">Action to call on the item</param>
-                            var key = keySettings.keyPath ? item.physicalData[keySettings.keyPath] : itemKeys;
-                            var data = item.physicalData;
-                            store.openCursor(self.IDBKeyRange.only(key))
-                                .onsuccess = function (event) {
-                                    try {
-                                        var cursor = event.target.result;
-                                        if (cursor)
-                                            action(cursor, key, data);
-                                        else
-                                            Guard.raise(new Exception('Object not found', null, item));
-                                    } catch (ex) {
-                                        tran.abort();
-                                        callBack.error(ex);
-                                    }
-                                }
-                        };
-                        switch (item.data.entityState) {
-                            case $data.EntityState.Added:
-                                function setAutoIncrementId(item, callBack) {
-                                    /// <summary>
-                                    /// Sets the value of the autoIncremented key for the item, then calls the callBack
-                                    /// </summary>
-                                    /// <param name="item">Item to set the Id on</param>
-                                    /// <param name="callBack">Callback to call</param>
-                                    callBack = $data.typeSystem.createCallbackSetting(callBack);
-                                    var record = null;
-                                    var tran = self.db.transaction([self.sequenceStore], self.IDBTransaction.READ_WRITE)
-                                        .setCallbacks({
-                                            onerror: callBack.error,
-                                            oncomplete: function (event) {
-                                                item.physicalData[keySettings.keyPath] = record.lastInsertedId;
-                                                callBack.success(item);
-                                            }
-                                        });
-                                    // Gets the store
-                                    var store = tran.objectStore(self.sequenceStore);
-                                    // and tries to find the record for the item's store's sequenceId
-                                    store.openCursor(self.IDBKeyRange.only(item.entitySet.tableName))
-                                        .onsuccess = function (event) {
-                                            var cursor = event.target.result;
-                                            if (cursor) {
-                                                // Record found
-                                                record = cursor.value;
-                                                var id = record.lastInsertedId;
-                                                if (typeof id !== 'number')
-                                                    Guard.raise(new Exception('Invalid field type! Must be number', null, id));
-                                                // Increments the id
-                                                ++record.lastInsertedId;
-                                                // then persists it
-                                                cursor.update(record);
-                                            } else {
-                                                // Record was not found, we need to add it
-                                                store.add(record = { store: item.entitySet.tableName, lastInsertedId: 1 });
-                                            }
-                                        }
-                                }
-                                if (!keySettings.keyPath) {
-                                    // Item needs explicit keys
-                                    store.add(item.physicalData, itemKeys);
-                                }
-                                else {
-                                    function addItem(item) {
-                                        /// <summary>
-                                        /// Adds the item to the database, and sets the generated key
-                                        /// </summary>
-                                        /// <param name="item">Item to save</param>
-                                        store.add(item.physicalData)
-                                            .onsuccess = function (event) {
-                                                // Saves the generated key back to the entity
-                                                item.data[keySettings.keyPath] = event.target.result;
-                                            };
-                                    }
-                                    if (self.newVersionAPI && item.physicalData[keySettings.keyPath] === undefined) {
-                                        // Firefox needs help with autoIncrement id generation
-                                        setAutoIncrementId(item, {
-                                            success: addItem,
-                                            error: function (ex) {
-                                                Guard.raise(new Exception('Can\'t generate new id', null, ex));
-                                            }
-                                        });
-                                    } else {
-                                        // Webkit, simply add the item
-                                        addItem(item);
-                                    }
-                                }
-                                break;
-                            case $data.EntityState.Deleted:
-                                // Deletes the item
-                                cursorAction(function (cursor) {
-                                    cursor['delete']();
-                                });
-                                break;
-                            case $data.EntityState.Modified:
-                                // Updates the item
-                                cursorAction(function (cursor, key, data) {
-                                    cursor.update(data);
-                                });
-                                break;
-                            case $data.EntityState.Unchanged:
-                                break;
-                            default:
-                                Guard.raise(new Exception('Not supported entity state', null, item));
-                        }
-                    } catch (ex) {
-                        // Abort on exceptions
-                        tran.abort();
-                        callBack.error(ex);
-                    }
-                });
-            }
-        }
-        saveNextIndependentBlock();
-    },
-    _compile: function (query) {
-        var sqlText = Container.createIndexedDBCompiler().compile(query);
-        return sqlText;
-    }
-}, {
-    isSupported: {
-        get: function () { return window.indexedDB || window.webkitIndexedDB || window.mozIndexedDB || window.msIndexedDB; },
-        set: function () { }
-    }
-});
-
-$data.storageProviders.indexedDb.DbCreationType = {
-    Default: 1,
-    DropStoreIfOlderVersion: 2,
-    DropStoreIfExists: 3
-};
-
-if ($data.storageProviders.indexedDb.IndexedDBStorageProvider.isSupported)
-    $data.StorageProviderBase.registerProvider('indexedDb', $data.storageProviders.indexedDb.IndexedDBStorageProvider); $data.Class.define("$data.Authentication.AuthenticationBase", null, null, {
-        constructor: function (cfg) {
-            this.configuration = cfg || {};
-            this.Authenticated = false;
-        },
-        /// { error:, abort:, pending:, success: }
-        Login: function (callbacks) {
-            Guard.raise("Pure class");
-        },
-        Logout: function () {
-            Guard.raise("Pure class");
-        },
-        CreateRequest: function (cfg) {
-            Guard.raise("Pure class");
+    Login: function (callbacks) {
+        if (this.Authenticated) {
+            return;
         }
 
-    }, null); $data.Class.define("$data.Authentication.Anonymous", $data.Authentication.AuthenticationBase, null, {
-        constructor: function (cfg) {
-            this.configuration = cfg || {};
-            this.Authenticated = false;
-        },
-        /// { error:, abort:, pending:, success: }
-        Login: function (callbacks) {
-        },
-        Logout: function () {
-        },
-        CreateRequest: function (cfg) {
-            $data.ajax(cfg);
-        }
-
-    }, null); $data.Class.define("$data.Authentication.FacebookAuth", $data.Authentication.AuthenticationBase, null, {
-        constructor: function (cfg) {
-            this.configuration = $data.typeSystem.extend({
-                Url_code: '',
-                type_code: '',
-                scope: '',
-                Url_token: '',
-                type_token: '',
-                access_token: '',
-                app_id: ''
-            }, cfg);
-        },
-        Login: function (callbacks) {
-            if (this.Authenticated) {
-                return;
-            }
-
-            var provider = this;
-            provider.configuration.stateCallbacks = callbacks || {};
-
-            $data.ajax({
-                url: this.configuration.Url_code,
-                data: 'type=' + provider.configuration.type_code + '&client_id=' + provider.configuration.app_id + '&scope=' + provider.configuration.scope,
-                type: 'POST',
-                dataType: 'json',
-                success: function (data) {
-                    if (typeof provider.configuration.stateCallbacks.pending == "function")
-                        provider.configuration.stateCallbacks.pending(data);
-                    provider._processRequestToken(data);
-                    provider.Authenticated = true;
-                },
-                error: function () {
-                    if (typeof provider.configuration.stateCallbacks.error == "function")
-                        provider.configuration.stateCallbacks.error(arguments);
-                }
-            });
-        },
-        Logout: function () {
-            this.Authenticated = false;
-        },
-        CreateRequest: function (cfg) {
-            if (!cfg)
-                return;
-            var _this = this;
-
-            if (cfg.url && this.Authenticated) {
-                var andChar = '?';
-                if (cfg.url.indexOf(andChar) > 0)
-                    andChar = '&';
-
-                if (this.configuration.access_token)
-                    cfg.url = cfg.url + andChar + 'access_token=' + this.configuration.access_token;
-            }
-
-            $data.ajax(cfg);
-        },
-        _processRequestToken: function (verification_data) {
-            var provider = this;
-
-            $data.ajax({
-                url: provider.configuration.Url_token,
-                data: 'type=' + provider.configuration.type_token + '&client_id=' + provider.configuration.app_id + '&code=' + verification_data.code,
-                type: 'POST',
-                dataType: 'json',
-                success: function (result) {
-                    provider.configuration.access_token = result.access_token;
-                    if (typeof provider.configuration.stateCallbacks.success == "function")
-                        provider.configuration.stateCallbacks.success(result);
-                },
-                error: function (obj) {
-                    var data = eval('(' + obj.responseText + ')');
-                    if (data.error) {
-                        if (data.error.message == "authorization_pending") {
-                            setTimeout(function () {
-                                provider._processRequestToken(verification_data);
-                            }, 2000);
-                        } else if ("authorization_declined") {
-                            if (typeof provider.configuration.stateCallbacks.abort == "function")
-                                provider.configuration.stateCallbacks.abort(arguments);
-                        }
-                    }
-                }
-            });
-        }
-    }, null);
-$data.Class.define('$data.storageProviders.Facebook.FacebookProvider', $data.StorageProviderBase, null,
-{
-    constructor: function (cfg) {
         var provider = this;
-        this.SqlCommands = [];
-        this.context = {};
-        this.providerConfiguration = $data.typeSystem.extend({
-            FQLFormat: "format=json",
-            FQLQueryUrl: "https://graph.facebook.com/fql?q="
-        }, cfg);
-        this.initializeStore = function (callBack) {
-            callBack = $data.typeSystem.createCallbackSetting(callBack);
-            callBack.success(this.context);
-        };
-
-    },
-    AuthenticationProvider: { dataType: '$data.Authentication.AuthenticationBase', enumerable: false },
-    supportedDataTypes: { value: [$data.Integer, $data.Number, $data.Date, $data.String, $data.Boolean, $data.Blob, $data.Array], writable: false },
-    supportedFieldOperations: {
-        value: {
-            'contains': {
-                dataType: $data.String,
-                allowedIn: $data.Expressions.FilterExpression,
-                mapTo: "strpos",
-                parameters: [{ name: "@expression", dataType: $data.String }, { name: "strFragment", dataType: $data.String }],
-                rigthValue: ') >= 0'
-            },
-            'startsWith': {
-                dataType: $data.String,
-                allowedIn: $data.Expressions.FilterExpression,
-                mapTo: "strpos",
-                parameters: [{ name: "@expression", dataType: $data.String }, { name: "strFragment", dataType: $data.String }],
-                rigthValue: ') = 0'
-            },
-            'strpos': {
-                dataType: $data.String,
-                allowedIn: [$data.Expressions.FilterExpression, $data.Expressions.ProjectionExpression],
-                mapTo: "strpos",
-                parameters: [{ name: "@expression", dataType: $data.String }, { name: "strFragment", dataType: $data.String }]
-            },
-            'substr': {
-                dataType: $data.String,
-                allowedIn: [$data.Expressions.FilterExpression, $data.Expressions.ProjectionExpression],
-                mapTo: "substr",
-                parameters: [{ name: "@expression", dataType: $data.String }, { name: "startIdx", dataType: $data.Number }, { name: "length", dataType: $data.Number }]
-            },
-            'strlen': {
-                dataType: $data.String,
-                allowedIn: [$data.Expressions.FilterExpression, $data.Expressions.ProjectionExpression],
-                mapTo: "strlen",
-                parameters: [{ name: "@expression", dataType: $data.String }]
-            }
-
-        },
-        enumerable: true,
-        writable: true
-    },
-    supportedBinaryOperators: {
-        value: {
-            equal: { mapTo: ' = ', dataType: $data.Boolean, allowedIn: $data.Expressions.FilterExpression },
-            notEqual: { mapTo: ' != ', dataType: $data.Boolean, allowedIn: $data.Expressions.FilterExpression },
-            equalTyped: { mapTo: ' = ', dataType: $data.Boolean, allowedIn: $data.Expressions.FilterExpression },
-            notEqualTyped: { mapTo: ' != ', dataType: $data.Boolean, allowedIn: $data.Expressions.FilterExpression },
-            greaterThan: { mapTo: ' > ', dataType: $data.Boolean, allowedIn: $data.Expressions.FilterExpression },
-            greaterThanOrEqual: { mapTo: ' >= ', dataType: $data.Boolean, allowedIn: $data.Expressions.FilterExpression },
-
-            lessThan: { mapTo: ' < ', dataType: $data.Boolean, allowedIn: $data.Expressions.FilterExpression },
-            lessThenOrEqual: { mapTo: ' <= ', dataType: $data.Boolean, allowedIn: $data.Expressions.FilterExpression },
-            or: { mapTo: ' OR ', dataType: $data.Boolean, allowedIn: $data.Expressions.FilterExpression },
-            and: { mapTo: ' AND ', dataType: $data.Booleanv },
-            'in': { mapTo: ' IN ', dataType: $data.Boolean, resolvableType: [$data.Array, $data.Queryable], allowedIn: $data.Expressions.FilterExpression }
-        }
-    },
-    supportedUnaryOperators: {
-        value: {}
-    },
-    fieldConverter: {
-        value: {
-            fromDb: {
-                '$data.Number': function (value) { return typeof value === "number" ? value : parseInt(value); },
-                '$data.Integer': function (value) { return typeof value === "number" ? value : parseFloat(value); },
-                '$data.String': function (value) { return value; },
-                '$data.Date': function (value) { return new Date(typeof value === "string" ? parseInt(value) : value); },
-                '$data.Boolean': function (value) { return !!value },
-                '$data.Blob': function (value) { return value; },
-                '$data.Array': function (value) { if (value === undefined) { return new $data.Array(); } return value; }
-            },
-            toDb: {
-                '$data.Number': function (value) { return value; },
-                '$data.Integer': function (value) { return value; },
-                '$data.String': function (value) { return "'" + value + "'"; },
-                '$data.Date': function (value) { return value ? value.valueOf() : null; },
-                '$data.Boolean': function (value) { return value },
-                '$data.Blob': function (value) { return value; },
-                '$data.Array': function (value) { return '(' + value.join(', ') + ')'; }
-            }
-        }
-    },
-    supportedSetOperations: {
-        value: {
-            filter: {},
-            map: {},
-            forEach: {},
-            toArray: {},
-            single: {},
-            take: {},
-            skip: {},
-            orderBy: {},
-            orderByDescending: {},
-            first: {}
-        },
-        enumerable: true,
-        writable: true
-    },
-    executeQuery: function (query, callBack) {
-        callBack = $data.typeSystem.createCallbackSetting(callBack);
-
-        if (!this.AuthenticationProvider)
-            this.AuthenticationProvider = new $data.Authentication.Anonymous({});
-
-        var sql;
-        try {
-            sql = this._compile(query);
-        } catch (e) {
-            callBack.error(e);
-            return;
-        }
-
-        var schema = query.defaultType;
-        var ctx = this.context;
-
-        var includes = [];
-        if (!sql.selectMapping)
-            this._discoverType('', schema, includes);
-
-        var requestData = {
-            url: this.providerConfiguration.FQLQueryUrl + encodeURIComponent(sql.queryText) + "&" + this.providerConfiguration.FQLFormat,
-            dataType: "JSON",
-            success: function (data, textStatus, jqXHR) {
-                query.rawDataList = data.data;
-                var compiler = Container.createModelBinderConfigCompiler(query, []);
-                compiler.Visit(query.expression);
-                callBack.success(query);
-            },
-            error: function (jqXHR, textStatus, errorThrow) {
-                var errorData = {};
-                try {
-                    errorData = JSON.parse(jqXHR.responseText).error;
-                } catch (e) {
-                    errorData = errorThrow + ': ' + jqXHR.responseText;
-                }
-                callBack.error(errorData);
-            }
-        };
-
-        this.context.prepareRequest.call(this, requestData);
-        this.AuthenticationProvider.CreateRequest(requestData);
-    },
-    _discoverType: function (dept, type, result) {
-        type.memberDefinitions.getPublicMappedProperties().forEach(function (memDef) {
-            var type = Container.resolveType(memDef.dataType);
-
-            if (type.isAssignableTo || type == Array) {
-                var name = dept ? (dept + '.' + memDef.name) : memDef.name;
-
-                if (type == Array || type.isAssignableTo($data.EntitySet)) {
-                    if (memDef.inverseProperty)
-                        type = Container.resolveType(memDef.elementType);
-                    else
-                        return;
-                }
-
-                result.push({ name: name, type: type })
-                this._discoverType(name, type, result);
-            }
-        }, this);
-    },
-    _compile: function (query) {
-        var sqlText = Container.createFacebookCompiler().compile(query);
-        return sqlText;
-    },
-    getTraceString: function (query) {
-        if (!this.AuthenticationProvider)
-            this.AuthenticationProvider = new $data.Authentication.Anonymous({});
-
-        var sqlText = this._compile(query);
-        return sqlText;
-    },
-    setContext: function (ctx) {
-        this.context = ctx;
-    },
-    saveChanges: function (callBack) {
-        Guard.raise(new Exception("Not implemented", "Not implemented"));
-    }
-}, null);
-
-$data.StorageProviderBase.registerProvider("Facebook", $data.storageProviders.Facebook.FacebookProvider);
-
-//"use strict";	// suspicious code
-
-$C('$data.storageProviders.Facebook.FacebookCompiler', $data.Expressions.EntityExpressionVisitor, null, {
-    constructor: function () {
-        this.provider = {};
-    },
-
-    compile: function (query) {
-        this.provider = query.context.storageProvider;
-
-        var context = {
-            filterSql: { sql: '' },
-            projectionSql: { sql: '' },
-            orderSql: { sql: '' },
-            skipSql: { sql: '' },
-            takeSql: { sql: '' },
-            tableName: ''
-        };
-        this.Visit(query.expression, context);
-
-        var autoGeneratedSelect = false;
-        if (!context.projectionSql.sql) {
-            context.projectionSql = this.autoGenerateProjection(query);
-            autoGeneratedSelect = true;
-        }
-
-        if (context.filterSql.sql == '')
-            Guard.raise(new Exception('Filter/where statement is required', 'invalid operation'));
-
-        return {
-            queryText: context.projectionSql.sql + ' FROM ' + context.tableName +
-                context.filterSql.sql +
-                context.orderSql.sql +
-                context.takeSql.sql +
-                (context.takeSql.sql ? context.skipSql.sql : ''),
-            selectMapping: autoGeneratedSelect == false ? context.projectionSql.selectFields : null,
-            params: []
-        };
-
-    },
-
-    autoGenerateProjection: function (query) {
-        var entitySet = query.context.getEntitySetFromElementType(query.defaultType);
-        var newQueryable = new $data.Queryable(query.context, entitySet.expression);
-        //newQueryable._checkRootExpression(entitySet.collectionName);
-        var codeExpression = Container.createCodeExpression(this.generateProjectionFunc(query));
-        var exp = Container.createProjectionExpression(newQueryable.expression, codeExpression);
-        var q = Container.createQueryable(newQueryable, exp);
-
-        var expression = q.expression;
-        var preparator = Container.createQueryExpressionCreator(query.context);
-        expression = preparator.Visit(expression);
-
-        var databaseQuery = {
-            projectionSql: { sql: '' }
-        };
-        this.Visit(expression, databaseQuery);
-
-        return databaseQuery.projectionSql;
-    },
-    generateProjectionFunc: function (query) {
-        var isAuthenticated = this.provider.AuthenticationProvider.Authenticated;
-        var publicMemberDefinitions = query.defaultType.memberDefinitions.getPublicMappedProperties();
-        if (!isAuthenticated && publicMemberDefinitions.some(function (memDef) { return memDef.isPublic == true; })) {
-            publicMemberDefinitions = publicMemberDefinitions.filter(function (memDef) { return memDef.isPublic == true; });
-        }
-
-        var selectStr = 'function (s){ return {';
-        publicMemberDefinitions.forEach(function (memDef, i) {
-            if (i != 0) selectStr += ', ';
-            selectStr += memDef.name + ': s.' + memDef.name;
-        });
-        selectStr += '};';
-
-        //var projectionFunc = null;
-        //eval(selectStr);
-        return selectStr;
-    },
-
-    VisitFilterExpression: function (expression, context) {
-        ///<param name="expression" type="$data.Expressions.FilterExpression" />
-        this.Visit(expression.source, context);
-
-        context.filterSql.type = expression.nodeType;
-        if (context.filterSql.sql == '')
-            context.filterSql.sql = ' WHERE ';
-        else
-            context.filterSql.sql += ' AND ';
-
-        this.Visit(expression.selector, context.filterSql);
-    },
-    VisitProjectionExpression: function (expression, context) {
-        ///<param name="expression" type="$data.Expressions.ProjectionExpression" />
-        this.Visit(expression.source, context);
-
-        context.projectionSql.type = expression.nodeType;
-        if (context.projectionSql.sql == '')
-            context.projectionSql.sql = 'SELECT ';
-        else
-            Guard.raise(new Exception('Multiple select error'));
-
-        this.Visit(expression.selector, context.projectionSql);
-    },
-    VisitOrderExpression: function (expression, context) {
-        ///<param name="expression" type="$data.Expressions.OrderExpression" />
-        this.Visit(expression.source, context);
-
-        context.orderSql.type = expression.nodeType;
-        if (context.orderSql.sql == '')
-            context.orderSql.sql = ' ORDER BY ';
-        else
-            Guard.raise(new Exception('Multiple sorting not supported', 'not supported'));
-
-        this.Visit(expression.selector, context.orderSql);
-        context.orderSql.sql += expression.nodeType == ExpressionType.OrderByDescending ? " DESC" : " ASC";
-    },
-    VisitPagingExpression: function (expression, context) {
-        ///<param name="expression" type="$data.Expressions.PagingExpression" />
-        this.Visit(expression.source, context);
-
-        if (expression.nodeType == ExpressionType.Skip) {
-            context.skipSql.type = expression.nodeType;
-            context.skipSql.sql = ' OFFSET ';
-            this.Visit(expression.amount, context.skipSql);
-        }
-        else if (expression.nodeType == ExpressionType.Take) {
-            context.takeSql.type = expression.nodeType;
-            context.takeSql.sql = ' LIMIT ';
-            this.Visit(expression.amount, context.takeSql);
-        }
-    },
-
-    VisitSimpleBinaryExpression: function (expression, context) {
-        context.sql += "(";
-        var left = this.Visit(expression.left, context);
-        context.sql += expression.resolution.mapTo;
-
-        if (expression.resolution.resolvableType &&
-            !Guard.requireType(expression.resolution.mapTo + ' expression.right.value', expression.right.value, expression.resolution.resolvableType)) {
-            Guard.raise(new Exception(expression.right.type + " not allowed in '" + expression.resolution.mapTo + "' statement", "invalid operation"));
-        }
-
-        var right = this.Visit(expression.right, context);
-        context.sql += ")";
-    },
-
-    VisitEntityFieldExpression: function (expression, context) {
-        var source = this.Visit(expression.selector, context);
-    },
-    VisitMemberInfoExpression: function (expression, context) {
-        var memberName = expression.memberName;
-        context.sql += memberName;
-        //context.fieldName = memberName;
-        context.fieldData = { name: memberName, dataType: expression.memberDefinition.dataType };
-
-        if (context.type == 'Projection' && !context.selectFields) {
-            if (context.fieldOperation === true)
-                context.selectFields = [{ from: 'anon' }];
-            else
-                context.selectFields = [{ from: memberName, dataType: expression.memberDefinition.dataType }];
-        }
-    },
-
-    VisitConstantExpression: function (expression, context) {
-        if (context.type == 'Projection')
-            Guard.raise(new Exception('Constant value is not supported in Projection.', 'Not supported!'));
-
-        this.VisitQueryParameterExpression(expression, context);
-    },
-
-    VisitQueryParameterExpression: function (expression, context) {
-        var expressionValueType = Container.resolveType(Container.getTypeName(expression.value));
-        if (this.provider.supportedDataTypes.indexOf(expressionValueType) != -1)
-            context.sql += this.provider.fieldConverter.toDb[Container.resolveName(expressionValueType)](expression.value);
-        else {
-            switch (expressionValueType) {
-                case $data.Queryable:
-                    context.sql += '(' + expression.value.toTraceString().queryText + ')';
-                    break;
-                default:
-                    context.sql += "" + expression.value + ""; break;
-            }
-        }
-    },
-
-    VisitParametricQueryExpression: function (expression, context) {
-        var exp = this.Visit(expression.expression, context);
-        context.parameters = expression.parameters;
-    },
-
-    VisitEntitySetExpression: function (expression, context) {
-        context.tableName = expression.instance.tableName;
-    },
-
-    VisitObjectLiteralExpression: function (expression, context) {
-        var self = this;
-        context.selectFields = context.selectFields || [];
-        expression.members.forEach(function (member) {
-            if (member.expression instanceof $data.Expressions.ObjectLiteralExpression) {
-                context.mappingPrefix = context.mappingPrefix || [];
-                context.mappingPrefix.push(member.fieldName);
-                self.Visit(member, context);
-                context.mappingPrefix.pop();
-            }
-            else {
-                if (context.selectFields.length > 0)
-                    context.sql += ', ';
-
-                self.Visit(member, context);
-                var toProperty = context.mappingPrefix instanceof Array ? context.mappingPrefix.join('.') + '.' + member.fieldName : member.fieldName;
-                context.selectFields.push({ from: context.fieldData.name, to: toProperty, dataType: context.fieldData.dataType });
-            }
-        });
-    },
-    VisitObjectFieldExpression: function (expression, context) {
-        return this.Visit(expression.expression, context);
-    },
-
-    VisitEntityFieldOperationExpression: function (expression, context) {
-        Guard.requireType("expression.operation", expression.operation, $data.Expressions.MemberInfoExpression);
-
-        var opDef = expression.operation.memberDefinition;
-        var opName = opDef.mapTo || opDef.name;
-
-        context.sql += '(';
-
-        if (opDef.expressionInParameter == false)
-            this.Visit(expression.source, context);
-
-        context.sql += opName;
-        context.sql += "(";
-        var paramCounter = 0;
-        var params = opDef.parameters || [];
-
-        var args = params.map(function (item, index) {
-            var result = { dataType: item.dataType };
-            if (item.value) {
-                result.value = item.value;
-            } else if (item.name === "@expression") {
-                result.value = expression.source;
-            } else {
-                result.value = expression.parameters[paramCounter];
-                result.itemType = expression.parameters[paramCounter++].type;
-            };
-            return result;
-        });
-
-        args.forEach(function (arg, index) {
-            var itemType = arg.itemType ? Container.resolveType(arg.itemType) : null;
-            if (!itemType || ((arg.dataType instanceof Array && arg.dataType.indexOf(itemType) != -1) || arg.dataType == itemType)) {
-                if (index > 0) {
-                    context.sql += ", ";
-                };
-
-                if (context.type == 'Projection')
-                    context.fieldOperation = true;
-
-                this.Visit(arg.value, context);
-
-                if (context.type == 'Projection')
-                    context.fieldOperation = undefined;
-
-            } else
-                Guard.raise(new Exception(parameter.type + " not allowed in '" + expression.operation.memberName + "' statement", "invalid operation"));
-        }, this);
-
-        if (context.fieldData && context.fieldData.name)
-            context.fieldData.name = 'anon';
-
-        if (opDef.rigthValue) context.sql += opDef.rigthValue;
-        else context.sql += ")";
-
-        context.sql += ')';
-    }
-}, null);
-
-
-$data.Class.define("$data.Facebook.types.FbUser", $data.Entity, null, {
-    uid: { type: "int", key: true, isPublic: true, searchable: true },
-    username: { type: "string", isPublic: true, searchable: true },
-    first_name: { type: "string", isPublic: true },
-    middle_name: { type: "string", isPublic: true },
-    last_name: { type: "string", isPublic: true },
-    name: { type: "string", isPublic: true, searchable: true },
-    pic_small: { type: "string" },
-    pic_big: { type: "string" },
-    pic_square: { type: "string" },
-    pic: { type: "string" },
-    affiliations: { type: "Array", elementType: "Object" },
-    profile_update_time: { type: "datetime" },
-    timezone: { type: "int" },
-    religion: { type: "string" },
-    birthday: { type: "string" },
-    birthday_date: { type: "string" },
-    sex: { type: "string", isPublic: true },
-    hometown_location: { type: "Array", elementType: "Object" },
-    meeting_sex: { type: "Array", elementType: "Object" },
-    meeting_for: { type: "Array", elementType: "Object" },
-    relationship_status: { type: "string" },
-    significant_other_id: { type: "int" /*uid*/ },
-    political: { type: "string" },
-    current_location: { type: "Array", elementType: "Object" },
-    activities: { type: "string" },
-    interests: { type: "string" },
-    is_app_user: { type: "bool" },
-    music: { type: "string" },
-    tv: { type: "string" },
-    movies: { type: "string" },
-    books: { type: "string" },
-    quotes: { type: "string" },
-    about_me: { type: "string" },
-    hs_info: { type: "Array", elementType: "Object" },
-    education_history: { type: "Array", elementType: "Object" },
-    work_history: { type: "Array", elementType: "Object" },
-    notes_count: { type: "int" },
-    wall_count: { type: "int" },
-    status: { type: "string" },
-    has_added_app: { type: "bool" },
-    online_presence: { type: "string" },
-    locale: { type: "string", isPublic: true },
-    proxied_email: { type: "string" },
-    profile_url: { type: "string" },
-    email_hashes: { type: "Array", elementType: "Object" },
-    pic_small_with_logo: { type: "string", isPublic: true },
-    pic_big_with_logo: { type: "string", isPublic: true },
-    pic_square_with_logo: { type: "string", isPublic: true },
-    pic_with_logo: { type: "string", isPublic: true },
-    allowed_restrictions: { type: "string" },
-    verified: { type: "bool" },
-    profile_blurb: { type: "string" },
-    family: { type: "Array", elementType: "Object" },
-    website: { type: "string" },
-    is_blocked: { type: "bool" },
-    contact_email: { type: "string" },
-    email: { type: "string" },
-    third_party_id: { type: "string", searchable: true },
-    name_format: { type: "string" },
-    video_upload_limits: { type: "Array", elementType: "Object" },
-    games: { type: "string" },
-    work: { type: "Array", elementType: "Object" },
-    education: { type: "Array", elementType: "Object" },
-    sports: { type: "Array", elementType: "Object" },
-    favorite_athletes: { type: "Array", elementType: "Object" },
-    favorite_teams: { type: "Array", elementType: "Object" },
-    inspirational_people: { type: "Array", elementType: "Object" },
-    languages: { type: "Array", elementType: "Object" },
-    likes_count: { type: "int" },
-    friend_count: { type: "int" },
-    mutual_friend_count: { type: "int" },
-    can_post: { type: "bool" }
-}, null)
-$data.Class.define("$data.Facebook.types.FbFriend", $data.Entity, null, {
-    uid1: { type: "int", key: true, searchable: true },
-    uid2: { type: "int", key: true, searchable: true }
-}, null); $data.Class.define("$data.Facebook.types.FbPage", $data.Entity, null, {
-    page_id: { type: "int", key: true, isPublic: true, searchable: true },
-    name: { type: "string", isPublic: true, searchable: true },
-    username: { type: "string", isPublic: true, searchable: true },
-    description: { type: "string", isPublic: true },
-    categories: { type: "string", isPublic: true },	//array	The categories
-    is_community_page: { type: "bool", isPublic: true },	//string	Indicates whether the Page is a community Page.
-    pic_small: { type: "string", isPublic: true },
-    pic_big: { type: "string", isPublic: true },
-    pic_square: { type: "string", isPublic: true },
-    pic: { type: "string", isPublic: true },
-    pic_large: { type: "string", isPublic: true },
-    pic_cover: { type: "string", isPublic: true },	//object	The JSON object containing three fields:\A0cover_id\A0(the ID of the cover photo),\A0source\A0(the URL for the cover photo), andoffset_y\A0(indicating percentage offset from top [0-100])
-    unread_notif_count: { type: "int", isPublic: false },
-    new_like_count: { type: "int", isPublic: false },
-    fan_count: { type: "int", isPublic: true },
-    type: { type: "string", isPublic: true },
-    website: { type: "string", isPublic: true },
-    has_added_app: { type: "bool", isPublic: true },
-    general_info: { type: "string", isPublic: true },
-    can_post: { type: "bool", isPublic: true },
-    checkins: { type: "int", isPublic: true },
-    is_published: { type: "bool", isPublic: true },
-    founded: { type: "string", isPublic: true },
-    company_overview: { type: "string", isPublic: true },
-    mission: { type: "string", isPublic: true },
-    products: { type: "string", isPublic: true },
-    location: { type: "string", isPublic: true }, //	array	Applicable to all\A0Places.
-    parking: { type: "string", isPublic: true }, //     array	Applicable to\A0Businesses\A0and\A0Places. Can be one of\A0street,\A0lot\A0orvalet
-    hours: { type: "string", isPublic: true }, //	array	Applicable to\A0Businesses\A0and\A0Places.
-    pharma_safety_info: { type: "string", isPublic: true },
-    public_transit: { type: "string", isPublic: true },
-    attire: { type: "string", isPublic: true },
-    payment_options: { type: "string", isPublic: true },	//array	Applicable to\A0Restaurants\A0or\A0Nightlife.
-    culinary_team: { type: "string", isPublic: true },
-    general_manager: { type: "string", isPublic: true },
-    price_range: { type: "string", isPublic: true },
-    restaurant_services: { type: "string", isPublic: true },//	array	Applicable to\A0Restaurants.
-    restaurant_specialties: { type: "string", isPublic: true },//	array	Applicable to\A0Restaurants.
-    phone: { type: "string", isPublic: true },
-    release_date: { type: "string", isPublic: true },
-    genre: { type: "string", isPublic: true },
-    starring: { type: "string", isPublic: true },
-    screenplay_by: { type: "string", isPublic: true },
-    directed_by: { type: "string", isPublic: true },
-    produced_by: { type: "string", isPublic: true },
-    studio: { type: "string", isPublic: true },
-    awards: { type: "string", isPublic: true },
-    plot_outline: { type: "string", isPublic: true },
-    season: { type: "string", isPublic: true },
-    network: { type: "string", isPublic: true },
-    schedule: { type: "string", isPublic: true },
-    written_by: { type: "string", isPublic: true },
-    band_members: { type: "string", isPublic: true },
-    hometown: { type: "string", isPublic: true },
-    current_location: { type: "string", isPublic: true },
-    record_label: { type: "string", isPublic: true },
-    booking_agent: { type: "string", isPublic: true },
-    press_contact: { type: "string", isPublic: true },
-    artists_we_like: { type: "string", isPublic: true },
-    influences: { type: "string", isPublic: true },
-    band_interests: { type: "string", isPublic: true },
-    bio: { type: "string", isPublic: true },
-    affiliation: { type: "string", isPublic: true },
-    birthday: { type: "string", isPublic: true },
-    personal_info: { type: "string", isPublic: true },
-    personal_interests: { type: "string", isPublic: true },
-    built: { type: "string", isPublic: true },
-    features: { type: "string", isPublic: true },
-    mpg: { type: "string", isPublic: true }
-}, null);
-
-$data.Class.define('$data.storageProviders.Facebook.EntitySets.Command', null, null, {
-    constructor: function (cfg) {
-        this.Config = $data.typeSystem.extend({
-            CommandValue: ""
-        }, cfg);
-    },
-    toString: function () {
-        return this.Config.CommandValue;
-    },
-    Config: {}
-}, null);
-
-$data.Class.define("$data.Facebook.FQLContext", $data.EntityContext, null, {
-    constructor: function () {
-        var friendsQuery = this.Friends
-                .where(function (f) { return f.uid1 == this.me; }, { me: $data.Facebook.FQLCommands.me })
-                .select(function (f) { return f.uid2; });
-
-        this.MyFriends = this.Users
-                .where(function (u) { return u.uid == this.me || u.uid in this.friends; }, { me: $data.Facebook.FQLCommands.me, friends: friendsQuery });
-    },
-    Users: {
-        dataType: $data.EntitySet,
-        tableName: 'user',
-        elementType: $data.Facebook.types.FbUser
-    },
-    Friends: {
-        dataType: $data.EntitySet,
-        tableName: 'friend',
-        elementType: $data.Facebook.types.FbFriend
-    },
-    Pages: {
-        dataType: $data.EntitySet,
-        tableName: 'page',
-        elementType: $data.Facebook.types.FbPage
-    }
-}, null);
-
-$data.Facebook.FQLCommands = {
-    __namespace: true,
-    me: new $data.storageProviders.Facebook.EntitySets.Command({ CommandValue: "me()" }),
-    now: new $data.storageProviders.Facebook.EntitySets.Command({ CommandValue: "now()" })
-};
-
-
-$data.Class.define('$data.storageProviders.YQL.YQLProvider', $data.StorageProviderBase, null,
-{
-    constructor: function (cfg) {
-        var provider = this;
-        this.SqlCommands = [];
-        this.context = {};
-        this.extendedCreateNew = [];
-        this.providerConfiguration = $data.typeSystem.extend({
-            YQLFormat: "format=json",
-            YQLQueryUrl: "http://query.yahooapis.com/v1/public/yql?q=",
-            YQLEnv: '',
-            resultPath: ["query", "results"],
-            resultSkipFirstLevel: true
-        }, cfg);
-        this.initializeStore = function (callBack) {
-            callBack = $data.typeSystem.createCallbackSetting(callBack);
-            callBack.success(this.context);
-        };
-
-    },
-    AuthenticationProvider: { dataType: '$data.Authentication.AuthenticationBase', enumerable: false },
-    supportedDataTypes: { value: [$data.Integer, $data.Number, $data.Date, $data.String, $data.Boolean, $data.Blob, $data.Array], writable: false },
-    supportedFieldOperations: {
-        value: {
-            'contains': {
-                dataType: $data.String,
-                allowedIn: $data.Expressions.FilterExpression,
-                mapTo: ' LIKE ',
-                expressionInParameter: false,
-                parameters: [{ name: 'inStatement', dataType: $data.String, prefix: '%', suffix: '%' }]
-            },
-            'startsWith': {
-                dataType: $data.String,
-                allowedIn: $data.Expressions.FilterExpression,
-                mapTo: ' LIKE ',
-                expressionInParameter: false,
-                parameters: [{ name: 'inStatement', dataType: $data.String, suffix: '%' }]
-            },
-            'endsWith': {
-                dataType: $data.String,
-                allowedIn: $data.Expressions.FilterExpression,
-                mapTo: ' LIKE ',
-                expressionInParameter: false,
-                parameters: [{ name: 'inStatement', dataType: $data.String, prefix: '%' }]
-            }
-        },
-        enumerable: true,
-        writable: true
-    },
-    supportedBinaryOperators: {
-        value: {
-            equal: { mapTo: ' = ', dataType: $data.Boolean, allowedIn: $data.Expressions.FilterExpression },
-            notEqual: { mapTo: ' != ', dataType: $data.Boolean, allowedIn: $data.Expressions.FilterExpression },
-            equalTyped: { mapTo: ' = ', dataType: $data.Boolean, allowedIn: $data.Expressions.FilterExpression },
-            notEqualTyped: { mapTo: ' != ', dataType: $data.Boolean, allowedIn: $data.Expressions.FilterExpression },
-            greaterThan: { mapTo: ' > ', dataType: $data.Boolean, allowedIn: $data.Expressions.FilterExpression },
-            greaterThanOrEqual: { mapTo: ' >= ', dataType: $data.Boolean, allowedIn: $data.Expressions.FilterExpression },
-
-            lessThan: { mapTo: ' < ', dataType: $data.Boolean, allowedIn: $data.Expressions.FilterExpression },
-            lessThenOrEqual: { mapTo: ' <= ', dataType: $data.Boolean, allowedIn: $data.Expressions.FilterExpression },
-            or: { mapTo: ' OR ', dataType: $data.Boolean, allowedIn: $data.Expressions.FilterExpression },
-            and: { mapTo: ' AND ', dataType: $data.Boolean, allowedIn: $data.Expressions.FilterExpression },
-
-            "in": { mapTo: " IN ", dataType: $data.Boolean, resolvableType: [$data.Array, $data.Queryable], allowedIn: $data.Expressions.FilterExpression }
-        }
-    },
-    supportedUnaryOperators: {
-        value: {}
-    },
-    supportedSetOperations: {
-        value: {
-            filter: {},
-            map: {},
-            forEach: {},
-            toArray: {},
-            single: {},
-            take: {},
-            skip: {},
-            orderBy: {},
-            orderByDescending: {},
-            first: {}
-        },
-        enumerable: true,
-        writable: true
-    },
-    fieldConverter: {
-        value: {
-            fromDb: {
-                '$data.Number': function (value) { return typeof value === "number" ? value : parseInt(value); },
-                '$data.Integer': function (value) { return typeof value === "number" ? value : parseFloat(value); },
-                '$data.String': function (value) { return value; },
-                '$data.Date': function (value) { return new Date(typeof value === "string" ? parseInt(value) : value); },
-                '$data.Boolean': function (value) { return !!value },
-                '$data.Blob': function (value) { return value; },
-                '$data.Array': function (value) { if (value === undefined) { return new $data.Array(); } return value; }
-            },
-            toDb: {
-                '$data.Number': function (value) { return value; },
-                '$data.Integer': function (value) { return value; },
-                '$data.String': function (value) { return "'" + value + "'"; },
-                '$data.Date': function (value) { return value ? value.valueOf() : null; },
-                '$data.Boolean': function (value) { return value },
-                '$data.Blob': function (value) { return value; },
-                '$data.Array': function (value) { return '(' + value.join(', ') + ')'; }
-            }
-        }
-    },
-    executeQuery: function (query, callBack) {
-        var self = this;
-        callBack = $data.typeSystem.createCallbackSetting(callBack);
-        var schema = query.defaultType;
-        var entitSetDefinition = query.context.getType().memberDefinitions.asArray().filter(function (m) { return m.elementType == schema })[0] || {};
-        var ctx = this.context;
-
-        if (!this.AuthenticationProvider)
-            this.AuthenticationProvider = new $data.Authentication.Anonymous({});
-
-        var sql;
-        try {
-            sql = this._compile(query);
-        } catch (e) {
-            callBack.error(e);
-            return;
-        }
-
-        var includes = [];
-        var requestData = {
-            url: this.providerConfiguration.YQLQueryUrl + encodeURIComponent(sql.queryText) + "&" + this.providerConfiguration.YQLFormat + (this.providerConfiguration.YQLEnv ? ("&env=" + this.providerConfiguration.YQLEnv) : ""),
-            dataType: "JSON",
-            success: function (data, textStatus, jqXHR) {
-                var resultData = self._preProcessData(data, entitSetDefinition);
-                if (resultData == false) {
-                    callBack.success(query);
-                    return;
-                }
-
-                query.rawDataList = resultData;
-                if (entitSetDefinition.anonymousResult) {
-                    query.rawDataList = resultData;
-                    callBack.success(query);
-                    return;
-                } else {
-                    var compiler = Container.createModelBinderConfigCompiler(query, []);
-                    compiler.Visit(query.expression);
-                }
-
-                callBack.success(query);
-            },
-            error: function (jqXHR, textStatus, errorThrow) {
-                var errorData = {};
-                try {
-                    errorData = JSON.parse(jqXHR.responseText).error;
-                } catch (e) {
-                    errorData = errorThrow + ': ' + jqXHR.responseText;
-                }
-                callBack.error(errorData);
-            }
-        };
-
-        this.context.prepareRequest.call(this, requestData);
-        this.AuthenticationProvider.CreateRequest(requestData);
-    },
-    _preProcessData: function (jsonResult, entityDef) {
-        var resultData = jsonResult;
-        var depths = entityDef.resultPath != undefined ? entityDef.resultPath : this.providerConfiguration.resultPath;
-        for (var i = 0; i < depths.length; i++) {
-            if (resultData[depths[i]])
-                resultData = resultData[depths[i]];
-            else {
-                return false;
-            }
-        }
-
-        var skipFirstLevel = entityDef.resultSkipFirstLevel != undefined ? entityDef.resultSkipFirstLevel : this.providerConfiguration.resultSkipFirstLevel;
-        if (skipFirstLevel == true) {
-            var keys = Object.keys(resultData);
-            if (keys.length == 1 && (resultData[keys[0]] instanceof Array || !entityDef.anonymousResult))
-                resultData = resultData[keys[0]];
-        }
-
-        if (resultData.length) {
-            return resultData;
-        }
-        else
-            return [resultData]
-    },
-    _compile: function (query) {
-        var sqlText = Container.createYQLCompiler().compile(query);
-        return sqlText;
-    },
-    getTraceString: function (query) {
-        if (!this.AuthenticationProvider)
-            this.AuthenticationProvider = new $data.Authentication.Anonymous({});
-
-        var sqlText = this._compile(query);
-        return sqlText;
-    },
-    setContext: function (ctx) {
-        this.context = ctx;
-    },
-    saveChanges: function (callBack) {
-        Guard.raise(new Exception("Not Implemented", "Not Implemented"));
-    }
-}, null);
-
-$data.StorageProviderBase.registerProvider("YQL", $data.storageProviders.YQL.YQLProvider);
-//"use strict" // suspicious code;
-
-$C('$data.storageProviders.YQL.YQLCompiler', $data.Expressions.EntityExpressionVisitor, null, {
-    constructor: function () {
-        this.provider = {};
-        this.cTypeCache = {};
-    },
-
-    compile: function (query) {
-        this.provider = query.context.storageProvider;
-
-        var context = {
-            filterSql: { sql: '' },
-            projectionSql: { sql: '' },
-            orderSql: { sql: '' },
-            skipSql: { sql: '' },
-            takeSql: { sql: '' },
-            tableName: ''
-        };
-        this.Visit(query.expression, context);
-
-        if (context.projectionSql.sql == '')
-            context.projectionSql.sql = "SELECT *";
-
-        if (context.orderSql.sql)
-            context.orderSql.sql = " | sort(" + context.orderSql.sql + ')';
-
-        //special skip-take logic
-        if (context.skipSql.value && context.takeSql.value) {
-            var skipVal = context.skipSql.value;
-            context.skipSql.value = context.takeSql.value;
-            context.takeSql.value = context.takeSql.value + skipVal;
-        }
-        if (context.skipSql.value) context.skipSql.sql = context.skipSql.sqlPre + context.skipSql.value + context.skipSql.sqlSuf
-        if (context.takeSql.value) context.takeSql.sql = context.takeSql.sqlPre + context.takeSql.value + context.takeSql.sqlSuf
-
-        return {
-            queryText: context.projectionSql.sql + ' FROM ' + context.tableName +
-                context.filterSql.sql +
-                context.orderSql.sql +
-                context.takeSql.sql +
-                (context.takeSql.sql ? context.skipSql.sql : ''),
-            selectMapping: context.projectionSql.selectFields,
-            params: []
-        };
-
-    },
-
-    VisitFilterExpression: function (expression, context) {
-        ///<param name="expression" type="$data.Expressions.FilterExpression" />
-        this.Visit(expression.source, context);
-
-        context.filterSql.type = expression.nodeType;
-        if (context.filterSql.sql == '')
-            context.filterSql.sql = ' WHERE ';
-        else
-            context.filterSql.sql += ' AND ';
-
-        this.Visit(expression.selector, context.filterSql);
-    },
-    VisitProjectionExpression: function (expression, context) {
-        ///<param name="expression" type="$data.Expressions.ProjectionExpression" />
-        this.Visit(expression.source, context);
-
-        context.projectionSql.type = expression.nodeType;
-        if (context.projectionSql.sql == '')
-            context.projectionSql.sql = 'SELECT ';
-        else
-            Guard.raise(new Exception('multiple select error'));
-
-        this.Visit(expression.selector, context.projectionSql);
-    },
-    VisitOrderExpression: function (expression, context) {
-        ///<param name="expression" type="$data.Expressions.OrderExpression" />
-        this.Visit(expression.source, context);
-
-        context.orderSql.type = expression.nodeType;
-
-        var orderContext = { sql: '' };
-        this.Visit(expression.selector, orderContext);
-        context.orderSql.sql = "field='" + orderContext.sql + "', descending='" + (expression.nodeType == ExpressionType.OrderByDescending) + "'" +
-            (context.orderSql.sql != '' ? (', ' + context.orderSql.sql) : '');
-    },
-    VisitPagingExpression: function (expression, context) {
-        ///<param name="expression" type="$data.Expressions.PagingExpression" />
-        this.Visit(expression.source, context);
-
-        if (expression.nodeType == ExpressionType.Skip) {
-            context.skipSql.type = expression.nodeType;
-            context.skipSql.sqlPre = ' | tail(count=';
-            this.Visit(expression.amount, context.skipSql);
-            context.skipSql.sqlSuf = ')';
-        }
-        else if (expression.nodeType == ExpressionType.Take) {
-            context.takeSql.type = expression.nodeType;
-            context.takeSql.sqlPre = ' | truncate(count=';
-            this.Visit(expression.amount, context.takeSql);
-            context.takeSql.sqlSuf = ')';
-        }
-    },
-
-    VisitSimpleBinaryExpression: function (expression, context) {
-        context.sql += "(";
-        var left = this.Visit(expression.left, context);
-        context.sql += expression.resolution.mapTo;
-
-        if (expression.resolution.resolvableType &&
-            !Guard.requireType(expression.resolution.mapTo + ' expression.right.value', expression.right.value, expression.resolution.resolvableType)) {
-            Guard.raise(new Exception(expression.right.type + " not allowed in '" + expression.resolution.mapTo + "' statement", "invalid operation"));
-        }
-
-        var right = this.Visit(expression.right, context);
-        context.sql += ")";
-    },
-
-    VisitEntityFieldExpression: function (expression, context) {
-        this.Visit(expression.source, context);
-        this.Visit(expression.selector, context);
-    },
-    VisitMemberInfoExpression: function (expression, context) {
-        var memberName;
-        if (context.wasComplex === true)
-            context.sql += '.';
-        context.sql += expression.memberName;
-
-        if (context.isComplex == true) {
-            context.complex += expression.memberName;
-            context.wasComplex = true;
-        }
-        else {
-            context.wasComplex = false;
-            if (context.complex)
-                memberName = context.complex + expression.memberName;
-            else
-                memberName = expression.memberName;
-
-            context.complex = null;
-            //context.sql += memberName;
-            //context.fieldName = memberName;
-            context.fieldData = { name: memberName, dataType: expression.memberDefinition.dataType };
-
-            if (context.type == 'Projection' && !context.selectFields)
-                context.selectFields = [{ from: memberName, dataType: expression.memberDefinition.dataType }];
-        }
-    },
-
-    VisitConstantExpression: function (expression, context) {
-        if (context.type == 'Projection')
-            Guard.raise(new Exception('Constant value is not supported in Projection.', 'Not supported!'));
-
-        this.VisitQueryParameterExpression(expression, context);
-    },
-
-    VisitQueryParameterExpression: function (expression, context) {
-        context.value = expression.value;
-        var expressionValueType = Container.resolveType(Container.getTypeName(expression.value));
-        if (this.provider.supportedDataTypes.indexOf(expressionValueType) != -1)
-            context.sql += this.provider.fieldConverter.toDb[Container.resolveName(expressionValueType)](expression.value);
-        else {
-            switch (expressionValueType) {
-                case $data.Queryable:
-                    context.sql += '(' + expression.value.toTraceString().queryText + ')';
-                    break;
-                default:
-                    context.sql += "" + expression.value + ""; break;
-            }
-        }
-    },
-
-    VisitParametricQueryExpression: function (expression, context) {
-        if (context.type == 'Projection') {
-            this.Visit(expression.expression, context);
-            if (expression.expression instanceof $data.Expressions.ComplexTypeExpression) {
-                context.selectFields = context.selectFields || [];
-                var type = expression.expression.entityType;
-                var includes = this._getComplexTypeIncludes(type);
-                context.selectFields.push({ from: context.complex, type: type, includes: includes });
-            }
-
-        } else {
-
-            var exp = this.Visit(expression.expression, context);
-            context.parameters = expression.parameters;
-        }
-    },
-
-    VisitEntitySetExpression: function (expression, context) {
-        if (context.type) {
-            if (!context.complex)
-                context.complex = '';
-        }
-        else {
-            context.tableName = expression.instance.tableName;
-        }
-
-    },
-
-    VisitObjectLiteralExpression: function (expression, context) {
-        var self = this;
-        context.selectFields = context.selectFields || [];
-        expression.members.forEach(function (member) {
-            if (member.expression instanceof $data.Expressions.ObjectLiteralExpression) {
-                context.mappingPrefix = context.mappingPrefix || []
-                context.mappingPrefix.push(member.fieldName);
-                self.Visit(member, context);
-                context.mappingPrefix.pop();
-            }
-            else {
-                if (context.selectFields.length > 0)
-                    context.sql += ', ';
-                self.Visit(member, context);
-
-                var mapping = { from: context.fieldData.name, to: (context.mappingPrefix instanceof Array ? context.mappingPrefix.join('.') + '.' + member.fieldName : member.fieldName) };
-                if (context.selectType) {
-                    mapping.type = context.selectType;
-                    var includes = this._getComplexTypeIncludes(context.selectType);
-                    mapping.includes = includes;
-                } else {
-                    mapping.dataType = context.fieldData.dataType;
-                }
-                context.selectFields.push(mapping);
-
-                delete context.fieldData;
-                delete context.selectType;
-            }
-        }, this);
-    },
-    VisitObjectFieldExpression: function (expression, context) {
-        this.Visit(expression.expression, context);
-        if (expression.expression instanceof $data.Expressions.ComplexTypeExpression) {
-            context.fieldData = context.fieldData || {};
-            context.fieldData.name = context.complex;
-            context.selectType = expression.expression.entityType;
-        }
-    },
-    VisitEntityFieldOperationExpression: function (expression, context) {
-        Guard.requireType("expression.operation", expression.operation, $data.Expressions.MemberInfoExpression);
-
-        var opDef = expression.operation.memberDefinition;
-        var opName = opDef.mapTo || opDef.name;
-
-        context.sql += '(';
-
-        if (opDef.expressionInParameter == false)
-            this.Visit(expression.source, context);
-
-        context.sql += opName;
-        var paramCounter = 0;
-        var params = opDef.parameters || [];
-
-        var args = params.map(function (item, index) {
-            var result = { dataType: item.dataType, prefix: item.prefix, suffix: item.suffix };
-            if (item.value) {
-                result.value = item.value;
-            } else if (item.name === "@expression") {
-                result.value = expression.source;
-            } else {
-                result.value = expression.parameters[paramCounter];
-                result.itemType = expression.parameters[paramCounter++].type;
-            };
-            return result;
-        });
-
-        args.forEach(function (arg, index) {
-            var itemType = arg.itemType ? Container.resolveType(arg.itemType) : null;
-            if (!itemType || ((arg.dataType instanceof Array && arg.dataType.indexOf(itemType) != -1) || arg.dataType == itemType)) {
-                if (index > 0) {
-                    context.sql += ", ";
-                };
-                var funcContext = { sql: '' };
-                this.Visit(arg.value, funcContext);
-
-                if (opName == ' LIKE ') {
-                    var valueType = Container.getTypeName(funcContext.value)
-                    context.sql += valueType == 'string' ? "'" : "";
-                    context.sql += (arg.prefix ? arg.prefix : '') + funcContext.value + (arg.suffix ? arg.suffix : '')
-                    context.sql += valueType == 'string' ? "'" : "";
-                } else {
-                    context.sql += funcContext.sql;
-                }
-
-            } else
-                Guard.raise(new Exception(parameter.type + " not allowed in '" + expression.operation.memberName + "' statement", "invalid operation"));
-        }, this);
-
-        if (opDef.rigthValue) context.sql += opDef.rigthValue;
-        else context.sql += ""
-
-        context.sql += ')';
-    },
-
-    VisitComplexTypeExpression: function (expression, context) {
-        this.Visit(expression.source, context);
-
-        context.isComplex = true;
-        this.Visit(expression.selector, context);
-        context.isComplex = false;
-
-        if (context.complex != '' /*&& context.isComplex*/)
-            context.complex += '.';
-
-    },
-
-    VisitEntityExpression: function (expression, context) {
-        this.Visit(expression.source, context);
-    },
-
-    _findComplexType: function (type, result, depth) {
-        type.memberDefinitions.getPublicMappedProperties().forEach(function (memDef) {
-            var dataType = Container.resolveType(memDef.dataType)
-            if (dataType.isAssignableTo && !dataType.isAssignableTo($data.EntitySet)) {
-                var name = (depth ? depth + '.' + memDef.name : memDef.name);
-                result.push({ name: name, type: dataType });
-                this._findComplexType(dataType, result, name);
-            }
-        }, this);
-    },
-    _getComplexTypeIncludes: function (type) {
-        if (!this.cTypeCache[type.name]) {
-            var inc = [];
-            this._findComplexType(type, inc);
-            this.cTypeCache[type.name] = inc;
-        }
-        return this.cTypeCache[type.name];
-    }
-
-}, null);
-
-$data.Class.define('$data.Yahoo.types.Geo.placeTypeNameCf', $data.Entity, null, {
-    code: { type: 'string' },
-    content: { type: 'string' }
-}, null);
-
-$data.Class.define('$data.Yahoo.types.Geo.countryCf', $data.Entity, null, {
-    code: { type: 'string' },
-    type: { type: 'string' },
-    content: { type: 'string' }
-}, null);
-
-$data.Class.define('$data.Yahoo.types.Geo.adminCf', $data.Entity, null, {
-    code: { type: 'string' },
-    type: { type: 'string' },
-    content: { type: 'string' }
-}, null);
-
-$data.Class.define('$data.Yahoo.types.Geo.localityCf', $data.Entity, null, {
-    code: { type: 'string' },
-    content: { type: 'string' }
-}, null);
-
-$data.Class.define('$data.Yahoo.types.Geo.centroidCf', $data.Entity, null, {
-    latitude: { type: 'string' },
-    longitude: { type: 'string' }
-}, null);
-
-$data.Class.define('$data.Yahoo.types.Geo.postalCf', $data.Entity, null, {
-    type: { type: 'string' },
-    content: { type: 'string' }
-}, null);
-
-$data.Class.define('$data.Yahoo.types.Geo.boundingBoxCf', $data.Entity, null, {
-    southWest: { type: 'centroidRef' },
-    northEast: { type: 'centroidRef' }
-}, null);
-
-$data.Class.define('$data.Yahoo.types.Geo.PlaceMeta', null, null, {
-    woeid: { type: 'int', key: true },
-    name: { type: 'string' },
-    uri: { type: 'string' },
-    placeTypeName: { type: 'placeTypeNameRef' },
-    lang: { type: 'string' }
-}, null);
-
-$data.Class.defineEx('$data.Yahoo.types.Geo.PlaceMetaFull', [{ type: null }, { type: $data.Yahoo.types.Geo.PlaceMeta }], null, {
-    country: { type: 'countryRef' },
-    admin1: { type: 'adminRef' },
-    admin2: { type: 'adminRef' },
-    admin3: { type: 'adminRef' },
-    locality1: { type: 'localityRef' },
-    locality2: { type: 'localityRef' },
-    postal: { type: 'postalRef' },
-    centroid: { type: 'centroidRef' },
-    boundingBox: { type: 'boundingBoxRef' },
-    areaRank: { type: 'int' },
-    popRank: { type: 'int' }
-}, null);
-
-
-$data.Class.define('$data.Yahoo.types.Geo.placetype', $data.Entity, null, {
-    woeid: { type: 'int', key: true },
-    placeTypeDescription: { type: 'string' },
-    uri: { type: 'string' },
-    placeTypeName: { type: 'placeTypeNameRef' },
-    lang: { type: 'string' },
-    placetype: { type: 'string' },
-    placetypeid: { type: 'string' }
-}, null);
-
-$data.Class.defineEx('$data.Yahoo.types.Geo.sibling', [{ type: $data.Entity }, { type: $data.Yahoo.types.Geo.PlaceMetaFull }], null, {
-    sibling_woeid: { type: 'string' }
-}, null);
-
-$data.Class.defineEx('$data.Yahoo.types.Geo.parent', [{ type: $data.Entity }, { type: $data.Yahoo.types.Geo.PlaceMetaFull }], null, {
-    child_woeid: { type: 'string' }
-}, null);
-
-$data.Class.defineEx('$data.Yahoo.types.Geo.neighbor', [{ type: $data.Entity }, { type: $data.Yahoo.types.Geo.PlaceMetaFull }], null, {
-    neighbor_woeid: { type: 'string' }
-}, null);
-
-$data.Class.defineEx('$data.Yahoo.types.Geo.common', [{ type: $data.Entity }, { type: $data.Yahoo.types.Geo.PlaceMetaFull }], null, {
-    woeid1: { type: 'string' },
-    woeid2: { type: 'string' },
-    woeid3: { type: 'string' },
-    woeid4: { type: 'string' },
-    woeid5: { type: 'string' },
-    woeid6: { type: 'string' },
-    woeid7: { type: 'string' },
-    woeid8: { type: 'string' },
-    'long': { type: 'string' }
-}, null);
-
-$data.Class.defineEx('$data.Yahoo.types.Geo.children', [{ type: $data.Entity }, { type: $data.Yahoo.types.Geo.PlaceMetaFull }], null, {
-    parent_woeid: { type: 'string' },
-    placetype: { type: 'string' }
-}, null);
-
-$data.Class.defineEx('$data.Yahoo.types.Geo.belongto', [{ type: $data.Entity }, { type: $data.Yahoo.types.Geo.PlaceMetaFull }], null, {
-    member_woeid: { type: 'string' },
-    placetype: { type: 'string' }
-}, null);
-
-$data.Class.defineEx('$data.Yahoo.types.Geo.ancestor', [{ type: $data.Entity }, { type: $data.Yahoo.types.Geo.PlaceMetaFull }], null, {
-    descendant_woeid: { type: 'string' }
-}, null);
-
-$data.Class.defineEx('$data.Yahoo.types.Geo.place', [{ type: $data.Entity }, { type: $data.Yahoo.types.Geo.PlaceMetaFull }], null, {
-    text: { type: 'string' },
-    focus: { type: 'string' },
-    placetype: { type: 'string' }
-}, null);
-
-$data.Class.defineEx('$data.Yahoo.types.Geo.county', [{ type: $data.Entity }, { type: $data.Yahoo.types.Geo.PlaceMeta }], null, {
-    place: { type: 'string' }
-}, null);
-$data.Class.defineEx('$data.Yahoo.types.Geo.country', [{ type: $data.Entity }, { type: $data.Yahoo.types.Geo.PlaceMeta }], null, {
-    place: { type: 'string' }
-}, null);
-$data.Class.defineEx('$data.Yahoo.types.Geo.district', [{ type: $data.Entity }, { type: $data.Yahoo.types.Geo.PlaceMeta }], null, {
-    place: { type: 'string' }
-}, null);
-$data.Class.defineEx('$data.Yahoo.types.Geo.sea', [{ type: $data.Entity }, { type: $data.Yahoo.types.Geo.PlaceMeta }], null, {
-    place: { type: 'string' }
-}, null);
-$data.Class.defineEx('$data.Yahoo.types.Geo.state', [{ type: $data.Entity }, { type: $data.Yahoo.types.Geo.PlaceMeta }], null, {
-    place: { type: 'string' }
-}, null);
-$data.Class.defineEx('$data.Yahoo.types.Geo.continent', [{ type: $data.Entity }, { type: $data.Yahoo.types.Geo.PlaceMeta }], null, {
-    place: { type: 'string' },
-    view: { type: 'string' }
-}, null);
-$data.Class.defineEx('$data.Yahoo.types.Geo.ocean', [{ type: $data.Entity }, { type: $data.Yahoo.types.Geo.PlaceMeta }], null, {
-    place: { type: 'string' },
-    view: { type: 'string' }
-}, null);
-$data.Class.defineEx('$data.Yahoo.types.Geo.descendant', [{ type: $data.Entity }, { type: $data.Yahoo.types.Geo.PlaceMeta }], null, {
-    ancestor_woeid: { type: 'string' },
-    placetype: { type: 'string' },
-    degree: { type: 'string' },
-    view: { type: 'string' }
-}, null);
-
-Container.registerType('placeTypeNameRef', $data.Yahoo.types.Geo.placeTypeNameCf);
-Container.registerType('centroidRef', $data.Yahoo.types.Geo.centroidCf);
-Container.registerType('countryRef', $data.Yahoo.types.Geo.countryCf);
-Container.registerType('adminRef', $data.Yahoo.types.Geo.adminCf);
-Container.registerType('localityRef', $data.Yahoo.types.Geo.localityCf);
-Container.registerType('postalRef', $data.Yahoo.types.Geo.postalCf);
-Container.registerType('boundingBoxRef', $data.Yahoo.types.Geo.boundingBoxCf);
-
-$data.Class.define("$data.Yahoo.YQLContext", $data.EntityContext, null, {
-    //Geo
-    Continents: { type: $data.EntitySet, elementType: $data.Yahoo.types.Geo.continent, tableName: 'geo.continents' },
-    Counties: { type: $data.EntitySet, elementType: $data.Yahoo.types.Geo.county, tableName: 'geo.counties' },
-    Countries: { type: $data.EntitySet, elementType: $data.Yahoo.types.Geo.country, tableName: 'geo.countries' },
-    Districts: { type: $data.EntitySet, elementType: $data.Yahoo.types.Geo.district, tableName: 'geo.districts' },
-    Oceans: { type: $data.EntitySet, elementType: $data.Yahoo.types.Geo.ocean, tableName: 'geo.oceans' },
-    Places: { type: $data.EntitySet, elementType: $data.Yahoo.types.Geo.place, tableName: 'geo.places' },
-    PlaceTypes: { type: $data.EntitySet, elementType: $data.Yahoo.types.Geo.placetype, tableName: 'geo.placetypes' },
-    PlaceSiblings: { type: $data.EntitySet, elementType: $data.Yahoo.types.Geo.sibling, tableName: 'geo.places.siblings' },
-    PlaceParents: { type: $data.EntitySet, elementType: $data.Yahoo.types.Geo.parent, tableName: 'geo.places.parent' },
-    PlaceNeighbors: { type: $data.EntitySet, elementType: $data.Yahoo.types.Geo.neighbor, tableName: 'geo.places.neighbors' },
-    PlaceCommons: { type: $data.EntitySet, elementType: $data.Yahoo.types.Geo.common, tableName: 'geo.places.common' },
-    PlaceChildrens: { type: $data.EntitySet, elementType: $data.Yahoo.types.Geo.children, tableName: 'geo.places.children' },
-    PlaceBelongtos: { type: $data.EntitySet, elementType: $data.Yahoo.types.Geo.belongto, tableName: 'geo.places.belongtos' },
-    PlaceAncestors: { type: $data.EntitySet, elementType: $data.Yahoo.types.Geo.ancestor, tableName: 'geo.places.ancestors' },
-    Seas: { type: $data.EntitySet, elementType: $data.Yahoo.types.Geo.sea, tableName: 'geo.seas' },
-    States: { type: $data.EntitySet, elementType: $data.Yahoo.types.Geo.state, tableName: 'geo.states' },
-    PlaceDescendants: { type: $data.EntitySet, elementType: $data.Yahoo.types.Geo.descendant, tableName: 'geo.places.descendants' },
-
-    placeTypeNameRef: { value: $data.Yahoo.types.Geo.placeTypeNameCf },
-    centroidRef: { value: $data.Yahoo.types.Geo.centroidCf },
-    countryRef: { value: $data.Yahoo.types.Geo.countryCf },
-    adminRef: { value: $data.Yahoo.types.Geo.adminCf },
-    localityRef: { value: $data.Yahoo.types.Geo.localityCf },
-    postalRef: { value: $data.Yahoo.types.Geo.postalCf },
-    boundingBoxRef: { value: $data.Yahoo.types.Geo.boundingBoxCf },
-
-    //Data
-    Atom: {
-        anonymousResult: true,
-        tableName: 'atom',
-        resultPath: ["query", "results"],
-        resultSkipFirstLevel: true,
-        type: $data.EntitySet,
-        elementType: $data.Class.define("$data.Yahoo.types.YQLAtom", $data.Entity, null, {
-            url: { type: 'string', required: true, searchable: true }
-        }, null)
-    },
-    Csv: {
-        anonymousResult: true,
-        tableName: 'csv',
-        resultPath: ["query", "results"],
-        resultSkipFirstLevel: true,
-        type: $data.EntitySet,
-        elementType: $data.Class.define("$data.Yahoo.types.YQLCsv", $data.Entity, null, {
-            url: { type: 'string', required: true, searchable: true },
-            charset: { type: 'string', searchable: true },
-            columns: { type: 'string', searchable: true }
-        }, null)
-    },
-    DataUri: {
-        anonymousResult: true,
-        tableName: 'data.uri',
-        resultPath: ["query", "results"],
-        resultSkipFirstLevel: true,
-        type: $data.EntitySet,
-        elementType: $data.Class.define("$data.Yahoo.types.YQLDataUri", $data.Entity, null, {
-            url: { type: 'string', required: true, searchable: true }
-        }, null)
-    },
-    Feed: {
-        anonymousResult: true,
-        tableName: 'feed',
-        resultPath: ["query", "results"],
-        resultSkipFirstLevel: true,
-        type: $data.EntitySet,
-        elementType: $data.Class.define("$data.Yahoo.types.YQLFeed", $data.Entity, null, {
-            url: { type: 'string', required: true, searchable: true }
-        }, null)
-    },
-    FeedNormalizer: {
-        anonymousResult: true,
-        tableName: 'feednormalizer',
-        resultPath: ["query", "results"],
-        resultSkipFirstLevel: true,
-        type: $data.EntitySet,
-        elementType: $data.Class.define("$data.Yahoo.types.YQLFeedNormalizer", $data.Entity, null, {
-            url: { type: 'string', required: true, searchable: true },
-            output: { type: 'string', searchable: true },
-            prexslurl: { type: 'string', searchable: true },
-            postxslurl: { type: 'string', searchable: true },
-            timeout: { type: 'string', searchable: true }
-        }, null)
-    },
-    Html: {
-        anonymousResult: true,
-        tableName: 'html',
-        resultPath: ["query", "results"],
-        resultSkipFirstLevel: true,
-        type: $data.EntitySet,
-        elementType: $data.Class.define("$data.Yahoo.types.YQLHtml", $data.Entity, null, {
-            url: { type: 'string', required: true, searchable: true },
-            charset: { type: 'string', searchable: true },
-            browser: { type: 'bool', searchable: true },
-            xpath: { type: 'string', searchable: true },
-            compat: { type: 'string', searchable: true, description: "valid values for compat is 'html5' and 'html4'" },
-            Result: { type: 'string', searchable: true }
-        }, null)
-    },
-    Json: {
-        anonymousResult: true,
-        tableName: 'json',
-        resultPath: ["query", "results"],
-        resultSkipFirstLevel: true,
-        type: $data.EntitySet,
-        elementType: $data.Class.define("$data.Yahoo.types.YQLJson", $data.Entity, null, {
-            url: { type: 'string', required: true, searchable: true },
-            itemPath: { type: 'string', searchable: true }
-        }, null)
-    },
-    Rss: {
-        anonymousResult: false,
-        tableName: 'rss',
-        resultPath: ["query", "results"],
-        resultSkipFirstLevel: true,
-        type: $data.EntitySet,
-        elementType: $data.Class.define("$data.Yahoo.types.YQLRss", $data.Entity, null, {
-            url: { type: 'string', required: true, searchable: true },
-            guid: { type: 'GuidField' },
-            title: { type: 'string' },
-            description: { type: 'string' },
-            link: { type: 'string' },
-            pubDate: { type: 'string' }
-        }, null)
-    },
-    GuidField: {
-        type: $data.Class.define("GuidField", $data.Entity, null, {
-            isPermaLink: { type: 'string' },
-            content: { type: 'string' }
-        }, null)
-    },
-    Xml: {
-        anonymousResult: true,
-        tableName: 'xml',
-        resultPath: ["query", "results"],
-        resultSkipFirstLevel: true,
-        type: $data.EntitySet,
-        elementType: $data.Class.define("$data.Yahoo.types.YQLXml", $data.Entity, null, {
-            url: { type: 'string', required: true, searchable: true },
-            itemPath: { type: 'string', searchable: true }
-        }, null)
-    },
-    Xslt: {
-        anonymousResult: true,
-        tableName: 'xslt',
-        resultPath: ["query", "results"],
-        resultSkipFirstLevel: true,
-        type: $data.EntitySet,
-        elementType: $data.Class.define("$data.Yahoo.types.YQLXslt", $data.Entity, null, {
-            url: { type: 'string', searchable: true },
-            xml: { type: 'string', searchable: true },
-            stylesheet: { type: 'string', searchable: true },
-            stylesheetliteral: { type: 'string', searchable: true },
-            wrapperelement: { type: 'string', searchable: true }
-        }, null)
-    }
-
-}, null);
-$C('$data.storageProviders.InMemory.InMemoryProvider', $data.StorageProviderBase, null,
-{
-    constructor: function (cfg, ctx) {
-        this.context = ctx;
-        this.providerConfiguration = $data.typeSystem.extend({
-            source: null
-        }, cfg);
-    },
-    initializeStore: function (callBack) {
-        callBack = $data.typeSystem.createCallbackSetting(callBack);
-
-        this.providerConfiguration.source = this.providerConfiguration.source || {};
-        var setKeys = Object.keys(this.context._entitySetReferences);
-        for (var i = 0; i < setKeys.length; i++) {
-            var set = this.context._entitySetReferences[setKeys[i]];
-            if (!this.providerConfiguration.source[set.name]) {
-                this.providerConfiguration.source[set.name] = [];
-            } else {
-                var sourceArray = this.providerConfiguration.source[set.name];
-                for (var j = 0; j < sourceArray.length; j++) {
-                    if (!(sourceArray[j] instanceof set.elementType))
-                        Guard.raise(new Exception('Invalid element in source: \'' + setKeys[i]));
-                }
-            }
-        }
-
-        callBack.success(this.context);
-    },
-    executeQuery: function (query, callBack) {
-        callBack = $data.typeSystem.createCallbackSetting(callBack);
-
-        var sql;
-        try {
-            sql = this._compile(query);
-        } catch (e) {
-            callBack.error(e);
-            return;
-        }
-
-        var sourceName = query.context.getEntitySetFromElementType(query.defaultType).name;
-        var result = [].concat(this.providerConfiguration.source[sourceName] || []);
-        if (sql.$filter && !sql.$every)
-            result = result.filter(sql.$filter);
-
-        if (sql.$map)
-            result = result.map(sql.$map);
-
-        if (sql.$take !== undefined && sql.$skip !== undefined) {
-            result = result.slice(sql.$skip, sql.$skip + sql.$take);
-        } else if (sql.$take !== undefined && result.length > sql.$take) {
-            result = result.slice(0, sql.$take);
-        } else if (sql.$skip) {
-            result = result.slice(sql.$skip, result.length);
-        }
-
-        if (sql.$order && sql.$order.length > 0) {
-            sql.$order.reverse();
-            for (var i = 0, l = sql.$order.length; i < l; i++) {
-                if (sql.$order[i].ASC)
-                    result.sort(function (a, b) { return sql.$order[i](a) > sql.$order[i](b) });
-                else
-                    result.sort(function (a, b) { return sql.$order[i](a) < sql.$order[i](b) });
-            }
-        }
-
-        if (sql.$some)
-            result = [result.length > 0];
-
-        //        if (sql.$every && sql.$filter)
-        //            result = [result.every(sql.$filter)];
-
-        if (sql.$length)
-            result = [result.length];
-
-        query.rawDataList = result;
-        callBack.success(query);
-    },
-    _compile: function (query, params) {
-        var compiler = new $data.storageProviders.InMemory.InMemoryCompiler(this);
-        var compiled = compiler.compile(query);
-        return compiled;
-    },
-    saveChanges: function (callBack, changedItems) {
-        for (var i = 0; i < changedItems.length; i++) {
-            var item = changedItems[i];
-            switch (item.data.entityState) {
-                case $data.EntityState.Added:
-                    //todo: key, computedfields
-                    this.providerConfiguration.source[item.entitySet.name].push(item.data);
-                    break;
-                case $data.EntityState.Deleted:
-                    var idx = this.providerConfiguration.source[item.entitySet.name].indexOf(item.data);
-                    this.providerConfiguration.source[item.entitySet.name].splice(idx, 1);
-                    break;
-                case $data.EntityState.Modified:
-                    //todo: computedfields
-                    break;
-                default:
-                    break;
-            }
-        }
-        callBack.success();
-    },
-    getTraceString: function (queryable) {
-        var compiled = this._compile(queryable);
-        return compiled;
-    },
-    supportedDataTypes: { value: [$data.Integer, $data.String, $data.Number, $data.Blob, $data.Boolean, $data.Date, $data.Object], writable: false },
-
-    supportedBinaryOperators: {
-        value: {
-            equal: { mapTo: ' == ', dataType: "boolean", allowedIn: [$data.Expressions.FilterExpression, $data.Expressions.OrderExpression] },
-            notEqual: { mapTo: ' != ', dataType: "boolean", allowedIn: [$data.Expressions.FilterExpression, $data.Expressions.OrderExpression] },
-            equalTyped: { mapTo: ' === ', dataType: "boolean", allowedIn: [$data.Expressions.FilterExpression, $data.Expressions.OrderExpression] },
-            notEqualTyped: { mapTo: ' !== ', dataType: "boolean", allowedIn: [$data.Expressions.FilterExpression, $data.Expressions.OrderExpression] },
-            greaterThan: { mapTo: ' > ', dataType: "boolean", allowedIn: [$data.Expressions.FilterExpression, $data.Expressions.OrderExpression] },
-            greaterThanOrEqual: { mapTo: ' >= ', dataType: "boolean", allowedIn: [$data.Expressions.FilterExpression, $data.Expressions.OrderExpression] },
-
-            lessThan: { mapTo: ' < ', dataType: "boolean", allowedIn: [$data.Expressions.FilterExpression, $data.Expressions.OrderExpression] },
-            lessThenOrEqual: { mapTo: ' <= ', dataType: "boolean", allowedIn: [$data.Expressions.FilterExpression, $data.Expressions.OrderExpression] },
-            or: { mapTo: ' || ', dataType: "boolean", allowedIn: [$data.Expressions.FilterExpression, $data.Expressions.OrderExpression] },
-            and: { mapTo: ' && ', dataType: "boolean", allowedIn: [$data.Expressions.FilterExpression, $data.Expressions.OrderExpression] },
-
-            "in": { mapTo: ".indexOf(", allowedIn: [$data.Expressions.FilterExpression], rightValue: ') > -1', reverse: true }
-        }
-    },
-
-    supportedUnaryOperators: {
-        value: {
-        }
-    },
-
-    supportedFieldOperations: {
-        value: {
-
-        },
-        enumerable: true,
-        writable: true
-    },
-    supportedSetOperations: {
-        value: {
-            filter: {},
-            map: {},
-            length: {},
-            forEach: {},
-            toArray: {},
-            single: {},
-            some: {},
-            //every: {},
-            take: {},
-            skip: {},
-            orderBy: {},
-            orderByDescending: {},
-            first: {}
-        },
-        enumerable: true,
-        writable: true
-    },
-    fieldConverter: {
-        value: {
-            fromDb: {
-                '$data.Integer': function (number) { return number; },
-                '$data.Number': function (number) { return number; },
-                '$data.Date': function (dbData) { return dbData ? new Date(parseInt(dbData.substr(6))) : undefined; },
-                '$data.String': function (text) { return text; },
-                '$data.Boolean': function (bool) { return bool; },
-                '$data.Blob': function (blob) { return blob; },
-                '$data.Object': function (o) { if (o === undefined) { return new $data.Object(); } return JSON.parse(o); },
-                '$data.Array': function (o) { if (o === undefined) { return new $data.Array(); } return JSON.parse(o); }
-            },
-            toDb: {
-                '$data.Integer': function (number) { return number; },
-                '$data.Number': function (number) { return number % 1 == 0 ? number : number + 'm'; },
-                '$data.Date': function (date) { return date ? "datetime'" + date.toISOString() + "'" : null; },
-                '$data.String': function (text) { return "'" + text.replace(/'/g, "''") + "'"; },
-                '$data.Boolean': function (bool) { return bool ? 'true' : 'false'; },
-                '$data.Blob': function (blob) { return blob; },
-                '$data.Object': function (o) { return JSON.stringify(o); },
-                '$data.Array': function (o) { return JSON.stringify(o); }
-            }
-        }
-    }
-}, null);
-
-$data.StorageProviderBase.registerProvider("InMemory", $data.storageProviders.InMemory.InMemoryProvider); $C('$data.storageProviders.InMemory.InMemoryCompiler', $data.Expressions.EntityExpressionVisitor, null, {
-    constructor: function (provider) {
-        this.provider = provider;
-    },
-    compile: function (query) {
-
-        var queryFragments = { urlText: "" };
-
-        this.Visit(query.expression, queryFragments);
-
-        var compiled = {};
-        for (var name in queryFragments) {
-            if (name.indexOf('$') == 0) {
-                compiled[name] = queryFragments[name];
-            }
-        }
-
-        return compiled;
-    },
-    VisitOrderExpression: function (expression, context) {
-        this.Visit(expression.source, context);
-        context.data = "";
-        context.lambda = "";
-        var funcCompiler = Container.createInMemoryFunctionCompiler(this.provider);
-        funcCompiler.compile(expression.selector, context);
-        context['$order'] = context['$order'] || [];
-        var sort = new Function(context.lambda, 'return ' + context.data + ';');
-        sort.ASC = expression.nodeType == 'OrderBy';
-        context['$order'].push(sort);
-        context.data = "";
-        context.lambda = "";
-    },
-    VisitIncludeExpression: function (expression, context) {
-        this.Visit(expression.source, context);
-        context.$include = context.$include || [];
-        if (context.$include.indexOf(expression.selector.value) < 0) context.$include.push(expression.selector.value);
-        /*if (!context['$select']) {
-            if (context['$expand']) { context['$expand'] += ','; } else { context['$expand'] = ''; }
-            context['$expand'] += expression.selector.value.replace('.', '/');
-
-            this.includes = this.includes || [];
-            var includeFragment = expression.selector.value.split('.');
-            var tempData = null;
-            var storageModel = this.mainEntitySet.entityContext._storageModel.getStorageModel(this.mainEntitySet.createNew);
-            for (var i = 0; i < includeFragment.length; i++) {
-                if (tempData) { tempData += '.' + includeFragment[i]; } else { tempData = includeFragment[i]; }
-                var association = storageModel.Associations[includeFragment[i]];
-                if (association) {
-                    if (!this.includes.some(function (include) { return include.name == tempData }, this)) {
-                        this.includes.push({ name: tempData, type: association.ToType });
-                    }
-                }
-                else {
-                    Guard.raise(new Exception("The given include path is invalid: " + expression.selector.value + ", invalid point: " + tempData));
-                }
-                storageModel = this.mainEntitySet.entityContext._storageModel.getStorageModel(association.ToType);
-            }
-        }*/
-    },
-    VisitPagingExpression: function (expression, context) {
-        this.Visit(expression.source, context);
-        context['$' + expression.nodeType.toLowerCase()] = expression.amount.value;
-    },
-    VisitProjectionExpression: function (expression, context) {
-        this.defaultFunctionCompiler(expression, context, '$map');
-    },
-    VisitFilterExpression: function (expression, context) {
-        this.defaultFunctionCompiler(expression, context, '$filter');
-    },
-    VisitSomeExpression: function (expression, context) {
-        this.defaultFunctionCompiler(expression, context, '$some');
-    },
-    VisitEveryExpression: function (expression, context) {
-        this.defaultFunctionCompiler(expression, context, '$every');
-    },
-    VisitCountExpression: function (expression, context) {
-        this.Visit(expression.source, context);
-        context['$length'] = true;
-    },
-    VisitServiceOperationExpression: function (expression, context) {
-        context.$serviceOperation = { name: expression.cfg.serviceName, params: expression.params };
-    },
-    defaultFunctionCompiler: function (expression, context, type) {
-        this.Visit(expression.source, context);
-        context.data = "";
-        context.lambda = "";
-        var funcCompiler = Container.createInMemoryFunctionCompiler(this.provider);
-        funcCompiler.compile(expression.selector, context);
-        context[type] = new Function(context.lambda, 'return ' + context.data + ';');
-        context.data = "";
-        context.lambda = "";
-    }
-
-}, {});
-$C('$data.storageProviders.InMemory.InMemoryFunctionCompiler', $data.Expressions.EntityExpressionVisitor, null, {
-    constructor: function (provider) {
-        this.provider = provider;
-    },
-    compile: function (expression, context) {
-        this.Visit(expression, context);
-    },
-
-    VisitParametricQueryExpression: function (expression, context) {
-        this.Visit(expression.expression, context);
-    },
-    VisitUnaryExpression: function (expression, context) {
-        context.data += expression.resolution.mapTo;
-        context.data += "(";
-        this.Visit(expression.operand, context);
-        context.data += ")";
-    },
-    VisitSimpleBinaryExpression: function (expression, context) {
-        if (expression.resolution.reverse) {
-            context.data += "(";
-            var right = this.Visit(expression.right, context);
-            context.data += expression.resolution.mapTo;
-            var left = this.Visit(expression.left, context);
-            if (expression.resolution.rightValue)
-                context.data += expression.resolution.rightValue;
-            context.data += ")";
-        } else {
-            context.data += "(";
-            var left = this.Visit(expression.left, context);
-            context.data += expression.resolution.mapTo;
-            var right = this.Visit(expression.right, context);
-            context.data += ")";
-        }
-    },
-
-    VisitConstantExpression: function (expression, context) {
-        var type = Container.resolveType(expression.type);
-        var typeName = Container.resolveName(type);
-        context.data += this.provider.fieldConverter.toDb[typeName](expression.value);
-    },
-    VisitMemberInfoExpression: function (expression, context) {
-        context.data += expression.memberName;
-    },
-
-    VisitComplexTypeExpression: function (expression, context) {
-        this.Visit(expression.source, context);
-        this.Visit(expression.selector, context);
-        context.data += ".";
-    },
-
-    VisitEntityExpression: function (expression, context) {
-        context.data += expression.selector.lambda + '.';
-        context.lambda = expression.selector.lambda;
-        this.Visit(expression.source, context);
-    },
-    VisitEntitySetExpression: function () { },
-    VisitObjectLiteralExpression: function (expression, context) {
-        context.data += '{ ';
-
-        for (var i = 0; i < expression.members.length; i++) {
-            var member = expression.members[i];
-
-            if (i > 0)
-                context.data += ', ';
-
-            this.Visit(member, context);
-        }
-
-        context.data += ' }';
-    },
-    VisitObjectFieldExpression: function (expression, context) {
-        context.data += expression.fieldName + ': ';
-        this.Visit(expression.expression, context);
-    }
-}); $C('$data.storageProviders.Storm.StormProvider', $data.StorageProviderBase, null, {
-    constructor: function (cfg, ctx) {
-        this.context = ctx;
-        this.providerConfiguration = $data.typeSystem.extend({
-            url: 'http://localhost:3000/'
-        }, cfg);
-    },
-    initializeStore: function (callback) {
-        callback = $data.typeSystem.createCallbackSetting(callback);
-        callback.success(this.context);
-    },
-    executeQuery: function (query, callback) {
-        callBack = $data.typeSystem.createCallbackSetting(callback);
-
-        query.modelBinderConfig = {};
-        var modelBinder = Container.createModelBinderConfigCompiler(query, this.includes, false);
-        modelBinder.Visit(query.expression);
-
-        var compiler = new $data.storageProviders.InMemory.InMemoryCompiler(this);
-        var compiled = compiler.compile(query);
-
-        var sets = query.getEntitySets().map(function (it) { return it.name; });
-
-        for (var i in compiled) {
-            if (i.indexOf('$') == 0) {
-                if (typeof compiled[i] === 'function')
-                    compiled[i] = compiled[i].toString().replace('function anonymous', 'function').replace(/\n/g, ' ');
-                else if (compiled[i] instanceof Array && i === '$order') {
-                    for (var k = 0; k < compiled[i].length; k++) {
-                        if (typeof compiled[i][k] === 'function') {
-                            var dir = compiled[i][k].ASC;
-                            compiled[i][k] = compiled[i][k].toString().replace('function anonymous', 'function').replace(/\n/g, ' ');
-                            compiled[i][k] = { fn: compiled[i][k], direction: dir };
-                            /*if (compiled[i][k].ASC){
-                                if (!compiled.$orderby) compiled*/
-                        }
-                    }
-                }
-            }
-        }
-
-        /*var qs = 'db.' + sets[0];
-        if (compiled.$include){
-            for (var i = 0; i < compiled.$include.length; i++){
-                qs += '.include("' + compiled.$include[i] + '")';
-            }
-        }
-        if (compiled.$filter) qs += '.filter(' + compiled.$filter + ')';
-        if (compiled.$order){
-            for (var i = 0; i < compiled.$order.length; i++){
-                qs += compiled.$order[i];
-            }
-        }
-        if (compiled.$skip) qs += '.skip(' + compiled.$skip + ')';
-        if (compiled.$take) qs += '.take(' + compiled.$take + ')';
-        if (compiled.$length) qs += '.length(callback)';
-        else qs += '.toArray(callback)';*/
+        provider.configuration.stateCallbacks = callbacks || {};
 
         $data.ajax({
-            url: this.providerConfiguration.url,
+            url: this.configuration.Url_code,
+            data: 'type=' + provider.configuration.type_code + '&client_id=' + provider.configuration.app_id + '&scope=' + provider.configuration.scope,
+            type: 'POST',
             dataType: 'json',
-            data: { entitySet: sets[0], expression: compiled },
-            success: function (data, textStatus, jqXHR) {
-                query.rawDataList = typeof data.length !== 'undefined' ? data : [{ cnt: data }];
-                query.context = this;
-
-                callBack.success(query);
+            success: function (data) {
+                if (typeof provider.configuration.stateCallbacks.pending == "function")
+                    provider.configuration.stateCallbacks.pending(data);
+                provider._processRequestToken(data);
+                provider.Authenticated = true;
             },
-            error: function (jqXHR, textStatus, errorThrown) {
-                var errorData = {};
-                try {
-                    errorData = JSON.parse(jqXHR.responseText).error;
-                } catch (e) {
-                    errorData = errorThrown + ': ' + jqXHR.responseText;
-                }
-                callBack.error(errorData);
+            error: function () {
+                if (typeof provider.configuration.stateCallbacks.error == "function")
+                    provider.configuration.stateCallbacks.error(arguments);
             }
         });
     },
-    saveChanges: function (callBack, changedItems) {
-        var self = this;
-        if (changedItems.length) {
-            var independentBlocks = this.buildIndependentBlocks(changedItems);
-
-            var convertedItems = [];
-            var collections = {};
-            for (var i = 0; i < independentBlocks.length; i++) {
-                for (var j = 0; j < independentBlocks[i].length; j++) {
-                    convertedItems.push(independentBlocks[i][j].data);
-
-                    var es = collections[independentBlocks[i][j].entitySet.name];
-                    if (!es) {
-                        es = {};
-                        collections[independentBlocks[i][j].entitySet.name] = es;
-                    }
-
-                    switch (independentBlocks[i][j].data.entityState) {
-                        case $data.EntityState.Unchanged: continue; break;
-                        case $data.EntityState.Added:
-                            if (!es.insertAll) es.insertAll = [];
-                            es.insertAll.push(this.save_getInitData(independentBlocks[i][j], convertedItems));
-                            break;
-                        case $data.EntityState.Modified:
-                            if (!es.updateAll) es.updateAll = [];
-                            es.updateAll.push(/*{ data: */this.save_getInitData(independentBlocks[i][j], convertedItems)/*, type: Container.resolveName(independentBlocks[i][j].data.getType()) }*/);
-                            break;
-                        case $data.EntityState.Deleted:
-                            if (!es.removeAll) es.removeAll = [];
-                            es.removeAll.push(this.save_getInitData(independentBlocks[i][j], convertedItems));
-                            break;
-                        default: Guard.raise(new Exception("Not supported Entity state"));
-                    }
-                }
-            }
-
-            $data.ajax({
-                url: this.providerConfiguration.url,
-                type: 'post',
-                dataType: 'json',
-                data: { items: JSON.stringify(collections) },
-                success: function (data, textStatus, jqXHR) {
-                    callBack.success(data);
-                },
-                error: function (jqXHR, textStatus, errorThrown) {
-                    var errorData = {};
-                    try {
-                        errorData = JSON.parse(jqXHR.responseText).error;
-                    } catch (e) {
-                        errorData = errorThrown + ': ' + jqXHR.responseText;
-                    }
-                    callBack.error(errorData);
-                }
-            });
-
-        } else callBack.success(0);
+    Logout: function () {
+        this.Authenticated = false;
     },
-    save_getInitData: function (item, convertedItems) {
-        item.physicalData = this.context._storageModel.getStorageModel(item.data.getType()).PhysicalType.convertTo(item.data, convertedItems);
-        var serializableObject = {}
-        item.physicalData.getType().memberDefinitions.asArray().forEach(function (memdef) {
-            if (memdef.kind == $data.MemberTypes.navProperty || memdef.kind == $data.MemberTypes.complexProperty || (memdef.kind == $data.MemberTypes.property && !memdef.notMapped)) {
-                serializableObject[memdef.name] = item.physicalData[memdef.name];
-            }
-        }, this);
-        return serializableObject;
-    },
-    supportedDataTypes: { value: [$data.Integer, $data.String, $data.Number, $data.Blob, $data.Boolean, $data.Date], writable: false },
-    supportedBinaryOperators: {
-        value: {
-            equal: { mapTo: ' == ', dataType: "boolean", allowedIn: [$data.Expressions.FilterExpression, $data.Expressions.OrderExpression] },
-            notEqual: { mapTo: ' != ', dataType: "boolean", allowedIn: [$data.Expressions.FilterExpression, $data.Expressions.OrderExpression] },
-            equalTyped: { mapTo: ' === ', dataType: "boolean", allowedIn: [$data.Expressions.FilterExpression, $data.Expressions.OrderExpression] },
-            notEqualTyped: { mapTo: ' !== ', dataType: "boolean", allowedIn: [$data.Expressions.FilterExpression, $data.Expressions.OrderExpression] },
-            greaterThan: { mapTo: ' > ', dataType: "boolean", allowedIn: [$data.Expressions.FilterExpression, $data.Expressions.OrderExpression] },
-            greaterThanOrEqual: { mapTo: ' >= ', dataType: "boolean", allowedIn: [$data.Expressions.FilterExpression, $data.Expressions.OrderExpression] },
+    CreateRequest: function (cfg) {
+        if (!cfg)
+            return;
+        var _this = this;
 
-            lessThan: { mapTo: ' < ', dataType: "boolean", allowedIn: [$data.Expressions.FilterExpression, $data.Expressions.OrderExpression] },
-            lessThenOrEqual: { mapTo: ' <= ', dataType: "boolean", allowedIn: [$data.Expressions.FilterExpression, $data.Expressions.OrderExpression] },
-            or: { mapTo: ' || ', dataType: "boolean", allowedIn: [$data.Expressions.FilterExpression, $data.Expressions.OrderExpression] },
-            and: { mapTo: ' && ', dataType: "boolean", allowedIn: [$data.Expressions.FilterExpression, $data.Expressions.OrderExpression] },
+        if (cfg.url && this.Authenticated) {
+            var andChar = '?';
+            if (cfg.url.indexOf(andChar) > 0)
+                andChar = '&';
 
-            "in": { mapTo: ".indexOf(", allowedIn: [$data.Expressions.FilterExpression], rightValue: ') > -1', reverse: true }
+            if (this.configuration.access_token)
+                cfg.url = cfg.url + andChar + 'access_token=' + this.configuration.access_token;
         }
+
+        $data.ajax(cfg);
     },
-    supportedUnaryOperators: {
-        value: {
-            not: { mapTo: '!' }
-        }
-    },
-    supportedSetOperations: {
-        value: {
-            filter: {},
-            map: {},
-            length: {},
-            forEach: {},
-            toArray: {},
-            single: {},
-            /*some: {
-                invokable: false,
-                allowedIn: [$data.Expressions.FilterExpression],
-                parameters: [{ name: "filter", dataType: "$data.Queryable" }],
-                mapTo: 'any',
-                frameType: $data.Expressions.SomeExpression
+    _processRequestToken: function (verification_data) {
+        var provider = this;
+
+        $data.ajax({
+            url: provider.configuration.Url_token,
+            data: 'type=' + provider.configuration.type_token + '&client_id=' + provider.configuration.app_id + '&code=' + verification_data.code,
+            type: 'POST',
+            dataType: 'json',
+            success: function (result) {
+                provider.configuration.access_token = result.access_token;
+                if (typeof provider.configuration.stateCallbacks.success == "function")
+                    provider.configuration.stateCallbacks.success(result);
             },
-            every: {
-                invokable: false,
-                allowedIn: [$data.Expressions.FilterExpression],
-                parameters: [{ name: "filter", dataType: "$data.Queryable" }],
-                mapTo: 'all',
-                frameType: $data.Expressions.EveryExpression
-            },*/
-            take: {},
-            skip: {},
-            orderBy: {},
-            orderByDescending: {},
-            first: {},
-            include: {}
-        },
-        enumerable: true,
-        writable: true
-    },
-    fieldConverter: {
-        value: {
-            fromDb: {
-                '$data.Integer': function (number) { return number; },
-                '$data.Number': function (number) { return number; },
-                '$data.Date': function (dbData) { return dbData ? new Date(parseInt(dbData.substr(6))) : undefined; },
-                '$data.String': function (text) { return text; },
-                '$data.Boolean': function (bool) { return bool; },
-                '$data.Blob': function (blob) { return blob; },
-                '$data.Object': function (o) { if (o === undefined) { return new $data.Object(); } return JSON.parse(o); },
-                '$data.Array': function (o) { if (o === undefined) { return new $data.Array(); } return JSON.parse(o); }
-            },
-            toDb: {
-                '$data.Integer': function (number) { return number; },
-                '$data.Number': function (number) { return number % 1 == 0 ? number : number + 'm'; },
-                '$data.Date': function (date) { return date ? "datetime'" + date.toISOString() + "'" : null; },
-                '$data.String': function (text) { return "'" + text.replace(/'/g, "''") + "'"; },
-                '$data.Boolean': function (bool) { return bool ? 'true' : 'false'; },
-                '$data.Blob': function (blob) { return blob; },
-                '$data.Object': function (o) { return JSON.stringify(o); },
-                '$data.Array': function (o) { return JSON.stringify(o); }
-            }
-        }
-    }
-},
-{
-    isSuppported: {
-        get: function () {
-            return 'XMLHttpRequest' in window;
-        }
-    }
-});
-
-if ($data.storageProviders.Storm.StormProvider.isSupported) {
-    $data.StorageProviderBase.registerProvider('storm', $data.storageProviders.Storm.StormProvider);
-}
-$C('$data.modelBinder.mongoDBModelBinderConfigCompiler', $data.modelBinder.ModelBinderConfigCompiler, null, {
-    _addPropertyToModelBinderConfig: function (elementType, builder) {
-        var storageModel = this._query.context._storageModel.getStorageModel(elementType);
-        if (elementType.memberDefinitions) {
-            elementType.memberDefinitions.getPublicMappedProperties().forEach(function (prop) {
-                if ((!storageModel) || (storageModel && !storageModel.Associations[prop.name] && !storageModel.ComplexTypes[prop.name])) {
-
-                    if (!storageModel && this._query.context.storageProvider.supportedDataTypes.indexOf(Container.resolveType(prop.dataType)) < 0) {
-                        //complex type
-                        builder.selectModelBinderProperty(prop.name);
-                        builder.modelBinderConfig['$type'] = Container.resolveType(prop.dataType);
-                        if (this._isoDataProvider) {
-                            builder.modelBinderConfig['$selector'] = ['json:' + prop.name + '.results', 'json:' + prop.name];
-                        } else {
-                            builder.modelBinderConfig['$selector'] = 'json:' + prop.name;
-                        }
-                        this._addPropertyToModelBinderConfig(Container.resolveType(prop.dataType), builder);
-                        builder.popModelBinderProperty();
-                    } else {
-                        if (prop.key) {
-                            builder.addKeyField(prop.computed ? '_id' : prop.name);
-                        }
-                        if (prop.concurrencyMode === $data.ConcurrencyMode.Fixed) {
-                            builder.modelBinderConfig[prop.name] = { $selector: 'json:__metadata', $source: 'etag' }
-                        } else {
-                            builder.modelBinderConfig[prop.name] = prop.computed ? { $type: $data.String, $source: '_id' } : prop.name;
-                        }
+            error: function (obj) {
+                var data = eval('(' + obj.responseText + ')');
+                if (data.error) {
+                    if (data.error.message == "authorization_pending") {
+                        setTimeout(function () {
+                            provider._processRequestToken(verification_data);
+                        }, 2000);
+                    } else if ("authorization_declined") {
+                        if (typeof provider.configuration.stateCallbacks.abort == "function")
+                            provider.configuration.stateCallbacks.abort(arguments);
                     }
                 }
-            }, this);
-        } else {
-            builder._binderConfig.$item = {};
-            builder.modelBinderConfig = builder._binderConfig.$item;
-        }
-        if (storageModel) {
-            this._addComplexTypeProperties(storageModel.ComplexTypes, builder);
-        }
-    }
-});
-
-$C('$data.storageProviders.mongoDB.mongoDBProjectionCompiler', $data.Expressions.EntityExpressionVisitor, null, {
-    constructor: function () {
-    },
-
-    compile: function (expression, context) {
-        this.Visit(expression, context);
-    },
-    VisitProjectionExpression: function (expression, context) {
-        this.Visit(expression.selector, context);
-    },
-    VisitParametricQueryExpression: function (expression, context) {
-        this.Visit(expression.expression, context);
-    },
-    VisitObjectLiteralExpression: function (expression, context) {
-        var tempObjectLiteralPath = this.ObjectLiteralPath;
-        this.hasObjectLiteral = true;
-        expression.members.forEach(function (member, index) {
-            this.Visit(member, context);
-        }, this);
-    },
-    VisitObjectFieldExpression: function (expression, context) {
-        this.Visit(expression.expression, context);
-    },
-
-    VisitComplexTypeExpression: function (expression, context) {
-        this.Visit(expression.source, context);
-        this.Visit(expression.selector, context);
-    },
-
-    VisitEntityFieldExpression: function (expression, context) {
-        this.Visit(expression.source, context);
-        this.Visit(expression.selector, context);
-    },
-    VisitEntityExpression: function (expression, context) {
-        this.Visit(expression.source, context);
-    },
-    VisitEntitySetExpression: function (expression, context) {
-        if (expression.source instanceof $data.Expressions.EntityExpression) {
-            this.Visit(expression.source, context);
-        }
-        if (expression.selector instanceof $data.Expressions.AssociationInfoExpression) {
-            this.Visit(expression.selector, context);
-        }
-    },
-    VisitAssociationInfoExpression: function (expression, context) {
-    },
-    VisitMemberInfoExpression: function (expression, context) {
-        if (!context.options.fields) context.options.fields = { _id: 1 };
-        if (!context.options.fields[expression.memberName]) context.options.fields[expression.memberName] = 1;
-    },
-    VisitConstantExpression: function (expression, context) {
-    }
-});
-
-$C('$data.storageProviders.mongoDB.mongoDBWhereCompiler', $data.Expressions.EntityExpressionVisitor, null, {
-    constructor: function (provider, lambdaPrefix) {
-        this.provider = provider;
-        this.lambdaPrefix = lambdaPrefix;
-    },
-
-    compile: function (expression, context) {
-        this.Visit(expression, context);
-    },
-
-    VisitParametricQueryExpression: function (expression, context) {
-        this.Visit(expression.expression, context);
-    },
-
-    VisitUnaryExpression: function (expression, context) {
-        context.unary = expression.nodeType;
-        this.Visit(expression.operand, context);
-    },
-
-    VisitSimpleBinaryExpression: function (expression, context) {
-        if (expression.nodeType == $data.Expressions.ExpressionType.Or) context.or = true;
-        else if (expression.nodeType == $data.Expressions.ExpressionType.And) context.and = true;
-
-        this.Visit(expression.left, context);
-        this.Visit(expression.right, context);
-
-        if (expression.nodeType == $data.Expressions.ExpressionType.Or && context.stackOr && context.stackOr.length) {
-            var or = [];
-            while (context.stackOr.length) {
-                var field = context.stackOr.pop();
-                var expr = {};
-
-                expr[field.field] = field.query;
-                or.push(expr);
-                delete context.query[field.field];
             }
-            if (or.length == 1) {
-                if (context.and) {
-                    if (!context.stackAnd) context.stackAnd = [];
-                    context.stackAnd.push({ field: '$or', query: [or[0]] });
-                } else context.query = or[0];
-            } else {
-                if (context.and) {
-                    if (!context.stackAnd) context.stackAnd = [];
-                    context.stackAnd.push({ field: '$or', query: or });
-                } else context.query.$or = or;
-            }
-            context.or = false;
-        } else if (expression.nodeType == $data.Expressions.ExpressionType.And && context.stackAnd && context.stackAnd.length) {
-            var and = [];
-            while (context.stackAnd.length) {
-                var field = context.stackAnd.pop();
-                var expr = {};
-
-                expr[field.field] = field.query;
-                and.push(expr);
-                delete context.query[field.field];
-            }
-            if (and.length == 1) {
-                if (context.or) {
-                    if (!context.stackOr) context.stackOr = [];
-                    context.stackOr.push({ field: '$and', query: [and[0]] });
-                } else context.query = and[0];
-            } else {
-                if (context.or) {
-                    if (!context.stackOr) context.stackOr = [];
-                    context.stackOr.push({ field: '$and', query: and });
-                } else context.query.$and = and;
-            }
-            context.and = false;
-        } else if (expression.nodeType !== $data.Expressions.ExpressionType.And) {
-            if (expression.nodeType == $data.Expressions.ExpressionType.Equal) {
-                context.query[context.field] = context.value;
-            } else if (expression.nodeType == $data.Expressions.ExpressionType.In && context.unary == $data.Expressions.ExpressionType.Not) {
-                if (!context.query[context.field]) context.query[context.field] = {};
-                context.query[context.field].$nin = typeof context.value === 'object' ? JSON.parse(context.value) : context.value;
-                context.unary = undefined;
-            } else {
-                if (!context.query[context.field]) context.query[context.field] = {};
-                context.query[context.field][expression.resolution.mapTo] = typeof context.value === 'object' ? JSON.parse(context.value) : context.value;
-            }
-
-            if (context.or) {
-                if (!context.stackOr) context.stackOr = [];
-                context.stackOr.push({ field: context.field, query: context.query[context.field] });
-            } else if (context.and) {
-                if (!context.stackAnd) context.stackAnd = [];
-                context.stackAnd.push({ field: context.field, query: context.query[context.field] });
-            }
-
-            context.field = undefined;
-            context.value = undefined;
-        }
-    },
-
-    VisitEntityFieldExpression: function (expression, context) {
-        this.Visit(expression.source, context);
-        this.Visit(expression.selector, context);
-    },
-
-    VisitAssociationInfoExpression: function (expression, context) {
-        context.data += expression.associationInfo.FromPropertyName;
-    },
-
-    VisitMemberInfoExpression: function (expression, context) {
-        if (!context.query[expression.memberName]) context.query[expression.memberName] = null;
-        context.field = expression.memberName;
-    },
-
-    VisitQueryParameterExpression: function (expression, context) {
-        context.data += this.provider.fieldConverter.toDb[expression.type](expression.value);
-    },
-
-    VisitEntityFieldOperationExpression: function (expression, context) {
-        Guard.requireType("expression.operation", expression.operation, $data.Expressions.MemberInfoExpression);
-
-        this.Visit(expression.source.selector, context);
-
-        //TODO refactor!
-        var opDef = expression.operation.memberDefinition;
-        var opName = opDef.mapTo || opDef.name;
-        var paramCounter = 0;
-        var params = opDef.parameters || [{ name: "@expression" }];
-
-        var args = params.map(function (item, index) {
-            if (item.name === "@expression") {
-                return expression.source;
-            } else {
-                return expression.parameters[paramCounter++]
-            };
         });
-
-        args.forEach(function (arg, index) {
-            this.Visit(arg, context);
-        }, this);
-
-        if (!context.query[context.field]) context.query[context.field] = {};
-
-        switch (opName) {
-            case 'contains':
-                context.query[context.field].$regex = context.value;
-                break;
-            case 'startsWith':
-                context.query[context.field].$regex = '^' + context.value;
-                break;
-            case 'endsWith':
-                context.query[context.field].$regex = context.value + '$';
-                break;
-            default:
-                break;
-        }
-    },
-
-    VisitConstantExpression: function (expression, context) {
-        var valueType = Container.getTypeName(expression.value);
-        context.value = this.provider.fieldConverter.toDb[Container.resolveName(Container.resolveType(valueType))](expression.value);
-    },
-
-    VisitEntityExpression: function (expression, context) {
-        this.Visit(expression.source, context);
-    },
-
-    VisitEntitySetExpression: function (expression, context) {
-        this.Visit(expression.source, context);
-        if (expression.selector instanceof $data.Expressions.AssociationInfoExpression) {
-            this.Visit(expression.selector, context);
-            context.data += "/";
-        }
-    },
-
-    VisitFrameOperationExpression: function (expression, context) {
-        this.Visit(expression.source, context);
-
-        Guard.requireType("expression.operation", expression.operation, $data.Expressions.MemberInfoExpression);
-
-        //TODO refactor!
-        var opDef = expression.operation.memberDefinition;
-        var opName = opDef.mapTo || opDef.name;
-        context.data += opName;
-        context.data += "(";
-        var paramCounter = 0;
-        var params = opDef.parameters || [{ name: "@expression" }];
-
-        var args = params.map(function (item, index) {
-            if (item.name === "@expression") {
-                return expression.source;
-            } else {
-                return expression.parameters[paramCounter++]
-            };
-        });
-
-        for (var i = 0; i < args.length; i++) {
-            var arg = args[i];
-            if (arg.value instanceof $data.Queryable) {
-                var frameExpression = new opDef.frameType(arg.value.expression);
-                var preparator = Container.createQueryExpressionCreator(arg.value.entityContext);
-                var prep_expression = preparator.Visit(frameExpression);
-
-                var compiler = new $data.storageProviders.mongoDB.mongoDBWhereCompiler(this.provider, true);
-                var frameContext = { data: "" };
-                var compiled = compiler.compile(prep_expression, frameContext);
-
-                context.data += (frameContext.lambda + ': ' + frameContext.data);
-            };
-        }
-        context.data += ")";
     }
-});
-
-$C('$data.storageProviders.mongoDB.mongoDBOrderCompiler', $data.storageProviders.mongoDB.mongoDBWhereCompiler, null, {
-    constructor: function (provider) {
-        this.provider = provider;
-    },
-
-    compile: function (expression, context) {
-        this.Visit(expression, context);
-    },
-    VisitOrderExpression: function (expression, context) {
-        var orderContext = { data: '' };
-        this.Visit(expression.selector, orderContext);
-        if (!context.options.sort) context.options.sort = {};
-        context.options.sort[orderContext.data] = expression.nodeType == $data.Expressions.ExpressionType.OrderByDescending ? -1 : 1;
-    },
-    VisitParametricQueryExpression: function (expression, context) {
-        this.Visit(expression.expression, context);
-    },
-    VisitEntityFieldExpression: function (expression, context) {
-        this.Visit(expression.source, context);
-        this.Visit(expression.selector, context);
-    },
-    VisitComplexTypeExpression: function (expression, context) {
-        this.Visit(expression.source, context);
-        this.Visit(expression.selector, context);
-    },
-    VisitEntitySetExpression: function (expression, context) {
-        if (expression.selector instanceof $data.Expressions.AssociationInfoExpression) {
-            this.Visit(expression.source, context);
-            this.Visit(expression.selector, context);
-        }
-    },
-    VisitAssociationInfoExpression: function (expression, context) {
-    },
-    VisitEntityExpression: function (expression, context) {
-        this.Visit(expression.source, context);
-        this.Visit(expression.selector, context);
-    },
-    VisitMemberInfoExpression: function (expression, context) {
-        context.data += expression.memberName;
-    }
-});
-
-$C('$data.storageProviders.mongoDB.mongoDBPagingCompiler', $data.Expressions.EntityExpressionVisitor, null, {
-    constructor: function (provider) {
-        this.provider = provider;
-    },
-
-    compile: function (expression, context) {
-        this.Visit(expression, context);
-    },
-    VisitPagingExpression: function (expression, context) {
-        var pagingContext = { data: 0 };
-        this.Visit(expression.amount, pagingContext);
-        switch (expression.nodeType) {
-            case $data.Expressions.ExpressionType.Skip: context.options.skip = pagingContext.data; break;
-            case $data.Expressions.ExpressionType.Take: context.options.limit = pagingContext.data; break;
-            default: Guard.raise("Not supported nodeType"); break;
-        }
-    },
-    VisitConstantExpression: function (expression, context) {
-        context.data += expression.value;
-    }
-});
-
-$C('$data.storageProviders.mongoDB.mongoDBCompiler', $data.Expressions.EntityExpressionVisitor, null, {
-    constructor: function () {
-        this.context = {};
-        this.provider = {};
-        this.includes = null;
-        this.mainEntitySet = null;
-    },
-    compile: function (query) {
-        this.provider = query.context.storageProvider;
-        this.context = query.context;
-        this.mainEntitySet = query.context.getEntitySetFromElementType(query.defaultType);
-
-        query.find = {
-            query: {},
-            options: {}
-        };
-
-        query.modelBinderConfig = {};
-        var modelBinder = Container.createmongoDBModelBinderConfigCompiler(query, this.includes, false);
-        modelBinder.Visit(query.expression);
-
-        this.Visit(query.expression, query.find);
-
-        delete query.find.field;
-        delete query.find.value;
-        delete query.find.data;
-        delete query.find.stack;
-        delete query.find.or;
-
-        return query;
-    },
-    VisitOrderExpression: function (expression, context) {
-        this.Visit(expression.source, context);
-
-        var orderCompiler = Container.createmongoDBOrderCompiler(this.provider);
-        orderCompiler.compile(expression, context);
-    },
-    VisitPagingExpression: function (expression, context) {
-        this.Visit(expression.source, context);
-
-        var pagingCompiler = Container.createmongoDBPagingCompiler();
-        pagingCompiler.compile(expression, context);
-    },
-    VisitFilterExpression: function (expression, context) {
-        this.Visit(expression.source, context);
-
-        var filterCompiler = Container.createmongoDBWhereCompiler(this.provider);
-        context.data = "";
-        filterCompiler.compile(expression.selector, context);
-    },
-    VisitProjectionExpression: function (expression, context) {
-        this.Visit(expression.source, context);
-
-        var projectionCompiler = Container.createmongoDBProjectionCompiler(this.context);
-        projectionCompiler.compile(expression, context);
-    }
-});
-
-$C('$data.storageProviders.mongoDB.mongoDBProvider', $data.StorageProviderBase, null,
-{
-    constructor: function (cfg, ctx) {
-        this.driver = $data.mongoDBDriver;
-        this.context = ctx;
-        this.providerConfiguration = $data.typeSystem.extend({
-            dbCreation: $data.storageProviders.mongoDB.DbCreationType.Default,
-            address: '127.0.0.1',
-            port: 27017,
-            serverOptions: {},
-            databaseName: 'test'
+}, null); $data.Class.define("$data.Authentication.BasicAuth.BasicAuth", $data.Authentication.AuthenticationBase, null, {
+    constructor: function (cfg) {
+        this.configuration = $data.typeSystem.extend({
+            Username: '',
+            Password: ''
         }, cfg);
     },
-    _getServer: function () {
-        if (this.providerConfiguration.slave && this.providerConfiguration.slave.address && this.providerConfiguration.slave.port) {
-            return new this.driver.ReplSetServers([
-                new this.driver.Server(this.providerConfiguration.address, this.providerConfiguration.port, this.providerConfiguration.serverOptions),
-                new this.driver.Server(this.providerConfiguration.slave.address, this.providerConfiguration.slave.port, this.providerConfiguration.slave.serverOptions || {})
-            ]);
-        } else return this.driver.Server(this.providerConfiguration.address, this.providerConfiguration.port, this.providerConfiguration.serverOptions);
+    Login: function (callbacks) {
+        if (callbacks && typeof callbacks.pending == "function")
+            callbacks.pending();
     },
-    initializeStore: function (callBack) {
-        var self = this;
-        callBack = $data.typeSystem.createCallbackSetting(callBack);
-
-        switch (this.providerConfiguration.dbCreation) {
-            case $data.storageProviders.mongoDB.DbCreationType.DropAllExistingCollections:
-                var server = this._getServer();
-                new this.driver.Db(this.providerConfiguration.databaseName, server, {}).open(function (error, client) {
-                    if (error) callBack.error(error);
-
-                    var cnt = 0;
-                    var collectionCount = 0;
-                    var readyFn = function (client) {
-                        if (--cnt == 0) {
-                            callBack.success(self.context);
-                            client.close();
-                        }
-                    };
-
-                    for (var i in self.context._entitySetReferences) {
-                        if (self.context._entitySetReferences.hasOwnProperty(i))
-                            cnt++;
-                    }
-
-                    collectionCount = cnt;
-
-                    for (var i in self.context._entitySetReferences) {
-                        if (self.context._entitySetReferences.hasOwnProperty(i)) {
-
-                            client.dropCollection(self.context._entitySetReferences[i].tableName, function (error, result) {
-                                readyFn(client);
-                            });
-                        }
-                    }
-                });
-                break;
-            default:
-                callBack.success(this.context);
-                break;
-        }
+    Logout: function () {
     },
-    executeQuery: function (query, callBack) {
-        var self = this;
+    CreateRequest: function (cfg) {
+        if (!cfg)
+            return;
+        var _this = this;
 
-        callBack = $data.typeSystem.createCallbackSetting(callBack);
+        var origBeforeSend = cfg.beforeSend;
+        cfg.beforeSend = function (xhr) {
+            xhr.setRequestHeader("Authorization", "Basic  " + _this.__encodeBase64(_this.configuration.Username + ":" + _this.configuration.Password));
 
-        this.entitySet = query.context.getEntitySetFromElementType(query.defaultType);
-        new $data.storageProviders.mongoDB.mongoDBCompiler().compile(query);
-
-        var server = this._getServer();
-        new this.driver.Db(this.providerConfiguration.databaseName, server, {}).open(function (error, client) {
-            if (error) callBack.error(error);
-
-            var collection = new self.driver.Collection(client, self.entitySet.tableName);
-            var find = query.find;
-
-            var cb = function (error, results) {
-                if (error) callBack.error(error);
-
-                query.rawDataList = results instanceof Array ? results : [{ cnt: results }];
-                query.context = self.context;
-
-                callBack.success(query);
-                client.close();
-            };
-            switch (query.expression.nodeType) {
-                case $data.Expressions.ExpressionType.Count:
-                    collection.find(find.query, find.options).count(cb);
-                    break;
-                default:
-                    collection.find(find.query, find.options).toArray(cb);
-                    break;
-            }
-        });
-    },
-    _saveCollections: function (callBack, collections) {
-        var self = this;
-        var successItems = 0;
-        var server = this._getServer();
-
-        var counterState = 0;
-        var counterFn = function (callback) {
-            if (--counterState == 0) callback();
-        }
-
-        var insertFn = function (client, c, collection) {
-            collection.insert(c.insertAll, { safe: true }, function (error, result) {
-                if (error) callBack.error(error);
-
-                successItems += result.length;
-
-                if (c.removeAll && c.removeAll.length) {
-                    removeFn(client, c, collection);
-                } else {
-                    if (c.updateAll && c.updateAll.length) {
-                        updateFn(client, c, collection);
-                    } else {
-                        callBack.success(successItems);
-                        client.close();
-                    }
-                }
-            });
+            if (typeof origBeforeSend == "function")
+                origBeforeSend(xhr);
         };
 
-        var updateFn = function (client, c, collection) {
-            counterState = c.updateAll.length;
-            for (var i = 0; i < c.updateAll.length; i++) {
-                var u = c.updateAll[i];
-                var where = {};
-
-                var keys = Container.resolveType(u.type).memberDefinitions.getKeyProperties();
-                for (var j = 0; j < keys.length; j++) {
-                    var k = keys[j];
-                    where[k.computed ? '_id' : k.name] = self.fieldConverter.toDb[Container.resolveName(Container.resolveType(k.type))](u.data[k.computed ? '_id' : k.name]);
-                }
-
-                var set = {};
-                var props = Container.resolveType(u.type).memberDefinitions.getPublicMappedProperties();
-                for (var j = 0; j < props.length; j++) {
-                    var p = props[j];
-                    if (!p.computed) {
-                        set[p.name] = u.data[p.name];
-                    }
-                }
-
-                collection.update(where, { $set: set }, { safe: true }, function (error, result) {
-                    if (error) callBack.error(error);
-
-                    successItems++;
-                    counterFn(function () {
-                        callBack.success(successItems);
-                        client.close();
-                    });
-                });
-            }
-        };
-
-        var removeFn = function (client, c, collection) {
-            counterState = c.removeAll.length;
-            for (var i = 0; i < c.removeAll.length; i++) {
-                var r = c.removeAll[i];
-
-                var keys = Container.resolveType(r.type).memberDefinitions.getKeyProperties();
-                for (var j = 0; j < keys.length; j++) {
-                    var k = keys[j];
-                    r.data[k.computed ? '_id' : k.name] = self.fieldConverter.toDb[Container.resolveName(Container.resolveType(k.type))](r.data[k.computed ? '_id' : k.name]);
-                }
-
-                collection.remove(r.data, { safe: true }, function (error, cnt) {
-                    if (error) callBack.error(error);
-
-                    successItems += cnt;
-                    counterFn(function () {
-                        if (c.updateAll && c.updateAll.length) {
-                            updateFn(client, c, collection);
-                        } else {
-                            callBack.success(successItems);
-                            client.close();
-                        }
-                    });
-                });
-            }
-        };
-
-        for (var es in collections) {
-            if (collections.hasOwnProperty(es)) {
-                var c = collections[es];
-                new this.driver.Db(this.providerConfiguration.databaseName, server, {}).open(function (error, client) {
-                    if (error) callBack.error(error);
-
-                    var collection = new self.driver.Collection(client, es);
-                    if (c.insertAll && c.insertAll.length) {
-                        insertFn(client, c, collection);
-                    } else {
-                        if (c.removeAll && c.removeAll.length) {
-                            removeFn(client, c, collection);
-                        } else {
-                            if (c.updateAll && c.updateAll.length) {
-                                updateFn(client, c, collection);
-                            } else {
-                                callBack.success(0);
-                                client.close();
-                            }
-                        }
-                    }
-                });
-            }
-        }
+        $data.ajax(cfg);
     },
-    saveChanges: function (callBack, changedItems) {
-        var self = this;
-        if (changedItems.length) {
-            var independentBlocks = this.buildIndependentBlocks(changedItems);
+    __encodeBase64: function (val) {
+        var b64array = "ABCDEFGHIJKLMNOP" +
+                           "QRSTUVWXYZabcdef" +
+                           "ghijklmnopqrstuv" +
+                           "wxyz0123456789+/" +
+                           "=";
 
-            var convertedItems = [];
-            var collections = {};
-            for (var i = 0; i < independentBlocks.length; i++) {
-                for (var j = 0; j < independentBlocks[i].length; j++) {
-                    convertedItems.push(independentBlocks[i][j].data);
+        input = val;
+        var base64 = "";
+        var hex = "";
+        var chr1, chr2, chr3 = "";
+        var enc1, enc2, enc3, enc4 = "";
+        var i = 0;
 
-                    var es = collections[independentBlocks[i][j].entitySet.name];
-                    if (!es) {
-                        es = {};
-                        collections[independentBlocks[i][j].entitySet.name] = es;
-                    }
+        do {
+            chr1 = input.charCodeAt(i++);
+            chr2 = input.charCodeAt(i++);
+            chr3 = input.charCodeAt(i++);
 
-                    switch (independentBlocks[i][j].data.entityState) {
-                        case $data.EntityState.Unchanged: continue; break;
-                        case $data.EntityState.Added:
-                            if (!es.insertAll) es.insertAll = [];
-                            es.insertAll.push(this.save_getInitData(independentBlocks[i][j], convertedItems));
-                            break;
-                        case $data.EntityState.Modified:
-                            if (!es.updateAll) es.updateAll = [];
-                            es.updateAll.push({ data: this.save_getInitData(independentBlocks[i][j], convertedItems), type: Container.resolveName(independentBlocks[i][j].data.getType()) });
-                            break;
-                        case $data.EntityState.Deleted:
-                            if (!es.removeAll) es.removeAll = [];
-                            es.removeAll.push({ data: this.save_getInitData(independentBlocks[i][j], convertedItems), type: Container.resolveName(independentBlocks[i][j].data.getType()) });
-                            break;
-                        default: Guard.raise(new Exception("Not supported Entity state"));
-                    }
-                }
+            enc1 = chr1 >> 2;
+            enc2 = ((chr1 & 3) << 4) | (chr2 >> 4);
+            enc3 = ((chr2 & 15) << 2) | (chr3 >> 6);
+            enc4 = chr3 & 63;
+
+            if (isNaN(chr2)) {
+                enc3 = enc4 = 64;
+            } else if (isNaN(chr3)) {
+                enc4 = 64;
             }
 
-            this._saveCollections(callBack, collections);
-        } else {
-            callBack.success(0);
-        }
-    },
-    save_getInitData: function (item, convertedItems) {
-        var self = this;
-        item.physicalData = this.context._storageModel.getStorageModel(item.data.getType()).PhysicalType.convertTo(item.data, convertedItems);
-        var serializableObject = {}
-        item.physicalData.getType().memberDefinitions.asArray().forEach(function (memdef) {
-            if (memdef.kind == $data.MemberTypes.navProperty || memdef.kind == $data.MemberTypes.complexProperty || (memdef.kind == $data.MemberTypes.property && !memdef.notMapped)) {
-                serializableObject[memdef.computed ? '_id' : memdef.name] = item.physicalData[memdef.name];
-            }
-        }, this);
-        return serializableObject;
-    },
+            base64 = base64 +
+                        b64array.charAt(enc1) +
+                        b64array.charAt(enc2) +
+                        b64array.charAt(enc3) +
+                        b64array.charAt(enc4);
+            chr1 = chr2 = chr3 = "";
+            enc1 = enc2 = enc3 = enc4 = "";
+        } while (i < input.length);
 
-    supportedDataTypes: { value: [$data.Integer, $data.String, $data.Number, $data.Blob, $data.Boolean, $data.Date], writable: false },
-
-    supportedBinaryOperators: {
-        value: {
-            equal: { mapTo: ':', dataType: "boolean", allowedIn: [$data.Expressions.FilterExpression] },
-            notEqual: { mapTo: '$ne', dataType: "boolean", allowedIn: [$data.Expressions.FilterExpression] },
-            equalTyped: { mapTo: ':', dataType: "boolean", allowedIn: [$data.Expressions.FilterExpression] },
-            notEqualTyped: { mapTo: '$ne', dataType: "boolean", allowedIn: [$data.Expressions.FilterExpression] },
-            greaterThan: { mapTo: '$gt', dataType: "boolean", allowedIn: [$data.Expressions.FilterExpression] },
-            greaterThanOrEqual: { mapTo: '$gte', dataType: "boolean", allowedIn: [$data.Expressions.FilterExpression] },
-
-            lessThan: { mapTo: '$lt', dataType: "boolean", allowedIn: [$data.Expressions.FilterExpression] },
-            lessThenOrEqual: { mapTo: '$lte', dataType: "boolean", allowedIn: [$data.Expressions.FilterExpression] },
-            or: { mapTo: '$or', dataType: "boolean", allowedIn: [$data.Expressions.FilterExpression] },
-            and: { mapTo: '$and', dataType: "boolean", allowedIn: [$data.Expressions.FilterExpression] },
-
-            /*add: { mapTo: 'add', dataType: "number", allowedIn: [$data.Expressions.FilterExpression] },
-            divide: { mapTo: 'div', allowedIn: [$data.Expressions.FilterExpression] },
-            multiply: { mapTo: 'mul', allowedIn: [$data.Expressions.FilterExpression] },
-            subtract: { mapTo: 'sub', allowedIn: [$data.Expressions.FilterExpression] },
-            modulo: { mapTo: 'mod', allowedIn: [$data.Expressions.FilterExpression] },*/
-
-            "in": { mapTo: "$in", allowedIn: [$data.Expressions.FilterExpression] }
-        }
-    },
-
-    supportedUnaryOperators: {
-        value: {
-            not: { mapTo: '$nor' }
-        }
-    },
-
-    supportedFieldOperations: {
-        value: {
-            /* string functions */
-
-            contains: {
-                dataType: "boolean", allowedIn: [$data.Expressions.FilterExpression],
-                parameters: [{ name: "substring", dataType: "string" }]
-            },
-
-            startsWith: {
-                dataType: "string", allowedIn: [$data.Expressions.FilterExpression],
-                parameters: [{ name: "@expression", dataType: "string" }, { name: "strFragment", dataType: "string" }]
-            },
-
-            endsWith: {
-                dataType: "string", allowedIn: [$data.Expressions.FilterExpression],
-                parameters: [{ name: "@expression", dataType: "string" }, { name: "strFragment", dataType: "string" }]
-            }/*,
-
-            length: {
-                dataType: "number", allowedIn: [$data.Expressions.FilterExpression, $data.Expressions.ProjectionExpression],
-                parameters: [{ name: "@expression", dataType: "string" }]
-            },
-
-            indexOf: {
-                dataType: "number", allowedIn: [$data.Expressions.FilterExpression],
-                baseIndex: 1,
-                parameters: [{ name: '@expression', dataType: "string" }, { name: 'strFragment', dataType: 'string' }]
-            },
-
-            replace: {
-                dataType: "string", allowedIn: [$data.Expressions.FilterExpression],
-                parameters: [{ name: '@expression', dataType: "string" }, { name: 'strFrom', dataType: 'string' }, { name: 'strTo', dataType: 'string' }]
-            },
-
-            substr: {
-                mapTo: "substring",
-                dataType: "string", allowedIn: [$data.Expressions.FilterExpression],
-                parameters: [{ name: "@expression", dataType: "string" }, { name: "startFrom", dataType: "number" }, { name: "length", dataType: "number", optional: "true" }]
-            },
-
-            toLowerCase: {
-                mapTo: "tolower",
-                dataType: "string", allowedIn: [$data.Expressions.FilterExpression],
-                parameters: [{ name: "@expression", dataType: "string" }]
-            },
-
-            toUpperCase: {
-                mapTo: "toupper",
-                dataType: "string", allowedIn: [$data.Expressions.FilterExpression],
-                parameters: [{ name: "@expression", dataType: "string" }]
-
-            },
-
-            trim: {
-                dataType: "string", allowedIn: [$data.Expressions.FilterExpression],
-                parameters: [{ name: "@expression", dataType: "string" }]
-            },
-
-
-            concat: {
-                dataType: "string", allowedIn: [$data.Expressions.FilterExpression],
-                parameters: [{ name: "@expression", dataType: "string" }, { name: "strFragment", dataType: "string" }]
-            },*/
-
-
-            /* data functions */
-
-            /*day: {
-                allowedIn: [$data.Expressions.FilterExpression],
-                parameters: [{ name: "@expression", dataType: "date" }]
-            },
-            hour: {
-                allowedIn: [$data.Expressions.FilterExpression],
-                parameters: [{ name: "@expression", dataType: "date" }]
-            },
-            minute: {
-                allowedIn: [$data.Expressions.FilterExpression],
-                parameters: [{ name: "@expression", dataType: "date" }]
-            },
-            month: {
-                allowedIn: [$data.Expressions.FilterExpression],
-                parameters: [{ name: "@expression", dataType: "date" }]
-            },
-            second: {
-                allowedIn: [$data.Expressions.FilterExpression],
-                parameters: [{ name: "@expression", dataType: "date" }]
-            },
-            year: {
-                allowedIn: [$data.Expressions.FilterExpression],
-                parameters: [{ name: "@expression", dataType: "date" }]
-            },*/
-
-            /* number functions */
-            /*round: {
-                allowedIn: [$data.Expressions.FilterExpression],
-                parameters: [{ name: "@expression", dataType: "date" }]
-            },
-            floor: {
-                allowedIn: [$data.Expressions.FilterExpression],
-                parameters: [{ name: "@expression", dataType: "date" }]
-            },
-            ceiling: {
-                allowedIn: [$data.Expressions.FilterExpression],
-                parameters: [{ name: "@expression", dataType: "date" }]
-            }*/
-        },
-        enumerable: true,
-        writable: true
-    },
-    supportedSetOperations: {
-        value: {
-            filter: {},
-            map: {},
-            length: {},
-            forEach: {},
-            toArray: {},
-            single: {},
-            /*some: {
-                invokable: false,
-                allowedIn: [$data.Expressions.FilterExpression],
-                parameters: [{ name: "filter", dataType: "$data.Queryable" }],
-                mapTo: 'any',
-                frameType: $data.Expressions.SomeExpression
-            },
-            every: {
-                invokable: false,
-                allowedIn: [$data.Expressions.FilterExpression],
-                parameters: [{ name: "filter", dataType: "$data.Queryable" }],
-                mapTo: 'all',
-                frameType: $data.Expressions.EveryExpression
-            },*/
-            take: {},
-            skip: {},
-            orderBy: {},
-            orderByDescending: {},
-            first: {}/*,
-            include: {}*/
-        },
-        enumerable: true,
-        writable: true
-    },
-    fieldConverter: {
-        value: {
-            fromDb: {
-                '$data.Integer': function (number) { return number; },
-                '$data.Number': function (number) { return number; },
-                '$data.Date': function (date) { return new Date(date); },
-                '$data.String': function (text) { return typeof text !== 'string' && typeof text !== 'undefined' ? 'ObjectID("' + text.toString() + '")' : text; },
-                '$data.Boolean': function (bool) { return bool; },
-                '$data.Blob': function (blob) { return blob; },
-                '$data.Object': function (o) { if (o === undefined) { return new $data.Object(); } return JSON.parse(o); },
-                '$data.Array': function (o) { if (o === undefined) { return new $data.Array(); } return JSON.parse(o); }
-            },
-            toDb: {
-                '$data.Integer': function (number) { return number; },
-                '$data.Number': function (number) { return number; },
-                '$data.Date': function (date) { return date; },
-                '$data.String': function (text) {
-                    if (typeof text === 'undefined') return undefined;
-                    var m = new RegExp(/ObjectID\("([0-9a-f]+)"\)/).exec(text);
-                    return m ? new $data.mongoDBDriver.ObjectID.createFromHexString(m[1]) : text;
-                },
-                '$data.Boolean': function (bool) { return bool; },
-                '$data.Blob': function (blob) { return blob; },
-                '$data.Object': function (o) { return JSON.stringify(o); },
-                '$data.Array': function (o) { return JSON.stringify(o); }
-            }
-        }
+        return base64;
     }
-}, {
-    isSupported: {
-        get: function () {
-            if (!$data.mongoDBDriver) return false;
-            return true;
-        },
-        set: function (value) { }
-    }
-});
-
-$data.storageProviders.mongoDB.DbCreationType = {
-    Default: 20,
-    Merge: 10,
-    DropCollectionIfChanged: 20,
-    DropAllExistingCollections: 30
-};
-
-if ($data.storageProviders.mongoDB.mongoDBProvider.isSupported) {
-    $data.StorageProviderBase.registerProvider('mongoDB', $data.storageProviders.mongoDB.mongoDBProvider);
-}
+}, null);
