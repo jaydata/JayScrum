@@ -2,6 +2,7 @@
 bin
 obj
 *.suo
+.idea
 
 # mstest test results
 TestResults
