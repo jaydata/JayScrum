@@ -1,39 +1,39 @@
-﻿$C('$data.storageProviders.Storm.StormProvider', $data.StorageProviderBase, null, {
-    constructor: function (cfg, ctx) {
+$C('$data.storageProviders.Storm.StormProvider', $data.StorageProviderBase, null, {
+    constructor: function(cfg, ctx){
         this.context = ctx;
         this.providerConfiguration = $data.typeSystem.extend({
             url: 'http://localhost:3000/'
         }, cfg);
     },
-    initializeStore: function (callback) {
+    initializeStore: function(callback){
         callback = $data.typeSystem.createCallbackSetting(callback);
         callback.success(this.context);
     },
-    executeQuery: function (query, callback) {
+    executeQuery: function(query, callback){
         callBack = $data.typeSystem.createCallbackSetting(callback);
-
+        
         query.modelBinderConfig = {};
         var modelBinder = Container.createModelBinderConfigCompiler(query, this.includes, false);
         modelBinder.Visit(query.expression);
-
+        
         var compiler = new $data.storageProviders.InMemory.InMemoryCompiler(this);
         var compiled = compiler.compile(query);
-
-        var sets = query.getEntitySets().map(function (it) { return it.name; });
-
-        for (var i in compiled) {
-            if (i.indexOf('$') == 0) {
+        
+        var sets = query.getEntitySets().map(function(it){ return it.name; });
+        
+        for (var i in compiled){
+            if (i.indexOf('$') == 0){
                 if (typeof compiled[i] === 'function')
                     compiled[i] = compiled[i].toString().replace('function anonymous', 'function').replace(/\n/g, ' ');
-                else if (compiled[i] instanceof Array && i === '$order') {
-                    for (var k = 0; k < compiled[i].length; k++) {
-                        if (typeof compiled[i][k] === 'function') {
+                else if (compiled[i] instanceof Array && i === '$order'){
+                    for (var k = 0; k < compiled[i].length; k++){
+                        if (typeof compiled[i][k] === 'function'){
                             var dir = compiled[i][k].ASC;
                             compiled[i][k] = compiled[i][k].toString().replace('function anonymous', 'function').replace(/\n/g, ' ');
                             compiled[i][k] = { fn: compiled[i][k], direction: dir };
                             /*if (compiled[i][k].ASC){
                                 if (!compiled.$orderby) compiled*/
-                        } else {
+                        }else{
                             var dir = compiled[i][k].ASC;
                             compiled[i][k] = { fn: compiled[i][k], direction: dir };
                         }
@@ -41,7 +41,7 @@
                 }
             }
         }
-
+        
         /*var qs = 'db.' + sets[0];
         if (compiled.$include){
             for (var i = 0; i < compiled.$include.length; i++){
@@ -58,18 +58,18 @@
         if (compiled.$take) qs += '.take(' + compiled.$take + ')';
         if (compiled.$length) qs += '.length(callback)';
         else qs += '.toArray(callback)';*/
-
+        
         $data.ajax({
             url: this.providerConfiguration.url,
             dataType: 'json',
             data: { entitySet: sets[0], expression: compiled },
-            success: function (data, textStatus, jqXHR) {
+            success: function(data, textStatus, jqXHR){
                 query.rawDataList = typeof data.length !== 'undefined' ? data : [{ cnt: data }];
                 query.context = this;
-
+                
                 callBack.success(query);
             },
-            error: function (jqXHR, textStatus, errorThrown) {
+            error: function(jqXHR, textStatus, errorThrown){
                 var errorData = {};
                 try {
                     errorData = JSON.parse(jqXHR.responseText).error;
@@ -80,24 +80,24 @@
             }
         });
     },
-    saveChanges: function (callBack, changedItems) {
+    saveChanges: function(callBack, changedItems){
         var self = this;
-        if (changedItems.length) {
+        if (changedItems.length){
             var independentBlocks = this.buildIndependentBlocks(changedItems);
-
+            
             var convertedItems = [];
             var collections = {};
-            for (var i = 0; i < independentBlocks.length; i++) {
+            for (var i = 0; i < independentBlocks.length; i++){
                 for (var j = 0; j < independentBlocks[i].length; j++) {
                     convertedItems.push(independentBlocks[i][j].data);
-
+                    
                     var es = collections[independentBlocks[i][j].entitySet.name];
-                    if (!es) {
+                    if (!es){
                         es = {};
                         collections[independentBlocks[i][j].entitySet.name] = es;
                     }
-
-                    switch (independentBlocks[i][j].data.entityState) {
+                    
+                    switch (independentBlocks[i][j].data.entityState){
                         case $data.EntityState.Unchanged: continue; break;
                         case $data.EntityState.Added:
                             if (!es.insertAll) es.insertAll = [];
@@ -105,7 +105,7 @@
                             break;
                         case $data.EntityState.Modified:
                             if (!es.updateAll) es.updateAll = [];
-                            es.updateAll.push(/*{ data: */this.save_getInitData(independentBlocks[i][j], convertedItems)/*, type: Container.resolveName(independentBlocks[i][j].data.getType()) }*/);
+                            es.updateAll.push(this.save_getInitData(independentBlocks[i][j], convertedItems));
                             break;
                         case $data.EntityState.Deleted:
                             if (!es.removeAll) es.removeAll = [];
@@ -115,16 +115,16 @@
                     }
                 }
             }
-
+            
             $data.ajax({
                 url: this.providerConfiguration.url,
                 type: 'post',
                 dataType: 'json',
                 data: { items: JSON.stringify(collections) },
-                success: function (data, textStatus, jqXHR) {
+                success: function(data, textStatus, jqXHR){
                     callBack.success(data);
                 },
-                error: function (jqXHR, textStatus, errorThrown) {
+                error: function(jqXHR, textStatus, errorThrown){
                     var errorData = {};
                     try {
                         errorData = JSON.parse(jqXHR.responseText).error;
@@ -134,10 +134,10 @@
                     callBack.error(errorData);
                 }
             });
-
-        } else callBack.success(0);
+            
+        }else callBack.success(0);
     },
-    save_getInitData: function (item, convertedItems) {
+    save_getInitData: function(item, convertedItems) {
         item.physicalData = this.context._storageModel.getStorageModel(item.data.getType()).PhysicalType.convertTo(item.data, convertedItems);
         var serializableObject = {};
         var self = this;
@@ -229,12 +229,12 @@
     }
 }, {
     isSuppported: {
-        get: function () {
+        get: function(){
             return 'XMLHttpRequest' in window;
         }
     }
 });
 
-if ($data.storageProviders.Storm.StormProvider.isSupported) {
+if ($data.storageProviders.Storm.StormProvider.isSupported){
     $data.StorageProviderBase.registerProvider('storm', $data.storageProviders.Storm.StormProvider);
 }

@@ -1,4 +1,4 @@
-﻿// JayData 0.0.0
+// JayData 0.0.0
 // Dual licensed under MIT and GPL v2
 // Copyright JayStack Technologies (http://jaydata.org/licensing)
 //
@@ -776,7 +776,7 @@ $C('$data.queryBuilder', null, null, {
         this.modelBinderConfig = this._binderConfig;
     },
     addKeyField: function (name) {
-        if (!this.modelBinderConfig['$keys']) {
+        if(!this.modelBinderConfig['$keys']){
             this.modelBinderConfig['$keys'] = new Array();
         }
         this.modelBinderConfig['$keys'].push(name);
@@ -1001,7 +1001,7 @@ $C('$data.storageProviders.sqLite.SQLiteCompiler', null, null, {
         compiler.compile();
 
         var sqlBuilder = Container.createSqlBuilder(this.sets, this.entityContext);
-
+        
         query.modelBinderConfig = {};
         var modelBinder = Container.createsqLite_ModelBinderCompiler(query, []);
         modelBinder.Visit(optimizedExpression);
@@ -1029,7 +1029,7 @@ $C('$data.sqLite.SqlPagingCompiler', $data.Expressions.EntityExpressionVisitor, 
         sqlBuilder.addParameter(expression.value);
         sqlBuilder.addText(SqlStatementBlocks.parameter);
     }
-}); $C('$data.sqLite.SqlOrderCompiler', $data.Expressions.EntityExpressionVisitor, null, {
+});$C('$data.sqLite.SqlOrderCompiler', $data.Expressions.EntityExpressionVisitor, null, {
     constructor: function (provider) {
         this.provider = provider;
     },
@@ -1062,7 +1062,7 @@ $C('$data.sqLite.SqlPagingCompiler', $data.Expressions.EntityExpressionVisitor, 
     VisitMemberInfoExpression: function (expression, sqlBuilder) {
         sqlBuilder.addText(expression.memberName);
     },
-    VisitComplexTypeExpression: function (expression, sqlBuilder) {
+    VisitComplexTypeExpression: function (expression, sqlBuilder) { 
         this.Visit(expression.source, sqlBuilder);
         this.Visit(expression.selector, sqlBuilder);
         sqlBuilder.addText('__');
@@ -1270,7 +1270,7 @@ $C('$data.sqLite.SqlProjectionCompiler', $data.Expressions.EntityExpressionVisit
         this.currentObjectLiteralName = tempObjectLiteralName;
     }
 
-}, null); $C('$data.sqLite.ExpressionMonitor', $data.Expressions.EntityExpressionVisitor, null, {
+}, null);$C('$data.sqLite.ExpressionMonitor', $data.Expressions.EntityExpressionVisitor, null, {
     constructor: function (monitorDefinition) {
 
         this.Visit = function (expression, context) {
@@ -1280,7 +1280,7 @@ $C('$data.sqLite.SqlProjectionCompiler', $data.Expressions.EntityExpressionVisit
             if (this.canVisit(expression)) {
 
                 //if (monitorDefinition.FilterExpressionNode) {
-
+                            
                 //};
 
                 if (monitorDefinition.VisitExpressionNode) {
@@ -1325,7 +1325,7 @@ $C('$data.sqLite.SqlProjectionCompiler', $data.Expressions.EntityExpressionVisit
         };
     }
 
-}); $C('$data.sqLite.SqlFilterCompiler', $data.Expressions.EntityExpressionVisitor, null, {
+});$C('$data.sqLite.SqlFilterCompiler', $data.Expressions.EntityExpressionVisitor, null, {
     VisitParametricQueryExpression: function (expression, sqlBuilder) {
         this.Visit(expression.expression, sqlBuilder);
     },
@@ -1333,10 +1333,10 @@ $C('$data.sqLite.SqlProjectionCompiler', $data.Expressions.EntityExpressionVisit
     VisitUnaryExpression: function (expression, sqlBuilder) {
         /// <param name="expression" type="$data.Expressions.SimpleBinaryExpression"></param>
         /// <param name="sqlBuilder" type="$data.sqLite.SqlBuilder"></param>
-        sqlBuilder.addText(expression.resolution.mapTo);
-        sqlBuilder.addText(SqlStatementBlocks.beginGroup);
-        this.Visit(expression.operand, sqlBuilder);
-        sqlBuilder.addText(SqlStatementBlocks.endGroup);
+            sqlBuilder.addText(expression.resolution.mapTo);
+            sqlBuilder.addText(SqlStatementBlocks.beginGroup);
+            this.Visit(expression.operand, sqlBuilder);
+            sqlBuilder.addText(SqlStatementBlocks.endGroup);
     },
 
     VisitSimpleBinaryExpression: function (expression, sqlBuilder) {
@@ -1352,19 +1352,19 @@ $C('$data.sqLite.SqlProjectionCompiler', $data.Expressions.EntityExpressionVisit
             sqlBuilder.addText(" " + expression.resolution.mapTo + " ");
 
             if (expression.nodeType == "in") {
-                //TODO: refactor and generalize
+            //TODO: refactor and generalize
                 Guard.requireType("expression.right", expression.right, $data.Expressions.ConstantExpression);
                 var set = expression.right.value;
                 if (set instanceof Array) {
                     sqlBuilder.addText(SqlStatementBlocks.beginGroup);
-                    set.forEach(function (item, i) {
+                    set.forEach(function(item, i) {
                         if (i > 0) sqlBuilder.addText(SqlStatementBlocks.valueSeparator);
                         var c = Container.createConstantExpression(item);
                         self.Visit(c, sqlBuilder);
                     });
                     sqlBuilder.addText(SqlStatementBlocks.endGroup);
                 } else if (set instanceof $data.Queryable) {
-                    sqlBuilder.addText("(SELECT d FROM (" + set.toTraceString().sqlText + "))");
+					sqlBuilder.addText("(SELECT d FROM (" + set.toTraceString().sqlText + "))");
                     //Guard.raise("Not yet... but coming!");
                 } else {
                     Guard.raise(new Exception("Only constant arrays and Queryables can be on the right side of 'in' operator", "UnsupportedType"));
@@ -1372,7 +1372,7 @@ $C('$data.sqLite.SqlProjectionCompiler', $data.Expressions.EntityExpressionVisit
             } else {
                 this.Visit(expression.right, sqlBuilder);
             }
-
+            
             sqlBuilder.addText(SqlStatementBlocks.endGroup);
         }
     },
@@ -1446,7 +1446,7 @@ $C('$data.sqLite.SqlProjectionCompiler', $data.Expressions.EntityExpressionVisit
         sqlBuilder.addText(SqlStatementBlocks.parameter);
     },
 
-    VisitEntityFieldExpression: function (expression, sqlBuilder) {
+    VisitEntityFieldExpression:function(expression, sqlBuilder){
         this.Visit(expression.source, sqlBuilder);
         this.Visit(expression.selector, sqlBuilder);
     },
@@ -1455,7 +1455,7 @@ $C('$data.sqLite.SqlProjectionCompiler', $data.Expressions.EntityExpressionVisit
         this.Visit(expression.selector, sqlBuilder);
         sqlBuilder.addText("__");
     }
-}); $C('$data.sqLite.sqLite_ModelBinderCompiler', $data.Expressions.EntityExpressionVisitor, null, {
+});$C('$data.sqLite.sqLite_ModelBinderCompiler', $data.Expressions.EntityExpressionVisitor, null, {
     constructor: function (query, includes) {
         this._query = query;
         this._includes = includes;
@@ -1480,7 +1480,7 @@ $C('$data.sqLite.SqlProjectionCompiler', $data.Expressions.EntityExpressionVisit
     },
     VisitCountExpression: function (expression) {
         var builder = Container.createqueryBuilder();
-
+        
         builder.modelBinderConfig['$type'] = $data.Array;
         builder.selectModelBinderProperty('$item');
         builder.modelBinderConfig['$type'] = $data.Integer;
