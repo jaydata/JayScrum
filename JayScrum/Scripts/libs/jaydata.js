@@ -1,4 +1,4 @@
-﻿// JayData 0.0.0
+// JayData 0.0.0
 // Dual licensed under MIT and GPL v2
 // Copyright JayStack Technologies (http://jaydata.org/licensing)
 //
@@ -64,20 +64,20 @@ Guard.requireType = function (name, value, typeOrTypes) {
             case "function":
                 return value instanceof item;
             default:
-                Guard.raise("Unknown type format : " + typeof item + " for: " + name);
+                Guard.raise("Unknown type format : " + typeof item + " for: "+ name);
         }
     });
 };
 
-Guard.raise = function (exception) {
-    if (typeof intellisense === 'undefined') {
-        if (exception instanceof Exception) {
-            console.error(exception.name + ':', exception.message + '\n', exception);
-        } else {
-            console.error(exception);
-        }
-        throw exception;
-    }
+Guard.raise = function(exception){
+	if (typeof intellisense === 'undefined') {
+		if (exception instanceof Exception){
+			console.error(exception.name + ':', exception.message + '\n', exception);
+		}else{
+			console.error(exception);
+		}
+		throw exception;
+	}
 };
 
 Object.isNullOrUndefined = function (value) {
@@ -85,17 +85,17 @@ Object.isNullOrUndefined = function (value) {
 };
 (function ObjectMethodsForPreHTML5Browsers() {
 
-    if (!Object.getOwnPropertyNames) {
-        Object.getOwnPropertyNames = function (o) {
-            var names = [];
+	if (!Object.getOwnPropertyNames){
+		Object.getOwnPropertyNames = function(o){
+			var names = [];
 
-            for (var i in o) {
-                if (o.hasOwnProperty(i)) names.push(i);
-            }
+			for (var i in o){
+				if (o.hasOwnProperty(i)) names.push(i);
+			}
 
-            return names;
-        };
-    }
+			return names;
+		};
+	}
 
     if (!Object.create) {
         Object.create = function (o) {
@@ -154,7 +154,7 @@ Object.isNullOrUndefined = function (value) {
     if (!Object.defineProperties) {
         Object.defineProperties = function (obj, defines) {
             for (var i in defines) {
-                if (defines.hasOwnProperty(i))
+                if(defines.hasOwnProperty(i))
                     obj[i] = defines[i].value || {};
             }
         };
@@ -1846,7 +1846,7 @@ JAYLINT = (function () {
             }
 
             j = 0;
-            for (; ;) {
+            for (; ; ) {
                 while (j >= source_row.length) {
                     j = 0;
                     if (xmode !== 'html' || !next_line()) {
@@ -1977,7 +1977,7 @@ JAYLINT = (function () {
                 length = 0,
                 low,
                 quote;
-            for (; ;) {
+            for (; ; ) {
                 b = true;
                 c = source_row.charAt(length);
                 length += 1;
@@ -2208,7 +2208,7 @@ JAYLINT = (function () {
                             }
                             length += 1;
                             low = +c;
-                            for (; ;) {
+                            for (; ; ) {
                                 c = source_row.charAt(length);
                                 if (c < '0' || c > '9') {
                                     break;
@@ -2224,7 +2224,7 @@ JAYLINT = (function () {
                                 if (c >= '0' && c <= '9') {
                                     length += 1;
                                     high = +c;
-                                    for (; ;) {
+                                    for (; ; ) {
                                         c = source_row.charAt(length);
                                         if (c < '0' || c > '9') {
                                             break;
@@ -2291,7 +2291,7 @@ JAYLINT = (function () {
                     stop_at('expected_a_b', line, character, begin,
                         source_row.charAt(0));
                 }
-                for (; ;) {
+                for (; ; ) {
                     source_row = source_row.slice(1);
                     character += 1;
                     c = source_row.charAt(0);
@@ -2317,7 +2317,7 @@ JAYLINT = (function () {
             token: function () {
                 var c, i, quote, snippet;
 
-                for (; ;) {
+                for (; ; ) {
                     while (!source_row) {
                         if (!next_line()) {
                             return it('(end)');
@@ -2381,11 +2381,11 @@ JAYLINT = (function () {
                                 source_row = '';
                                 break;
 
-                                //      /* comment  
+                            //      /* comment  
 
                             case '/*':
                                 quote = '/*';
-                                for (; ;) {
+                                for (; ; ) {
                                     i = source_row.search(lx);
                                     if (i >= 0) {
                                         break;
@@ -2406,7 +2406,7 @@ JAYLINT = (function () {
 
                             case '':
                                 break;
-                                //      /  
+                            //      /  
                             case '/':
                                 if (token.id === '/=') {
                                     stop_at(
@@ -2422,7 +2422,7 @@ JAYLINT = (function () {
                             case '<!--':
                                 length = line;
                                 //                            c = character;
-                                for (; ;) {
+                                for (; ; ) {
                                     i = source_row.indexOf('--');
                                     if (i >= 0) {
                                         break;
@@ -2450,7 +2450,7 @@ JAYLINT = (function () {
                                 break;
                             case '#':
                                 if (xmode === 'html' || xmode === 'styleproperty') {
-                                    for (; ;) {
+                                    for (; ; ) {
                                         c = source_row.charAt(0);
                                         if ((c < '0' || c > '9') &&
                                             (c < 'a' || c > 'f') &&
@@ -2473,7 +2473,7 @@ JAYLINT = (function () {
                                 if (xmode === 'outer' && c === '&') {
                                     character += 1;
                                     source_row = source_row.slice(1);
-                                    for (; ;) {
+                                    for (; ; ) {
                                         c = source_row.charAt(0);
                                         character += 1;
                                         source_row = source_row.slice(1);
@@ -2495,7 +2495,7 @@ JAYLINT = (function () {
                 }
             }
         };
-    }());
+    } ());
 
 
     function add_label(token, kind, name) {
@@ -2605,7 +2605,7 @@ JAYLINT = (function () {
                         next_token.from === indent.at -
                         (next_token.edge ? option.indent : 0)) {
                     var dent = indent;
-                    for (; ;) {
+                    for (; ; ) {
                         dent.at -= option.indent;
                         if (dent === var_mode) {
                             break;
@@ -2730,7 +2730,7 @@ JAYLINT = (function () {
 
     function do_globals() {
         var name, writeable;
-        for (; ;) {
+        for (; ; ) {
             if (next_token.id !== '(string)' && !next_token.identifier) {
                 return;
             }
@@ -2825,7 +2825,7 @@ JAYLINT = (function () {
         if (!properties) {
             properties = {};
         }
-        for (; ;) {
+        for (; ; ) {
             if (next_token.id !== '(string)' && !next_token.identifier) {
                 return;
             }
@@ -4249,7 +4249,7 @@ JAYLINT = (function () {
         step_in();
         if (next_token.id !== ')') {
             no_space();
-            for (; ;) {
+            for (; ; ) {
                 edge();
                 p.push(expression(10));
                 if (next_token.id !== ',') {
@@ -4362,7 +4362,7 @@ JAYLINT = (function () {
         if (!option.evil && (name === 'eval' || name === 'execScript')) {
             warn('evil');
         } else if (option.safe) {
-            for (; ;) {
+            for (; ; ) {
                 if (banned[name] === true) {
                     warn('adsafe_a', token, name);
                 }
@@ -4534,7 +4534,7 @@ JAYLINT = (function () {
             discard();
             return;
         }
-        for (; ;) {
+        for (; ; ) {
             edge();
             id = identifier();
             params.push(token);
@@ -4745,7 +4745,7 @@ JAYLINT = (function () {
             if (next_token.id !== ',') {
                 break;
             }
-            for (; ;) {
+            for (; ; ) {
                 comma();
                 if (next_token.id !== ',') {
                     break;
@@ -4798,7 +4798,7 @@ JAYLINT = (function () {
         this.arity = 'statement';
         this.first = [];
         step_in('var');
-        for (; ;) {
+        for (; ; ) {
             name = next_token;
             id = identifier();
             add_label(name, 'becoming');
@@ -5025,7 +5025,7 @@ JAYLINT = (function () {
             spaces();
             edge('case');
             advance('case');
-            for (; ;) {
+            for (; ; ) {
                 one_space();
                 particular = expression(0);
                 the_case.first.push(particular);
@@ -5212,7 +5212,7 @@ JAYLINT = (function () {
             if (next_token.id !== ';') {
                 edge();
                 this.first = [];
-                for (; ;) {
+                for (; ; ) {
                     this.first.push(expression(0, 'for'));
                     if (next_token.id !== ',') {
                         break;
@@ -5235,7 +5235,7 @@ JAYLINT = (function () {
             if (next_token.id !== ')') {
                 this.third = [];
                 edge();
-                for (; ;) {
+                for (; ; ) {
                     this.third.push(expression(0, 'for'));
                     if (next_token.id !== ',') {
                         break;
@@ -5698,7 +5698,7 @@ JAYLINT = (function () {
 
 
     css_any = [css_url, function () {
-        for (; ;) {
+        for (; ; ) {
             if (next_token.identifier) {
                 switch (next_token.value.toLowerCase()) {
                     case 'url':
@@ -5719,7 +5719,7 @@ JAYLINT = (function () {
                 advance();
             }
         }
-    }];
+    } ];
 
 
     css_border_style = [
@@ -5975,7 +5975,7 @@ JAYLINT = (function () {
                 }
                 return false;
         }
-        for (; ;) {
+        for (; ; ) {
             if (i >= v.length) {
                 return false;
             }
@@ -6005,7 +6005,7 @@ JAYLINT = (function () {
         }
         start = i;
         once = [];
-        for (; ;) {
+        for (; ; ) {
             round = false;
             for (i = start; i < v.length; i += 1) {
                 if (!once[i]) {
@@ -6049,7 +6049,7 @@ JAYLINT = (function () {
 
     function substyle() {
         var v;
-        for (; ;) {
+        for (; ; ) {
             if (next_token.id === '}' || next_token.id === '(end)' ||
                     (xquote && next_token.id === xquote)) {
                 return;
@@ -6201,7 +6201,7 @@ JAYLINT = (function () {
         if (next_token.id === '{') {
             warn('expected_style_pattern');
         }
-        for (; ;) {
+        for (; ; ) {
             style_selector();
             if (next_token.id === '</' || next_token.id === '{' ||
                     next_token.id === '(end)') {
@@ -6246,7 +6246,7 @@ JAYLINT = (function () {
                         break;
                     case 'media':
                         advance();
-                        for (; ;) {
+                        for (; ; ) {
                             if (!next_token.identifier || css_media[next_token.value] === true) {
                                 stop('expected_media_a');
                             }
@@ -6526,7 +6526,7 @@ JAYLINT = (function () {
         xmode = 'html';
         xquote = '';
         stack = null;
-        for (; ;) {
+        for (; ; ) {
             switch (next_token.value) {
                 case '<':
                     xmode = 'html';
@@ -6552,7 +6552,7 @@ JAYLINT = (function () {
                     }
                     is_empty = tag.empty;
                     tag_name.type = name;
-                    for (; ;) {
+                    for (; ; ) {
                         if (next_token.id === '/') {
                             advance('/');
                             if (next_token.id !== '>') {
@@ -6681,7 +6681,7 @@ JAYLINT = (function () {
                         warn('adsafe_a');
                     }
                     xmode = 'html';
-                    for (; ;) {
+                    for (; ; ) {
                         advance();
                         if (next_token.id === '>' || next_token.id === '(end)') {
                             break;
@@ -7116,7 +7116,7 @@ JAYLINT = (function () {
 
     return itself;
 
-}());
+} ());
 (function init($data, global) {
 
     function il(msg) {
@@ -7131,7 +7131,7 @@ JAYLINT = (function () {
 
 
     function MemberDefinition(memberDefinitionData, definedClass) {
-
+        
         ///<field name="name" type="String">*</field>
         ///<field name="dataType" type="Object">*</field>
         ///<field name="elementType" type="Object"></field>
@@ -7151,7 +7151,7 @@ JAYLINT = (function () {
 
         this.kind = MemberTypes.property;
         //this.definedBy = definedClass;
-        Object.defineProperty(this, 'definedBy', { value: definedClass, enumerable: false, configurable: false, writable: false });
+        Object.defineProperty(this, 'definedBy', { value: definedClass, enumerable:false, configurable: false, writable: false });
         if (memberDefinitionData) {
             if (typeof memberDefinitionData === 'function') {
                 this.method = memberDefinitionData;
@@ -7235,16 +7235,16 @@ JAYLINT = (function () {
 
     //TODO global/window
     $data.MemberDefinition = window["MemberDefinition"] = MemberDefinition;
-
+    
     var memberDefinitionPrefix = '$';
     function MemberDefinitionCollection() { };
     MemberDefinitionCollection.prototype = {
-        clearCache: function () {
-            this.arrayCache = undefined;
-            this.pubMapPropsCache = undefined;
-            this.keyPropsCache = undefined;
-            this.propByTypeCache = undefined;
-        },
+		clearCache: function(){
+			this.arrayCache = undefined;
+			this.pubMapPropsCache = undefined;
+			this.keyPropsCache = undefined;
+			this.propByTypeCache = undefined;
+		},
         asArray: function () {
             if (!this.arrayCache) {
                 this.arrayCache = [];
@@ -7256,54 +7256,54 @@ JAYLINT = (function () {
             return this.arrayCache;
         },
         getPublicMappedProperties: function () {
-            if (!this.pubMapPropsCache) {
-                this.pubMapPropsCache = [];
-                for (var i in this) {
-                    if (i.indexOf(memberDefinitionPrefix) === 0 && this[i].kind == 'property' && !this[i].notMapped && this[i].enumerable)
-                        this.pubMapPropsCache.push(this[i]);
-                }
-            }
-            return this.pubMapPropsCache;// || (this.pubMapPropsCache = this.asArray().filter(function (m) { return m.kind == 'property' && !m.notMapped && m.enumerable; }));
-        },
-        getPublicMappedPropertyNames: function () {
-            if (!this.pubMapPropNamesCache) {
-                this.pubMapPropNamesCache = [];
-                for (var i in this) {
-                    if (i.indexOf(memberDefinitionPrefix) === 0 && this[i].kind == 'property' && !this[i].notMapped && this[i].enumerable)
-                        this.pubMapPropNamesCache.push(this[i].name);
-                }
-            }
-            return this.pubMapPropNamesCache;
-        },
+			if (!this.pubMapPropsCache){
+				this.pubMapPropsCache = [];
+				for (var i in this){
+					if (i.indexOf(memberDefinitionPrefix) === 0 && this[i].kind == 'property' && !this[i].notMapped && this[i].enumerable)
+						this.pubMapPropsCache.push(this[i]);
+				}
+			}
+			return this.pubMapPropsCache;// || (this.pubMapPropsCache = this.asArray().filter(function (m) { return m.kind == 'property' && !m.notMapped && m.enumerable; }));
+		},
+		getPublicMappedPropertyNames: function(){
+		    if (!this.pubMapPropNamesCache){
+		        this.pubMapPropNamesCache = [];
+		        for (var i in this){
+					if (i.indexOf(memberDefinitionPrefix) === 0 && this[i].kind == 'property' && !this[i].notMapped && this[i].enumerable)
+						this.pubMapPropNamesCache.push(this[i].name);
+				}
+		    }
+		    return this.pubMapPropNamesCache;
+		},
         getKeyProperties: function () {
-            if (!this.keyPropsCache) {
-                this.keyPropsCache = [];
-                for (var i in this) {
-                    if (i.indexOf(memberDefinitionPrefix) === 0 && this[i].kind == 'property' && this[i].key)
-                        this.keyPropsCache.push(this[i]);
-                }
-            }
-            return this.keyPropsCache;
-            //return this.keyPropsCache || (this.keyPropsCache = this.asArray().filter(function (m) { return m.kind == 'property' && m.key; }));
-        },
+			if (!this.keyPropsCache){
+				this.keyPropsCache = [];
+				for (var i in this){
+					if (i.indexOf(memberDefinitionPrefix) === 0 && this[i].kind == 'property' && this[i].key)
+						this.keyPropsCache.push(this[i]);
+				}
+			}
+			return this.keyPropsCache;
+			//return this.keyPropsCache || (this.keyPropsCache = this.asArray().filter(function (m) { return m.kind == 'property' && m.key; }));
+		},
         getPropertyByType: function (type) {
-            if (!this.propByTypeCache) {
-                this.propByTypeCache = [];
-                for (var i in this) {
-                    if (i.indexOf(memberDefinitionPrefix) === 0 && this[i].dataType == type)
-                        this.propByTypeCache.push(this[i]);
-                }
-            }
-            return this.propByTypeCache;
-            //return this.propByTypeCache || (this.propByTypeCache = this.asArray().filter(function (m) { return m.dataType == type; }));
-        },
+			if (!this.propByTypeCache){
+				this.propByTypeCache = [];
+				for (var i in this){
+					if (i.indexOf(memberDefinitionPrefix) === 0 && this[i].dataType == type)
+						this.propByTypeCache.push(this[i]);
+				}
+			}
+			return this.propByTypeCache;
+			//return this.propByTypeCache || (this.propByTypeCache = this.asArray().filter(function (m) { return m.dataType == type; }));
+		},
         getMember: function (name) { return this[memberDefinitionPrefix + name]; },
         setMember: function (value) { this[memberDefinitionPrefix + value.name] = value; }
     };
     MemberDefinitionCollection.prototype.constructor = MemberDefinitionCollection;
     $data.MemberDefinitionCollection = window["MemberDefinitionCollection"] = MemberDefinitionCollection;
 
-
+    
     eval('function Base() { };');
 
     $data.Base = Base;
@@ -7373,7 +7373,8 @@ JAYLINT = (function () {
     TypeCreateStep.mixin = "mixin";
     TypeCreateStep.propagation = "propagation";
 
-    function TypeCreateObject() {
+    function TypeCreateObject()
+    {
         this._createOrder = [];
         this._createOrder.calculated = false;
         this.keyIndex = [];
@@ -7407,7 +7408,7 @@ JAYLINT = (function () {
 
             this.steppes[key] = new TypeCreateStep(defined, typeCreateFunc);
         };
-        this.keyCount = function () {
+        this.keyCount = function(){
             return this.constructorKeys.length + this.mixinKeys.length + this.propagationKeys.length;
         };
 
@@ -7441,644 +7442,647 @@ JAYLINT = (function () {
 
     ClassEngineBase.prototype = {
 
-        getClass: function (classReference) {
+    getClass: function(classReference) {
 
-        },
+    },
 
-        getProperties: function (classFunction) {
-            return classFunction.propertyDefinitions;
-        },
+    getProperties: function (classFunction) {
+        return classFunction.propertyDefinitions;
+    },
 
 
 
-        define: function (className, baseClass, interfaces, instanceDefinition, classDefinition) {
-            return this.defineEx(className, [{ type: baseClass }], interfaces, instanceDefinition, classDefinition);
-        },
-        defineEx: function (className, baseClasses, interfaces, instanceDefinition, classDefinition) {
-            ///<param name="baseClasses" type="Array" elementType="Function" />
+    define: function (className, baseClass, interfaces, instanceDefinition, classDefinition) {
+        return this.defineEx(className, [{ type: baseClass }], interfaces, instanceDefinition, classDefinition);
+    },
+    defineEx: function (className, baseClasses, interfaces, instanceDefinition, classDefinition) {
+        ///<param name="baseClasses" type="Array" elementType="Function" />
 
-            //il("!defineClass was invoked:" + className);
+        //il("!defineClass was invoked:" + className);
 
-            if (baseClasses.length == 0) {
-                baseClasses.push({ type: $data.Base });
-            } else if (baseClasses.length > 0 && !baseClasses[0].type) {
-                baseClasses[0].type = $data.Base;
+        if (baseClasses.length == 0) {
+            baseClasses.push({ type: $data.Base });
+        } else if (baseClasses.length > 0 && !baseClasses[0].type){
+            baseClasses[0].type = $data.Base;
+        }
+
+        var providedCtor = instanceDefinition.constructor;
+
+        var classNameParts = className.split('.');
+        var shortClassName = classNameParts.splice(classNameParts.length - 1, 1)[0];
+
+        var root = window;
+        classNameParts.forEach(function (part) {
+            if (!root[part]) {
+                //console.log("namespace missing:" + part + ", creating");
+                var ns = {};
+                ns.__namespace = true;
+                root[part] = ns;
             }
+            root = root[part];
+        });
 
-            var providedCtor = instanceDefinition.constructor;
+        var classFunction = null;
+        classFunction = this.classFunctionBuilder(shortClassName, baseClasses, classDefinition, instanceDefinition);
+        classFunction.fullName = className;
+        classFunction.namespace = classNameParts.join('.'); //classname splitted
 
-            var classNameParts = className.split('.');
-            var shortClassName = classNameParts.splice(classNameParts.length - 1, 1)[0];
+        this.buildType(classFunction, baseClasses, instanceDefinition, classDefinition);
 
-            var root = window;
-            classNameParts.forEach(function (part) {
-                if (!root[part]) {
-                    //console.log("namespace missing:" + part + ", creating");
-                    var ns = {};
-                    ns.__namespace = true;
-                    root[part] = ns;
-                }
-                root = root[part];
-            });
+        classFunction.name = shortClassName;
+        Container.registerType(className, classFunction);
 
-            var classFunction = null;
-            classFunction = this.classFunctionBuilder(shortClassName, baseClasses, classDefinition, instanceDefinition);
-            classFunction.fullName = className;
-            classFunction.namespace = classNameParts.join('.'); //classname splitted
-
-            this.buildType(classFunction, baseClasses, instanceDefinition, classDefinition);
-
-            classFunction.name = shortClassName;
-            Container.registerType(className, classFunction);
-
-            if (typeof intellisense !== 'undefined') {
-                if (instanceDefinition && instanceDefinition.constructor) {
-                    intellisense.annotate(classFunction, instanceDefinition.constructor);
-                }
+        if (typeof intellisense !== 'undefined') {
+            if (instanceDefinition && instanceDefinition.constructor) {
+                intellisense.annotate(classFunction, instanceDefinition.constructor);
             }
+        }
 
-            root[shortClassName] = this.classNames[className] = classFunction;
+        root[shortClassName] = this.classNames[className] = classFunction;
 
-            //classFunction.prototype.constructor = instanceDefinition.constructor;
-            //classFunction.constructor = instanceDefinition.constructor;
-            //classFunction.toJSON = function () { return classFunction.memberDefinitions.filter( function(md) { return md; };
-            return classFunction;
-        },
-        classFunctionBuilder: function (name, base, classDefinition, instanceDefinition) {
-            return new Function('base', 'classDefinition', 'instanceDefinition', 'return function ' + name + ' (){ ' +
-                this.bodyBuilder(base, classDefinition, instanceDefinition) + ' \n}; ')(base, classDefinition, instanceDefinition);
-        },
-        bodyBuilder: function (bases, classDefinition, instanceDefinition) {
-            var mixin = '';
-            var body = '';
-            var propagation = '';
+        //classFunction.prototype.constructor = instanceDefinition.constructor;
+        //classFunction.constructor = instanceDefinition.constructor;
+        //classFunction.toJSON = function () { return classFunction.memberDefinitions.filter( function(md) { return md; };
+        return classFunction;
+    },
+    classFunctionBuilder: function (name, base, classDefinition, instanceDefinition) {
+        return new Function('base', 'classDefinition', 'instanceDefinition', 'return function ' + name + ' (){ ' + 
+            this.bodyBuilder(base, classDefinition, instanceDefinition) + ' \n}; ')(base, classDefinition, instanceDefinition);
+    },
+    bodyBuilder: function (bases, classDefinition, instanceDefinition) {
+        var mixin = '';
+        var body = '';
+        var propagation = '';
 
-            for (var i = 0, l = bases.length; i < l; i++) {
-                var base = bases[i];
-                var index = i;
-                if (index == 0) { //ctor func
-                    if (base && base.type) {
-                        body += '    var baseArguments = $data.typeSystem.createCtorParams(arguments, base[' + index + '].params, this); \n';
-                        body += '    ' + base.type.fullName + '.apply(this, baseArguments); \n';
-                    }
-                } else {
-                    if (base && base.type && base.propagateTo) {
-                        //propagation
-                        propagation += '    ' + (!propagation ? 'var ' : '' + '') + 'propagationArguments = $data.typeSystem.createCtorParams(arguments, base[' + index + '].params, this); \n';
-                        propagation += '    this["' + base.propagateTo + '"] =  Object.create(' + base.type.fullName + '.prototype); \n' +
-                                       '    ' + base.type.fullName + '.apply(this["' + base.propagateTo + '"], propagationArguments); \n';
-                    }
-                    else if (base && base.type && base.type.memberDefinitions && base.type.memberDefinitions.$constructor && !base.propagateTo) {
-                            //mixin
-                        mixin += '    ' + base.type.fullName + '.memberDefinitions.$constructor.method.apply(this); \n';
-                    }
+        for (var i = 0, l = bases.length; i < l; i++) {
+            var base = bases[i];
+            var index = i;
+            if (index == 0) { //ctor func
+                if (base && base.type) {
+                    body += '    var baseArguments = $data.typeSystem.createCtorParams(arguments, base[' + index + '].params, this); \n';
+                    body += '    ' + base.type.fullName + '.apply(this, baseArguments); \n';
                 }
-            }
-            if (instanceDefinition && instanceDefinition.constructor != Object)
-                body += "    instanceDefinition.constructor.apply(this, arguments); \n";
-
-            return '\n    //mixins \n' + mixin + '\n    //construction \n' + body + '\n    //propagations \n' + propagation;
-        },
-
-        buildType: function (classFunction, baseClasses, instanceDefinition, classDefinition) {
-            var baseClass = baseClasses[0].type;
-            classFunction.inheritsFrom = baseClass;
-
-            if (baseClass) {
-                classFunction.prototype = Object.create(baseClass.prototype);
-                classFunction.memberDefinitions = Object.create(baseClass.memberDefinitions || new MemberDefinitionCollection());
-                classFunction.memberDefinitions.clearCache();
-
-                var staticDefs = baseClass.staticDefinitions;
-                if (staticDefs) {
-                    staticDefs = staticDefs.asArray();
-                    if (staticDefs) {
-                        for (var i = 0; i < staticDefs.length; i++) {
-                            this.buildMember(classFunction, staticDefs[i], undefined, 'staticDefinitions');
-                        }
-                    }
+            } else {
+                if (base && base.type && base.propagateTo) {
+                    //propagation
+                    propagation += '    ' + (!propagation ? 'var ' : '' + '') + 'propagationArguments = $data.typeSystem.createCtorParams(arguments, base[' + index + '].params, this); \n';
+                    propagation += '    this["' + base.propagateTo + '"] =  Object.create(' + base.type.fullName + '.prototype); \n' +
+                                   '    ' + base.type.fullName + '.apply(this["' + base.propagateTo + '"], propagationArguments); \n';
                 }
-                classFunction.baseTypes = (baseClass.baseTypes || []).concat(baseClasses.map(function (base) { return base.type; }));
-                if (!classFunction.isAssignableTo) {
-                    Object.defineProperty(classFunction, "isAssignableTo", {
-                        value: function (type) {
-                            return this === type || this.baseTypes.indexOf(type) >= 0;
-                        },
-                        writable: false,
-                        enumerable: false,
-                        configurable: false
-                    });
+                else if (base && base.type && base.type.memberDefinitions && base.type.memberDefinitions.$constructor && !base.propagateTo) {
+                    //mixin
+                    mixin += '    ' + base.type.fullName + '.memberDefinitions.$constructor.method.apply(this); \n';
                 }
             }
+        }
+        if (instanceDefinition && instanceDefinition.constructor != Object) 
+            body += "    instanceDefinition.constructor.apply(this, arguments); \n";
 
-            if (classDefinition) {
-                this.buildStaticMembers(classFunction, classDefinition);
+        return '\n    //mixins \n' + mixin + '\n    //construction \n' + body + '\n    //propagations \n' + propagation;
+    },
 
-                if (classDefinition.constructor)
-                    classFunction.classConstructor = classDefinition.constructor;
+    buildType: function (classFunction, baseClasses, instanceDefinition, classDefinition) {
+        var baseClass = baseClasses[0].type;
+        classFunction.inheritsFrom = baseClass;
+
+        if (baseClass) {
+            classFunction.prototype = Object.create(baseClass.prototype);
+            classFunction.memberDefinitions = Object.create(baseClass.memberDefinitions || new MemberDefinitionCollection());
+			classFunction.memberDefinitions.clearCache();
+
+			var staticDefs = baseClass.staticDefinitions;
+			if (staticDefs){
+				staticDefs = staticDefs.asArray();
+				if (staticDefs) {
+            		for(var i = 0; i < staticDefs.length; i++) {
+						this.buildMember(classFunction, staticDefs[i], undefined, 'staticDefinitions');
+            		}
+				}
+			}
+            classFunction.baseTypes = (baseClass.baseTypes || []).concat(baseClasses.map(function (base) { return base.type; }));
+            if (!classFunction.isAssignableTo) {
+                Object.defineProperty(classFunction, "isAssignableTo", {
+                    value: function (type) {
+                        return this === type || this.baseTypes.indexOf(type) >= 0;
+                    },
+                    writable: false,
+                    enumerable: false,
+                    configurable: false
+                });
             }
+        }
 
-            if (instanceDefinition) {
-                this.buildInstanceMembers(classFunction, instanceDefinition);
+        if (classDefinition) {
+            this.buildStaticMembers(classFunction, classDefinition);
+
+            if (classDefinition.constructor)
+                classFunction.classConstructor = classDefinition.constructor;
+        }
+
+        if (instanceDefinition) {
+            this.buildInstanceMembers(classFunction, instanceDefinition);
+        }
+
+        var mixins = [].concat(baseClasses);
+        mixins.shift();
+        if (Object.keys(mixins).length > 0)
+            this.buildInstanceMixins(classFunction, mixins);
+
+        classFunction.__class = true;
+
+        classFunction.prototype.constructor = classFunction;
+
+        Object.defineProperty(classFunction.prototype, "getType", {
+            value: function () {
+                return classFunction;
+            },
+            writable: false,
+            enumerable: false,
+            configurable: false
+        });
+
+
+        classFunction.extend = function (name, instanceDefinition, classDefinition) {
+            return $data.Class.define(name, classFunction, null, instanceDefinition, classDefinition);
+        };
+
+        Object.defineProperty(classFunction, "getMemberDefinition", {
+            value: function (name) {
+                return classFunction.memberDefinitions.getMember(name);
             }
+        });
 
-            var mixins = [].concat(baseClasses);
-            mixins.shift();
-            if (Object.keys(mixins).length > 0)
-                this.buildInstanceMixins(classFunction, mixins);
+    },
 
-            classFunction.__class = true;
-
-            classFunction.prototype.constructor = classFunction;
-
-            Object.defineProperty(classFunction.prototype, "getType", {
-                value: function () {
-                    return classFunction;
-                },
-                writable: false,
-                enumerable: false,
-                configurable: false
-            });
-
-
-            classFunction.extend = function (name, instanceDefinition, classDefinition) {
-                return $data.Class.define(name, classFunction, null, instanceDefinition, classDefinition);
-            };
-
-            Object.defineProperty(classFunction, "getMemberDefinition", {
-                value: function (name) {
-                    return classFunction.memberDefinitions.getMember(name);
-                }
-            });
-
-        },
-
-        addMethod: function (holder, name, method, propagation) {
-            if (!propagation || (typeof intellisense !== 'undefined')) {
-                holder[name] = method;
+    addMethod: function (holder, name, method, propagation) {
+        if (!propagation || (typeof intellisense !== 'undefined')) {
+            holder[name] = method;
             } else {
                 holder[name] = function () {
                     return method.apply(this[propagation], arguments);
                 };
             }
-        },
+    },
 
-        addProperty: function (holder, name, propertyDescriptor, propagation) {
+    addProperty: function (holder, name, propertyDescriptor, propagation) {
+        
+        //holder[name] = {};
 
-            //holder[name] = {};
-
-            if (propagation) {
-                propertyDescriptor.configurable = true;
-                if (propertyDescriptor.get) {
-                    var origGet = propertyDescriptor.get;
-                    propertyDescriptor.get = function () {
-                        if (!this[propagation])
-                            Guard.raise(new Exception("not inicialized"));
-                        return origGet.apply(this[propagation], arguments);
-                    };
-                }
-                if (propertyDescriptor.set) {
-                    var origSet = propertyDescriptor.set;
-                    propertyDescriptor.set = function () {
-                        if (!this[propagation])
-                            Guard.raise(new Exception("not inicialized"));
-                        origSet.apply(this[propagation], arguments);
-                    };
-                }
+        if (propagation)
+        {
+            propertyDescriptor.configurable = true;
+            if (propertyDescriptor.get)
+            {
+                var origGet = propertyDescriptor.get;
+                propertyDescriptor.get = function () {
+                    if (!this[propagation])
+                        Guard.raise(new Exception("not inicialized"));
+                    return origGet.apply(this[propagation], arguments);
+                };
             }
-
-            Object.defineProperty(holder, name, propertyDescriptor);
-        },
-
-        addField: function (holder, name, field) {
-            Guard.raise("not implemented");
-        },
-
-        buildMethod: function (classFunction, memberDefinition, propagation) {
-            ///<param name="classFunction" type="Function">The object that will receive member</param>
-            ///<param name="memberDefinition" type="MemberDefinition">the newly added member</param>
-            var holder = memberDefinition.classMember ? classFunction : classFunction.prototype;
-            this.addMethod(holder, memberDefinition.name, memberDefinition.method, propagation);
-        },
-
-        buildProperty: function (classFunction, memberDefinition, propagation) {
-            ///<param name="classFunction" type="Function">The object that will receive member</param>
-            ///<param name="memberDefinition" type="MemberDefinition">the newly added member</param>
-            var holder = memberDefinition.classMember ? classFunction : classFunction.prototype;
-            var pd = memberDefinition.createPropertyDescriptor(classFunction);
-            this.addProperty(holder, memberDefinition.name, pd, propagation);
-
-            //if lazyload TODO
-            if (!memberDefinition.classMember && classFunction.__setPropertyfunctions == true) {
-                var pdGetMethod = memberDefinition.createGetMethod();
-                this.addProperty(holder, 'get_' + memberDefinition.name, pdGetMethod, propagation);
-
-                var pdSetMethod = memberDefinition.createSetMethod();
-                this.addProperty(holder, 'set_' + memberDefinition.name, pdSetMethod, propagation);
-            }
-        },
-
-
-        buildMember: function (classFunction, memberDefinition, propagation, memberCollectionName) {
-            ///<param name="memberDefinition" type="MemberDefinition" />
-            memberCollectionName = memberCollectionName || 'memberDefinitions';
-            classFunction[memberCollectionName] = classFunction[memberCollectionName] || new MemberDefinitionCollection();
-
-            classFunction[memberCollectionName].setMember(memberDefinition);
-
-            switch (memberDefinition.kind) {
-                case MemberTypes.method:
-                    this.buildMethod(classFunction, memberDefinition, propagation);
-                    break;
-                case MemberTypes.navProperty:
-                case MemberTypes.complexProperty:
-                case MemberTypes.property:
-                    this.buildProperty(classFunction, memberDefinition, propagation);
-                    break;
-                default: Guard.raise("Unknown member type: " + memberDefinition.kind + "," + memberDefinition.name);
-            }
-        },
-
-        buildStaticMembers: function (classFunction, memberListDefinition) {
-            ///<param name="classFunction" type="Object">The class constructor that will be extended</param>
-            ///<param name="memberListDefinition" type="Object"></param>
-            var t = this;
-            for (var item in memberListDefinition) {
-                if (memberListDefinition.hasOwnProperty(item)) {
-                    var memberDefinition = new MemberDefinition(memberListDefinition[item], classFunction);
-                    memberDefinition.name = item;
-                    memberDefinition.classMember = true;
-                    t.buildMember(classFunction, memberDefinition, undefined, 'staticDefinitions');
-                }
-            }
-        },
-
-        buildInstanceMembers: function (classFunction, memberListDefinition) {
-            ///<param name="classFunction" type="Function">The class constructor whose prototype will be extended</param>
-            ///<param name="memberListDefinition" type="Object"></param>
-            ///pinning t outside of the closure seems actually faster then passing in the this  and referencing
-            var t = this;
-            for (var item in memberListDefinition) {
-                if (memberListDefinition.hasOwnProperty(item)) {
-                    var memberDefinition = new MemberDefinition(memberListDefinition[item], classFunction);
-
-                    memberDefinition.name = item;
-                    t.buildMember(classFunction, memberDefinition);
-                }
-            }
-        },
-
-        copyMembers: function (sourceType, targetType) {
-            ///<param name="sourceType" type="Function" />
-            ///<param name="targetType" type="Function" />
-            function il(msg) {
-                if (typeof intellisense === 'undefined') {
-                    return;
-                }
-                intellisense.logMessage(msg);
-            }
-
-            Object.keys(sourceType.prototype).forEach(function (item, i, src) {
-                if (item !== 'constructor' && item !== 'toString') {
-                    il("copying item:" + item);
-                    targetType.prototype[item] = sourceType[item];
-                }
-            });
-        },
-
-        buildInstanceMixins: function (classFunction, mixinList) {
-            ///<param name="classFunction" type="Function">The class constructor whose prototype will be extended</param>
-            ///<param name="mixinList" type="Array"></param>
-
-            classFunction.mixins = classFunction.mixins || [];
-            classFunction.propagations = classFunction.propagations || [];
-
-            for (var i = 0; i < mixinList.length; i++) {
-                var item = mixinList[i];
-                //if (classFunction.memberDefinitions.getMember(item.type.name)) {
-                if (item.propagateTo) {
-                    this.buildInstancePropagation(classFunction, item);
-                    classFunction.propagations.push(item);
-                    classFunction.propagations[item.type.name] = true;
-                } else {
-                    this.buildInstanceMixin(classFunction, item);
-                    classFunction.mixins.push(item);
-                    classFunction.mixins[item.type.name] = true;
-                }
-            };
-        },
-        buildInstanceMixin: function (classFunction, typeObj) {
-            ///<param name="classFunction" type="Function">The class constructor whose prototype will be extended</param>
-            ///<param name="typeObj" type="Object"></param>
-
-            var memberDefs = typeObj.type.memberDefinitions.asArray();
-            for (var i = 0, l = memberDefs.length; i < l; i++) {
-                var itemName = memberDefs[i].name;
-                if (itemName !== 'constructor' && !classFunction.memberDefinitions.getMember(itemName)) {
-                    this.buildMember(classFunction, memberDefs[i]);
-                }
-            }
-        },
-        buildInstancePropagation: function (classFunction, typeObj) {
-            ///<param name="classFunction" type="Function">The class constructor whose prototype will be extended</param>
-            ///<param name="typeObj" type="Object"></param>
-
-            var memberDefs = typeObj.type.memberDefinitions.asArray();
-            for (var i = 0, l = memberDefs.length; i < l; i++) {
-                var itemName = memberDefs[i].name;
-                if (itemName !== 'constructor' && !classFunction.memberDefinitions.getMember(itemName)) {
-                    this.buildMember(classFunction, memberDefs[i], typeObj.propagateTo);
-                }
+            if (propertyDescriptor.set) {
+                var origSet = propertyDescriptor.set;
+                propertyDescriptor.set = function () {
+                    if (!this[propagation])
+                        Guard.raise(new Exception("not inicialized"));
+                    origSet.apply(this[propagation], arguments);
+                };
             }
         }
 
-    };
+        Object.defineProperty(holder, name, propertyDescriptor);
+    },
+
+    addField: function(holder, name, field) {
+        Guard.raise("not implemented");
+    },
+
+    buildMethod: function (classFunction, memberDefinition, propagation) {
+        ///<param name="classFunction" type="Function">The object that will receive member</param>
+        ///<param name="memberDefinition" type="MemberDefinition">the newly added member</param>
+        var holder = memberDefinition.classMember ? classFunction : classFunction.prototype;
+        this.addMethod(holder, memberDefinition.name, memberDefinition.method, propagation);
+    },
+
+    buildProperty: function (classFunction, memberDefinition, propagation) {
+        ///<param name="classFunction" type="Function">The object that will receive member</param>
+        ///<param name="memberDefinition" type="MemberDefinition">the newly added member</param>
+        var holder = memberDefinition.classMember ? classFunction : classFunction.prototype;
+        var pd = memberDefinition.createPropertyDescriptor(classFunction);
+        this.addProperty(holder, memberDefinition.name, pd, propagation);
+
+        //if lazyload TODO
+        if (!memberDefinition.classMember && classFunction.__setPropertyfunctions == true) {
+            var pdGetMethod = memberDefinition.createGetMethod();
+            this.addProperty(holder, 'get_' + memberDefinition.name, pdGetMethod, propagation);
+
+            var pdSetMethod = memberDefinition.createSetMethod();
+            this.addProperty(holder, 'set_' + memberDefinition.name, pdSetMethod, propagation);
+        }
+    },
+
+
+    buildMember: function (classFunction, memberDefinition, propagation, memberCollectionName) {
+        ///<param name="memberDefinition" type="MemberDefinition" />
+        memberCollectionName = memberCollectionName || 'memberDefinitions';
+        classFunction[memberCollectionName] = classFunction[memberCollectionName] || new MemberDefinitionCollection();
+
+        classFunction[memberCollectionName].setMember(memberDefinition);
+
+        switch (memberDefinition.kind) {
+            case MemberTypes.method:
+                this.buildMethod(classFunction, memberDefinition, propagation);
+                break;
+            case MemberTypes.navProperty:
+            case MemberTypes.complexProperty:
+            case MemberTypes.property:
+                this.buildProperty(classFunction, memberDefinition, propagation);
+                break;
+            default: Guard.raise("Unknown member type: " + memberDefinition.kind + "," + memberDefinition.name);
+        }
+    },
+
+    buildStaticMembers: function (classFunction, memberListDefinition) {
+        ///<param name="classFunction" type="Object">The class constructor that will be extended</param>
+        ///<param name="memberListDefinition" type="Object"></param>
+        var t = this;
+        for (var item in memberListDefinition)
+        {
+            if (memberListDefinition.hasOwnProperty(item)) {
+                var memberDefinition = new MemberDefinition(memberListDefinition[item], classFunction);
+                memberDefinition.name = item;
+                memberDefinition.classMember = true;
+                t.buildMember(classFunction, memberDefinition, undefined, 'staticDefinitions');
+            }
+        }
+    },
+
+    buildInstanceMembers: function (classFunction, memberListDefinition) {
+        ///<param name="classFunction" type="Function">The class constructor whose prototype will be extended</param>
+        ///<param name="memberListDefinition" type="Object"></param>
+        ///pinning t outside of the closure seems actually faster then passing in the this  and referencing
+        var t = this;
+        for (var item in memberListDefinition) {
+            if (memberListDefinition.hasOwnProperty(item)) {
+                var memberDefinition = new MemberDefinition(memberListDefinition[item], classFunction);
+
+                memberDefinition.name = item;
+                t.buildMember(classFunction, memberDefinition);
+            }
+        }
+    },
+
+    copyMembers: function(sourceType, targetType) {
+        ///<param name="sourceType" type="Function" />
+        ///<param name="targetType" type="Function" />
+        function il(msg) {
+            if (typeof intellisense === 'undefined') {
+                return;
+            }
+            intellisense.logMessage(msg);
+        }
+
+        Object.keys(sourceType.prototype).forEach(function (item, i, src) {
+            if (item !== 'constructor' && item !== 'toString') {
+                il("copying item:" + item);
+                targetType.prototype[item] = sourceType[item];
+            }
+        });
+    },
+
+    buildInstanceMixins: function (classFunction, mixinList) {
+        ///<param name="classFunction" type="Function">The class constructor whose prototype will be extended</param>
+        ///<param name="mixinList" type="Array"></param>
+
+        classFunction.mixins = classFunction.mixins || [];
+        classFunction.propagations = classFunction.propagations || [];
+
+        for(var i = 0; i < mixinList.length; i++) {
+            var item = mixinList[i];
+            //if (classFunction.memberDefinitions.getMember(item.type.name)) {
+            if (item.propagateTo) {
+                this.buildInstancePropagation(classFunction, item);
+                classFunction.propagations.push(item);
+                classFunction.propagations[item.type.name] = true;
+            } else {
+                this.buildInstanceMixin(classFunction, item);
+                classFunction.mixins.push(item);
+                classFunction.mixins[item.type.name] = true;
+            }
+        };
+    },
+    buildInstanceMixin: function (classFunction, typeObj) {
+        ///<param name="classFunction" type="Function">The class constructor whose prototype will be extended</param>
+        ///<param name="typeObj" type="Object"></param>
+
+        var memberDefs = typeObj.type.memberDefinitions.asArray();
+        for (var i = 0, l = memberDefs.length; i < l; i++) {
+            var itemName = memberDefs[i].name;
+            if (itemName !== 'constructor' && !classFunction.memberDefinitions.getMember(itemName)) {
+                this.buildMember(classFunction, memberDefs[i]);
+            }
+            }
+    },
+    buildInstancePropagation: function (classFunction, typeObj) {
+        ///<param name="classFunction" type="Function">The class constructor whose prototype will be extended</param>
+        ///<param name="typeObj" type="Object"></param>
+
+        var memberDefs = typeObj.type.memberDefinitions.asArray();
+        for (var i = 0, l = memberDefs.length; i < l; i++) {
+            var itemName = memberDefs[i].name;
+            if (itemName !== 'constructor' && !classFunction.memberDefinitions.getMember(itemName)) {
+                this.buildMember(classFunction, memberDefs[i], typeObj.propagateTo);
+            }
+            }
+    }
+
+};
 
     $data.Class = Class = new ClassEngineBase();
 
 
-    (function (global) {
+(function (global) {
 
-        function ContainerCtor() {
+    function ContainerCtor() {
 
-            var classNames = {};
-            var consolidatedClassNames = [];
-            var classTypes = [];
+        var classNames = {};
+        var consolidatedClassNames = [];
+        var classTypes = [];
 
-            this.classNames = classNames;
-            this.consolidatedClassNames = consolidatedClassNames;
-            this.classTypes = classTypes;
+        this.classNames = classNames;
+        this.consolidatedClassNames = consolidatedClassNames;
+        this.classTypes = classTypes;
 
-            var mappedTo = [];
-            this.mappedTo = mappedTo;
+        var mappedTo = [];
+        this.mappedTo = mappedTo;
 
-            var self = this;
+        var self = this;
 
-            this["holder"] = null;
+        this["holder"] = null;
 
-            var IoC = function (type, parameters) {
-                var t = self.resolveType(type);
-                var inst = Object.create(t.prototype);
-                t.apply(inst, parameters);
-                return inst;
+        var IoC = function (type, parameters) {
+            var t = self.resolveType(type);
+            var inst = Object.create(t.prototype);
+            t.apply(inst, parameters);
+            return inst;
+        };
+
+        this.mapType = function (aliasTypeOrName, realTypeOrName) {
+            Guard.requireValue("aliasType", aliasTypeOrName);
+            Guard.requireValue("realType", realTypeOrName);
+            var aliasT = this.getType(aliasTypeOrName);
+            var realT = this.getType(realTypeOrName);
+            var aliasPos = classTypes.indexOf(aliasT);
+            var realPos = classTypes.indexOf(realT);
+            mappedTo[aliasPos] = realPos;
+        },
+
+        this.resolve = function (type, parameters) {
+            var classFunction = this.resolveType(type, parameters);
+            return new classFunction(parameters);
+        };
+
+        this.resolveName = function (type) {
+            var t = this.resolveType(type);
+            var tPos = classTypes.indexOf(t);
+            return consolidatedClassNames[tPos];
+        };
+
+        this.isPrimitiveType = function(type) {
+            var t = this.resolveType(type);
+            return t === Number || t === String || t === Date || t === String || t === Boolean || t === Array || t === Object ||
+                t === $data.Number || t === $data.String || t === $data.Date || t === $data.String || t === $data.Boolean || t === $data.Array || t === $data.Object;
+        };
+
+        this.resolveType = function (typeOrName) {
+            var t = typeOrName;
+            t = this.getType(t);
+            var posT = classTypes.indexOf(t);
+			return typeof mappedTo[posT] === 'undefined' ? t : classTypes[mappedTo[posT]];
+        };
+
+        this.getTypes = function () {
+            return Object.keys(classNames).map(function (className, index) {
+                return { name: className, type: classTypes[classNames[className]], toString: function () { return this.name; } };
+            });
+        };
+
+        //this.getTypeName( in type);
+        //this.resolveType()
+        //this.inferTypeFromValue = function (value) {
+
+        this.getTypeName = function (value) {
+            switch (typeof value) {
+                case 'object':
+                    if (value == null) return '$data.Object';
+                    if (value instanceof Array) return '$data.Array';
+                    if (value.getType) return value.getType().fullName;
+                    if (value instanceof Date) return '$data.Date';
+                    //if(value instanceof "number") return
+                default:
+                    return typeof value;
+            }
+        };
+
+        this.isTypeRegistered = function (typeOrName) {
+            if (typeof typeOrName === 'function') {
+                return classTypes.indexOf(typeOrName) > -1;
+            } else {
+                return typeOrName in classNames;
+            }
+        };
+
+        this.unregisterType = function (type) {
+            Guard.raise("Unimplemented");
+        };
+
+        this.getType = function (typeOrName) {
+            Guard.requireValue("typeOrName", typeOrName);
+            if (typeof typeOrName === 'function') {
+                return typeOrName;
             };
 
-            this.mapType = function (aliasTypeOrName, realTypeOrName) {
-                Guard.requireValue("aliasType", aliasTypeOrName);
-                Guard.requireValue("realType", realTypeOrName);
-                var aliasT = this.getType(aliasTypeOrName);
-                var realT = this.getType(realTypeOrName);
-                var aliasPos = classTypes.indexOf(aliasT);
-                var realPos = classTypes.indexOf(realT);
-                mappedTo[aliasPos] = realPos;
-            },
-
-            this.resolve = function (type, parameters) {
-                var classFunction = this.resolveType(type, parameters);
-                return new classFunction(parameters);
+            if (!(typeOrName in classNames)) {
+                Guard.raise(new Exception("Unable to resolve type:" + typeOrName));
             };
+            return classTypes[classNames[typeOrName]];
+        };
 
-            this.resolveName = function (type) {
-                var t = this.resolveType(type);
-                var tPos = classTypes.indexOf(t);
-                return consolidatedClassNames[tPos];
-            };
+        this.getName = function (typeOrName) {
+            var t = this.getType(typeOrName);
+            var tPos = classTypes.indexOf(t);
+            if (tPos == -1)
+                Guard.raise("unknown type to request name for: " + typeOrName);
+            return consolidatedClassNames[tPos];
+        };
 
-            this.isPrimitiveType = function (type) {
-                var t = this.resolveType(type);
-                return t === Number || t === String || t === Date || t === String || t === Boolean || t === Array || t === Object ||
-                    t === $data.Number || t === $data.String || t === $data.Date || t === $data.String || t === $data.Boolean || t === $data.Array || t === $data.Object;
-            };
+		this.getDefault = function (typeOrName) {
+			var t = this.resolveType(typeOrName);
+			switch (t){
+				case $data.Number: return 0.0;
+				case $data.Integer: return 0;
+				case $data.String: return '';
+				case $data.Boolean: return false;
+				default: return null;
+			}
+		};
 
-            this.resolveType = function (typeOrName) {
-                var t = typeOrName;
-                t = this.getType(t);
-                var posT = classTypes.indexOf(t);
-                return typeof mappedTo[posT] === 'undefined' ? t : classTypes[mappedTo[posT]];
-            };
+        //name array ['', '', '']
+        this.registerType = function(nameOrNamesArray, type, factoryFunc) {
+            ///<signature>
+            ///<summary>Registers a type and optionally a lifetimeManager with a name
+            ///that can be used to later resolve the type or create new instances</summary>
+            ///<param name="nameOrNamesArray" type="Array">The names of the type</param>
+            ///<param name="type" type="Function">The type to register</param>
+            ///<param name="instanceManager" type="Function"></param>
+            ///</signature>
+            ///<signature>
+            ///<summary>Registers a new type that </summary>
+            ///<param name="aliasType" type="Function">The name of the type</param>
+            ///<param name="actualType" type="Function">The type to register</param>
+            ///</signature>
 
-            this.getTypes = function () {
-                return Object.keys(classNames).map(function (className, index) {
-                    return { name: className, type: classTypes[classNames[className]], toString: function () { return this.name; } };
-                });
-            };
 
-            //this.getTypeName( in type);
-            //this.resolveType()
-            //this.inferTypeFromValue = function (value) {
-
-            this.getTypeName = function (value) {
-                switch (typeof value) {
-                    case 'object':
-                        if (value == null) return '$data.Object';
-                        if (value instanceof Array) return '$data.Array';
-                        if (value.getType) return value.getType().fullName;
-                        if (value instanceof Date) return '$data.Date';
-                        //if(value instanceof "number") return
-                    default:
-                        return typeof value;
+            ///TODO remove
+            /*if (typeof typeNameOrAlias === 'string') {
+                if (classNames.indexOf(typeNameOrAlias) > -1) {
+                    Guard.raise("Type already registered. Remove first");
                 }
-            };
+            }*/
 
-            this.isTypeRegistered = function (typeOrName) {
-                if (typeof typeOrName === 'function') {
-                    return classTypes.indexOf(typeOrName) > -1;
-                } else {
-                    return typeOrName in classNames;
-                }
-            };
+            if (!nameOrNamesArray) {
+                return;
+            }
 
-            this.unregisterType = function (type) {
-                Guard.raise("Unimplemented");
-            };
+            //todo add ('number', 'number')
+            if (typeof type === "string") {
+                type = self.resolveType(type);
+            }
 
-            this.getType = function (typeOrName) {
-                Guard.requireValue("typeOrName", typeOrName);
-                if (typeof typeOrName === 'function') {
-                    return typeOrName;
-                };
+            if (typeof nameOrNamesArray === 'string') {
+                var tmp = [];
+                tmp.push(nameOrNamesArray);
+                nameOrNamesArray = tmp;
+            }
 
-                if (!(typeOrName in classNames)) {
-                    Guard.raise(new Exception("Unable to resolve type:" + typeOrName));
-                };
-                return classTypes[classNames[typeOrName]];
-            };
+            for (var i = 0; i < nameOrNamesArray.length; i++) {
+                var parts = nameOrNamesArray[i].split('.');
+                var item = {};
+                item.shortName = parts[parts.length - 1];
+                item.fullName = nameOrNamesArray[i];
+                nameOrNamesArray[i] = item;
+            }
 
-            this.getName = function (typeOrName) {
-                var t = this.getType(typeOrName);
-                var tPos = classTypes.indexOf(t);
-                if (tPos == -1)
-                    Guard.raise("unknown type to request name for: " + typeOrName);
-                return consolidatedClassNames[tPos];
-            };
-
-            this.getDefault = function (typeOrName) {
-                var t = this.resolveType(typeOrName);
-                switch (t) {
-                    case $data.Number: return 0.0;
-                    case $data.Integer: return 0;
-                    case $data.String: return '';
-                    case $data.Boolean: return false;
-                    default: return null;
-                }
-            };
-
-            //name array ['', '', '']
-            this.registerType = function (nameOrNamesArray, type, factoryFunc) {
-                ///<signature>
-                ///<summary>Registers a type and optionally a lifetimeManager with a name
-                ///that can be used to later resolve the type or create new instances</summary>
-                ///<param name="nameOrNamesArray" type="Array">The names of the type</param>
-                ///<param name="type" type="Function">The type to register</param>
-                ///<param name="instanceManager" type="Function"></param>
-                ///</signature>
-                ///<signature>
-                ///<summary>Registers a new type that </summary>
-                ///<param name="aliasType" type="Function">The name of the type</param>
-                ///<param name="actualType" type="Function">The type to register</param>
-                ///</signature>
+            //if (type.
 
 
-                ///TODO remove
-                /*if (typeof typeNameOrAlias === 'string') {
-                    if (classNames.indexOf(typeNameOrAlias) > -1) {
-                        Guard.raise("Type already registered. Remove first");
-                    }
-                }*/
+            var creatorFnc = function () { return IoC(type, arguments); };
 
-                if (!nameOrNamesArray) {
-                    return;
-                }
+            if (typeof intellisense !== 'undefined') {
+                intellisense.annotate(creatorFnc, type);
+            }
 
-                //todo add ('number', 'number')
-                if (typeof type === "string") {
-                    type = self.resolveType(type);
-                }
-
-                if (typeof nameOrNamesArray === 'string') {
-                    var tmp = [];
-                    tmp.push(nameOrNamesArray);
-                    nameOrNamesArray = tmp;
-                }
-
-                for (var i = 0; i < nameOrNamesArray.length; i++) {
-                    var parts = nameOrNamesArray[i].split('.');
-                    var item = {};
-                    item.shortName = parts[parts.length - 1];
-                    item.fullName = nameOrNamesArray[i];
-                    nameOrNamesArray[i] = item;
-                }
-
-                //if (type.
-
-
-                var creatorFnc = function () { return IoC(type, arguments); };
-
-                if (typeof intellisense !== 'undefined') {
-                    intellisense.annotate(creatorFnc, type);
-                }
-
-                for (var i = 0, l = nameOrNamesArray.length; i < l; i++) {
-                    var item = nameOrNamesArray[i];
-                    if (!(("create" + item.shortName) in self)) {
-                        if (typeof factoryFunc === 'function') {
-                            self["create" + item.shortName] = factoryFunc;
-                        } else {
-                            self["create" + item.shortName] = creatorFnc;
-                        }
+            for (var i = 0, l = nameOrNamesArray.length; i < l; i++) {
+                var item = nameOrNamesArray[i];
+                if (!(("create" + item.shortName) in self)) {
+                    if (typeof factoryFunc === 'function') {
+                        self["create" + item.shortName] = factoryFunc;
                     } else {
-                        if (console) { console.warn("warning: short names overlap:" + item.shortName + ", Container.create" + item.shortName + " has not been updated"); }
-                    };
+                        self["create" + item.shortName] = creatorFnc;
+                    }
+                } else {
+                    if (console) { console.warn("warning: short names overlap:" + item.shortName + ", Container.create" + item.shortName + " has not been updated"); }
+                };
 
-                    var typePos = classTypes.indexOf(type);
-                    if (typePos == -1) {
-                        //new type
-                        typePos = classTypes.push(type) - 1;
-                        var fn = item.fullName;
-                        consolidatedClassNames[typePos] = item.fullName;
-                    };
+                var typePos = classTypes.indexOf(type);
+                if (typePos == -1) {
+                    //new type
+                    typePos = classTypes.push(type) - 1;
+                    var fn = item.fullName;
+                    consolidatedClassNames[typePos] = item.fullName;
+                };
 
-                    if (item.fullName in classNames) {
-                        console.warn("warning:!!! This typename has already been registered:" + item.fullName);
-                    };
-                    classNames[item.fullName] = typePos;
-                }
+                if (item.fullName in classNames) {
+                    console.warn("warning:!!! This typename has already been registered:" + item.fullName);
+                };
+                classNames[item.fullName] = typePos;
+            }
 
-                if (!type.name) {
-                    type.name = nameOrNamesArray[0].shortName;
-                }
-            };
-        }
+			if (!type.name){
+				type.name = nameOrNamesArray[0].shortName;
+			}
+        };
+    }
 
-        $data.Number = typeof Number !== 'undefined' ? Number : function JayNumber() { };
-        $data.Integer = typeof Integer !== 'undefined' ? Integer : function JayInteger() { };
-        $data.Date = typeof Date !== 'undefined' ? Date : function JayDate() { };
-        $data.String = typeof String !== 'undefined' ? String : function JayString() { };
-        $data.Boolean = typeof Boolean !== 'undefined' ? Boolean : function JayBoolean() { };
-        $data.Blob = /*typeof Blob !== 'undefined' ? Blob :*/ function JayBlob() { };
-        $data.Array = typeof Array !== 'undefined' ? Array : function JayArray() { };
-        $data.Object = typeof Object !== 'undefined' ? Object : function JayObject() { };
-        $data.Function = Function;
+    $data.Number = typeof Number !== 'undefined' ? Number : function JayNumber() { };
+    $data.Integer = typeof Integer !== 'undefined' ? Integer : function JayInteger() {  };
+    $data.Date = typeof Date !== 'undefined' ? Date : function JayDate() { };
+    $data.String = typeof String !== 'undefined' ? String : function JayString() { };
+    $data.Boolean = typeof Boolean !== 'undefined' ? Boolean : function JayBoolean() { };
+    $data.Blob = /*typeof Blob !== 'undefined' ? Blob :*/ function JayBlob() { };
+    $data.Array = typeof Array !== 'undefined' ? Array : function JayArray() { };
+    $data.Object = typeof Object !== 'undefined' ? Object : function JayObject() { };
+    $data.Function = Function;
 
-        var c;
-        global["Container"] = $data.Container = c = global["C$"] = new ContainerCtor();
-        c.registerType(["$data.Number", "number", "float", "real", "decimal"], $data.Number);
-        c.registerType(["$data.Integer", "int", "integer", "int16", "int32", "int64"], $data.Integer);
-        c.registerType(["$data.String", "string", "text", "character"], $data.String);
-        c.registerType(["$data.Array", "array", "Array", "[]"], $data.Array, function () {
-            return $data.Array.apply(undefined, arguments);
-        });
-        c.registerType(["$data.Date", "datetime", "date"], $data.Date);
-        c.registerType(["$data.Boolean", "bool", "boolean"], $data.Boolean);
-        c.registerType(["$data.Blob", "blob"], $data.Blob);
-        c.registerType(["$data.Object", "Object", "object"], $data.Object);
-        c.registerType(["$data.Function", "Function", "function"], $data.Function);
-
-
-    })(window);
-
-    global["$C"] = function () { Class.define.apply(Class, arguments); };
-
-
-    $data.Class.ConstructorParameter = ConstructorParameter = $data.Class.define('ConstructorParameter', null, null, {
-        constructor: function (paramIndex) {
-            ///<param name="paramIndex" type="integer" />
-            this.paramIndex = paramIndex;
-        },
-        paramIndex: {}
+    var c;
+    global["Container"] = $data.Container = c = global["C$"] = new ContainerCtor();
+    c.registerType(["$data.Number", "number", "float", "real", "decimal", "JayNumber"], $data.Number);
+    c.registerType(["$data.Integer", "int", "integer", "int16", "int32", "int64", "JayInteger"], $data.Integer);
+    c.registerType(["$data.String", "string", "text", "character", "JayString"], $data.String);
+    c.registerType(["$data.Array", "array", "Array", "[]", "JayArray"], $data.Array, function () {
+        return $data.Array.apply(undefined, arguments);
     });
-    /*$data.Class.MixinParameter = MixinParameter = $data.Class.define('MixinParameter', null, null, {
-        constructor: function (typeName) {
-            ///<param name="paramIndex" type="integer">
-            this.typeName = typeName;
-        },
-        typeName: {}
-    });*/
-
-    //var e = new Entity();
+    c.registerType(["$data.Date", "datetime", "date", "JayDate"], $data.Date);
+    c.registerType(["$data.Boolean", "bool", "boolean", "JayBoolean"], $data.Boolean);
+    c.registerType(["$data.Blob", "blob", "JayBlob"], $data.Blob);
+    c.registerType(["$data.Object", "Object", "object", "{}", "JayObject"], $data.Object);
+    c.registerType(["$data.Function", "Function", "function"], $data.Function);
 
 
-    /*$data.Interface = Class.define("Interface", null, null, {
-        constructor: function() { Guard.raise("Can not create an interface"); }
+})(window);
+
+global["$C"] = function () { Class.define.apply(Class, arguments); };
+
+
+$data.Class.ConstructorParameter = ConstructorParameter = $data.Class.define('ConstructorParameter', null, null, {
+    constructor: function (paramIndex) {
+        ///<param name="paramIndex" type="integer" />
+        this.paramIndex = paramIndex;
     },
-    {
-        define: function (name, definition) {
-            var result = Class.define(name, $data.Interface, null, null, definition);
-            delete result.__class;
-            result.__interface = true;
-            return result;
-        }
-    });
-    
-    
-    
-    $data.Observable = Observable = Class.define("Observable", null, null, {
-        propertyChanged: { dataType: $data.Event }
-    }, { 
-        createFromInstance: function(instance) {
-            var propNames = instance.getClass().memberDefinitions.f
-        }
-    });*/
+    paramIndex: {}
+});
+/*$data.Class.MixinParameter = MixinParameter = $data.Class.define('MixinParameter', null, null, {
+    constructor: function (typeName) {
+        ///<param name="paramIndex" type="integer">
+        this.typeName = typeName;
+    },
+    typeName: {}
+});*/
+
+//var e = new Entity();
+
+
+/*$data.Interface = Class.define("Interface", null, null, {
+    constructor: function() { Guard.raise("Can not create an interface"); }
+},
+{
+    define: function (name, definition) {
+        var result = Class.define(name, $data.Interface, null, null, definition);
+        delete result.__class;
+        result.__interface = true;
+        return result;
+    }
+});
+
+
+
+$data.Observable = Observable = Class.define("Observable", null, null, {
+    propertyChanged: { dataType: $data.Event }
+}, { 
+    createFromInstance: function(instance) {
+        var propNames = instance.getClass().memberDefinitions.f
+    }
+});*/
 
 
 })($data, window);
@@ -8120,9 +8124,8 @@ $data.typeSystem = {
         /// <param name="object" type="Object">Object to extend target with.</param>
         /// <param name="objectN" optional="true" parameterArray="true" type="Object">Object to extend target with.</param>
         /// </signature>        
-        /// <returns></returns>
-        if (typeof target !== 'object')
-            Guard.raise('Target must be object');
+    	/// <returns></returns>
+
         for (var i = 1; i < arguments.length; i++) {
             var obj = arguments[i];
             if (obj === null || typeof obj === 'undefined')
@@ -8130,7 +8133,7 @@ $data.typeSystem = {
             for (key in obj) {
                 target[key] = obj[key];
             }
-        }
+        }        
         return target;
     },
     createCallbackSetting: function (callBack, defaultSetting) {
@@ -8150,7 +8153,7 @@ $data.typeSystem = {
         }
         return this.extend(setting, callBack);
     },
-    createCtorParams: function (source, indexes, thisObj) {
+    createCtorParams: function(source, indexes, thisObj) {
         ///<param name="source" type="Array" />Paramerter array
         ///<param name="indexes" type="Array" />
         ///<param name="thisObj" type="Object" />
@@ -8169,14 +8172,17 @@ $data.typeSystem = {
         }
         return source;
     },
-    writePropertyValues: function (obj) {
-        if (obj && obj.getType && obj.getType().memberDefinitions) {
+    writePropertyValues: function (obj)
+    {
+        if (obj && obj.getType && obj.getType().memberDefinitions)
+        {
             this.writeProperties(obj, obj.getType().memberDefinitions.asArray().filter(
                 function (md) { return (md.kind == "property" || md.kind == "navProperty" || md.kind == "complexProperty") && !md.prototypeProperty; }
                 ));
         }
     },
-    writeProperties: function (obj, members) {
+    writeProperties: function (obj, members)
+    {
         var defines = {};
         for (var i = 0, l = members.length; i < l; i++) {
             var memDef = members[i];
@@ -8186,7 +8192,8 @@ $data.typeSystem = {
         Object.defineProperties(obj, defines);
 
     },
-    writeProperty: function (obj, member, value) {
+    writeProperty: function (obj, member, value)
+    {
         var memDef = typeof member === 'string' ? obj.getType().memberDefinitions.getMember(member) : member;
         if (memDef) {
             var propDef = memDef.createPropertyDescriptor(null, value);
@@ -8195,7 +8202,7 @@ $data.typeSystem = {
         }
     }
 };
-$data.ASTNode = function () {
+$data.ASTNode = function() {
     ///<field name="arity" type="string">represents the kind of the AST node</field>
     ///<field name="edge" type="Boolean" />
     ///<field name="identifier" type="Boolean" />
@@ -8204,19 +8211,19 @@ $data.ASTNode = function () {
     ///<field name="type" type="String" />
 }
 
-$data.FunctionASTNode = function () {
+$data.FunctionASTNode = function() {
     ///<field name="value" type="string">The name of the function</field>
     ///<field name="first" type="Array" elementType="ASTNode">Contains the function parameters</field>
     ///<field name="block" type="ASTNode">The function body</field>
 }
 $data.FunctionASTNode.prototype = new $data.ASTNode();
 
-$data.ParameterASTNode = function () {
+$data.ParameterASTNode = function() {
     ///<field name="value" type="string">The name of the parameter</field>
     ///<field name="type" type="string" />
     ///<field name="func" type="" />
 }
-$data.MemberAccessASTNode = function () {
+$data.MemberAccessASTNode = function() {
     ///<field name="value" type="string">The name of the parameter</field>
     ///<field name="type" type="string" />
     ///<field name="first" type="ASTNode" />
@@ -8224,13 +8231,13 @@ $data.MemberAccessASTNode = function () {
 }
 $data.MemberAccessASTNode.prototype = new $data.ASTNode();
 
-$data.ConstantASTNode = function () {
+$data.ConstantASTNode = function() {
     ///<field name="type" type="string">The datatype of the constant value</field>
     ///<field name="value" type="Object">The constant value</field>
 }
 
 
-$data.ASTParserResult = function (result, tree, errors) {
+$data.ASTParserResult = function(result, tree, errors) {
     ///<field name="success" type="boolean"></field>
     this.success = (tree != '');
     this.result = result;
@@ -8238,7 +8245,7 @@ $data.ASTParserResult = function (result, tree, errors) {
     this.errors = errors;
 }
 
-$data.ASTParser = function () {
+$data.ASTParser = function() {
 }
 
 $data.ASTParser.parseCode = function (code) {
@@ -8254,7 +8261,7 @@ $data.ASTParser.parseCode = function (code) {
 
     var jsLint = JAYLINT(codeStr);
     var result = new $data.ASTParserResult(jsLint, JAYLINT.tree, JAYLINT.errors);
-
+    
     return result;
 };
 //TODO: Finish refactoring ExpressionNode.js
@@ -8265,7 +8272,7 @@ $data.Class.define("$data.Expressions.ExpressionType", null, null, {}, {
     MemberAccess: "memberAccess",    // { type:MEMBERACCESS, executable:true, expression:, member: }
     Call: "call",
 
-    /* binary operators */
+/* binary operators */
     Equal: "equal",
     NotEqual: "notEqual",
     EqualTyped: "equalTyped",
@@ -8273,7 +8280,7 @@ $data.Class.define("$data.Expressions.ExpressionType", null, null, {}, {
     GreaterThen: "greaterThan",
     LessThen: "lessThan",
     GreaterThenOrEqual: "greaterThanOrEqual",
-    LessThenOrEqual: "lessThenOrEqual",
+    LessThenOrEqual: "lessThenOrEqual", 
     Or: "or",
     OrBitwise: "orBitwise",
     And: "and",
@@ -8289,7 +8296,7 @@ $data.Class.define("$data.Expressions.ExpressionType", null, null, {}, {
     Modulo: "modulo",
     ArrayIndex: "arrayIndex",
 
-    /* unary operators */
+/* unary operators */
     New: "new",
     Positive: "positive",
     Negative: "negative",
@@ -8332,7 +8339,7 @@ $data.Class.define("$data.Expressions.ExpressionType", null, null, {}, {
     MemberInfo: "MemberInfo",
     QueryParameter: "QueryParameter",
     ComplexEntityField: "ComplexEntityField",
-
+    
     Take: "Take",
     Skip: "Skip",
     OrderBy: "OrderBy",
@@ -8341,7 +8348,7 @@ $data.Class.define("$data.Expressions.ExpressionType", null, null, {}, {
     Count: "Count"
 });
 
-$data.BinaryOperator = function () {
+$data.BinaryOperator = function() {
     ///<field name="operator" type="string" />
     ///<field name="expressionType" type="$data.ExpressionType" />
     ///<field name="type" type="string" />
@@ -8391,19 +8398,19 @@ $data.binaryOperators.getOperator = function (operator) {
 
 
 $data.unaryOperators = [
-    { operator: "+", arity: "prefix", expressionType: $data.Expressions.ExpressionType.Positive, type: "number", implementation: function (operand) { return +operand; } },
-    { operator: "-", arity: "prefix", expressionType: $data.Expressions.ExpressionType.Negative, type: "number", implementation: function (operand) { return -operand; } },
-    { operator: "++", arity: "prefix", expressionType: $data.Expressions.ExpressionType.Increment, type: "number", implementation: function (operand) { return ++operand; } },
-    { operator: "--", arity: "prefix", expressionType: $data.Expressions.ExpressionType.Decrement, type: "number", implementation: function (operand) { return --operand; } },
+    { operator: "+", arity:"prefix", expressionType : $data.Expressions.ExpressionType.Positive, type: "number", implementation: function(operand) { return +operand; } },
+    { operator: "-", arity:"prefix", expressionType : $data.Expressions.ExpressionType.Negative, type: "number", implementation: function(operand) { return -operand; } },
+    { operator: "++", arity:"prefix", expressionType : $data.Expressions.ExpressionType.Increment, type: "number", implementation: function(operand) { return ++operand; } },
+    { operator: "--", arity:"prefix", expressionType: $data.Expressions.ExpressionType.Decrement, type: "number", implementation: function (operand) { return --operand; } },
     { operator: "++", arity: "suffix", expressionType: $data.Expressions.ExpressionType.Increment, type: "number", implementation: function (operand) { return operand++; } },
     { operator: "!", arity: "prefix", expressionType: $data.Expressions.ExpressionType.Not, type: "boolean", implementation: function (operand) { return !operand; } },
-    { operator: "--", arity: "suffix", expressionType: $data.Expressions.ExpressionType.Decrement, type: "number", implementation: function (operand) { return operand--; } }
-
+    { operator: "--", arity:"suffix", expressionType: $data.Expressions.ExpressionType.Decrement, type: "number", implementation: function (operand) { return operand--; } }
+    
     //{ operator: "new", expressionType : $data.Expressions.ExpressionType.New, type: "object", implementation: function(operand) { return new operand; }
 ];
 
 $data.unaryOperators.resolve = function (operator) {
-    var result = $data.unaryOperators.filter(function (item) { return item.operator == operator; });
+    var result = $data.unaryOperators.filter(function (item) { return item.operator == operator ; });
     if (result.length > 0)
         return operator;
     //Guard.raise("Unknown operator: " + operator);
@@ -8422,7 +8429,7 @@ $data.unaryOperators.getOperator = function (operator, arity) {
 };
 
 
-$data.timeIt = function (fn, iterations) {
+$data.timeIt = function(fn, iterations) {
     iterations = iterations || 1;
 
     console.time("!");
@@ -8481,7 +8488,7 @@ $C('$data.Expressions.ExpressionNode', $data.Entity, null, {
                 get: function (value) {
                     //IE ommits listing JSON.stringify in call chain
 
-                    if (arguments.callee.caller == jsonify || arguments.callee.caller == JSON.stringify) {
+                        if (arguments.callee.caller == jsonify || arguments.callee.caller == JSON.stringify) {
                         return Container.resolveName(_expressionType);
                     }
                     return _expressionType;
@@ -8510,13 +8517,13 @@ $C('$data.Expressions.ExpressionNode', $data.Entity, null, {
 
 $C('$data.Expressions.UnaryExpression', $data.Expressions.ExpressionNode, null, {
     constructor: function (operand, operator, nodeType, resolution) {
-        /// <summary>
-        /// Represents an operation with only one operand and an operator
-        /// </summary>
-        /// <param name="operand"></param>
-        /// <param name="operator"></param>
-        /// <param name="nodeType"></param>
-        /// <param name="resolution"></param>
+    	/// <summary>
+    	/// Represents an operation with only one operand and an operator
+    	/// </summary>
+    	/// <param name="operand"></param>
+    	/// <param name="operator"></param>
+    	/// <param name="nodeType"></param>
+    	/// <param name="resolution"></param>
         this.operand = operand;
         this.operator = operator;
         this.nodeType = nodeType;
@@ -8581,7 +8588,7 @@ $C('$data.Expressions.CallExpression', $data.Expressions.ExpressionNode, null, {
 
     implementation: {
         get: function () {
-            return function (thisObj, method, args) {
+            return function(thisObj, method, args) {
                 if (typeof method !== 'function') {
                     method = thisObj[method];
                 }
@@ -8609,7 +8616,7 @@ $C('$data.Expressions.CodeParser', null, null, {
         this.lambdaParams = [];
     },
 
-    log: function (logInfo) {
+    log: function(logInfo) {
         if (this.scopeContext)
             this.scopeContext.log(logInfo);
     },
@@ -8674,7 +8681,7 @@ $C('$data.Expressions.CodeParser', null, null, {
                 break;
             case "prefix":
                 switch (node.value) {
-                    case "{":
+                    case "{": 
                         n = this.BuildObjectLiteral(node);
                         break;
                     case "[":
@@ -8683,7 +8690,7 @@ $C('$data.Expressions.CodeParser', null, null, {
                     case $data.unaryOperators.resolve(node.value):
                         n = this.BuildUnary(node);
                         break;
-                        //TODO: default case
+                    //TODO: default case
                 }
                 break;
             case "suffix":
@@ -8758,7 +8765,7 @@ $C('$data.Expressions.CodeParser', null, null, {
                 case "true": value = true; type = typeof true; break;
                 case "false": value = false; type = typeof false; break;
                 case "null": value = null; type = typeof null; break;
-                    //TODO: missing default case
+                //TODO: missing default case
             }
         }
         var result = new $data.Expressions.ConstantExpression(value, type);
@@ -8768,7 +8775,7 @@ $C('$data.Expressions.CodeParser', null, null, {
     BuildFunctionParameter: function (node) {
 
     },
-
+    
     BuildArray: function (node) {
         switch (node.second.type) {
             case "string":
@@ -8797,7 +8804,7 @@ $C('$data.Expressions.CodeParser', null, null, {
         return result;
     },
 
-    BuildArrayLiteral: function (node) {
+    BuildArrayLiteral: function(node) {
         var self = this;
         var items = node.first.map(function (item) { return self.Build2(item); });
         var result = new $data.Expressions.ArrayLiteralExpression(items);
@@ -8853,16 +8860,16 @@ $C('$data.Expressions.CodeParser', null, null, {
         var args = node.second.map(function (exp) { return self.Build2(exp); });
         var member;
         var expression;
-        switch (true) {
+        switch(true){
             case method instanceof $data.Expressions.PropertyExpression:
                 expression = method.expression;
                 member = method.member;
                 break;
             case method instanceof $data.Expressions.ParameterExpression:
-                expression = Container.createConstantExpression(null, typeof null);
+                expression = Container.createConstantExpression(null, typeof null);  
                 member = method;
                 break;
-                //TODO: missing default case
+            //TODO: missing default case
         }
 
         var result = Container.createCallExpression(expression, member, args);
@@ -8889,7 +8896,7 @@ $C('$data.Expressions.CodeParser', null, null, {
     },
 
 
-    BuildUnary: function (node) {
+    BuildUnary: function(node) {
         var operator = $data.unaryOperators.getOperator(node.value, node.arity);
         var nodeType = operator.expressionType;
         var operand = this.Build2(node.first);
@@ -8907,7 +8914,7 @@ $C('$data.Expressions.CodeParser', null, null, {
         var right = this.Build2(node.second || node.right);
         var result = new $data.Expressions.SimpleBinaryExpression(left, right, nodeType, node.value, operator.type);
         return result;
-    }
+    }   
 
     //Build: function (node, expNode) {
     //    var n;
@@ -9009,9 +9016,9 @@ $C('$data.Expressions.ObjectLiteralExpression', $data.Expressions.ExpressionNode
 
     implementation: {
         get: function () {
-            return function (namesAndValues) {
-                var result = {};
-                namesAndValues.forEach(function (item) {
+            return function(namesAndValues) {
+                var result = { };
+                namesAndValues.forEach(function(item) {
                     result[item.name] = item.value;
                 });
                 return result;
@@ -9055,7 +9062,7 @@ $C('$data.Expressions.ParameterExpression', $data.Expressions.ExpressionNode, nu
     owningFunction: { value: undefined, enumerable: false },
     nodeType: { value: $data.Expressions.ExpressionType.Parameter, writable: true },
     name: { value: undefined, dataType: String, writable: true },
-    type: { value: undefined, dataType: "object", writable: true },
+    type: { value: undefined, dataType: "object", writable: true},
     toString: function (debug) {
         var result;
         result = debug ? this.type + " " : "";
@@ -9152,52 +9159,52 @@ $C('$data.Expressions.ExpressionVisitor', null, null,
             ///<param name="eNode" type="$data.Expressions.ExpressionNode"/>
             ///<param name="context" type="Object"/>
             //<return type="$data.Expressions.ExpressionNode"/>
-
+            
             //this._deep = this._deep + 1;
             if (!eNode) {
                 return eNode;
             }
 
             var result = null;
-
-            switch (eNode.expressionType) {
-                case $data.Expressions.ParameterExpression:
-                    result = this.VisitParameter(eNode, context);
-                    break;
-                case $data.Expressions.ConstantExpression:
-                    result = this.VisitConstant(eNode, context);
-                    break;
-                case $data.Expressions.FunctionExpression:
-                    result = this.VisitFunction(eNode, context);
-                    break;
-                case $data.Expressions.CallExpression:
-                    result = this.VisitCall(eNode, context);
-                    break;
-                case $data.Expressions.SimpleBinaryExpression:
-                    result = this.VisitBinary(eNode, context);
-                    break;
-                case $data.Expressions.PropertyExpression:
-                    result = this.VisitProperty(eNode, context);
-                    break;
-                    //result = th
-                case $data.Expressions.ThisExpression:
-                    result = this.VisitThis(eNode, context);
-                    break;
-                case $data.Expressions.ObjectLiteralExpression:
-                    result = this.VisitObjectLiteral(eNode, context);
-                    break;
-                case $data.Expressions.ObjectFieldExpression:
-                    result = this.VisitObjectField(eNode, context);
-                    break;
-                case $data.Expressions.ArrayLiteralExpression:
-                    result = this.VisitArrayLiteral(eNode, context);
-                    break;
-                case $data.Expressions.UnaryExpression:
-                    result = this.VisitUnary(eNode, context);
-                    break;
-                default:
-                    debugger;
-                    break;
+            
+                switch (eNode.expressionType) {
+                    case $data.Expressions.ParameterExpression:
+                        result = this.VisitParameter(eNode, context);
+                        break;
+                    case $data.Expressions.ConstantExpression:
+                        result = this.VisitConstant(eNode, context);
+                        break;
+                    case $data.Expressions.FunctionExpression:
+                        result = this.VisitFunction(eNode, context);
+                        break;
+                    case $data.Expressions.CallExpression:
+                        result = this.VisitCall(eNode, context);
+                        break;
+                    case $data.Expressions.SimpleBinaryExpression:
+                        result = this.VisitBinary(eNode, context);
+                        break;
+                    case $data.Expressions.PropertyExpression:
+                        result = this.VisitProperty(eNode, context);
+                        break;
+                        //result = th
+                    case $data.Expressions.ThisExpression:
+                        result = this.VisitThis(eNode, context);
+                        break;
+                    case $data.Expressions.ObjectLiteralExpression:
+                        result = this.VisitObjectLiteral(eNode, context);
+                        break;
+                    case $data.Expressions.ObjectFieldExpression:
+                        result = this.VisitObjectField(eNode, context);
+                        break;
+                    case $data.Expressions.ArrayLiteralExpression:
+                        result = this.VisitArrayLiteral(eNode, context);
+                        break;
+                    case $data.Expressions.UnaryExpression:
+                        result = this.VisitUnary(eNode, context);
+                        break;
+                    default:
+                        debugger;
+                        break;
                     //case VARIABLE:
 
                     //    result = this.VisitVariable(eNode, context);
@@ -9222,13 +9229,13 @@ $C('$data.Expressions.ExpressionVisitor', null, null,
                     //case ARRAYACCESS: result = this.VisitArrayAccess(eNode, context); break;
                     //default:
                     //    Guard.raise("Type isn't implemented: " + eNode.type);
-            }
-
+                }
+            
             this._deep = this._deep - 1;
             return result;
         },
 
-        VisitArrayLiteral: function (eNode, context) {
+        VisitArrayLiteral: function(eNode, context) {
             ///<param name="eNode" type="$data.Expressions.ArrayLiteralExpression" />
             var self = this;
             var items = eNode.items.map(function (item) {
@@ -9238,7 +9245,7 @@ $C('$data.Expressions.ExpressionVisitor', null, null,
             return result;
         },
 
-        VisitObjectLiteral: function (eNode, context) {
+        VisitObjectLiteral: function(eNode, context) {
             ///<param name="eNode" type="$data.Expressions.ObjectLiteralExpression" />
             var self = this;
             var members = eNode.members.map(function (member) {
@@ -9248,7 +9255,7 @@ $C('$data.Expressions.ExpressionVisitor', null, null,
             return result;
         },
 
-        VisitObjectField: function (eNode, context) {
+        VisitObjectField: function(eNode, context) {
             ///<param name="eNode" type="$data.Expressions.ObjectLiteralExpression" />
             var expression = this.Visit(eNode.expression, context);
             var result = Container.createObjectFieldExpression(eNode.fieldName, expression);
@@ -9267,7 +9274,7 @@ $C('$data.Expressions.ExpressionVisitor', null, null,
             return new $data.Expressions.CallExpression(expression, member, args);
         },
 
-        VisitParameter: function (eNode, context) {
+        VisitParameter: function(eNode, context) {
             ///<param name="eNode" type="$data.Expressions.ParameterExpression" />
             ///<returns type="$data.Expressions.ParameterExpression" />
             //var result  = new $data.Expressions.ParameterExpression(eNode.name, eNode.type, eNode.nodeType);
@@ -9281,7 +9288,7 @@ $C('$data.Expressions.ExpressionVisitor', null, null,
             return eNode;
         },
 
-        VisitFunction: function (eNode, context) {
+        VisitFunction: function(eNode, context) {
             ///<param name="eNode" type="$data.Expressions.FunctionExpression" />
             var self = this;
 
@@ -9319,7 +9326,7 @@ $C('$data.Expressions.ExpressionVisitor', null, null,
             ///<param name="context" type="Object"/>
             ///<returns type="$data.Expressions.UnaryExpression"/>
             var operand = this.Visit(eNode.operand, context);
-            if (operand === eNode.operand)
+            if (operand === eNode.operand) 
                 return eNode;
             return new $data.Expressions.UnaryExpression(operand, eNode.operator, eNode.nodeType);
         },
@@ -9379,33 +9386,33 @@ $C('$data.Expressions.ExpressionVisitor', null, null,
             }
             return [memberAccess.expression, memberAccess.member];
         }
-    }, {}); $C("$data.Expressions.ParameterProcessor", $data.Expressions.ExpressionVisitor, null, {
-        constructor: function () {
-            ///<summary>Provides a base class for several ParameterProcessors like GlobalParameterProcessor or LambdaParameterProcessor</summary>
-        },
+    }, {});$C("$data.Expressions.ParameterProcessor", $data.Expressions.ExpressionVisitor, null, {
+    constructor: function () {
+        ///<summary>Provides a base class for several ParameterProcessors like GlobalParameterProcessor or LambdaParameterProcessor</summary>
+    },
 
-        Visit: function (node, context) {
-            if ((node instanceof $data.Expressions.ParameterExpression ||
-                node instanceof $data.Expressions.ThisExpression)
-                && this.canResolve(node)) {
-                var result = this.resolve(node, context);
-                if (result !== node)
-                    result["resolvedBy"] = this.constructor.name;
-                return result;
-            } else {
-                return node;
-            }
-        },
-
-        canResolve: function (paramExpression) {
-            ///<returns type="boolean" />
-            Guard.raise("Pure method");
-        },
-        resolve: function (paramExpression) {
-            ///<returns type="XXX" />
-            Guard.raise("Pure method");
+    Visit: function (node, context) {
+        if ((node instanceof $data.Expressions.ParameterExpression ||
+            node instanceof $data.Expressions.ThisExpression)
+            && this.canResolve(node)) {
+            var result = this.resolve(node, context);
+            if (result !== node)
+                result["resolvedBy"] = this.constructor.name;
+            return result;
+        } else {
+            return node;
         }
-    });
+    },
+
+    canResolve: function (paramExpression) {
+        ///<returns type="boolean" />
+        Guard.raise("Pure method");
+    },
+    resolve: function (paramExpression) {
+        ///<returns type="XXX" />
+        Guard.raise("Pure method");
+    }
+});
 $C("$data.Expressions.GlobalContextProcessor", $data.Expressions.ParameterProcessor, null, {
     constructor: function (global) {
         ///<param name="global" type="object" />
@@ -9439,7 +9446,7 @@ $C("$data.Expressions.ConstantValueResolver", $data.Expressions.ParameterProcess
 
     canResolve: function (paramExpression) {
         ///<param name="paramExpression" type="$data.Expressions.ParameterExpression" />
-        return (paramExpression.nodeType == $data.Expressions.ExpressionType.This && this.paramsObject)
+        return (paramExpression.nodeType == $data.Expressions.ExpressionType.This && this.paramsObject) 
                     ? true : this.globalResolver.canResolve(paramExpression);
     },
 
@@ -9452,7 +9459,7 @@ $C("$data.Expressions.ConstantValueResolver", $data.Expressions.ParameterProcess
         return this.globalResolver.resolve(paramExpression);
     }
 
-}); $C("$data.Expressions.LocalContextProcessor", $data.Expressions.GlobalContextProcessor, null, {
+});$C("$data.Expressions.LocalContextProcessor", $data.Expressions.GlobalContextProcessor, null, {
     constructor: function (evalMethod) {
         ///<param name="global" type="object" />
         this.canResolve = function (paramExpression) {
@@ -9460,7 +9467,7 @@ $C("$data.Expressions.ConstantValueResolver", $data.Expressions.ParameterProcess
             return paramExpression.nodeType == $data.Expressions.ExpressionType.Parameter &&
                 (evalMethod("typeof " + paramExpression.name) !== 'undefined');
         };
-        this.resolve = function (paramExpression) {
+        this.resolve = function(paramExpression) {
             ///<param name="paramExpression" type="$data.Expressions.ParameterExpression" />
             ///<returns type="$data.Expressions.ExpressionNode" />
             var resultValue = evalMethod(paramExpression.name);
@@ -9469,7 +9476,7 @@ $C("$data.Expressions.ConstantValueResolver", $data.Expressions.ParameterProcess
         };
 
     }
-});
+    });
 $C("$data.Expressions.LambdaParameterProcessor", $data.Expressions.ParameterProcessor, null, {
     constructor: function (lambdaParameterTypeInfos) {
         ///<param name="global" />
@@ -9497,7 +9504,7 @@ $C("$data.Expressions.LambdaParameterProcessor", $data.Expressions.ParameterProc
             return false;
         };
 
-        this.resolve = function (paramExpression, context) {
+        this.resolve = function(paramExpression, context) {
             var lambdaParamType = paramIndices[paramExpression.name];
             var result = Container.createParameterExpression(paramExpression.name,
                 lambdaParamType,
@@ -9511,14 +9518,14 @@ $C("$data.Expressions.LambdaParameterProcessor", $data.Expressions.ParameterProc
 $C('$data.Expressions.ParameterResolverVisitor', $data.Expressions.ExpressionVisitor, null, {
 
     constructor: function (expression, resolver) {
-        /// <summary>
-        /// ParameterResolverVisitor traverses the JavaScript Code Expression tree and converts
+    	/// <summary>
+    	/// ParameterResolverVisitor traverses the JavaScript Code Expression tree and converts
         /// outer but otherwise execution local variable references into ConstantExpressions-t.
         /// for example: context.Persons.filter(function(p) { return p.Name == document.location.href })
         /// is transformed into a constant that has the current href as its value
-        /// </summary>
-        /// <param name="expression"></param>
-        /// <param name="resolver"></param>
+    	/// </summary>
+    	/// <param name="expression"></param>
+    	/// <param name="resolver"></param>
         this.lambdaParamCache = {};
     },
 
@@ -9531,7 +9538,7 @@ $C('$data.Expressions.ParameterResolverVisitor', $data.Expressions.ExpressionVis
     },
 
 
-    VisitArrayLiteral: function (eNode, context) {
+    VisitArrayLiteral: function(eNode, context) {
         var self = this;
         var items = eNode.items.map(function (item) { return self.Visit(item, context); });
         var allLocal = items.every(function (item) {
@@ -9546,7 +9553,7 @@ $C('$data.Expressions.ParameterResolverVisitor', $data.Expressions.ExpressionVis
         }
     },
 
-    VisitObjectLiteral: function (eNode, context) {
+    VisitObjectLiteral: function(eNode, context) {
         var self = this;
         var members = eNode.members.map(function (item) { return self.Visit(item, context); });
         var allLocal = members.every(function (member) {
@@ -9561,18 +9568,18 @@ $C('$data.Expressions.ParameterResolverVisitor', $data.Expressions.ExpressionVis
         }
     },
 
-    VisitThis: function (eNode, resolver) {
+    VisitThis: function(eNode, resolver) {
         return resolver.Visit(eNode, resolver);
     },
 
-    VisitParameter: function (eNode, resolver) {
+    VisitParameter: function(eNode, resolver) {
         ///<param name="eNode" type="$data.Expressions.ParameterExpression" />
         ///<param name="resovler" type="$data.Expressions.ParameterResolver" />
         ///<returns type="$data.Expressions.ParameterExpression" />
 
         var node;
         ///TODO let the resolver handle lambdaReferences if it wants to deal with it
-        switch (eNode.nodeType) {
+        switch(eNode.nodeType){
             case $data.Expressions.ExpressionType.Parameter:
             case $data.Expressions.ExpressionType.LambdaParameter:
                 node = resolver.Visit(eNode, resolver);
@@ -9595,7 +9602,7 @@ $C('$data.Expressions.ParameterResolverVisitor', $data.Expressions.ExpressionVis
                 return eNode;
 
         }
-
+            
 
         return eNode;
     },
@@ -9606,7 +9613,7 @@ $C('$data.Expressions.ParameterResolverVisitor', $data.Expressions.ExpressionVis
         return eNode;
     },
 
-    VisitFunction: function (eNode, context) {
+    VisitFunction: function(eNode, context) {
         ///<param name="eNode" type="$data.Expressions.FunctionExpression" />
 
         var self = this;
@@ -9630,9 +9637,10 @@ $C('$data.Expressions.ParameterResolverVisitor', $data.Expressions.ExpressionVis
         var right = this.Visit(eNode.right, context);
         var expr = $data.Expressions;
 
-        if (left instanceof expr.ConstantExpression && right instanceof expr.ConstantExpression) {
-            var result = eNode.implementation(left.value, right.value);
-            return Container.createConstantExpression(result);
+        if (left instanceof expr.ConstantExpression && right instanceof expr.ConstantExpression) 
+        {
+                var result = eNode.implementation(left.value, right.value);
+                return Container.createConstantExpression(result);
         }
         return new Container.createSimpleBinaryExpression(left, right, eNode.nodeType, eNode.operator, eNode.type);
     },
@@ -9646,9 +9654,10 @@ $C('$data.Expressions.ParameterResolverVisitor', $data.Expressions.ExpressionVis
         var operand = this.Visit(eNode.operand, context);
         //var imp = $data.unaryOperators.getOperator(
         var expr = $data.Expressions;
-        if (operand instanceof expr.ConstantExpression) {
-            var result = eNode.operator.implementation(operand.value);
-            return Container.createConstantExpression(result);
+        if (operand  instanceof expr.ConstantExpression)
+        {
+                var result = eNode.operator.implementation(operand.value);
+                return Container.createConstantExpression(result);
         }
         return new Container.createUnaryExpression(operand, eNode.operator, eNode.nodeType);
     },
@@ -9672,7 +9681,7 @@ $C('$data.Expressions.ParameterResolverVisitor', $data.Expressions.ExpressionVis
         }
         if (expression === eNode.expression && member === eNode.member)
             return eNode;
-
+  
         result = Container.createPropertyExpression(expression, member);
         return result;
     },
@@ -9683,13 +9692,13 @@ $C('$data.Expressions.ParameterResolverVisitor', $data.Expressions.ExpressionVis
             return body instanceof $data.Expressions.ConstantExpression &&
                 //global methods will not have a this.
                 (!obj || obj instanceof $data.Expressions.ConstantExpression) &&
-                args.every(function (item) {
+                args.every(function(item) {
                     return item instanceof $data.Expressions.ConstantExpression;
                 });
         }
         var call = $data.Expressions.ExpressionVisitor.prototype.VisitCall.apply(this, arguments);
         var obj = call.expression;
-        var body = call.member;
+        var body  = call.member;
         var args = call.args;
 
         if (isExecutable(args, body, obj)) {
@@ -9728,7 +9737,7 @@ $C('$data.Expressions.LogicalSchemaBinderVisitor',
     $data.Expressions.ExpressionVisitor, null,
     {
         constructor: function (expression, binder) {
-
+            
         },
 
         VisitProperty: function (expression, context) {
@@ -9742,7 +9751,7 @@ $C('$data.Expressions.LogicalSchemaBinderVisitor',
             return Container.createPropertyExpression(exp, mem);
         }
 
-    }, {}); $data.Class.define('$data.Expressions.ExpTreeVisitor',
+    }, {});$data.Class.define('$data.Expressions.ExpTreeVisitor',
     null, null,
     {
         constructor: function () {
@@ -9779,7 +9788,7 @@ $C('$data.Expressions.LogicalSchemaBinderVisitor',
             ///<param name="eNode" type="$data.Expressions.ExpressionNodeTypes.LiteralExpressionNode"/>
             ///<param name="context" type="Object"/>
             //<return type="$data.Expressions.ExpressionNodeTypes.LiteralExpressionNode"/>
-
+            
             return eNode;
         },
         VisitVariable: function (eNode, context) {
@@ -9928,7 +9937,7 @@ $C('$data.Expressions.LogicalSchemaBinderVisitor',
             }
             return [memberAccess.expression, memberAccess.member];
         }
-    }, {}); $data.Class.define('$data.Expressions.SetExecutableVisitor', $data.Expressions.ExpTreeVisitor, null,
+    }, {});$data.Class.define('$data.Expressions.SetExecutableVisitor', $data.Expressions.ExpTreeVisitor, null,
 {
     Visit: function (eNode, context) {
         switch (eNode.type) {
@@ -10044,7 +10053,7 @@ $C('$data.Expressions.LogicalSchemaBinderVisitor',
 
         return $data.Expressions.ExpressionNodeTypes.MemberAccessExpressionNode.create(isLocalParam, eNode.expression, eNode.member);
     }
-}, null); $data.Class.define('$data.Expressions.ExecutorVisitor', $data.Expressions.ExpTreeVisitor, null,
+}, null);$data.Class.define('$data.Expressions.ExecutorVisitor', $data.Expressions.ExpTreeVisitor, null,
 {
     //--
     VisitVariable: function (eNode, context) {
@@ -10052,7 +10061,7 @@ $C('$data.Expressions.LogicalSchemaBinderVisitor',
             return eNode;
         var value = (eNode.name == context.paramsName) ? context.paramContext : window[eNode.name];
         if (typeof value == 'undefined')
-            Guard.raise(
+			Guard.raise(
 				new Exception("Unknown variable in '" + context.operation + "' operation. The variable isn't referenced in the parameter context and it's not a global variable: '" + eNode.name + "'.",
                 "InvalidOperation", { operationName: context.operation, missingParameterName: eNode.name })
 				);
@@ -10289,7 +10298,7 @@ $C('$data.Expressions.LogicalSchemaBinderVisitor',
                 else if (window[node.value] != undefined)
                     subType = "GLOBALOBJECT";
                 else
-                    Guard.raise(
+					Guard.raise(
 						new Exception("Unknown variable in '" + this.context.operation + "' operation. The variable isn't referenced in the parameter context and it's not a global variable: '" + node.value + "'.",
                         "InvalidOperation", { operationName: this.context.operation, missingParameterName: node.value })
 						);
@@ -10385,12 +10394,12 @@ $C('$data.Expressions.LogicalSchemaBinderVisitor',
         result.index = this.Build(node.second, result);
         return result;
     }
-}, null); $C('$data.Expressions.AssociationInfoExpression', $data.Expressions.ExpressionNode, null, {
+}, null);$C('$data.Expressions.AssociationInfoExpression', $data.Expressions.ExpressionNode, null, {
     constructor: function (associationInfo) {
         this.associationInfo = associationInfo;
     },
     nodeType: { value: $data.Expressions.ExpressionType.AssociationInfo, enumerable: true }
-}); $C('$data.Expressions.CodeExpression', $data.Expressions.ExpressionNode, null, {
+});$C('$data.Expressions.CodeExpression', $data.Expressions.ExpressionNode, null, {
     constructor: function (source, parameters) {
         if (Container.resolveType(Container.getTypeName(source)) == $data.String && source.replace(/^[\s\xA0]+/, "").match("^function") != "function") {
             source = "function (it) { return " + source + "; }";
@@ -10400,7 +10409,7 @@ $C('$data.Expressions.LogicalSchemaBinderVisitor',
         this.parameters = parameters;
     },
     nodeType: { value: $data.Expressions.ExpressionType.Code, enumerable: true }
-}); $C('$data.Expressions.CodeToEntityConverter', $data.Expressions.ExpressionVisitor, null, {
+});$C('$data.Expressions.CodeToEntityConverter', $data.Expressions.ExpressionVisitor, null, {
     constructor: function (scopeContext) {
         ///<summary>This visitor converts a JS language tree into a semantical Entity Expression Tree &#10;This visitor should be invoked on a CodeExpression</summary>
         ///<param name="context">context.thisArg contains parameters, context.lambdaParams should have an array value</param>
@@ -10490,7 +10499,7 @@ $C('$data.Expressions.LogicalSchemaBinderVisitor',
                 member = Container.createMemberInfoExpression(operation);
                 result = Container.createFrameOperationExpression(exp, member, args);
                 return result;
-
+                
             default:
                 Guard.raise("VisitCall: Only fields can have operations: " + expression.getType().name);
                 //TODO we must not alter the visited tree
@@ -10511,7 +10520,7 @@ $C('$data.Expressions.LogicalSchemaBinderVisitor',
             var t = memberDefinitionArg.dataType;
             if (typeof t === 'function') { return false; }
 
-            // suspicious code
+			// suspicious code
             /*switch (t) {
                 //TODO: implement this
             }*/
@@ -10584,7 +10593,7 @@ $C('$data.Expressions.LogicalSchemaBinderVisitor',
                 Guard.raise("Unknown expression type to handle: " + exp.expressionType.name);
         }
     }
-}); $C('$data.Expressions.ComplexTypeExpression', $data.Expressions.ExpressionNode, null, {
+});$C('$data.Expressions.ComplexTypeExpression', $data.Expressions.ExpressionNode, null, {
     constructor: function (source, selector) {
         ///<signature>
         ///<param name="source" type="$data.Expressions.EntityExpression" />
@@ -10617,7 +10626,7 @@ $C('$data.Expressions.EntityContextExpression', $data.Expressions.ExpressionNode
         //this.storage_type = {};
         //this.typeName = this.type.name;
     },
-    nodeType: { value: $data.Expressions.ExpressionType.EntityContext, enumerable: true }
+    nodeType : { value: $data.Expressions.ExpressionType.EntityContext, enumerable: true }
 
 });
 $C('$data.Expressions.EntityExpression', $data.Expressions.ExpressionNode, null, {
@@ -10654,14 +10663,14 @@ $C('$data.Expressions.EntityExpression', $data.Expressions.ExpressionNode, null,
     getMemberDefinition: function (name) {
         var memdef = this.entityType.getMemberDefinition(name);
         if (!(memdef)) {
-            Guard.raise(new Exception("Unknown member " + name + " on type " + this.entityType.name, "MemberNotFound"));
+            Guard.raise(new Exception("Unknown member " + name + " on type "+ this.entityType.name, "MemberNotFound"));
         };
-        memdef.storageModel = this.storageModel;
+            memdef.storageModel = this.storageModel;
         return memdef;
     },
 
     nodeType: { value: $data.Expressions.ExpressionType.Entity }
-}); $C('$data.Expressions.EntityExpressionVisitor', null, null, {
+});$C('$data.Expressions.EntityExpressionVisitor', null, null, {
 
     constructor: function () {
         this.lambdaTypes = [];
@@ -10768,10 +10777,10 @@ $C('$data.Expressions.EntityExpression', $data.Expressions.ExpressionNode, null,
         return expression;
     },
 
-    VisitUnaryExpression: function (expression, context) {
+    VisitUnaryExpression: function(expression, context) {
 
-        /// <param name="expression" type="$data.Expressions.UnaryExpression"></param>
-        /// <param name="context"></param>
+    	/// <param name="expression" type="$data.Expressions.UnaryExpression"></param>
+    	/// <param name="context"></param>
         var operand = this.Visit(expression.operand, context);
         if (expression.operand !== operand) {
             return Container.createUnaryExpression(operand, expression.operator, expression.nodeType, expression.resolution);
@@ -10905,8 +10914,8 @@ $C('$data.Expressions.EntityFieldExpression', $data.Expressions.ExpressionNode, 
         this.source = source;
 
 
-        if (this.selector instanceof $data.Expressions.MemberInfoExpression || this.selector.name) {
-            this.memberName = this.selector.name;
+        if (this.selector instanceof $data.Expressions.MemberInfoExpression ||  this.selector.name) {
+            this.memberName = this.selector.name; 
         }
     },
 
@@ -10921,7 +10930,7 @@ $C('$data.Expressions.EntityFieldOperationExpression', $data.Expressions.Express
     },
     nodeType: { value: $data.Expressions.ExpressionType.EntityFieldOperation }
 
-}); $C('$data.Expressions.EntitySetExpression', $data.Expressions.ExpressionNode, null, {
+});$C('$data.Expressions.EntitySetExpression', $data.Expressions.ExpressionNode, null, {
     constructor: function (source, selector, params, instance) {
         ///<signature>
         ///<param name="source" type="$data.Expressions.EntityExpression" />
@@ -10939,7 +10948,7 @@ $C('$data.Expressions.EntityFieldOperationExpression', $data.Expressions.Express
         ///<param name="source" type="$data.Expressions.EntitySetExpression" />
         ///<param name="selector" type="$data.Expressions.CodeExpression" />
         ///</signature>
-        Guard.requireType("source", source,
+        Guard.requireType("source", source, 
                     [$data.Expressions.EntityContextExpression, $data.Expressions.EntitySetExpression]);
         Guard.requireType("selector", source,
                     [$data.Expressions.MemberInfoExpression, $data.Expressions.CodeExpression, $data.Expressions.ParametricQueryExpression]);
@@ -10987,7 +10996,7 @@ $C('$data.Expressions.EntityFieldOperationExpression', $data.Expressions.Express
                 Guard.raise("Unknown source type for EntitySetExpression: " + this.source.getType().name);
         }
 
-        // suspicious code
+		// suspicious code
         /*if (this.source instanceof $data.Expressions.EntitySetExpression) {
                 //TODO: missing operation
         }*/
@@ -10995,7 +11004,7 @@ $C('$data.Expressions.EntityFieldOperationExpression', $data.Expressions.Express
 
     },
     nodeType: { value: $data.Expressions.ExpressionType.EntitySet, enumerable: true }
-}); $C('$data.Expressions.FrameOperationExpression', $data.Expressions.ExpressionNode, null, {
+});$C('$data.Expressions.FrameOperationExpression', $data.Expressions.ExpressionNode, null, {
     constructor: function (source, operation, parameters) {
         this.source = source;
         this.operation = operation;
@@ -11099,7 +11108,7 @@ $C('$data.Expressions.EveryExpression', $data.Expressions.FrameOperator, null, {
         this.resultType = $data.Object;
     },
     nodeType: { value: $data.Expressions.ExpressionType.Every, enumerable: true }
-}); $C('$data.Expressions.IncludeExpression', $data.Expressions.EntitySetExpression, null, {
+});$C('$data.Expressions.IncludeExpression', $data.Expressions.EntitySetExpression, null, {
     constructor: function (source, selector) {
     },
     nodeType: { value: $data.Expressions.ExpressionType.Include, writable: true },
@@ -11119,7 +11128,7 @@ $C('$data.Expressions.MemberInfoExpression', $data.Expressions.ExpressionNode, n
     },
     nodeType: { value: $data.Expressions.ExpressionType.MemberInfo, enumerable: true }
 
-}); $C('$data.Expressions.OrderExpression', $data.Expressions.EntitySetExpression, null, {
+});$C('$data.Expressions.OrderExpression', $data.Expressions.EntitySetExpression, null, {
     constructor: function (source, expression, nType) {
         ///<param name="name" type="string" />
         ///<field name="name" type="string" />
@@ -11143,7 +11152,7 @@ $C('$data.Expressions.ParametricQueryExpression', $data.Expressions.ExpressionNo
         this.parameters = parameters;
     },
     nodeType: { value: $data.Expressions.ExpressionType.ParametricQuery, enumerable: true }
-}); $C('$data.Expressions.ProjectionExpression', $data.Expressions.EntitySetExpression, null, {
+});$C('$data.Expressions.ProjectionExpression', $data.Expressions.EntitySetExpression, null, {
     constructor: function (source, selector, params, instance) {
 
     },
@@ -11191,7 +11200,7 @@ $C('$data.Expressions.QueryExpressionCreator', $data.Expressions.EntityExpressio
         var code2entity = Container.createCodeToEntityConverter(this.scopeContext);
 
         ///user provided query parameter object (specified as thisArg earlier) is passed in
-        var entityExpression = code2entity.Visit(jsCodeTree, { queryParameters: expression.parameters, lambdaParameters: this.lambdaTypes, frameType: context.frameType });
+        var entityExpression = code2entity.Visit(jsCodeTree, {  queryParameters: expression.parameters, lambdaParameters: this.lambdaTypes, frameType: context.frameType });
 
         ///parameters are referenced, ordered and named, also collected in a flat list of name value pairs
         var result = Container.createParametricQueryExpression(entityExpression, code2entity.parameters);
@@ -11233,7 +11242,7 @@ $C('$data.Expressions.QueryExpressionCreator', $data.Expressions.EntityExpressio
         }
         return expression;
     }
-}); $C('$data.Expressions.QueryParameterExpression', $data.Expressions.ExpressionNode, null, {
+});$C('$data.Expressions.QueryParameterExpression', $data.Expressions.ExpressionNode, null, {
     constructor: function (name, index, value, type) {
         this.name = name;
         this.index = index;
@@ -11243,7 +11252,7 @@ $C('$data.Expressions.QueryExpressionCreator', $data.Expressions.EntityExpressio
     },
 
     nodeType: { value: $data.Expressions.ExpressionType.QueryParameter, writable: false }
-}); $C('$data.Expressions.RepresentationExpression', $data.Expressions.ExpressionNode, null, {
+});$C('$data.Expressions.RepresentationExpression', $data.Expressions.ExpressionNode, null, {
     constructor: function (kind) {
     },
 
@@ -11269,7 +11278,7 @@ $C('$data.Expressions.ServiceOperationExpression', $data.Expressions.ExpressionN
         Object.defineProperty(this, "selector", { value: selector, enumerable: true, writable: true });
         Object.defineProperty(this, "params", { value: params, enumerable: true, writable: true });
         Object.defineProperty(this, "cfg", { value: cfg, enumerable: false, writable: true });
-
+        
         function findContext() {
             //TODO: use source from function parameter and return a value at the end of the function
             var r = source;
@@ -11401,7 +11410,7 @@ $data.Class.define('$data.Validation.EntityValidation', $data.Validation.EntityV
                 minValue: function (value, definedValue) { return Object.isNullOrUndefined(value) || value >= definedValue; },
                 maxValue: function (value, definedValue) { return Object.isNullOrUndefined(value) || value <= definedValue; }
             },
-            '$data.Boolean': {
+            '$data.Boolean':{
                 required: function (value, definedValue) { return !Object.isNullOrUndefined(value); },
                 customValidator: function (value, definedValue) { return Object.isNullOrUndefined(value) || typeof definedValue == "function" ? definedValue(value) : true; }
             },
@@ -11501,88 +11510,88 @@ $data.Class.define('$data.Notifications.ChangeCollector', $data.Notifications.Ch
 
         return result;
     }
-}, null); $data.Class.define('$data.Access', null, null, {}, {
-    isAuthorized: function (access, user, roles, callback) {
+}, null);$data.Class.define('$data.Access', null, null, {}, {
+    isAuthorized: function(access, user, roles, callback){
         console.log('isAuthorized', arguments);
         var error;
-
+        
         if (!access) error = 'Access undefined';
         if (typeof access !== 'number') error = 'Invalid access type';
         if (!user) user = {}; //error = 'User undefined';
         if (!user.roles) user.roles = {}; //error = 'User has no roles';
         if (!roles) roles = {}; //error = 'Roles undefined';
         if (!(roles instanceof Array || typeof roles === 'object')) error = 'Invald roles type';
-
+        
         var pHandler = new $data.PromiseHandler();
         var clbWrapper = pHandler.createCallback(callback);
         var pHandlerResult = pHandler.getPromise();
-
-        if (error) {
+        
+        if (error){
             clbWrapper.error(error, 'Access authorization');
             return pHandlerResult;
         }
-
-        if (user.roles instanceof Array) {
+        
+        if (user.roles instanceof Array){
             var r = {};
-            for (var i = 0; i < user.roles.length; i++) {
+            for (var i = 0; i < user.roles.length; i++){
                 if (typeof user.roles[i] === 'string') r[user.roles[i]] = true;
             }
             user.roles = r;
         }
-
-        if (roles instanceof Array) {
+        
+        if (roles instanceof Array){
             var r = {};
-            for (var i = 0; i < roles.length; i++) {
+            for (var i = 0; i < roles.length; i++){
                 if (typeof roles[i] === 'string') r[roles[i]] = true;
             }
             roles = r;
         }
-
+        
         var args = arguments;
-        var readyFn = function (result) {
+        var readyFn = function(result){
             if (result) clbWrapper.success(result);
             else clbWrapper.error('Authorization failed', args);
         };
-
+        
         var rolesKeys = Object.getOwnPropertyNames(roles);
         var i = 0;
-
-        var callbackFn = function (result) {
+        
+        var callbackFn = function(result){
             if (result) readyFn(result);
-
-            if (typeof roles[rolesKeys[i]] === 'boolean' && roles[rolesKeys[i]]) {
+        
+            if (typeof roles[rolesKeys[i]] === 'boolean' && roles[rolesKeys[i]]){
                 if (user.roles[rolesKeys[i]]) readyFn(true);
-                else {
+                else{
                     i++;
                     if (i < rolesKeys.length) callbackFn();
                     else readyFn(false);
                 }
-            } else if (typeof roles[rolesKeys[i]] === 'function') {
+            }else if (typeof roles[rolesKeys[i]] === 'function'){
                 var r = roles[rolesKeys[i]].call(user);
-
+                
                 if (typeof r === 'function') r.call(user, (i < rolesKeys.length ? callbackFn : readyFn));
-                else {
+                else{
                     if (r) readyFn(true);
-                    else {
+                    else{
                         i++;
                         if (i < rolesKeys.length) callbackFn();
                         else readyFn(false);
                     }
                 }
-            } else if (typeof roles[rolesKeys[i]] === 'number') {
+            }else if (typeof roles[rolesKeys[i]] === 'number'){
                 if (((typeof user.roles[rolesKeys[i]] === 'number' && (user.roles[rolesKeys[i]] & access)) ||
                     (typeof user.roles[rolesKeys[i]] !== 'number' && user.roles[rolesKeys[i]])) &&
-                    (roles[rolesKeys[i]] & access)) user.roles[rolesKeys[i]] && readyFn(true);
-                else {
+                    (roles[rolesKeys[i]] & access)) user.roles[rolesKeys[i]] &&  readyFn(true);
+                else{
                     i++;
                     if (i < rolesKeys.length) callbackFn();
                     else readyFn(false);
                 }
             }
         };
-
+        
         callbackFn();
-
+        
         return pHandlerResult;
     },
     None: 0,
@@ -11773,9 +11782,9 @@ $data.Entity = Entity = $data.Class.define("$data.Entity", null, null, {
             /*if (Object.keys(initData).every(function (key) { return memDefNames.indexOf(key) != -1; })) {
                 this.initData = initData;
             }*/
-
-            for (var i in initData) {
-                if (memDefNames.indexOf(i) > -1) {
+            
+            for (var i in initData){
+                if (memDefNames.indexOf(i) > -1){
                     this[i] = Container.resolveType(typeMemDefs.getMember(i).type) === $data.Date && typeof initData[i] === 'string' ? new Date(initData[i]) : initData[i];
                 }
             }
@@ -12081,7 +12090,7 @@ $data.Class.define('$data.ComplexType', $data.Association, null, {}, null);
 
 $data.Class.define('$data.EntityContext', null, null,
 {
-    constructor: function (storageProviderCfg, user) {
+    constructor: function (storageProviderCfg, user){
         /// <description>Provides facilities for querying and working with entity data as objects.</description>
         ///<param name="storageProviderCfg" type="Object">Storage provider specific configuration object.</param>
 
@@ -12102,18 +12111,18 @@ $data.Class.define('$data.EntityContext', null, null,
         }
         var i = 0, providerType;
         while (!(providerType = $data.StorageProviderBase.getProvider(storageProviderCfg.name[i])) && i < storageProviderCfg.name.length) i++;
-        if (providerType) {
+        if (providerType){
             this.storageProvider = new providerType(storageProviderCfg, this);
             this.storageProvider.setContext(this);
             this.stateManager = new $data.EntityStateManager(this);
 
-            if (storageProviderCfg.name in this.getType()._storageModelCache) {
+            if (storageProviderCfg.name in this.getType()._storageModelCache){
                 this._storageModel = this.getType()._storageModelCache[storageProviderCfg.name];
-            } else {
+            }else{
                 this._initializeStorageModel();
                 this.getType()._storageModelCache[storageProviderCfg.name] = this._storageModel;
             }
-        } else {
+        }else{
             Guard.raise(new Exception("Provider fallback failed!", "Not Found"));
         }
         this._initializeEntitySets(this.constructor);
@@ -12121,7 +12130,7 @@ $data.Class.define('$data.EntityContext', null, null,
 
         this._isOK = false;
         var callBack = $data.typeSystem.createCallbackSetting({ success: this._successInitProvider });
-        if (this.storageProvider) {
+        if (this.storageProvider){
             this.storageProvider.initializeStore(callBack);
         }
     },
@@ -12172,11 +12181,11 @@ $data.Class.define('$data.EntityContext', null, null,
                     };
                     var roles = item.roles;
                     var r = {};
-                    if (roles instanceof Array) {
-                        for (var i = 0; i < roles.length; i++) {
+                    if (roles instanceof Array){
+                        for (var i = 0; i < roles.length; i++){
                             if (typeof roles[i] === 'string') r[roles[i]] = true;
                         }
-                    } else r = roles;
+                    }else r = roles;
                     storageModel.Roles = r;
                     this._storageModel.push(storageModel);
                 }
@@ -12496,7 +12505,7 @@ $data.Class.define('$data.EntityContext', null, null,
         clbWrapper.success = function (query) {
             query.buildResultSet(that);
             var successResult;
-
+            
             if (query.expression.nodeType === $data.Expressions.ExpressionType.Single ||
                 query.expression.nodeType === $data.Expressions.ExpressionType.Count ||
                 query.expression.nodeType === $data.Expressions.ExpressionType.Some ||
@@ -12517,71 +12526,71 @@ $data.Class.define('$data.EntityContext', null, null,
             } else {
                 successResult = query.result;
             }
-
-            var readyFn = function () {
+            
+            var readyFn = function(){
                 callBack.success(successResult);
             };
-
+            
             var i = 0;
             var sets = query.getEntitySets();
-
-            var callbackFn = function () {
+            
+            var callbackFn = function(){
                 var es = sets[i];
-                if (es.afterRead) {
+                if (es.afterRead){
                     i++;
                     var r = es.afterRead.call(this, successResult, sets, query);
-                    if (typeof r === 'function') {
+                    if (typeof r === 'function'){
                         r.call(this, i < sets.length ? callbackFn : readyFn, successResult, sets, query);
-                    } else {
-                        if (i < sets.length) {
+                    }else{
+                        if (i < sets.length){
                             callbackFn();
-                        } else readyFn();
+                        }else readyFn();
                     }
-                } else readyFn();
+                }else readyFn();
             }
-
+            
             if (sets.length) callbackFn();
             else readyFn();
         };
-
+        
         clbWrapper.error = callBack.error;
         var sets = query.getEntitySets();
-
+        
         var ex = true;
         var wait = false;
         var ctx = this;
-
-        var readyFn = function (cancel) {
+        
+        var readyFn = function(cancel){
             if (cancel === false) ex = false;
-
+            
             if (ex) ctx.storageProvider.executeQuery(query, clbWrapper);
-            else {
+            else{
                 query.rawDataList = [];
                 query.result = [];
                 clbWrapper.success(query);
             }
         };
-
+        
         var i = 0;
-        var callbackFn = function (cancel) {
+        var callbackFn = function(cancel){
             if (cancel === false) ex = false;
-
+            
             var es = sets[i];
-            if (es.beforeRead) {
+            if (es.beforeRead){
                 i++;
                 var r = es.beforeRead.call(this, sets, query);
-                if (typeof r === 'function') {
+                if (typeof r === 'function'){
                     r.call(this, (i < sets.length && ex) ? callbackFn : readyFn, sets, query);
-                } else {
+                }else{
                     if (r === false) ex = false;
-
-                    if (i < sets.length && ex) {
+                    
+                    if (i < sets.length && ex){
                         callbackFn();
-                    } else readyFn();
+                    }else readyFn();
                 }
-            } else readyFn();
+            }else readyFn();
         };
-
+        
         if (sets.length) callbackFn();
         else readyFn();
     },
@@ -12762,30 +12771,30 @@ $data.Class.define('$data.EntityContext', null, null,
             clbWrapper.error(errors);
             return pHandlerResult;
         }
-
+        
         var eventData = {};
-        for (var i = 0; i < changedEntities.length; i++) {
+        for (var i = 0; i < changedEntities.length; i++){
             var it = changedEntities[i];
             var n = it.entitySet.elementType.name;
             var es = this._entitySetReferences[n];
-            if (es.beforeCreate || es.beforeUpdate || es.beforeDelete) {
+            if (es.beforeCreate || es.beforeUpdate || es.beforeDelete){
                 if (!eventData[n]) eventData[n] = {};
-
-                switch (it.data.entityState) {
+                
+                switch (it.data.entityState){
                     case $data.EntityState.Added:
-                        if (es.beforeCreate) {
+                        if (es.beforeCreate){
                             if (!eventData[n].createAll) eventData[n].createAll = [];
                             eventData[n].createAll.push(it);
                         }
                         break;
                     case $data.EntityState.Modified:
-                        if (es.beforeUpdate) {
+                        if (es.beforeUpdate){
                             if (!eventData[n].modifyAll) eventData[n].modifyAll = [];
                             eventData[n].modifyAll.push(it);
                         }
                         break;
                     case $data.EntityState.Deleted:
-                        if (es.beforeDelete) {
+                        if (es.beforeDelete){
                             if (!eventData[n].deleteAll) eventData[n].deleteAll = [];
                             eventData[n].deleteAll.push(it);
                         }
@@ -12793,14 +12802,14 @@ $data.Class.define('$data.EntityContext', null, null,
                 }
             }
         }
-
-        var readyFn = function (cancel) {
-            if (cancel) {
+        
+        var readyFn = function(cancel){
+            if (cancel){
                 cancelEvent = 'async';
                 changedEntities.length = 0;
             }
-
-            if (changedEntities.length) {
+            
+            if (changedEntities.length){
                 //console.log('changedEntities: ', changedEntities.map(function(it){ return it.data.initData; }));
                 ctx.storageProvider.saveChanges({
                     success: function () {
@@ -12808,12 +12817,12 @@ $data.Class.define('$data.EntityContext', null, null,
                     },
                     error: clbWrapper.error
                 }, changedEntities);
-            } else clbWrapper.success(0);
-
+            }else clbWrapper.success(0);
+            
             /*else if (cancelEvent) clbWrapper.error(new $data.Exception('saveChanges cancelled from event [' + cancelEvent + ']'));
             else Guard.raise('No changed entities');*/
         };
-
+        
         var cancelEvent;
         var ies = Object.getOwnPropertyNames(eventData);
         var i = 0;
@@ -12823,54 +12832,54 @@ $data.Class.define('$data.EntityContext', null, null,
             beforeDelete: 'deleteAll',
             beforeUpdate: 'modifyAll'
         };
-
-        var callbackFn = function (cancel) {
-            if (cancel) {
+        
+        var callbackFn = function(cancel){
+            if (cancel){
                 cancelEvent = 'async';
                 changedEntities.length = 0;
             }
-
+        
             var es = ctx._entitySetReferences[ies[i]];
             var c = cmd.pop();
             var ed = eventData[ies[i]];
             var all = ed[cmdAll[c]];
-
-            if (all) {
-                var m = all.map(function (it) { return it.data; });
-                if (!cmd.length) {
+            
+            if (all){
+                var m = all.map(function(it){ return it.data; });
+                if (!cmd.length){
                     cmd = ['beforeUpdate', 'beforeDelete', 'beforeCreate'];
                     i++;
                 }
-
+                
                 var r = es[c].call(ctx, m);
-                if (typeof r === 'function') {
+                if (typeof r === 'function'){
                     r.call(ctx, (i < ies.length && !cancelEvent) ? callbackFn : readyFn, m);
-                } else if (r === false) {
+                }else if (r === false){
                     cancelEvent = (es.name + '.' + c);
-                    all.forEach(function (it) {
+                    all.forEach(function(it){
                         var ix = changedEntities.indexOf(it);
                         changedEntities.splice(ix, 1);
                     });
-
+                    
                     readyFn();
-                } else {
+                }else{
                     if (i < ies.length && !cancelEvent) callbackFn();
                     else readyFn();
                 }
-            } else {
-                if (!cmd.length) {
+            }else{
+                if (!cmd.length){
                     cmd = ['beforeUpdate', 'beforeDelete', 'beforeCreate'];
                     i++;
                 }
-
+                
                 if (i < ies.length && !cancelEvent) callbackFn();
                 else readyFn();
             }
         };
-
+        
         if (i < ies.length) callbackFn();
         else readyFn();
-
+        
         return pHandlerResult;
     },
     prepareRequest: function () { },
@@ -12882,31 +12891,31 @@ $data.Class.define('$data.EntityContext', null, null,
         var ctx = this;
         changedEntities.forEach(function (entity) {
             var oes = entity.data.entityState;
-
+            
             entity.data.entityState = $data.EntityState.Unchanged;
             entity.data.changedProperties = [];
             entity.physicalData = undefined;
-
+            
             var n = entity.entitySet.elementType.name;
             var es = ctx._entitySetReferences[n];
-            if (es.afterCreate || es.afterUpdate || es.afterDelete) {
+            if (es.afterCreate || es.afterUpdate || es.afterDelete){
                 if (!eventData[n]) eventData[n] = {};
-
-                switch (oes) {
+                    
+                switch (oes){
                     case $data.EntityState.Added:
-                        if (es.afterCreate) {
+                        if (es.afterCreate){
                             if (!eventData[n].createAll) eventData[n].createAll = [];
                             eventData[n].createAll.push(entity);
                         }
                         break;
                     case $data.EntityState.Modified:
-                        if (es.afterUpdate) {
+                        if (es.afterUpdate){
                             if (!eventData[n].modifyAll) eventData[n].modifyAll = [];
                             eventData[n].modifyAll.push(entity);
                         }
                         break;
                     case $data.EntityState.Deleted:
-                        if (es.afterDelete) {
+                        if (es.afterDelete){
                             if (!eventData[n].deleteAll) eventData[n].deleteAll = [];
                             eventData[n].deleteAll.push(entity);
                         }
@@ -12914,7 +12923,7 @@ $data.Class.define('$data.EntityContext', null, null,
                 }
             }
         });
-
+        
         var ies = Object.getOwnPropertyNames(eventData);
         var i = 0;
         var ctx = this;
@@ -12924,45 +12933,45 @@ $data.Class.define('$data.EntityContext', null, null,
             afterDelete: 'deleteAll',
             afterUpdate: 'modifyAll'
         };
-
-        var readyFn = function () {
+        
+        var readyFn = function(){
             if (!ctx.trackChanges) {
                 ctx.stateManager.reset();
             }
-
+            
             callBack.success(changedEntities.length);
         };
-
-        var callbackFn = function () {
+        
+        var callbackFn = function(){
             var es = ctx._entitySetReferences[ies[i]];
             var c = cmd.pop();
             var ed = eventData[ies[i]];
             var all = ed[cmdAll[c]];
-            if (all) {
-                var m = all.map(function (it) { return it.data; });
-                if (!cmd.length) {
+            if (all){
+                var m = all.map(function(it){ return it.data; });
+                if (!cmd.length){
                     cmd = ['afterUpdate', 'afterDelete', 'afterCreate'];
                     i++;
                 }
-
+                
                 var r = es[c].call(ctx, m);
-                if (typeof r === 'function') {
+                if (typeof r === 'function'){
                     r.call(ctx, i < ies.length ? callbackFn : readyFn, m);
-                } else {
+                }else{
                     if (i < ies.length) callbackFn();
                     else readyFn();
                 }
-            } else {
-                if (!cmd.length) {
+            }else{
+                if (!cmd.length){
                     cmd = ['afterUpdate', 'afterDelete', 'afterCreate'];
                     i++;
                 }
-
+                
                 if (i < ies.length) callbackFn();
                 else readyFn();
             }
         };
-
+        
         if (i < ies.length) callbackFn();
         else readyFn();
     },
@@ -13109,7 +13118,7 @@ $data.Class.define('$data.EntityContext', null, null,
         return this.storageProvider.resolveSetOperations(operation, expression, frameType);
     },
     _generateServiceOperationQueryable: function (functionName, returnEntitySet, arg, parameters) {
-        if (typeof console !== 'undefined' && console.log)
+        if(typeof console !== 'undefined' && console.log)
             console.log('Obsolate: _generateServiceOperationQueryable, $data.EntityContext');
 
         var params = [];
@@ -13177,60 +13186,111 @@ $data.Class.define('$data.EntityContext', null, null,
 }, {
     generateServiceOperation: function (cfg) {
 
-        var fn = function () {
+        var fn;
+        if (cfg.serviceMethod) {
+            var returnType = cfg.returnType ? Container.resolveType(cfg.returnType) : {};
+            if (returnType.isAssignableTo && returnType.isAssignableTo($data.Queryable)) {
+                fn = cfg.serviceMethod;
+            } else {
+                fn = function () {
+                    var lastParam = arguments[arguments.length - 1];
 
-            var virtualEntitySet = cfg.elementType ? this.getEntitySetFromElementType(Container.resolveType(cfg.elementType)) : null;
+                    var pHandler = new $data.PromiseHandler();
+                    var cbWrapper;
 
-            var paramConstExpression = null;
-            if (cfg.params) {
-                paramConstExpression = [];
-                for (var i = 0; i < cfg.params.length; i++) {
-                    //TODO: check params type
-                    for (var name in cfg.params[i]) {
-                        paramConstExpression.push(Container.createConstantExpression(arguments[i], Container.resolveType(cfg.params[i][name]), name));
+                    var args = arguments;
+                    if (typeof lastParam === 'function') {
+                        cbWrapper = pHandler.createCallback(lastParam);
+                        arguments[arguments.length - 1] = cbWrapper;
+                    } else {
+                        cbWrapper = pHandler.createCallback();
+                        arguments.push(cbWrapper);
+                    }
+
+                    try {
+                        var result = cfg.serviceMethod.apply(this, arguments);
+                        if (result !== undefined)
+                            cbWrapper.success(result);
+                    } catch (e) {
+                        cbWrapper.error(e);
+                    }
+
+                    return pHandler.getPromise();
+                }
+            }
+
+        } else {
+            fn = function () {
+
+                var virtualEntitySet = cfg.elementType ? this.getEntitySetFromElementType(Container.resolveType(cfg.elementType)) : null;
+
+                var paramConstExpression = null;
+                if (cfg.params) {
+                    paramConstExpression = [];
+                    for (var i = 0; i < cfg.params.length; i++) {
+                        //TODO: check params type
+                        for (var name in cfg.params[i]) {
+                            paramConstExpression.push(Container.createConstantExpression(arguments[i], Container.resolveType(cfg.params[i][name]), name));
+                        }
                     }
                 }
-            }
 
-            var ec = Container.createEntityContextExpression(this);
-            var memberdef = this.getType().getMemberDefinition(cfg.serviceName);
-            var es = Container.createServiceOperationExpression(ec,
-                    Container.createMemberInfoExpression(memberdef),
-                    paramConstExpression,
-                    cfg);
+                var ec = Container.createEntityContextExpression(this);
+                var memberdef = this.getType().getMemberDefinition(cfg.serviceName);
+                var es = Container.createServiceOperationExpression(ec,
+                        Container.createMemberInfoExpression(memberdef),
+                        paramConstExpression,
+                        cfg);
 
-            //Get callback function
-            var clb = arguments[arguments.length - 1];
-            if (typeof clb !== 'function') {
-                clb = undefined;
-            }
-
-            if (virtualEntitySet) {
-                var q = Container.createQueryable(virtualEntitySet, es);
-                if (clb) {
-                    es.isTerminated = true;
-                    return q._runQuery(clb);
+                //Get callback function
+                var clb = arguments[arguments.length - 1];
+                if (typeof clb !== 'function') {
+                    clb = undefined;
                 }
-                return q;
-            }
-            else {
-                var returnType = Container.resolveType(cfg.returnType);
 
-                var q = Container.createQueryable(this, es);
-                q.defaultType = returnType;
-
-                if (returnType === $data.Queryable) {
-                    q.defaultType = Container.resolveType(cfg.elementType);
+                if (virtualEntitySet) {
+                    var q = Container.createQueryable(virtualEntitySet, es);
                     if (clb) {
                         es.isTerminated = true;
                         return q._runQuery(clb);
                     }
                     return q;
                 }
-                es.isTerminated = true;
-                return q._runQuery(clb);
-            }
+                else {
+                    var returnType = Container.resolveType(cfg.returnType);
+
+                    var q = Container.createQueryable(this, es);
+                    q.defaultType = returnType;
+
+                    if (returnType === $data.Queryable) {
+                        q.defaultType = Container.resolveType(cfg.elementType);
+                        if (clb) {
+                            es.isTerminated = true;
+                            return q._runQuery(clb);
+                        }
+                        return q;
+                    }
+                    es.isTerminated = true;
+                    return q._runQuery(clb);
+                }
+            };
         };
+
+        var params = [];
+        if (cfg.params) {
+            for (var i = 0; i < cfg.params.length; i++) {
+                var param = cfg.params[i];
+                for (var name in param)
+                {
+                    params.push({
+                        name: name,
+                        type: param[name]
+                    });
+                }
+            }
+        }
+        $data.typeSystem.extend(fn, cfg, { params: params });
+
         return fn;
     },
     _convertLogicalTypeNameToPhysical: function (name) {
@@ -13250,14 +13310,14 @@ $data.Class.define('$data.EntityContext', null, null,
 $data.Class.define('$data.QueryProvider', null, null,
 {
     //TODO: instance member?????
-    constructor: function () { this.requiresExpressions = false },
+    constructor: function () { this.requiresExpressions= false },
     executeQuery: function (queryable, resultHandler) {
     },
     getTraceString: function (queryable) {
     }
-}, null); $data.Class.define('$data.ModelBinder', null, null, {
+}, null);$data.Class.define('$data.ModelBinder', null, null, {
 
-    constructor: function (context) {
+    constructor: function(context){
         this.context = context;
         this.cache = {};
     },
@@ -13267,89 +13327,89 @@ $data.Class.define('$data.QueryProvider', null, null,
             return data;
         }
         var data = data;
-        if (meta.$type) {
-            var type = Container.resolveName(meta.$type);
-            var converter = this.context.storageProvider.fieldConverter.fromDb[type];
-            var result = converter ? converter() : Container['create' + Container.resolveType(meta.$type).name]();
+		if (meta.$type){
+			var type = Container.resolveName(meta.$type);
+            //var converter = this.context.storageProvider.fieldConverter.fromDb[type];
+			var result = /*converter ? new type() :*/ Container['create' + Container.resolveType(meta.$type).name]();
+		}
+
+        if (meta.$selector){
+			var metaSelector = meta.$selector;
+			if (!(metaSelector instanceof Array)){
+				metaSelector = [metaSelector];
+			}
+
+			var i = 0;
+			var part;
+			while (i < metaSelector.length){
+				part = data;
+				var selector = metaSelector[i];
+				var type = selector.split(':');
+				switch (type[0]){
+					case 'json':
+						var path = type[1].split('.');
+						while (path.length) {
+						    if ((typeof part[path[0]] === 'undefined') || (part[path[0]] === null)) {
+								if (i === metaSelector.length){
+									return undefined;
+								}else if (path.length){
+									break;
+								}
+							}else{
+								part = part[path[0]];
+								path = path.slice(1);
+								if (part === null) return part;
+							}
+						}
+						if (!path.length){
+							i = metaSelector.length;
+						}
+						break;
+					case 'css':
+					case 'xml':
+						if (part.querySelector){
+							part = part[meta.$item ? 'querySelectorAll' : 'querySelector'](type[1]);
+						}else{
+							part = $(part).find(type[1]);
+							if (!meta.$item) part = part[0];
+						}
+						break;
+				}
+				i++;
+			}
+
+			data = part;
+			if (!data){
+				return data;
+			}
         }
 
-        if (meta.$selector) {
-            var metaSelector = meta.$selector;
-            if (!(metaSelector instanceof Array)) {
-                metaSelector = [metaSelector];
-            }
-
-            var i = 0;
-            var part;
-            while (i < metaSelector.length) {
-                part = data;
-                var selector = metaSelector[i];
-                var type = selector.split(':');
-                switch (type[0]) {
-                    case 'json':
-                        var path = type[1].split('.');
-                        while (path.length) {
-                            if ((typeof part[path[0]] === 'undefined') || (part[path[0]] === null)) {
-                                if (i === metaSelector.length) {
-                                    return undefined;
-                                } else if (path.length) {
-                                    break;
-                                }
-                            } else {
-                                part = part[path[0]];
-                                path = path.slice(1);
-                                if (part === null) return part;
-                            }
-                        }
-                        if (!path.length) {
-                            i = metaSelector.length;
-                        }
-                        break;
-                    case 'css':
-                    case 'xml':
-                        if (part.querySelector) {
-                            part = part[meta.$item ? 'querySelectorAll' : 'querySelector'](type[1]);
-                        } else {
-                            part = $(part).find(type[1]);
-                            if (!meta.$item) part = part[0];
-                        }
-                        break;
-                }
-                i++;
-            }
-
-            data = part;
-            if (!data) {
-                return data;
-            }
-        }
-
-        if (meta.$value) {
-            if (typeof meta.$value === 'function') {
-                result = meta.$value();
-            } else if (meta.$type) {
+		if (meta.$value){
+			if (typeof meta.$value === 'function'){
+				result = meta.$value.call(meta, meta, data);
+            }else if (meta.$type){
                 var type = Container.resolveName(meta.$type);
                 var converter = this.context.storageProvider.fieldConverter.fromDb[type];
                 result = converter ? converter(meta.$value) : Container['create' + Container.resolveType(meta.$type).name](meta.$value);
-            } else result = meta.$value;
-        } else if (meta.$source) {
-            if (meta.$type) {
+            }else result = meta.$value;
+        }else if (meta.$source){
+            if (meta.$type){
                 var type = Container.resolveName(meta.$type);
                 var converter = this.context.storageProvider.fieldConverter.fromDb[type];
                 result = converter ? converter(data[meta.$source]) : Container['create' + Container.resolveType(meta.$type).name](data[meta.$source]);
-            } else result = (meta.$source.split(':')[0] == 'attr' && data.getAttribute) ? data.getAttribute(meta.$source.split(':')[1]) : (meta.$source == 'textContent' && !data[meta.$source] ? $(data).text() : data[meta.$source]);
-        } else if (meta.$item) {
-            for (var i = 0; i < data.length; i++) {
+            }else result = (meta.$source.split(':')[0] == 'attr' && data.getAttribute) ? data.getAttribute(meta.$source.split(':')[1]) : (meta.$source == 'textContent' && !data[meta.$source] ? $(data).text() : data[meta.$source]);
+        }else if (meta.$item){
+            for (var i = 0; i < data.length; i++){
                 var r = this.call(data[i], meta.$item);
                 result.push(r);
             }
-        } else {
+        }else{
             var key = '';
-            if (meta.$keys) {
+            if (meta.$keys){
                 for (var j = 0; j < meta.$keys.length; j++) { key += (meta.$type + '_' + meta.$keys[j] + '#' + data[meta.$keys[j]]); }
-                if (!this.cache[key]) {
-                    for (var j in meta) {
-                        if (j.indexOf('$') < 0) {
+                if (!this.cache[key]){
+                    for (var j in meta){
+                        if (j.indexOf('$') < 0){
                             if (!meta[j].$item) {
                                 if (meta[j].$type || meta[j].$source) { result[j] = this.call(data, meta[j]); }
                                 else if (meta.$type) {
@@ -13361,17 +13421,17 @@ $data.Class.define('$data.QueryProvider', null, null,
                         }
                     }
                     this.cache[key] = result;
-                } else {
+                }else{
                     result = this.cache[key];
-                    for (var j in meta) {
-                        if (j.indexOf('$') < 0) {
+                    for (var j in meta){
+                        if (j.indexOf('$') < 0){
                             if (meta[j].$item) { result[j].push(this.call(data, meta[j].$item)); }
                         }
                     }
                 }
-            } else {
-                for (var j in meta) {
-                    if (j.indexOf('$') < 0) {
+            }else{
+                for (var j in meta){
+                    if (j.indexOf('$') < 0){
                         if (!meta[j].$item) {
                             if (meta[j].$type || meta[j].$source) { result[j] = this.call(data, meta[j]); }
                             else if (meta.$type) {
@@ -13397,7 +13457,7 @@ $C('$data.Query', null, null,
         Object.defineProperty(this, "expression", { value: expression, enumerable: true });
         Object.defineProperty(this, "context", { value: context, enumerable: true });
         //TODO: expressions get as JSON string?!
-
+        
         this.expressions = expression;
         this.defaultType = defaultType;
         this.result = [];
@@ -13405,7 +13465,7 @@ $C('$data.Query', null, null,
         this.modelBinderConfig = {};
         this.context = context;
     },
-
+        
     rawDataList: { dataType: "Array" },
     result: { dataType: "Array" },
     resultType: {},
@@ -13414,20 +13474,20 @@ $C('$data.Query', null, null,
         this.result = converter.call(this.rawDataList, this.modelBinderConfig);
         return;
     },
-    getEntitySets: function () {
+    getEntitySets: function(){
         var ret = [];
         var ctx = this.context;
-
-        var fn = function (expression) {
-            if (expression instanceof $data.Expressions.EntitySetExpression) {
+        
+        var fn = function(expression){
+            if (expression instanceof $data.Expressions.EntitySetExpression){
                 if (ret.indexOf(ctx._entitySetReferences[expression.elementType.name]) < 0)
                     ret.push(ctx._entitySetReferences[expression.elementType.name]);
             }
             if (expression.source) fn(expression.source);
         };
-
+        
         fn(this.expression);
-
+        
         return ret;
     }
 }, null);
@@ -13508,12 +13568,12 @@ $data.Class.define('$data.Queryable', null, null,
     },
     where: function (predicate, params) {
         ///<summary>Where is a convenience alias for C# developers. Use filter instead.</summary>
-        ///<returns type="$data.Queryable" />
+		///<returns type="$data.Queryable" />
         return this.filter(predicate, params);
     },
 
     map: function (projection, thisArg) {
-        ///	<summary>Map specifies the shape or type of each returned element. You can specify whether your results will consist of complete Person objects, just one member, a subset of members, or some completely different result type based on a computation or new object creation. When map produces something other than a copy of the source element, the operation is called a projection. The use of projections to transform data is a powerful capability of JavaScript Language Query expressions.</summary>
+		///	<summary>Map specifies the shape or type of each returned element. You can specify whether your results will consist of complete Person objects, just one member, a subset of members, or some completely different result type based on a computation or new object creation. When map produces something other than a copy of the source element, the operation is called a projection. The use of projections to transform data is a powerful capability of JavaScript Language Query expressions.</summary>
         ///	<param name="projection" type="Function">A projection expression</param>
         ///	<param name="thisArg" type="Object">The query parameters</param>
         ///	<returns type="$data.Queryable" />
@@ -13521,8 +13581,8 @@ $data.Class.define('$data.Queryable', null, null,
         ///		<summary>Map specifies the shape or type of each returned element. You can specify whether your results will consist of complete Person objects, just one member, a subset of members, or some completely different result type based on a computation or new object creation. When map produces something other than a copy of the source element, the operation is called a projection. The use of projections to transform data is a powerful capability of JavaScript Language Query expressions.</summary>
         ///		<param name="projection" type="string">
         ///			The expression body of the projection function in string. &#10;
-        ///			To reference the lambda parameter use the 'it' context variable. &#10;
-        ///			Example: map("{ i: it.Id, t: it.Title }")
+		///			To reference the lambda parameter use the 'it' context variable. &#10;
+		///			Example: map("{ i: it.Id, t: it.Title }")
         ///		</param>
         ///		<param name="thisArg" type="Object" />
         ///		<returns type="$data.Queryable" />
@@ -13537,11 +13597,11 @@ $data.Class.define('$data.Queryable', null, null,
         ///		</param>
         ///		<returns type="$data.Queryable" />
         ///		<example>
-        ///			Projection to get an array of the full name property of a set of Person entities&#10;
+		///			Projection to get an array of the full name property of a set of Person entities&#10;
         ///			var personFullNames = Persons.map( function( person ) { return person.FullName; } );
         ///		</example>
         ///		<example>
-        ///			Projection to get an array of the required fields of Person entities in an anonymous type.&#10;
+		///			Projection to get an array of the required fields of Person entities in an anonymous type.&#10;
         ///			var custom = Persons.map( function( person ) {
         ///				return { FullName: person.FullName, Info: { Address: person.Location.Address, Phone: person.Phone } };
         ///			});
@@ -13555,13 +13615,13 @@ $data.Class.define('$data.Queryable', null, null,
         return q;
     },
     select: function (projection, thisArg) {
-        ///<summary>Select is a convenience alias for C# developers. Use map instead.</summary>
-        ///<returns type="$data.Queryable" />
+		///<summary>Select is a convenience alias for C# developers. Use map instead.</summary>
+		///<returns type="$data.Queryable" />
         return this.map(projection, thisArg);
     },
 
     length: function (onResult) {
-        ///	<summary>Returns the number of entities (or projected object) in a query as the callback parameter.</summary>
+		///	<summary>Returns the number of entities (or projected object) in a query as the callback parameter.</summary>
         ///	<param name="onResult" type="Function">A callback function</param>
         ///	<returns type="$data.Promise" />
         ///	<signature>
@@ -13575,11 +13635,11 @@ $data.Class.define('$data.Queryable', null, null,
         ///		<summary>Returns the number of entities (or projected object) in a query as the callback parameter.</summary>
         ///		<param name="onResult" type="Object">
         ///			Object of callback functions to handle success and error. &#10;
-        ///			Example: { success: function(cnt) { ... }, error: function() { alert("Something went wrong..."); } }
+		///			Example: { success: function(cnt) { ... }, error: function() { alert("Something went wrong..."); } }
         ///		</param>
         ///		<returns type="$data.Promise" />
         ///		<example>
-        ///			Get the count of Person entities. &#10;
+		///			Get the count of Person entities. &#10;
         ///			Persons.length( function( cnt ) { alert("There are " + cnt + " person(s) in the database."); } );
         ///		</example>
         ///	</signature>
@@ -13598,17 +13658,17 @@ $data.Class.define('$data.Queryable', null, null,
         } catch (e) {
             cbWrapper.error(e);
         }
-
+		
         return pHandler.getPromise();
     },
-    count: function (onResult) {
-        ///<summary>Count is a convenience alias for C# developers. Use length instead.</summary>
-        ///<returns type="$data.Integer" />
+	count: function (onResult) {
+		///<summary>Count is a convenience alias for C# developers. Use length instead.</summary>
+		///<returns type="$data.Integer" />
         return this.length(onResult);
     },
 
     forEach: function (iterator) {
-        ///	<summary>Calls the iterator function for all entity (or projected object) in the query.</summary>
+		///	<summary>Calls the iterator function for all entity (or projected object) in the query.</summary>
         ///	<param name="iterator" type="Function">Iterator function</param>
         ///	<returns type="$data.Promise" />
         ///	<signature>
@@ -13617,8 +13677,8 @@ $data.Class.define('$data.Queryable', null, null,
         ///			Iterator function to handle the result elements.
         ///		</param>
         ///		<returns type="$data.Promise" />
-        ///		<example>
-        ///			Log the full name of each Person. &#10;
+		///		<example>
+		///			Log the full name of each Person. &#10;
         ///			Persons.forEach( function( person ) { console.log(person.FullName; } );
         ///		</example>
         ///	</signature>
@@ -13643,7 +13703,7 @@ $data.Class.define('$data.Queryable', null, null,
     },
 
     toArray: function (onResult_items) {
-        ///	<summary>Returns the query result as the callback parameter.</summary>
+		///	<summary>Returns the query result as the callback parameter.</summary>
         ///	<param name="onResult_items" type="Function">A callback function</param>
         ///	<returns type="$data.Promise" />
         ///	<signature>
@@ -13657,16 +13717,17 @@ $data.Class.define('$data.Queryable', null, null,
         ///		<summary>Returns the query result as the callback parameter.</summary>
         ///		<param name="onResult_items" type="Object">
         ///			Object of callback functions to handle success and error. &#10;
-        ///			Example: { success: function(result) { ... }, error: function() { alert("Something went wrong..."); } }
+		///			Example: { success: function(result) { ... }, error: function() { alert("Something went wrong..."); } }
         ///		</param>
         ///		<returns type="$data.Promise" />
         ///		<example>
-        ///			Get all Person entities. &#10;
+		///			Get all Person entities. &#10;
         ///			Persons.toArray( function( result ) { console.dir(result); } );
         ///		</example>
         ///	</signature>
 
-        if (onResult_items instanceof $data.Array) {
+        if (onResult_items instanceof $data.Array)
+        {
             return this.toArray(function (results) {
                 onResult_items.length = 0;
                 results.forEach(function (item, idx) {
@@ -13694,14 +13755,14 @@ $data.Class.define('$data.Queryable', null, null,
     },
 
     single: function (filterPredicate, thisArg, onResult) {
-        ///	<summary>Filters a set of entities using a boolean expression and returns a single element or throws an error if more than one element is filtered.</summary>
+		///	<summary>Filters a set of entities using a boolean expression and returns a single element or throws an error if more than one element is filtered.</summary>
         ///	<param name="onResult_items" type="Function">A callback function</param>
         ///	<returns type="$data.Promise" />
-        ///	<signature>
+		///	<signature>
         ///		<summary>Filters a set of entities using a boolean expression and returns a single element or throws an error if more than one element is filtered.</summary>
-        ///		<param name="filterPredicate" type="string">
-        ///			Same as in filter.
-        ///		</param>
+		///		<param name="filterPredicate" type="string">
+		///			Same as in filter.
+		///		</param>
         ///		<param name="onResult" type="Function">
         ///			The callback function to handle the result, same as in toArray.
         ///		</param>
@@ -13709,19 +13770,19 @@ $data.Class.define('$data.Queryable', null, null,
         ///	</signature>
         ///	<signature>
         ///		<summary>Filters a set of entities using a boolean expression and returns a single element or throws an error if more than one element is filtered.</summary>
-        ///		<param name="filterPredicate" type="Function">
-        ///			Same as in filter.
-        ///		</param>
+		///		<param name="filterPredicate" type="Function">
+		///			Same as in filter.
+		///		</param>
         ///		<param name="onResult" type="Function">
         ///			The callback function to handle the result, same as in toArray.
         ///		</param>
         ///		<returns type="$data.Promise" />
         ///		<example>
-        ///			Get "George" from the Person entity set. &#10;
+		///			Get "George" from the Person entity set. &#10;
         ///			Persons.single( function( person ) { return person.FirstName == this.name; }, { name: "George" }, {&#10;
-        ///				success: function ( result ){ ... },&#10;
-        ///				error: function () { ... }
-        ///			});
+		///				success: function ( result ){ ... },&#10;
+		///				error: function () { ... }
+		///			});
         ///		</example>
         ///	</signature>
 
@@ -13867,7 +13928,7 @@ $data.Class.define('$data.Queryable', null, null,
 
 
     take: function (amount) {
-        ///	<summary>Returns only a specified number of elements from the start of the result set.</summary>
+		///	<summary>Returns only a specified number of elements from the start of the result set.</summary>
         ///	<param name="amount" type="$data.Integer">The number of elements to return.</param>
         ///	<returns type="$data.Queryable" />
         ///	<signature>
@@ -13876,8 +13937,8 @@ $data.Class.define('$data.Queryable', null, null,
         ///			The number of elements to skip.
         ///		</param>
         ///		<returns type="$data.Queryable" />
-        ///		<example>
-        ///			Log the full name of each Person. &#10;
+		///		<example>
+		///			Log the full name of each Person. &#10;
         ///			Persons.take(10).forEach( function( person ) { console.log(person.FullName; } );
         ///		</example>
         ///	</signature>
@@ -13888,7 +13949,7 @@ $data.Class.define('$data.Queryable', null, null,
         return Container.createQueryable(this, takeExp);
     },
     skip: function (amount) {
-        ///	<summary>Skip a specified number of elements from the start of the result set.</summary>
+		///	<summary>Skip a specified number of elements from the start of the result set.</summary>
         ///	<param name="amount" type="$data.Integer">The number of elements to skip.</param>
         ///	<returns type="$data.Queryable" />
         ///	<signature>
@@ -13897,8 +13958,8 @@ $data.Class.define('$data.Queryable', null, null,
         ///			The number of elements to skip.
         ///		</param>
         ///		<returns type="$data.Queryable" />
-        ///		<example>
-        ///			Log the full name of each Person. &#10;
+		///		<example>
+		///			Log the full name of each Person. &#10;
         ///			Persons.skip(1).take(5).forEach( function( person ) { console.log(person.FullName; } );
         ///		</example>
         ///	</signature>
@@ -13910,7 +13971,7 @@ $data.Class.define('$data.Queryable', null, null,
     },
 
     orderBy: function (selector, thisArg) {
-        ///<summary>Order a set of entities using an expression.</summary>
+		///<summary>Order a set of entities using an expression.</summary>
         ///<param name="selector" type="Function">An order expression</param>
         ///<param name="thisArg" type="Object">The query parameters</param>
         ///<returns type="$data.Queryable" />
@@ -13945,7 +14006,7 @@ $data.Class.define('$data.Queryable', null, null,
         return q;
     },
     orderByDescending: function (selector, thisArg) {
-        ///<summary>Order a set of entities descending using an expression.</summary>
+		///<summary>Order a set of entities descending using an expression.</summary>
         ///<param name="selector" type="Function">An order expression</param>
         ///<param name="thisArg" type="Object">The query parameters</param>
         ///<returns type="$data.Queryable" />
@@ -13981,14 +14042,14 @@ $data.Class.define('$data.Queryable', null, null,
     },
 
     first: function (filterPredicate, thisArg, onResult) {
-        ///	<summary>Filters a set of entities using a boolean expression and returns the first element.</summary>
+		///	<summary>Filters a set of entities using a boolean expression and returns the first element.</summary>
         ///	<param name="onResult_items" type="Function">A callback function</param>
         ///	<returns type="$data.Promise" />
-        ///	<signature>
+		///	<signature>
         ///		<summary>Filters a set of entities using a boolean expression and returns the first element.</summary>
-        ///		<param name="filterPredicate" type="string">
-        ///			Same as in filter.
-        ///		</param>
+		///		<param name="filterPredicate" type="string">
+		///			Same as in filter.
+		///		</param>
         ///		<param name="onResult" type="Function">
         ///			The callback function to handle the result, same as in toArray.
         ///		</param>
@@ -13996,15 +14057,15 @@ $data.Class.define('$data.Queryable', null, null,
         ///	</signature>
         ///	<signature>
         ///		<summary>Filters a set of entities using a boolean expression and returns the first element.</summary>
-        ///		<param name="filterPredicate" type="Function">
-        ///			Same as in filter.
-        ///		</param>
+		///		<param name="filterPredicate" type="Function">
+		///			Same as in filter.
+		///		</param>
         ///		<param name="onResult" type="Function">
         ///			The callback function to handle the result, same as in toArray.
         ///		</param>
         ///		<returns type="$data.Promise" />
         ///		<example>
-        ///			Get "George" from the Person entity set. &#10;
+		///			Get "George" from the Person entity set. &#10;
         ///			Persons.first( function( person ) { return person.FirstName == this.name; }, { name: "George" }, function ( result ){ ... });
         ///		</example>
         ///	</signature>
@@ -14035,7 +14096,7 @@ $data.Class.define('$data.Queryable', null, null,
 
 
     include: function (selector) {
-        ///	<summary>Includes the given entity set in the query if it's an inverse property.</summary>
+		///	<summary>Includes the given entity set in the query if it's an inverse property.</summary>
         ///	<param name="selector" type="$data.String">Entity set name</param>
         ///	<returns type="$data.Queryable" />
         ///	<signature>
@@ -14044,8 +14105,8 @@ $data.Class.define('$data.Queryable', null, null,
         ///			The name of the entity set you want to include in the query.
         ///		</param>
         ///		<returns type="$data.Queryable" />
-        ///		<example>
-        ///			Include the Category on every Article. &#10;
+		///		<example>
+		///			Include the Category on every Article. &#10;
         ///			Articles.include("Category");
         ///		</example>
         ///	</signature>
@@ -14074,7 +14135,7 @@ $data.Class.define('$data.Queryable', null, null,
     },
 
     toTraceString: function (name) {
-        ///	<summary>Returns the trace string of the query.</summary>
+		///	<summary>Returns the trace string of the query.</summary>
         ///	<param name="name" type="$data.String">Name of the execution method (toArray, length, etc.).</param>
         ///	<returns type="$data.String" />
         ///	<signature>
@@ -14083,8 +14144,8 @@ $data.Class.define('$data.Queryable', null, null,
         ///			Name of the execution method (toArray, length, etc.). Optional. Default value is "toArray".
         ///		</param>
         ///		<returns type="$data.String" />
-        ///		<example>
-        ///			Get the trace string for Articles.toArray() &#10;
+		///		<example>
+		///			Get the trace string for Articles.toArray() &#10;
         ///			Articles.toTraceString();
         ///		</example>
         ///	</signature>
@@ -14142,11 +14203,11 @@ $data.Class.defineEx('$data.EntitySet',
         Object.defineProperty(this, "elementType", { value: elementType, enumerable: true });
         Object.defineProperty(this, "collectionName", { value: collectionName, enumerable: true });
         Object.defineProperty(this, "roles", { value: roles, enumerable: true });
-
-        for (var i in eventHandlers) {
+        
+        for (var i in eventHandlers){
             this[i] = eventHandlers[i];
         }
-
+        
         this._checkRootExpression();
     },
     executeQuery: function (expression, on_ready) {
@@ -14277,7 +14338,7 @@ $data.Class.defineEx('$data.EntitySet',
         } else if (!(entity instanceof this.createNew)) {
             data = new this.createNew(entity);
         }
-
+        
         for (var i = 0; i < this.entityContext.stateManager.trackedEntities.length; i++) {
             var current = this.entityContext.stateManager.trackedEntities[i];
             if (current.data === data)
@@ -14454,12 +14515,12 @@ $data.Class.defineEx('$data.EntitySet',
     }
 }, null);
 $data.EntityState = {
-    Detached: 0,
+    Detached:0,
     Unchanged: 10,
     Added: 20,
     Modified: 30,
     Deleted: 40
-}; $data.Class.define('$data.EntityStateManager', null, null,
+};$data.Class.define('$data.EntityStateManager', null, null,
 {
     constructor: function (entityContext) {
         this.entityContext = null;
@@ -14472,11 +14533,11 @@ $data.EntityState = {
     reset: function () {
         this.trackedEntities = [];
     }
-}, null); Exception = function (message, name, data) {
+}, null);Exception = function(message, name, data) {
     Error.call(this);
-    if (Error.captureStackTrace)
-        Error.captureStackTrace(this, this.constructor);
-
+	if (Error.captureStackTrace)
+	    Error.captureStackTrace(this, this.constructor);
+    
     this.name = name || "Exception";
     this.message = message;
     this.data = data;
@@ -14490,7 +14551,7 @@ Exception.prototype.__proto__ = Error.prototype;
 Exception.prototype._getStackTrace = function () {
     var callstack = [];
     var isCallstackPopulated = false;
-    // unreachable code
+	// unreachable code
     //return;
     /*try {
         i.dont.exist += 0;
@@ -14544,19 +14605,19 @@ Exception.prototype._getStackTrace = function () {
     //}
     return callstack.join("\n\r");	 */
 };
-Function.prototype.extend = function (extend) {
-    for (var i in extend) {
+Function.prototype.extend = function(extend){
+    for (var i in extend){
         this[i] = extend[i];
     }
-
+    
     return this;
 };
 
-$data.ServiceOperation = function () {
+$data.ServiceOperation = function(){
     var fn = arguments.callee;
-
+    
     var virtualEntitySet = fn.elementType ? this.getEntitySetFromElementType(Container.resolveType(fn.elementType)) : null;
-
+    
     var paramConstExpression = null;
     if (fn.params) {
         paramConstExpression = [];
@@ -14608,79 +14669,79 @@ $data.ServiceOperation = function () {
     }
 };
 
-Function.prototype.chain = function (before, after) {
+Function.prototype.chain = function(before, after){
     var fn = this;
-
-    var ret = function () {
+    
+    var ret = function(){
         var chain = arguments.callee.chainFn;
         var args = [];
-        if (arguments.length) {
-            for (var i = 0; i < arguments.length; i++) {
+        if (arguments.length){
+            for (var i = 0; i < arguments.length; i++){
                 args.push(arguments[i]);
             }
         }
         var argsCount = args.length;
         var i = 0;
-
-        var readyFn = function () {
-            if (args[args.length - 1] && args[args.length - 1].success && typeof args[args.length - 1].success === 'function') {
+        
+        var readyFn = function(){
+            if (args[args.length - 1] && args[args.length - 1].success && typeof args[args.length - 1].success === 'function'){
                 var fn = args[args.length - 1].success;
                 fn.apply(this, arguments);
-            } else return arguments.length ? arguments[0] : undefined;
+            }else return arguments.length ? arguments[0] : undefined;
         };
-
-        var callbackFn = function () {
+        
+        var callbackFn = function(){
             var fn = chain[i];
             i++;
-
+            
             var r = fn.apply(this, args);
-            if (typeof r === 'function') {
+            if (typeof r === 'function'){
                 var argsFn = arguments;
-                args[argsCount] = (i < chain.length ? (function () { return callbackFn.apply(this, argsFn); }) : (function () { return readyFn.apply(this, argsFn); }));
+                args[argsCount] = (i < chain.length ? (function(){ return callbackFn.apply(this, argsFn); }) : (function(){ return readyFn.apply(this, argsFn); }));
                 r.apply(this, args);
-            } else {
-                if (i < chain.length) {
+            }else{
+                if (i < chain.length){
                     callbackFn.apply(this, arguments);
-                } else readyFn(this, arguments);
+                }else readyFn(this, arguments);
             }
         }
-
+        
         callbackFn();
     };
-
+    
     if (!ret.chainFn) ret.chainFn = (before || []).concat([fn].concat(after || []));
-
+    
     return ret;
 };
 
-Function.prototype.before = function (on) {
+Function.prototype.before = function(on){
     var ret = this;
-
+    
     if (!this.chainFn) ret = ret.chain();
     ret.chainFn.unshift(on);
-
+        
     return ret;
 };
 
-Function.prototype.after = function (on) {
+Function.prototype.after = function(on){
     var ret = this;
-
+    
     if (!this.chainFn) ret = ret.chain();
     ret.chainFn.push(on);
-
+        
     return ret;
 };
 
-Function.prototype.contentType = function (mime) {
+Function.prototype.contentType = function(mime){
     return this.extend({
         contentType: mime
     });
 };
 
-Function.prototype.returns = function (type, elementType) {
+Function.prototype.returns = function(type, elementType){
     if (typeof type === 'string')
         type = Container.resolveType(type);
-
+        
     if (typeof elementType === 'string')
         elementType = Container.resolveType(elementType);
 
@@ -14690,84 +14751,84 @@ Function.prototype.returns = function (type, elementType) {
     });
 };
 
-Function.prototype.params = function (params) {
+Function.prototype.params = function(params){
     /*for (var p in params){
         if (typeof params[p] === 'string')
             params[p] = Container.resolveType(params[p]);
     }*/
-
+    
     return this.extend({
         params: params
     });
 };
 
-Function.prototype.serviceName = function (serviceName) {
+Function.prototype.serviceName = function(serviceName){
     return this.extend({
         serviceName: serviceName
     });
 };
 
-Function.prototype.method = function (method) {
+Function.prototype.method = function(method){
     return this.extend({
         method: method
     });
 };
 
-Function.prototype.webGet = function () {
+Function.prototype.webGet = function(){
     return this.method('GET');
 };
 
-Function.prototype.webInvoke = function () {
+Function.prototype.webInvoke = function(){
     return this.method('POST');
 };
 
-Function.prototype.authorize = function (roles, callback) {
+Function.prototype.authorize = function(roles, callback){
     var r = {};
-    if (roles instanceof Array) {
-        for (var i = 0; i < roles.length; i++) {
+    if (roles instanceof Array){
+        for (var i = 0; i < roles.length; i++){
             if (typeof roles[i] === 'string') r[roles[i]] = true;
         }
-    } else r = roles;
-
+    }else r = roles;
+    
     this.roles = r;
 
     var fn = this;
-
-    ret = function () {
+    
+    ret = function(){
         var pHandler = new $data.PromiseHandler();
         var clbWrapper = pHandler.createCallback(callback);
         var pHandlerResult = pHandler.getPromise();
         var args = arguments;
-
-        clbWrapper.success = clbWrapper.success.after(function () {
+        
+        clbWrapper.success = clbWrapper.success.after(function(){
             fn.apply(this, args);
         });
-
+        
         $data.Access.isAuthorized($data.Access.Execute, this.user, fn.roles, clbWrapper);
-
+        
         return pHandlerResult;
     };
-
+    
     return ret;
 };
 
-Function.prototype.promise = function (callback) {
+Function.prototype.promise = function(callback){
     var fn = this;
-
-    var ret = function () {
+    
+    var ret = function(){
         var pHandler = new $data.PromiseHandler();
         var clbWrapper = pHandler.createCallback(callback);
         var pHandlerResult = pHandler.getPromise();
-
+        
         arguments[arguments.length++] = clbWrapper;
         fn.apply(this, arguments);
-
+        
         return pHandlerResult;
     };
-
+    
     return ret;
 };
-$data.ConcurrencyMode = { Fixed: 'fixed', None: 'nonde' };
+$data.ConcurrencyMode = {Fixed : 'fixed', None: 'nonde'};
 $data.Class.define('$data.StorageProviderBase', null, null,
 {
     constructor: function (schemaConfiguration) {
@@ -14917,8 +14978,8 @@ $data.Class.define('$data.StorageProviderBase', null, null,
         if (frameType && result.allowedIn) {
             if ((result.allowedIn instanceof Array && !result.allowedIn.some(function (type) { return frameType === Container.resolveType(type); })) ||
                         (!(result.allowedIn instanceof Array) && frameType !== Container.resolveType(result.allowedIn))) {
-                Guard.raise(new Exception(operationName + " not supported in: " + frameType.name));
-            }
+                            Guard.raise(new Exception(operationName + " not supported in: " + frameType.name));
+                        }
         }
         result.name = operationName;
         return result;
@@ -14940,8 +15001,8 @@ $data.Class.define('$data.StorageProviderBase', null, null,
         if (frameType && result.allowedIn) {
             if ((result.allowedIn instanceof Array && !result.allowedIn.some(function (type) { return frameType === Container.resolveType(type); })) ||
                         (!(result.allowedIn instanceof Array) && frameType !== Container.resolveType(result.allowedIn))) {
-                Guard.raise(new Exception(operator + " not supported in: " + frameType.name));
-            }
+                            Guard.raise(new Exception(operator + " not supported in: " + frameType.name));
+                        }
         }
         result.name = operator;
         return result;
@@ -14962,8 +15023,8 @@ $data.Class.define('$data.StorageProviderBase', null, null,
         if (frameType && result.allowedIn) {
             if ((result.allowedIn instanceof Array && !result.allowedIn.some(function (type) { return frameType === Container.resolveType(type); })) ||
                         (!(result.allowedIn instanceof Array) && frameType !== Container.resolveType(result.allowedIn))) {
-                Guard.raise(new Exception(operator + " not supported in: " + frameType.name));
-            }
+                            Guard.raise(new Exception(operator + " not supported in: " + frameType.name));
+                        }
         }
         result.name = operator;
         return result;
@@ -15001,10 +15062,10 @@ $data.Class.define('$data.StorageProviderBase', null, null,
         $data.RegistredStorageProviders[name] = provider;
     },
     getProvider: function (name) {
-        var provider = $data.RegistredStorageProviders[name];
-        if (!provider)
+		var provider = $data.RegistredStorageProviders[name];
+		if (!provider)
             console.warn("Provider not found: '" + name + "'");
-        return provider;
+		return provider;
         /*var provider = $data.RegistredStorageProviders[name];
         if (!provider)
             Guard.raise(new Exception("Provider not found: '" + name + "'", "Not Found"));
@@ -15014,15 +15075,15 @@ $data.Class.define('$data.StorageProviderBase', null, null,
         get: function () { return true; },
         set: function () { }
     }
-}); $data.Base.extend('$data.EntityWrapper', {
+});$data.Base.extend('$data.EntityWrapper', {
     getEntity: function () {
         Guard.raise("pure object");
     }
-}); if (typeof jQuery !== 'undefined' && jQuery.ajax) {
+});﻿if (typeof jQuery !== 'undefined' && jQuery.ajax) {
     $data.ajax = $data.ajax || jQuery.ajax;
 }
 
-if (typeof WinJS !== 'undefined' && WinJS.xhr) {
+﻿if (typeof WinJS !== 'undefined' && WinJS.xhr) {
     $data.ajax = $data.ajax || function (options) {
         $data.typeSystem.extend(options, {
             dataType: 'json',
@@ -15072,17 +15133,18 @@ if (typeof WinJS !== 'undefined' && WinJS.xhr) {
     }
 }
 
-if (typeof Ext !== 'undefined' && typeof Ext.Ajax) {
+﻿if (typeof Ext !== 'undefined' && typeof Ext.Ajax) {
     $data.ajax = $data.ajax || function (options) {
         Ext.Ajax.request(options);
     };
 }
 
-$data.ajax = $data.ajax || function () {
+﻿$data.ajax = $data.ajax || function () {
     var cfg = arguments[arguments.length - 1];
     var clb = $data.typeSystem.createCallbackSetting(cfg);
     clb.error("Not implemented");
 };
+
 $data.Class.define('$data.dbClient.DbCommand', null, null,
 {
     connection: {},
@@ -15090,7 +15152,7 @@ $data.Class.define('$data.dbClient.DbCommand', null, null,
     execute: function (callback) {
         Guard.raise("Pure class");
     }
-}, null); $data.Class.define('$data.dbClient.DbConnection', null, null,
+}, null);$data.Class.define('$data.dbClient.DbConnection', null, null,
 {
     connectionParams: {},
     database: {},
@@ -15106,7 +15168,7 @@ $data.Class.define('$data.dbClient.DbCommand', null, null,
     createCommand: function () {
         Guard.raise("Pure class");
     }
-}, null); $data.Class.define('$data.dbClient.openDatabaseClient.OpenDbCommand', $data.dbClient.DbCommand, null,
+}, null);$data.Class.define('$data.dbClient.openDatabaseClient.OpenDbCommand', $data.dbClient.DbCommand, null,
 {
     constructor: function (con, queryStr, params) {
         this.query = queryStr;
@@ -15122,7 +15184,7 @@ $data.Class.define('$data.dbClient.DbCommand', null, null,
         this.exec(this.query, this.parameters, callback.success, callback.error);
     },
     exec: function (query, parameters, callback, errorhandler) {
-        // suspicious code
+		// suspicious code
         /*if (console) {
             //console.log(query);
         }*/
@@ -15134,7 +15196,7 @@ $data.Class.define('$data.dbClient.DbCommand', null, null,
                     query = [query];
                     parameters = [parameters];
                 }
-
+                
                 var results = [];
                 var remainingCommands = 0;
 
@@ -15178,7 +15240,7 @@ $data.Class.define('$data.dbClient.DbCommand', null, null,
             }
         });
     }
-}, null); $data.Class.define('$data.dbClient.openDatabaseClient.OpenDbConnection', $data.dbClient.DbConnection, null,
+}, null);$data.Class.define('$data.dbClient.openDatabaseClient.OpenDbConnection', $data.dbClient.DbConnection, null,
 {
     constructor: function (params) {
         this.connectionParams = params;
@@ -15187,13 +15249,13 @@ $data.Class.define('$data.dbClient.DbCommand', null, null,
         return this.database !== null && this.database !== undefined && this.transaction !== null && this.transaction !== undefined;
     },
     open: function (callBack) {
-        if (this.database) {
-            this.database.transaction(function (tran) { callBack.success(tran); });
+		if (this.database){
+			this.database.transaction(function (tran) { callBack.success(tran); });
         } else {
             var p = this.connectionParams;
             var con = this;
-            this.database = openDatabase(p.fileName, p.version, p.displayName, p.maxSize);
-            this.database.transaction(function (tran) { callBack.success(tran); });
+			this.database = openDatabase(p.fileName, p.version, p.displayName, p.maxSize);
+			this.database.transaction(function (tran) { callBack.success(tran); });
         }
     },
     close: function () {
@@ -15204,7 +15266,7 @@ $data.Class.define('$data.dbClient.DbCommand', null, null,
         var cmd = new $data.dbClient.openDatabaseClient.OpenDbCommand(this, queryStr, params);
         return cmd;
     }
-}, null); $data.Class.define('$data.dbClient.jayStorageClient.JayStorageCommand', $data.dbClient.DbCommand, null,
+}, null);$data.Class.define('$data.dbClient.jayStorageClient.JayStorageCommand', $data.dbClient.DbCommand, null,
 {
     constructor: function (con, queryStr, params) {
         this.query = queryStr;
@@ -15240,42 +15302,42 @@ $data.Class.define('$data.dbClient.DbCommand', null, null,
             }
         };
 
-        query.forEach(function (q, i) {
-            if (q) {
-                $data.ajax({
-                    url: 'http' + (this.connection.connectionParams.storage.ssl ? 's' : '') + '://' + this.connection.connectionParams.storage.src.replace('http://', '').replace('https://', '') + '?db=' + this.connection.connectionParams.storage.key,
-                    type: 'POST',
-                    headers: {
-                        'X-PINGOTHER': 'pingpong'
-                    },
-                    data: { query: q, parameters: parameters[i] },
-                    dataType: 'json',
-                    contentType: 'application/json;charset=UTF-8',
-                    success: function (data) {
-                        if (data && data.error) {
-                            console.log('JayStorage error', data.error);
-                            errorhandler(data.error);
-                            return;
-                        }
-                        if (this.lastID) {
-                            results[i] = { insertId: this.lastID, rows: (data || { rows: [] }).rows };
-                        } else results[i] = { rows: (data || { rows: [] }).rows };
-                        decClb();
-                    }
-                });
-            } else {
-                results[i] = null;
-                decClb();
-            }
-        }, this);
+		query.forEach(function(q, i){
+			if (q){
+				$data.ajax({
+					url: 'http' + (this.connection.connectionParams.storage.ssl ? 's' : '') + '://' + this.connection.connectionParams.storage.src.replace('http://', '').replace('https://', '') + '?db=' + this.connection.connectionParams.storage.key,
+					type: 'POST',
+					headers: {
+						'X-PINGOTHER': 'pingpong'
+					},
+					data: { query: q, parameters: parameters[i] },
+					dataType: 'json',
+					contentType: 'application/json;charset=UTF-8',
+					success: function(data){
+						if (data && data.error){
+							console.log('JayStorage error', data.error);
+							errorhandler(data.error);
+							return;
+						}
+						if (this.lastID){
+							results[i] = { insertId: this.lastID, rows: (data || { rows: [] }).rows };
+						}else results[i] = { rows: (data || { rows: [] }).rows };
+ 						decClb();
+					}
+				});
+			}else{
+				results[i] = null;
+				decClb();
+			}
+		}, this);
     }
-}, null); $data.Class.define('$data.dbClient.jayStorageClient.JayStorageConnection', $data.dbClient.DbConnection, null,
+}, null);$data.Class.define('$data.dbClient.jayStorageClient.JayStorageConnection', $data.dbClient.DbConnection, null,
 {
     constructor: function (params) {
         this.connectionParams = params;
     },
     isOpen: function () {
-        return true;
+		return true;
         //return this.database !== null && this.database !== undefined;
     },
     open: function () {
@@ -15291,7 +15353,7 @@ $data.Class.define('$data.dbClient.DbCommand', null, null,
         var cmd = new $data.dbClient.jayStorageClient.JayStorageCommand(this, queryStr, params);
         return cmd;
     }
-}, null); $data.Class.define('$data.dbClient.sqLiteNJClient.SqLiteNjCommand', $data.dbClient.DbCommand, null,
+}, null);$data.Class.define('$data.dbClient.sqLiteNJClient.SqLiteNjCommand', $data.dbClient.DbCommand, null,
 {
     constructor: function (con, queryStr, params) {
         this.query = queryStr;
@@ -15360,7 +15422,7 @@ $data.Class.define('$data.dbClient.DbCommand', null, null,
             }
         }, this);
     }
-}, null); $data.Class.define('$data.dbClient.sqLiteNJClient.SqLiteNjConnection', $data.dbClient.DbConnection, null,
+}, null);$data.Class.define('$data.dbClient.sqLiteNJClient.SqLiteNjConnection', $data.dbClient.DbConnection, null,
 {
     constructor: function (params) {
         this.connectionParams = params;
@@ -15413,17 +15475,21 @@ $C('$data.modelBinder.ModelBinderConfigCompiler', $data.Expressions.EntityExpres
         this._defaultModelBinder(expression);
     },
     VisitServiceOperationExpression: function (expression) {
-        var builder = Container.createqueryBuilder();
         var returnType = Container.resolveType(expression.cfg.returnType);
-        builder.modelBinderConfig['$type'] = returnType;
-        if (returnType.inheritsFrom === $data.Entity) {
-            builder.modelBinderConfig['$selector'] = ['json:' + expression.cfg.serviceName];
+        if ((typeof returnType.isAssignableTo === 'function' && returnType.isAssignableTo($data.Queryable)) || returnType === $data.Array) {
+            this._defaultModelBinder(expression);
         } else {
-            builder.modelBinderConfig['$source'] = expression.cfg.serviceName;
+            var builder = Container.createqueryBuilder();
+            builder.modelBinderConfig['$type'] = returnType;
+            if (typeof returnType.isAssignableTo === 'function' && returnType.isAssignableTo($data.Entity)) {
+                builder.modelBinderConfig['$selector'] = ['json:' + expression.cfg.serviceName];
+            } else {
+                builder.modelBinderConfig['$source'] = expression.cfg.serviceName;
+            }
+            this.VisitExpression(expression, builder);
+            builder.resetModelBinderProperty();
+            this._query.modelBinderConfig = builder.modelBinderConfig;
         }
-        this.VisitExpression(expression, builder);
-        builder.resetModelBinderProperty();
-        this._query.modelBinderConfig = builder.modelBinderConfig;
     },
     VisitCountExpression: function (expression) {
         var builder = Container.createqueryBuilder();
@@ -15494,8 +15560,19 @@ $C('$data.modelBinder.ModelBinderConfigCompiler', $data.Expressions.EntityExpres
                 }
             }, this);
         } else {
-            builder._binderConfig.$item = {};
+            /*builder._binderConfig = {
+                $selector: ['json:results'],
+                $type: $data.Array,
+                $item:{
+                    $type: elementType,
+                    $value: function (meta, data) { return data; }
+                }
+            }*/
+            builder._binderConfig.$item = { };
             builder.modelBinderConfig = builder._binderConfig.$item;
+
+
+            
         }
         if (storageModel) {
             this._addComplexTypeProperties(storageModel.ComplexTypes, builder);
@@ -15659,7 +15736,7 @@ $data.Class.define("$data.Authentication.AuthenticationBase", null, null, {
     },
     /// { error:, abort:, pending:, success: }
     Login: function (callbacks) {
-        Guard.raise("Pure class");
+         Guard.raise("Pure class");
     },
     Logout: function () {
         Guard.raise("Pure class");
@@ -15668,7 +15745,7 @@ $data.Class.define("$data.Authentication.AuthenticationBase", null, null, {
         Guard.raise("Pure class");
     }
 
-}, null); $data.Class.define("$data.Authentication.Anonymous", $data.Authentication.AuthenticationBase, null, {
+}, null);$data.Class.define("$data.Authentication.Anonymous", $data.Authentication.AuthenticationBase, null, {
     constructor: function (cfg) {
         this.configuration = cfg || {};
         this.Authenticated = false;
@@ -15682,7 +15759,7 @@ $data.Class.define("$data.Authentication.AuthenticationBase", null, null, {
         $data.ajax(cfg);
     }
 
-}, null); $data.Class.define("$data.Authentication.FacebookAuth", $data.Authentication.AuthenticationBase, null, {
+}, null);$data.Class.define("$data.Authentication.FacebookAuth", $data.Authentication.AuthenticationBase, null, {
     constructor: function (cfg) {
         this.configuration = $data.typeSystem.extend({
             Url_code: '',
@@ -15746,16 +15823,16 @@ $data.Class.define("$data.Authentication.AuthenticationBase", null, null, {
             data: 'type=' + provider.configuration.type_token + '&client_id=' + provider.configuration.app_id + '&code=' + verification_data.code,
             type: 'POST',
             dataType: 'json',
-            success: function (result) {
+            success: function(result) {
                 provider.configuration.access_token = result.access_token;
                 if (typeof provider.configuration.stateCallbacks.success == "function")
                     provider.configuration.stateCallbacks.success(result);
             },
-            error: function (obj) {
+            error: function(obj) {
                 var data = eval('(' + obj.responseText + ')');
                 if (data.error) {
                     if (data.error.message == "authorization_pending") {
-                        setTimeout(function () {
+                        setTimeout(function() {
                             provider._processRequestToken(verification_data);
                         }, 2000);
                     } else if ("authorization_declined") {
@@ -15766,7 +15843,7 @@ $data.Class.define("$data.Authentication.AuthenticationBase", null, null, {
             }
         });
     }
-}, null); $data.Class.define("$data.Authentication.BasicAuth.BasicAuth", $data.Authentication.AuthenticationBase, null, {
+}, null);$data.Class.define("$data.Authentication.BasicAuth.BasicAuth", $data.Authentication.AuthenticationBase, null, {
     constructor: function (cfg) {
         this.configuration = $data.typeSystem.extend({
             Username: '',
@@ -15788,10 +15865,10 @@ $data.Class.define("$data.Authentication.AuthenticationBase", null, null, {
         cfg.beforeSend = function (xhr) {
             xhr.setRequestHeader("Authorization", "Basic  " + _this.__encodeBase64(_this.configuration.Username + ":" + _this.configuration.Password));
 
-            if (typeof origBeforeSend == "function")
+            if(typeof origBeforeSend == "function")
                 origBeforeSend(xhr);
         };
-
+        
         $data.ajax(cfg);
     },
     __encodeBase64: function (val) {

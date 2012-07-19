@@ -11,27 +11,36 @@ app.use(connect.json());
 app.use(connect.bodyParser());
 app.use(connect.query());
 
+ISODate = function(date){
+    return new Date(date);
+}
+
+ObjectID = function(id){
+    console.log('objectid:'+id);
+    return id;
+};
+
 
 app.use('/', function(req, res){
     console.log('');console.log('');console.log('');
-    console.log('Request start');
+    console.log('Request start: '+req.method);
 	if(req.url === "/favicon.ico"){
 		console.log("get favicon");
 		res.writeHead(401,{});
         res.end();
 	}else{
-	    console.log(JSON.stringify(req.url));
+	    //console.log(JSON.stringify(req.url));
 	    if (req.method === 'GET'){
 		$test.context = new LightSwitchApplication.ApplicationData({ name: 'mongoDB', databaseName: 'jayScrum' });
 		$test.context.onReady(function(db){
 		    var callback = function(result){
-		        res.write(JSON.stringify(result));
-			res.writeHead(200, {
-				'Content-Type': 'application/json',
-				'Access-Control-Allow-Origin': '*',
-				'Access-Control-Allow-Headers': 'X-PINGOTHER, Content-Type',
-				'Access-Control-Allow-Methods': 'POST, GET, OPTIONS'
-			});
+		        res.writeHead(200, {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*',
+                    'Access-Control-Allow-Headers': 'X-PINGOTHER, Content-Type',
+                    'Access-Control-Allow-Methods': 'POST, GET, OPTIONS'
+                });
+                res.write(JSON.stringify(result));
 		        res.end();
 		    };
 		    
@@ -51,9 +60,9 @@ app.use('/', function(req, res){
 		                qs += '.include("' + compiled.$include[i] + '")';
 		            }
 		        }*/
-	console.log("//////////");
+	/*console.log("//////////");
 	console.log(JSON.stringify(compiled));
-	console.log("//////////");
+	console.log("//////////");*/
 		        if (compiled.$filter) qs = qs.filter(compiled.$filter);
 		        if (compiled.$order){
 		            /*for (var i = 0; i < compiled.$order.length; i++){
@@ -74,23 +83,23 @@ app.use('/', function(req, res){
 		$test.context.onReady(function(db){
 		    var callback = $data.typeSystem.createCallbackSetting({
 		        success: function(cnt){
-			    res.writeHead(200, {
-				'Content-Type': 'application/json',
-				'Access-Control-Allow-Origin': '*',
-				'Access-Control-Allow-Headers': 'X-PINGOTHER, Content-Type',
-				'Access-Control-Allow-Methods': 'POST, GET, OPTIONS'
-			    });
+                    res.writeHead(200, {
+                        'Content-Type': 'application/json',
+                        'Access-Control-Allow-Origin': '*',
+                        'Access-Control-Allow-Headers': 'X-PINGOTHER, Content-Type',
+                        'Access-Control-Allow-Methods': 'POST, GET, OPTIONS'
+                    });
 		            res.write(cnt.toString());
 		            res.end();
 		        },
 		        error: function(err){
 		            res.writeHead(200, {
-				'Content-Type': 'application/json',
-				'Access-Control-Allow-Origin': '*',
-				'Access-Control-Allow-Headers': 'X-PINGOTHER, Content-Type',
-				'Access-Control-Allow-Methods': 'POST, GET, OPTIONS'
-			    });
-			    res.write('ohoh');
+                        'Content-Type': 'application/json',
+                        'Access-Control-Allow-Origin': '*',
+                        'Access-Control-Allow-Headers': 'X-PINGOTHER, Content-Type',
+                        'Access-Control-Allow-Methods': 'POST, GET, OPTIONS'
+                    });
+                    res.write('ohoh');
 		            res.end();
 		        }
 		    });
@@ -118,7 +127,7 @@ app.use('/', function(req, res){
 		        }
 		    }
 		    
-		    //console.log(JSON.stringify(collections));
+		    console.log(JSON.stringify(collections));
 		    db.saveChanges(callback);
 		});
 	    }

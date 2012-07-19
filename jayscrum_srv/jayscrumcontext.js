@@ -78,9 +78,9 @@
         'BusinessValue': { type: 'Edm.Int32' },
         'IsBlocked': { type: 'Edm.Boolean' },
         'RemainingWork': { type: 'Edm.Int32' },
-        'WorkItem_Project': { type: 'Edm.Int32' },
-        'WorkItem_Sprint': { type: 'Edm.Int32' },
-        'WorkItem_WorkItem': { type: 'Edm.Int32' },
+        'WorkItem_Project': { type: 'Edm.String' },
+        'WorkItem_Sprint': { type: 'Edm.String' },
+        'WorkItem_WorkItem': { type: 'Edm.String' },
         'Reason': { type: 'Edm.String', maxLength: 255 }
         //'Project': { type: 'LightSwitchApplication.Project', inverseProperty: 'WorkItems' },
         //'Sprint': { type: 'LightSwitchApplication.Sprint', inverseProperty: 'WorkItems' },
