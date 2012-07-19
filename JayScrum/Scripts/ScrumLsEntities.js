@@ -115,48 +115,48 @@
         Microsoft_LightSwitch_GetCanInformation: $data.EntityContext.generateServiceOperation({ serviceName: 'Microsoft_LightSwitch_GetCanInformation', returnType: 'Edm.String', params: [{ dataServiceMembers: 'Edm.String' }], method: 'GET' })*/
     });
     ///Security
-   /* $data.Entity.extend('Microsoft.LightSwitch.Security.UserRegistration', {
-        'UserName': { key: true, type: 'Edm.String', nullable: false, required: true, maxLength: 256 },
-        'FullName': { type: 'Edm.String', nullable: false, required: true, maxLength: 256, concurrencyMode: $data.ConcurrencyMode.Fixed },
-        'Password': { type: 'Edm.String', maxLength: 128, concurrencyMode: $data.ConcurrencyMode.Fixed },
-        'RoleAssignments': { type: 'Array', elementType: 'Microsoft.LightSwitch.Security.RoleAssignment', inverseProperty: 'User' },
-        'DerivingRoleAssignments': { type: 'Array', elementType: 'Microsoft.LightSwitch.Security.RoleAssignment', inverseProperty: 'SourceAccount' }
-    });
-    $data.Entity.extend('Microsoft.LightSwitch.Security.Role', {
-        'Name': { key: true, type: 'Edm.String', nullable: false, required: true, maxLength: 128 },
-        'RoleAssignments': { type: 'Array', elementType: 'Microsoft.LightSwitch.Security.RoleAssignment', inverseProperty: 'Role' },
-        'RolePermissions': { type: 'Array', elementType: 'Microsoft.LightSwitch.Security.RolePermission', inverseProperty: 'Role' }
-    });
-    $data.Entity.extend('Microsoft.LightSwitch.Security.RoleAssignment', {
-        'UserName': { key: true, type: 'Edm.String', nullable: false, required: true, maxLength: 256 },
-        'RoleName': { key: true, type: 'Edm.String', nullable: false, required: true, maxLength: 128 },
-        'SourceAccountName': { key: true, type: 'Edm.String', nullable: false, required: true, maxLength: 256 },
-        'User': { type: 'Microsoft.LightSwitch.Security.UserRegistration', required: true, inverseProperty: 'RoleAssignments' },
-        'SourceAccount': { type: 'Microsoft.LightSwitch.Security.UserRegistration', required: true, inverseProperty: 'DerivingRoleAssignments' },
-        'Role': { type: 'Microsoft.LightSwitch.Security.Role', required: true, inverseProperty: 'RoleAssignments' }
-    });
-    $data.Entity.extend('Microsoft.LightSwitch.Security.Permission', {
-        'Id': { key: true, type: 'Edm.String', nullable: false, required: true, maxLength: 322 },
-        'Name': { type: 'Edm.String', nullable: false, required: true, maxLength: 64, concurrencyMode: $data.ConcurrencyMode.Fixed },
-        'RolePermissions': { type: 'Array', elementType: 'Microsoft.LightSwitch.Security.RolePermission', inverseProperty: 'Permission' }
-    });
-    $data.Entity.extend('Microsoft.LightSwitch.Security.RolePermission', {
-        'RoleName': { key: true, type: 'Edm.String', nullable: false, required: true, maxLength: 128 },
-        'PermissionId': { key: true, type: 'Edm.String', nullable: false, required: true, maxLength: 322 },
-        'Role': { type: 'Microsoft.LightSwitch.Security.Role', required: true, inverseProperty: 'RolePermissions' },
-        'Permission': { type: 'Microsoft.LightSwitch.Security.Permission', required: true, inverseProperty: 'RolePermissions' }
-    });
-    $data.EntityContext.extend('Microsoft.LightSwitch.Security.SecurityData', {
-        UserRegistrations: { type: $data.EntitySet, elementType: Microsoft.LightSwitch.Security.UserRegistration },
-        Roles: { type: $data.EntitySet, elementType: Microsoft.LightSwitch.Security.Role },
-        RoleAssignments: { type: $data.EntitySet, elementType: Microsoft.LightSwitch.Security.RoleAssignment },
-        Permissions: { type: $data.EntitySet, elementType: Microsoft.LightSwitch.Security.Permission },
-        RolePermissions: { type: $data.EntitySet, elementType: Microsoft.LightSwitch.Security.RolePermission },
-        Microsoft_LightSwitch_GetCanInformation: $data.EntityContext.generateServiceOperation({ serviceName: 'Microsoft_LightSwitch_GetCanInformation', returnType: 'Edm.String', params: [{ dataServiceMembers: 'Edm.String' }], method: 'GET' }),
-        ChangePassword: $data.EntityContext.generateServiceOperation({ serviceName: 'ChangePassword', returnType: null, params: [{ userName: 'Edm.String' }, { oldPassword: 'Edm.String' }, { newPassword: 'Edm.String' }], method: 'POST' }),
-        IsValidPassword: $data.EntityContext.generateServiceOperation({ serviceName: 'IsValidPassword', returnType: 'Edm.Boolean', params: [{ password: 'Edm.String' }], method: 'POST' }),
-        GetWindowsUserInfo: $data.EntityContext.generateServiceOperation({ serviceName: 'GetWindowsUserInfo', returnType: 'Edm.String', params: [{ userName: 'Edm.String' }], method: 'GET' })
-    });*/
+    /* $data.Entity.extend('Microsoft.LightSwitch.Security.UserRegistration', {
+         'UserName': { key: true, type: 'Edm.String', nullable: false, required: true, maxLength: 256 },
+         'FullName': { type: 'Edm.String', nullable: false, required: true, maxLength: 256, concurrencyMode: $data.ConcurrencyMode.Fixed },
+         'Password': { type: 'Edm.String', maxLength: 128, concurrencyMode: $data.ConcurrencyMode.Fixed },
+         'RoleAssignments': { type: 'Array', elementType: 'Microsoft.LightSwitch.Security.RoleAssignment', inverseProperty: 'User' },
+         'DerivingRoleAssignments': { type: 'Array', elementType: 'Microsoft.LightSwitch.Security.RoleAssignment', inverseProperty: 'SourceAccount' }
+     });
+     $data.Entity.extend('Microsoft.LightSwitch.Security.Role', {
+         'Name': { key: true, type: 'Edm.String', nullable: false, required: true, maxLength: 128 },
+         'RoleAssignments': { type: 'Array', elementType: 'Microsoft.LightSwitch.Security.RoleAssignment', inverseProperty: 'Role' },
+         'RolePermissions': { type: 'Array', elementType: 'Microsoft.LightSwitch.Security.RolePermission', inverseProperty: 'Role' }
+     });
+     $data.Entity.extend('Microsoft.LightSwitch.Security.RoleAssignment', {
+         'UserName': { key: true, type: 'Edm.String', nullable: false, required: true, maxLength: 256 },
+         'RoleName': { key: true, type: 'Edm.String', nullable: false, required: true, maxLength: 128 },
+         'SourceAccountName': { key: true, type: 'Edm.String', nullable: false, required: true, maxLength: 256 },
+         'User': { type: 'Microsoft.LightSwitch.Security.UserRegistration', required: true, inverseProperty: 'RoleAssignments' },
+         'SourceAccount': { type: 'Microsoft.LightSwitch.Security.UserRegistration', required: true, inverseProperty: 'DerivingRoleAssignments' },
+         'Role': { type: 'Microsoft.LightSwitch.Security.Role', required: true, inverseProperty: 'RoleAssignments' }
+     });
+     $data.Entity.extend('Microsoft.LightSwitch.Security.Permission', {
+         'Id': { key: true, type: 'Edm.String', nullable: false, required: true, maxLength: 322 },
+         'Name': { type: 'Edm.String', nullable: false, required: true, maxLength: 64, concurrencyMode: $data.ConcurrencyMode.Fixed },
+         'RolePermissions': { type: 'Array', elementType: 'Microsoft.LightSwitch.Security.RolePermission', inverseProperty: 'Permission' }
+     });
+     $data.Entity.extend('Microsoft.LightSwitch.Security.RolePermission', {
+         'RoleName': { key: true, type: 'Edm.String', nullable: false, required: true, maxLength: 128 },
+         'PermissionId': { key: true, type: 'Edm.String', nullable: false, required: true, maxLength: 322 },
+         'Role': { type: 'Microsoft.LightSwitch.Security.Role', required: true, inverseProperty: 'RolePermissions' },
+         'Permission': { type: 'Microsoft.LightSwitch.Security.Permission', required: true, inverseProperty: 'RolePermissions' }
+     });
+     $data.EntityContext.extend('Microsoft.LightSwitch.Security.SecurityData', {
+         UserRegistrations: { type: $data.EntitySet, elementType: Microsoft.LightSwitch.Security.UserRegistration },
+         Roles: { type: $data.EntitySet, elementType: Microsoft.LightSwitch.Security.Role },
+         RoleAssignments: { type: $data.EntitySet, elementType: Microsoft.LightSwitch.Security.RoleAssignment },
+         Permissions: { type: $data.EntitySet, elementType: Microsoft.LightSwitch.Security.Permission },
+         RolePermissions: { type: $data.EntitySet, elementType: Microsoft.LightSwitch.Security.RolePermission },
+         Microsoft_LightSwitch_GetCanInformation: $data.EntityContext.generateServiceOperation({ serviceName: 'Microsoft_LightSwitch_GetCanInformation', returnType: 'Edm.String', params: [{ dataServiceMembers: 'Edm.String' }], method: 'GET' }),
+         ChangePassword: $data.EntityContext.generateServiceOperation({ serviceName: 'ChangePassword', returnType: null, params: [{ userName: 'Edm.String' }, { oldPassword: 'Edm.String' }, { newPassword: 'Edm.String' }], method: 'POST' }),
+         IsValidPassword: $data.EntityContext.generateServiceOperation({ serviceName: 'IsValidPassword', returnType: 'Edm.Boolean', params: [{ password: 'Edm.String' }], method: 'POST' }),
+         GetWindowsUserInfo: $data.EntityContext.generateServiceOperation({ serviceName: 'GetWindowsUserInfo', returnType: 'Edm.String', params: [{ userName: 'Edm.String' }], method: 'GET' })
+     });*/
 
     //Microsoft.LightSwitch.Security.context = new Microsoft.LightSwitch.Security.SecurityData({ name: 'oData', oDataServiceHost: 'http://localhost/JayScrumServer_ls/Microsoft.LightSwitch.SecurityData.svc' });
 
@@ -187,86 +187,108 @@ function testData() {
     ctx.Projects.add(new LightSwitchApplication.Project({ Name: 'Project 8', Description: 'Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Aenean mattis egestas lectus a sodales. ' }));
     ctx.Projects.add(new LightSwitchApplication.Project({ Name: 'Project 9', Description: 'ed lorem mauris, pellentesque et aliquet eget, dapibus quis erat. In dignissim orci nec est fermentum sed dignissim ipsum sodales. ' }));
     ctx.Projects.add(new LightSwitchApplication.Project({ Name: 'Project 10', Description: 'Donec est orci, molestie ac pellentesque in, lacinia et dui. Morbi vitae facilisis enim. Aliquam eu ullamcorper odio. ' }));
-    ctx.Projects.add(new LightSwitchApplication.Project({  Name: 'Project 11', Description: 'Fusce varius cursus libero, quis rhoncus ligula facilisis ac. Duis adipiscing congue justo eu bibendum. ' }));
-    ctx.Projects.add(new LightSwitchApplication.Project({  Name: 'Project 12', Description: 'Phasellus vitae purus lorem. Duis lobortis, velit et dignissim congue, nibh ante gravida ipsum, quis luctus enim sapien vitae turpis. ' }));
-    //var ustoSprint = function (sprintId, projectId, index) {
-    //    for (var i = 0; i < 15; i++) {
-    //        ctx.WorkItems.add(new $data.ScrumDb.WorkItems.createNew({
-    //            Title: "User Story 1" + index++, Description: "Donec est orci, molestie ac pellentesque in, lacinia et dui. Morbi vitae facilisis enim. Aliquam eu ullamcorper odio.Donec est orci, molestie ac pellentesque in, lacinia et dui. Morbi vitae facilisis enim. Aliquam eu ullamcorper odio. ",
-    //            Priority: Math.floor(Math.random() * 30), Effort: Math.floor(Math.random() * 100), BusinessValue: Math.floor(Math.random() * 1000), Type: "UserStory",
-    //            WorkItem_Sprint: sprintId,
-    //            WorkItem_Project: projectId,
-    //            CreatedDate: new Date().toISOString(), CreatedBy: $data.Model.settingPage.loginSettings.UserName, ChangedDate: new Date().toISOString(), ChangedBy: $data.Model.settingPage.loginSettings.UserName, AssignedTo: "", State: "New"
-    //        }));
-    //    }
-    //};
-    //ustoSprint(null, null, 0);
-    //ustoSprint('6', '1', 15);
-    //ustoSprint(7, 2, 30);
-    //ustoSprint(8, 1, 45);
-    //ustoSprint(9, 2, 60);
+    ctx.Projects.add(new LightSwitchApplication.Project({ Name: 'Project 11', Description: 'Fusce varius cursus libero, quis rhoncus ligula facilisis ac. Duis adipiscing congue justo eu bibendum. ' }));
+    ctx.Projects.add(new LightSwitchApplication.Project({ Name: 'Project 12', Description: 'Phasellus vitae purus lorem. Duis lobortis, velit et dignissim congue, nibh ante gravida ipsum, quis luctus enim sapien vitae turpis. ' }));
 
-    //var taskToSprint = function (sprintId, userStoryId, index) {
-    //    for (var i = 0; i < 15; i++) {
-    //        ctx.WorkItems.add(new $data.ScrumDb.WorkItems.createNew({
-    //            Title: "Task 1" + index++, Description: "Donec est orci, molestie ac pellentesque in, lacinia et dui. Morbi vitae facilisis enim. Aliquam eu ullamcorper odio.Donec est orci, molestie ac pellentesque in, lacinia et dui. Morbi vitae facilisis enim. Aliquam eu ullamcorper odio. ",
-    //            Priority: Math.floor(Math.random() * 30), Effort: Math.floor(Math.random() * 100), BusinessValue: Math.floor(Math.random() * 1000), Type: "Task",
-    //            State: 'To Do', RemainingWork: Math.floor(Math.random() * 11),
-    //            WorkItem_Sprint: sprintId,
-    //            WorkItem_WorkItem: userStoryId,
-    //            CreatedDate: new Date().toISOString(), CreatedBy: $data.Model.settingPage.loginSettings.UserName, ChangedDate: new Date().toISOString(), ChangedBy: $data.Model.settingPage.loginSettings.UserName, AssignedTo: ""
-    //        }));
-    //        ctx.WorkItems.add(new $data.ScrumDb.WorkItems.createNew({
-    //            Title: "Task 1" + index++, Description: "Donec est orci, molestie ac pellentesque in, lacinia et dui. Morbi vitae facilisis enim. Aliquam eu ullamcorper odio.Donec est orci, molestie ac pellentesque in, lacinia et dui. Morbi vitae facilisis enim. Aliquam eu ullamcorper odio. ",
-    //            Priority: Math.floor(Math.random() * 30), Effort: Math.floor(Math.random() * 100), BusinessValue: Math.floor(Math.random() * 1000), Type: "Task",
-    //            State: 'To Do', RemainingWork: Math.floor(Math.random() * 11),
-    //            WorkItem_Sprint: sprintId,
-    //            WorkItem_WorkItem: userStoryId,
-    //            CreatedDate: new Date().toISOString(), CreatedBy: $data.Model.settingPage.loginSettings.UserName, ChangedDate: new Date().toISOString(), ChangedBy: $data.Model.settingPage.loginSettings.UserName, AssignedTo: ""
-    //        }));
-    //        ctx.WorkItems.add(new $data.ScrumDb.WorkItems.createNew({
-    //            Title: "Task 1" + index++, Description: "Donec est orci, molestie ac pellentesque in, lacinia et dui. Morbi vitae facilisis enim. Aliquam eu ullamcorper odio.Donec est orci, molestie ac pellentesque in, lacinia et dui. Morbi vitae facilisis enim. Aliquam eu ullamcorper odio. ",
-    //            Priority: Math.floor(Math.random() * 30), Effort: Math.floor(Math.random() * 100), BusinessValue: Math.floor(Math.random() * 1000), Type: "Task",
-    //            State: 'To Do', RemainingWork: Math.floor(Math.random() * 11),
-    //            WorkItem_Sprint: sprintId,
-    //            WorkItem_WorkItem: userStoryId,
-    //            CreatedDate: new Date().toISOString(), CreatedBy: $data.Model.settingPage.loginSettings.UserName, ChangedDate: new Date().toISOString(), ChangedBy: $data.Model.settingPage.loginSettings.UserName, AssignedTo: ""
-    //        }));
-
-    //        ctx.WorkItems.add(new $data.ScrumDb.WorkItems.createNew({
-    //            Title: "Task 1" + index++, Description: "Donec est orci, molestie ac pellentesque in, lacinia et dui. Morbi vitae facilisis enim. Aliquam eu ullamcorper odio.Donec est orci, molestie ac pellentesque in, lacinia et dui. Morbi vitae facilisis enim. Aliquam eu ullamcorper odio. ",
-    //            Priority: Math.floor(Math.random() * 30), Effort: Math.floor(Math.random() * 100), BusinessValue: Math.floor(Math.random() * 1000), Type: "Task",
-    //            State: 'In Progress', RemainingWork: Math.floor(Math.random() * 11),
-    //            WorkItem_Sprint: sprintId,
-    //            WorkItem_WorkItem: userStoryId,
-    //            CreatedDate: new Date().toISOString(), CreatedBy: $data.Model.settingPage.loginSettings.UserName, ChangedDate: new Date().toISOString(), ChangedBy: $data.Model.settingPage.loginSettings.UserName, AssignedTo: ""
-    //        }));
-    //        ctx.WorkItems.add(new $data.ScrumDb.WorkItems.createNew({
-    //            Title: "Task 1" + index++, Description: "Donec est orci, molestie ac pellentesque in, lacinia et dui. Morbi vitae facilisis enim. Aliquam eu ullamcorper odio.Donec est orci, molestie ac pellentesque in, lacinia et dui. Morbi vitae facilisis enim. Aliquam eu ullamcorper odio. ",
-    //            Priority: Math.floor(Math.random() * 30), Effort: Math.floor(Math.random() * 100), BusinessValue: Math.floor(Math.random() * 1000), Type: "Task",
-    //            State: 'In Progress', RemainingWork: Math.floor(Math.random() * 11),
-    //            WorkItem_Sprint: sprintId,
-    //            WorkItem_WorkItem: userStoryId,
-    //            CreatedDate: new Date().toISOString(), CreatedBy: $data.Model.settingPage.loginSettings.UserName, ChangedDate: new Date().toISOString(), ChangedBy: $data.Model.settingPage.loginSettings.UserName, AssignedTo: ""
-    //        }));
-
-    //        ctx.WorkItems.add(new $data.ScrumDb.WorkItems.createNew({
-    //            Title: "Task 1" + index++, Description: "Donec est orci, molestie ac pellentesque in, lacinia et dui. Morbi vitae facilisis enim. Aliquam eu ullamcorper odio.Donec est orci, molestie ac pellentesque in, lacinia et dui. Morbi vitae facilisis enim. Aliquam eu ullamcorper odio. ",
-    //            Priority: Math.floor(Math.random() * 30), Effort: Math.floor(Math.random() * 100), BusinessValue: Math.floor(Math.random() * 1000), Type: "Task",
-    //            State: 'Done', RemainingWork: Math.floor(Math.random() * 11),
-    //            WorkItem_Sprint: sprintId,
-    //            WorkItem_WorkItem: userStoryId,
-    //            CreatedDate: new Date().toISOString(), CreatedBy: $data.Model.settingPage.loginSettings.UserName, ChangedDate: new Date().toISOString(), ChangedBy: $data.Model.settingPage.loginSettings.UserName, AssignedTo: ""
-    //        }));
-    //    }
-    //}
-    //taskToSprint(null, null, 0);
-    //taskToSprint(6, 1, 15);
-    //taskToSprint(7, 2, 30);
-    //taskToSprint(8, 1, 45);
-    //taskToSprint(9, 2, 60);
     $data.Model.settingPage.loginSettings.UserName = '';
-    ctx.saveChanges(function () { console.log('ok') });
+
+    var allSprints = null;
+    var allProjects = null;
+
+    
+
+    ctx.saveChanges(function () {
+        console.log('Sprint and projects save OK');
+        ctx.Sprints.toArray(function (sprintResult) {
+            console.log('Get Sprints OK');
+            ctx.Projects.toArray(function (projectResult) {
+                console.log('Get Projects OK');
+
+                console.log(sprintResult[5].Id);
+
+                var ustoSprint = function (sprintId, projectId, index, context) {
+                    for (var i = 0; i < 15; i++) {
+                        context.WorkItems.add(new $data.ScrumDb.WorkItems.createNew({
+                            Title: "User Story 1" + index++, Description: "Donec est orci, molestie ac pellentesque in, lacinia et dui. Morbi vitae facilisis enim. Aliquam eu ullamcorper odio.Donec est orci, molestie ac pellentesque in, lacinia et dui. Morbi vitae facilisis enim. Aliquam eu ullamcorper odio. ",
+                            Priority: Math.floor(Math.random() * 30), Effort: Math.floor(Math.random() * 100), BusinessValue: Math.floor(Math.random() * 1000), Type: "UserStory",
+                            WorkItem_Sprint: sprintId,
+                            WorkItem_Project: projectId,
+                            CreatedDate: new Date().toISOString(), CreatedBy: $data.Model.settingPage.loginSettings.UserName, ChangedDate: new Date().toISOString(), ChangedBy: $data.Model.settingPage.loginSettings.UserName, AssignedTo: "", State: "New"
+                        }));
+                    }
+                };
+
+                var taskToSprint = function (sprintId, userStoryId, index) {
+                    for (var i = 0; i < 15; i++) {
+                        ctx.WorkItems.add(new $data.ScrumDb.WorkItems.createNew({
+                            Title: "Task 1" + index++, Description: "Donec est orci, molestie ac pellentesque in, lacinia et dui. Morbi vitae facilisis enim. Aliquam eu ullamcorper odio.Donec est orci, molestie ac pellentesque in, lacinia et dui. Morbi vitae facilisis enim. Aliquam eu ullamcorper odio. ",
+                            Priority: Math.floor(Math.random() * 30), Effort: Math.floor(Math.random() * 100), BusinessValue: Math.floor(Math.random() * 1000), Type: "Task",
+                            State: 'To Do', RemainingWork: Math.floor(Math.random() * 11),
+                            WorkItem_Sprint: sprintId,
+                            WorkItem_WorkItem: userStoryId,
+                            CreatedDate: new Date().toISOString(), CreatedBy: $data.Model.settingPage.loginSettings.UserName, ChangedDate: new Date().toISOString(), ChangedBy: $data.Model.settingPage.loginSettings.UserName, AssignedTo: ""
+                        }));
+                        ctx.WorkItems.add(new $data.ScrumDb.WorkItems.createNew({
+                            Title: "Task 1" + index++, Description: "Donec est orci, molestie ac pellentesque in, lacinia et dui. Morbi vitae facilisis enim. Aliquam eu ullamcorper odio.Donec est orci, molestie ac pellentesque in, lacinia et dui. Morbi vitae facilisis enim. Aliquam eu ullamcorper odio. ",
+                            Priority: Math.floor(Math.random() * 30), Effort: Math.floor(Math.random() * 100), BusinessValue: Math.floor(Math.random() * 1000), Type: "Task",
+                            State: 'To Do', RemainingWork: Math.floor(Math.random() * 11),
+                            WorkItem_Sprint: sprintId,
+                            WorkItem_WorkItem: userStoryId,
+                            CreatedDate: new Date().toISOString(), CreatedBy: $data.Model.settingPage.loginSettings.UserName, ChangedDate: new Date().toISOString(), ChangedBy: $data.Model.settingPage.loginSettings.UserName, AssignedTo: ""
+                        }));
+                        ctx.WorkItems.add(new $data.ScrumDb.WorkItems.createNew({
+                            Title: "Task 1" + index++, Description: "Donec est orci, molestie ac pellentesque in, lacinia et dui. Morbi vitae facilisis enim. Aliquam eu ullamcorper odio.Donec est orci, molestie ac pellentesque in, lacinia et dui. Morbi vitae facilisis enim. Aliquam eu ullamcorper odio. ",
+                            Priority: Math.floor(Math.random() * 30), Effort: Math.floor(Math.random() * 100), BusinessValue: Math.floor(Math.random() * 1000), Type: "Task",
+                            State: 'To Do', RemainingWork: Math.floor(Math.random() * 11),
+                            WorkItem_Sprint: sprintId,
+                            WorkItem_WorkItem: userStoryId,
+                            CreatedDate: new Date().toISOString(), CreatedBy: $data.Model.settingPage.loginSettings.UserName, ChangedDate: new Date().toISOString(), ChangedBy: $data.Model.settingPage.loginSettings.UserName, AssignedTo: ""
+                        }));
+
+                        ctx.WorkItems.add(new $data.ScrumDb.WorkItems.createNew({
+                            Title: "Task 1" + index++, Description: "Donec est orci, molestie ac pellentesque in, lacinia et dui. Morbi vitae facilisis enim. Aliquam eu ullamcorper odio.Donec est orci, molestie ac pellentesque in, lacinia et dui. Morbi vitae facilisis enim. Aliquam eu ullamcorper odio. ",
+                            Priority: Math.floor(Math.random() * 30), Effort: Math.floor(Math.random() * 100), BusinessValue: Math.floor(Math.random() * 1000), Type: "Task",
+                            State: 'In Progress', RemainingWork: Math.floor(Math.random() * 11),
+                            WorkItem_Sprint: sprintId,
+                            WorkItem_WorkItem: userStoryId,
+                            CreatedDate: new Date().toISOString(), CreatedBy: $data.Model.settingPage.loginSettings.UserName, ChangedDate: new Date().toISOString(), ChangedBy: $data.Model.settingPage.loginSettings.UserName, AssignedTo: ""
+                        }));
+                        ctx.WorkItems.add(new $data.ScrumDb.WorkItems.createNew({
+                            Title: "Task 1" + index++, Description: "Donec est orci, molestie ac pellentesque in, lacinia et dui. Morbi vitae facilisis enim. Aliquam eu ullamcorper odio.Donec est orci, molestie ac pellentesque in, lacinia et dui. Morbi vitae facilisis enim. Aliquam eu ullamcorper odio. ",
+                            Priority: Math.floor(Math.random() * 30), Effort: Math.floor(Math.random() * 100), BusinessValue: Math.floor(Math.random() * 1000), Type: "Task",
+                            State: 'In Progress', RemainingWork: Math.floor(Math.random() * 11),
+                            WorkItem_Sprint: sprintId,
+                            WorkItem_WorkItem: userStoryId,
+                            CreatedDate: new Date().toISOString(), CreatedBy: $data.Model.settingPage.loginSettings.UserName, ChangedDate: new Date().toISOString(), ChangedBy: $data.Model.settingPage.loginSettings.UserName, AssignedTo: ""
+                        }));
+
+                        ctx.WorkItems.add(new $data.ScrumDb.WorkItems.createNew({
+                            Title: "Task 1" + index++, Description: "Donec est orci, molestie ac pellentesque in, lacinia et dui. Morbi vitae facilisis enim. Aliquam eu ullamcorper odio.Donec est orci, molestie ac pellentesque in, lacinia et dui. Morbi vitae facilisis enim. Aliquam eu ullamcorper odio. ",
+                            Priority: Math.floor(Math.random() * 30), Effort: Math.floor(Math.random() * 100), BusinessValue: Math.floor(Math.random() * 1000), Type: "Task",
+                            State: 'Done', RemainingWork: Math.floor(Math.random() * 11),
+                            WorkItem_Sprint: sprintId,
+                            WorkItem_WorkItem: userStoryId,
+                            CreatedDate: new Date().toISOString(), CreatedBy: $data.Model.settingPage.loginSettings.UserName, ChangedDate: new Date().toISOString(), ChangedBy: $data.Model.settingPage.loginSettings.UserName, AssignedTo: ""
+                        }));
+                    }
+                }
+
+                ustoSprint(null, null, 0, ctx);
+                ustoSprint(sprintResult[5].Id, projectResult[0].Id, 15, ctx);
+                ustoSprint(sprintResult[6].Id, projectResult[1].Id, 30, ctx);
+                ustoSprint(sprintResult[7].Id, projectResult[0].Id, 45, ctx);
+                ustoSprint(sprintResult[8].Id, projectResult[1].Id, 60, ctx);
+
+                taskToSprint(null, null, 0);
+                taskToSprint(sprintResult[5].Id, projectResult[0].Id, 15);
+                taskToSprint(sprintResult[6].Id, projectResult[1].Id, 30);
+                taskToSprint(sprintResult[7].Id, projectResult[0].Id, 45);
+                taskToSprint(sprintResult[8].Id, projectResult[1].Id, 60);
+
+                ctx.saveChanges(function () { console.log('ALL OK');});
+            });
+        });
+    });
 }
 function migraTfsToLs(from, to) {
     var iterationStep = 300;
