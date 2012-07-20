@@ -1,4 +1,3 @@
-require('mongodb');
 var $data = require('jaydata');
 var ctx = require('./jayscrumcontext.js');
 var $test = {};
