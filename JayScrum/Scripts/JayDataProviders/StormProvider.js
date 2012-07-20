@@ -148,7 +148,7 @@ $C('$data.storageProviders.Storm.StormProvider', $data.StorageProviderBase, null
         }, this);
         return serializableObject;
     },
-    supportedDataTypes: { value: [$data.Integer, $data.String, $data.Number, $data.Blob, $data.Boolean, $data.Date], writable: false },
+    supportedDataTypes: { value: [$data.Integer, $data.String, $data.Number, $data.Blob, $data.Boolean, $data.Date, $data.ObjectID], writable: false },
     supportedBinaryOperators: {
         value: {
             equal: { mapTo: ' == ', dataType: "boolean", allowedIn: [$data.Expressions.FilterExpression, $data.Expressions.OrderExpression] },
@@ -213,7 +213,8 @@ $C('$data.storageProviders.Storm.StormProvider', $data.StorageProviderBase, null
                 '$data.Boolean': function (bool) { return bool; },
                 '$data.Blob': function (blob) { return blob; },
                 '$data.Object': function (o) { if (o === undefined) { return new $data.Object(); } return JSON.parse(o); },
-                '$data.Array': function (o) { if (o === undefined) { return new $data.Array(); } return JSON.parse(o); }
+                '$data.Array': function (o) { if (o === undefined) { return new $data.Array(); } return JSON.parse(o); },
+                '$data.ObjectID': function (o) { return o; }
             },
             toDb: {
                 '$data.Integer': function (number) { return number; },
@@ -223,7 +224,8 @@ $C('$data.storageProviders.Storm.StormProvider', $data.StorageProviderBase, null
                 '$data.Boolean': function (bool) { return bool; },
                 '$data.Blob': function (blob) { return blob; },
                 '$data.Object': function (o) { return JSON.stringify(o); },
-                '$data.Array': function (o) { return JSON.stringify(o); }
+                '$data.Array': function (o) { return JSON.stringify(o); },
+                '$data.ObjectID': function (o) { return 'ObjectID("' + o + '")';}
             }
         }
     }
