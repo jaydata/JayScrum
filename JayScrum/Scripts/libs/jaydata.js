@@ -1,4 +1,4 @@
-// JayData 0.0.0
+// JayData 1.1.1
 // Dual licensed under MIT and GPL v2
 // Copyright JayStack Technologies (http://jaydata.org/licensing)
 //
@@ -37,8 +37,8 @@ if (!console.error) console.error = function () { };
     /// Collection of JayData services
     ///</summary>
     $data.__namespace = true;
-    $data.version = "JayData 0.0.0";
-    $data.versionNumber = "0.0.0";
+    $data.version = "JayData 1.1.1";
+    $data.versionNumber = "1.1.1";
     $data.root = {};
 
 })($data);
@@ -8022,6 +8022,7 @@ JAYLINT = (function () {
     $data.Blob = /*typeof Blob !== 'undefined' ? Blob :*/ function JayBlob() { };
     $data.Array = typeof Array !== 'undefined' ? Array : function JayArray() { };
     $data.Object = typeof Object !== 'undefined' ? Object : function JayObject() { };
+    $data.ObjectID = typeof ObjectID !== 'undefined' ? ObjectID : function JayObjectID(){};
     $data.Function = Function;
 
     var c;
@@ -8037,7 +8038,7 @@ JAYLINT = (function () {
     c.registerType(["$data.Blob", "blob", "JayBlob"], $data.Blob);
     c.registerType(["$data.Object", "Object", "object", "{}", "JayObject"], $data.Object);
     c.registerType(["$data.Function", "Function", "function"], $data.Function);
-
+    c.registerType(['$data.ObjectID', 'ObjectID', 'objectId', 'objectid', 'ID', 'Id', 'id', 'JayObjectID'], $data.ObjectID);
 
 })(window);
 
@@ -8125,6 +8126,8 @@ $data.typeSystem = {
         /// <param name="objectN" optional="true" parameterArray="true" type="Object">Object to extend target with.</param>
         /// </signature>        
     	/// <returns></returns>
+        if (typeof target !== 'object' && typeof target !== 'function')
+            Guard.raise('Target must be object or function');
 
         for (var i = 1; i < arguments.length; i++) {
             var obj = arguments[i];
@@ -11782,12 +11785,15 @@ $data.Entity = Entity = $data.Class.define("$data.Entity", null, null, {
             /*if (Object.keys(initData).every(function (key) { return memDefNames.indexOf(key) != -1; })) {
                 this.initData = initData;
             }*/
-            
+            this.initData = {};
             for (var i in initData){
                 if (memDefNames.indexOf(i) > -1){
-                    this[i] = Container.resolveType(typeMemDefs.getMember(i).type) === $data.Date && typeof initData[i] === 'string' ? new Date(initData[i]) : initData[i];
+                    this.initData[i] = Container.resolveType(typeMemDefs.getMember(i).type) === $data.Date && typeof initData[i] === 'string' ? new Date(initData[i]) : initData[i];
                 }
             }
+            
+            this.changedProperties = undefined;
+            this.entityState = undefined;
         }
     },
     toString: function () {
@@ -12110,6 +12116,34 @@ $data.Class.define('$data.EntityContext', null, null,
             storageProviderCfg.name = [tmp];
         }
         var i = 0, providerType;
+        var providerList = [].concat(storageProviderCfg.name);
+        var callBack = $data.typeSystem.createCallbackSetting({ success: this._successInitProvider });
+        $data.StorageProviderLoader.load(providerList, {
+            success: function (providerType) {
+                ctx.storageProvider = new providerType(storageProviderCfg, ctx);
+                ctx.storageProvider.setContext(ctx);
+                ctx.stateManager = new $data.EntityStateManager(ctx);
+
+                if (storageProviderCfg.name in ctx.getType()._storageModelCache) {
+                    ctx._storageModel = ctx.getType()._storageModelCache[storageProviderCfg.name];
+                } else {
+                    ctx._initializeStorageModel();
+                    ctx.getType()._storageModelCache[storageProviderCfg.name] = ctx._storageModel;
+                }
+
+                ctx._initializeEntitySets(ctx.constructor);
+                ctx._user = (storageProviderCfg && storageProviderCfg.user) || user;
+
+                ctx._isOK = false;
+                if (ctx.storageProvider) {
+                    ctx.storageProvider.initializeStore(callBack);
+                }
+            },
+            error: function () {
+                callBack.error('Provider fallback failed!');
+            }
+        });
+        /*
         while (!(providerType = $data.StorageProviderBase.getProvider(storageProviderCfg.name[i])) && i < storageProviderCfg.name.length) i++;
         if (providerType){
             this.storageProvider = new providerType(storageProviderCfg, this);
@@ -12133,6 +12167,7 @@ $data.Class.define('$data.EntityContext', null, null,
         if (this.storageProvider){
             this.storageProvider.initializeStore(callBack);
         }
+        */
     },
     getDataType: function (dataType) {
         // Obsolate
@@ -13329,8 +13364,8 @@ $data.Class.define('$data.QueryProvider', null, null,
         var data = data;
 		if (meta.$type){
 			var type = Container.resolveName(meta.$type);
-            //var converter = this.context.storageProvider.fieldConverter.fromDb[type];
-			var result = /*converter ? new type() :*/ Container['create' + Container.resolveType(meta.$type).name]();
+            var converter = this.context.storageProvider.fieldConverter.fromDb[type];
+			var result = converter ? converter() : Container['create' + Container.resolveType(meta.$type).name]();
 		}
 
         if (meta.$selector){
@@ -14828,7 +14863,99 @@ Function.prototype.promise = function(callback){
     
     return ret;
 };
-$data.ConcurrencyMode = {Fixed : 'fixed', None: 'nonde'};
+$data.StorageProviderLoader = {
+    isSupported: function (providerName) {
+        switch (providerName) {
+            case 'indexedDb':
+                return window.indexedDB || window.webkitIndexedDB || window.mozIndexedDB || window.msIndexedDB;
+            case 'storm':
+                return 'XMLHttpRequest' in window;
+            case 'webSql':
+            case 'sqLite':
+                return 'openDatabase' in window;
+            default:
+                return true;
+        }
+    },
+    load: function (providerList, callback) {        
+        function getUrl(providerName) {
+            switch (providerName) {
+                case 'storm':
+                    providerName = 'Storm';
+                    break;
+            }
+            return 'providers/' + providerName + 'Provider.js';
+        };
+
+        function loadScript(url, callback) {
+            if (!url)
+                callback(false);
+
+            function getHttpRequest() {
+                if (window.XMLHttpRequest)
+                    return new XMLHttpRequest();
+                else if (window.ActiveXObject)
+                    return new ActiveXObject("MsXml2.XmlHttp");
+            }
+
+            var oXmlHttp = getHttpRequest();
+            oXmlHttp.onreadystatechange = function () {
+                if (oXmlHttp.readyState == 4) {
+                    if (oXmlHttp.status == 200 || oXmlHttp.status == 304) {
+                        eval(oXmlHttp.responseText);
+                        if (typeof callback === 'function')
+                            callback(true);
+                    } else {
+                        if (typeof callback === 'function') {
+                            callback(false);
+                        }
+                    }
+                }
+            }
+            oXmlHttp.open('GET', url, true);
+            oXmlHttp.send(null);
+        };
+
+
+        var currentProvider = providerList.shift();
+
+        if ($data.RegisteredStorageProviders) {
+            var provider = $data.RegisteredStorageProviders[currentProvider];
+            if (provider) {
+                callback.success(provider)
+                return;
+            }
+        }
+
+        if (!this.isSupported(provider)) {
+            this.load(providerList, callback);
+            return;
+        }
+
+        var url = getUrl(currentProvider);
+
+        loadScript(url, function (successful) {
+            var provider = $data.RegisteredStorageProviders[currentProvider];
+            if (successful && provider) {
+                var provider = $data.RegisteredStorageProviders[currentProvider];
+                callback.success(provider);
+            } else if (providerList.length > 0) {
+                this.load(providerList, callback);
+            } else {
+                callback.error();
+            }
+        });
+    }
+}
+$data.storageProviders = {
+    DbCreationType: {
+        Merge: 10,
+        DropTableIfChanged: 20,
+        DropAllExistingTables: 30
+    }
+}
+
+$data.ConcurrencyMode = { Fixed: 'fixed', None: 'nonde' };
 $data.Class.define('$data.StorageProviderBase', null, null,
 {
     constructor: function (schemaConfiguration) {
@@ -15058,15 +15185,15 @@ $data.Class.define('$data.StorageProviderBase', null, null,
 },
 {
     registerProvider: function (name, provider) {
-        $data.RegistredStorageProviders = $data.RegistredStorageProviders || [];
-        $data.RegistredStorageProviders[name] = provider;
+        $data.RegisteredStorageProviders = $data.RegisteredStorageProviders || [];
+        $data.RegisteredStorageProviders[name] = provider;
     },
     getProvider: function (name) {
-		var provider = $data.RegistredStorageProviders[name];
+		var provider = $data.RegisteredStorageProviders[name];
 		if (!provider)
             console.warn("Provider not found: '" + name + "'");
 		return provider;
-        /*var provider = $data.RegistredStorageProviders[name];
+        /*var provider = $data.RegisteredStorageProviders[name];
         if (!provider)
             Guard.raise(new Exception("Provider not found: '" + name + "'", "Not Found"));
         return provider;*/
@@ -15079,11 +15206,12 @@ $data.Class.define('$data.StorageProviderBase', null, null,
     getEntity: function () {
         Guard.raise("pure object");
     }
-});﻿if (typeof jQuery !== 'undefined' && jQuery.ajax) {
+});
+if (typeof jQuery !== 'undefined' && jQuery.ajax) {
     $data.ajax = $data.ajax || jQuery.ajax;
 }
 
-﻿if (typeof WinJS !== 'undefined' && WinJS.xhr) {
+if (typeof WinJS !== 'undefined' && WinJS.xhr) {
     $data.ajax = $data.ajax || function (options) {
         $data.typeSystem.extend(options, {
             dataType: 'json',
@@ -15133,13 +15261,13 @@ $data.Class.define('$data.StorageProviderBase', null, null,
     }
 }
 
-﻿if (typeof Ext !== 'undefined' && typeof Ext.Ajax) {
+if (typeof Ext !== 'undefined' && typeof Ext.Ajax) {
     $data.ajax = $data.ajax || function (options) {
         Ext.Ajax.request(options);
     };
 }
 
-﻿$data.ajax = $data.ajax || function () {
+$data.ajax = $data.ajax || function () {
     var cfg = arguments[arguments.length - 1];
     var clb = $data.typeSystem.createCallbackSetting(cfg);
     clb.error("Not implemented");

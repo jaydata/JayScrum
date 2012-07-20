@@ -60,6 +60,9 @@
     <Content Include="Images\icon_pull.png" />
     <Content Include="Images\icon_pull_arrow.png" />
     <Content Include="Scripts\cordova-1.9.0.js" />
+    <Content Include="Scripts\JayDataProviders\InMemoryProvider.js" />
+    <Content Include="Scripts\JayDataProviders\SqLiteProvider.js" />
+    <Content Include="Scripts\JayDataProviders\StormProvider.js" />
     <Content Include="Scripts\libs\jquery-1.7.2.js" />
     <Content Include="Scripts\libs\jquery-1.7.2.min.js">
       <DependentUpon>jquery-1.7.2.js</DependentUpon>

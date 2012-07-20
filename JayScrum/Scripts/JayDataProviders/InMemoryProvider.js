@@ -1,4 +1,4 @@
-﻿// JayData 0.0.0
+// JayData 0.0.0
 // Dual licensed under MIT and GPL v2
 // Copyright JayStack Technologies (http://jaydata.org/licensing)
 //
@@ -196,7 +196,7 @@ $C('$data.storageProviders.InMemory.InMemoryProvider', $data.StorageProviderBase
     }
 }, null);
 
-$data.StorageProviderBase.registerProvider("InMemory", $data.storageProviders.InMemory.InMemoryProvider); $C('$data.storageProviders.InMemory.InMemoryCompiler', $data.Expressions.EntityExpressionVisitor, null, {
+$data.StorageProviderBase.registerProvider("InMemory", $data.storageProviders.InMemory.InMemoryProvider);$C('$data.storageProviders.InMemory.InMemoryCompiler', $data.Expressions.EntityExpressionVisitor, null, {
     constructor: function (provider) {
         this.provider = provider;
     },
@@ -290,6 +290,7 @@ $data.StorageProviderBase.registerProvider("InMemory", $data.storageProviders.In
     }
 
 }, {});
+
 $C('$data.storageProviders.InMemory.InMemoryFunctionCompiler', $data.Expressions.EntityExpressionVisitor, null, {
     constructor: function (provider) {
         this.provider = provider;
@@ -365,3 +366,4 @@ $C('$data.storageProviders.InMemory.InMemoryFunctionCompiler', $data.Expressions
         this.Visit(expression.expression, context);
     }
 });
+
