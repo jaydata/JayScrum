@@ -1,0 +1,64 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    <script type="text/javascript" src="Scripts/lib/ko.js"></script>
+    <script type="text/javascript" src="Scripts/lib/JayData.js"></script>
+    <script type="text/javascript" src="Scripts/JayDataModuls/knockout.js"></script>
+    <script type="text/javascript" src="Scripts/FrameView.js"></script>
+    <script type="text/javascript" src="Scripts/Frame.js"></script>
+    <script type="text/javascript" src="Scripts/FrameApp.js"></script>
+    <script type="text/javascript" src="Scripts/app.js"></script>
+</head>
+<body>
+    szöveg
+    szöveg nem baztat
+    <!--<div id="koTerep" data-bind="template: { name: $data.appFrames()[$data.activeFrame()].template, data: $data.appFrames()[$data.activeFrame()].data }">-->
+    <div id="koTerep">
+        ide pakol
+
+    </div>
+    szöveg
+    szöveg nem baztat
+    
+    <br />=============================================================================================================
+    <br />=============================================================================================================
+    <br />=============================================================================================================
+    <script type="text/html" id="menu">
+        <div>
+            <span>menu: <i data-bind="text: $data.framePath"></i></span><br />
+            <ul data-bind="foreach: $data.frameContainer">
+                <!--ko template: {name: $data.metaData.viewName(), data:$data.metaData.data()}-->
+                <!--/ko-->
+            </ul>
+            <br />
+        </div>
+        <hr />
+    </script>
+
+    <script type="text/html" id="metaDefault">
+        <li data-bind="text: $data.name"></li>
+    </script>
+
+    <script type="text/html" id="content">
+        <!--ko template: {name: $data.activeView(), data:$data.data}-->
+        <!--/ko-->
+        <hr />
+    </script>
+
+    <script type="text/html" id="f1">
+
+        <div>
+            <span>Content area:</span><br />
+            <span data-bind="text: $data"></span>
+            <br />
+        </div>
+        <hr />
+    </script>
+    <script type="text/javascript">
+        test();
+    </script>
+</body>
+
+</html>
+
