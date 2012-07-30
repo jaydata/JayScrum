@@ -134,3 +134,4 @@ app.use('/', function(req, res){
 });
 
 app.listen(3000);
+console.log('Application setup finish, jaydata version: '+$data.version);

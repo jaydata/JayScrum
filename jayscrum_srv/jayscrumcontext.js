@@ -64,53 +64,54 @@
     };
     registerEdmTypes();
     $data.Entity.extend('LightSwitchApplication.WorkItem', {
-        'Id': { key: true, type: 'Edm.ObjectID', nullable: false, computed: true },
-        'RowVersion': { type: 'Edm.Binary', nullable: false, concurrencyMode: $data.ConcurrencyMode.Fixed, computed: true },
-        'Title': { type: 'Edm.String', nullable: false, required: true, maxLength: 255 },
-        'Type': { type: 'Edm.String', nullable: false, required: true, maxLength: 255 },
-        'Description': { type: 'Edm.String', maxLength: 255 },
-        'CreatedDate': { type: 'Edm.DateTime', nullable: false, required: true },
-        'CreatedBy': { type: 'Edm.String', nullable: false, required: true, maxLength: 255 },
-        'ChangedDate': { type: 'Edm.DateTime', nullable: false, required: true },
-        'ChangedBy': { type: 'Edm.String', nullable: false, required: true, maxLength: 255 },
-        'Priority': { type: 'Edm.Int32' },
-        'AssignedTo': { type: 'Edm.String', maxLength: 255 },
-        'ParentName': { type: 'Edm.String', maxLength: 255 },
-        'ProjectName': { type: 'Edm.String', maxLength: 255 },
-        'State': { type: 'Edm.String', maxLength: 255 },
-        'Effort': { type: 'Edm.Int32' },
-        'BusinessValue': { type: 'Edm.Int32' },
-        'IsBlocked': { type: 'Edm.Boolean' },
-        'RemainingWork': { type: 'Edm.Int32' },
-        'WorkItem_Project': { type: 'Edm.ObjectID' },
-        'WorkItem_Sprint': { type: 'Edm.ObjectID' },
-        'WorkItem_WorkItem': { type: 'Edm.ObjectID' },
-        'Reason': { type: 'Edm.String', maxLength: 255 }
+        'Id':{ key:true, type:'Edm.ObjectID', nullable:false, computed:true },
+        'RowVersion':{ type:'Edm.Binary', nullable:false, concurrencyMode:$data.ConcurrencyMode.Fixed, computed:true },
+        'Title':{ type:'Edm.String', nullable:false, required:true, maxLength:255 },
+        'Type':{ type:'Edm.String', nullable:false, required:true, maxLength:255 },
+        'Description':{ type:'Edm.String', maxLength:255 },
+        'CreatedDate':{ type:'Edm.DateTime', nullable:false, required:true },
+        'CreatedBy':{ type:'Edm.String', nullable:false, required:true, maxLength:255 },
+        'ChangedDate':{ type:'Edm.DateTime', nullable:false, required:true },
+        'ChangedBy':{ type:'Edm.String', nullable:false, required:true, maxLength:255 },
+        'Priority':{ type:'Edm.Int32' },
+        'AssignedTo':{ type:'Edm.String', maxLength:255 },
+        'ParentName':{ type:'Edm.String', maxLength:255 },
+        'ProjectName':{ type:'Edm.String', maxLength:255 },
+        'SprintName':{ type:'Edm.String', maxLength:255},
+        'State':{ type:'Edm.String', maxLength:255 },
+        'Effort':{ type:'Edm.Int32' },
+        'BusinessValue':{ type:'Edm.Int32' },
+        'IsBlocked':{ type:'Edm.Boolean' },
+        'RemainingWork':{ type:'Edm.Int32' },
+        'WorkItem_Project':{ type:'Edm.ObjectID' },
+        'WorkItem_Sprint':{ type:'Edm.ObjectID' },
+        'WorkItem_WorkItem':{ type:'Edm.ObjectID' },
+        'Reason':{ type:'Edm.String', maxLength:255 }
         //'Project': { type: 'LightSwitchApplication.Project', inverseProperty: 'WorkItems' },
         //'Sprint': { type: 'LightSwitchApplication.Sprint', inverseProperty: 'WorkItems' },
         //'Parent': { type: 'LightSwitchApplication.WorkItem', inverseProperty: 'Children' },
         //'Children': { type: 'Array', elementType: 'LightSwitchApplication.WorkItem', inverseProperty: 'Parent' }
     });
     $data.Entity.extend('LightSwitchApplication.Project', {
-        'Id': { key: true, type: 'Edm.ObjectID', nullable: false, computed: true },
-        'RowVersion': { type: 'Edm.Binary', nullable: false, concurrencyMode: $data.ConcurrencyMode.Fixed, computed: true },
-        'Name': { type: 'Edm.String', nullable: false, required: true, maxLength: 255 },
-        'Description': { type: 'Edm.String', maxLength: 255 }
+        'Id':{ key:true, type:'Edm.ObjectID', nullable:false, computed:true },
+        'RowVersion':{ type:'Edm.Binary', nullable:false, concurrencyMode:$data.ConcurrencyMode.Fixed, computed:true },
+        'Name':{ type:'Edm.String', nullable:false, required:true, maxLength:255 },
+        'Description':{ type:'Edm.String', maxLength:255 }
         //'WorkItems': { type: 'Array', elementType: 'LightSwitchApplication.WorkItem', inverseProperty: 'Project' }
     });
     $data.Entity.extend('LightSwitchApplication.Sprint', {
-        'Id': { key: true, type: 'Edm.ObjectID', nullable: false, computed: true },
-        'RowVersion': { type: 'Edm.Binary', nullable: false, concurrencyMode: $data.ConcurrencyMode.Fixed, computed: true },
-        'Name': { type: 'Edm.String', nullable: false, required: true, maxLength: 255 },
-        'StartDate': { type: 'Edm.DateTime', nullable: false, required: true },
-        'FinishDate': { type: 'Edm.DateTime', nullable: false, required: true }
+        'Id':{ key:true, type:'Edm.ObjectID', nullable:false, computed:true },
+        'RowVersion':{ type:'Edm.Binary', nullable:false, concurrencyMode:$data.ConcurrencyMode.Fixed, computed:true },
+        'Name':{ type:'Edm.String', nullable:false, required:true, maxLength:255 },
+        'StartDate':{ type:'Edm.DateTime', nullable:false, required:true },
+        'FinishDate':{ type:'Edm.DateTime', nullable:false, required:true }
         //'WorkItems': { type: 'Array', elementType: 'LightSwitchApplication.WorkItem', inverseProperty: 'Sprint' }
     });
     $data.EntityContext.extend('LightSwitchApplication.ApplicationData', {
-        WorkItems: { type: $data.EntitySet, elementType: LightSwitchApplication.WorkItem },
-        Projects: { type: $data.EntitySet, elementType: LightSwitchApplication.Project },
-        Sprints: { type: $data.EntitySet, elementType: LightSwitchApplication.Sprint }/*,
-        Microsoft_LightSwitch_GetCanInformation: $data.EntityContext.generateServiceOperation({ serviceName: 'Microsoft_LightSwitch_GetCanInformation', returnType: 'Edm.String', params: [{ dataServiceMembers: 'Edm.String' }], method: 'GET' })*/
+        WorkItems:{ type:$data.EntitySet, elementType:LightSwitchApplication.WorkItem },
+        Projects:{ type:$data.EntitySet, elementType:LightSwitchApplication.Project },
+        Sprints:{ type:$data.EntitySet, elementType:LightSwitchApplication.Sprint }/*,
+         Microsoft_LightSwitch_GetCanInformation: $data.EntityContext.generateServiceOperation({ serviceName: 'Microsoft_LightSwitch_GetCanInformation', returnType: 'Edm.String', params: [{ dataServiceMembers: 'Edm.String' }], method: 'GET' })*/
     });
     ///Security
     /*$data.Entity.extend('Microsoft.LightSwitch.Security.UserRegistration', {

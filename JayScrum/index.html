@@ -517,17 +517,17 @@
             </ul>
         </div>
     </script>
-    <script type="text/html" id="taskEditView-template">
-        <div class="icon-action back topleft absolute" data-bind="with: $root.mainPage.editableWorkItem">
-            <span data-bind="click: $root.mainPage.onCancelWorkItem"></span>
+    <script type="text/html" id="taskeditview-template">
+        <div class="icon-action back topleft absolute" data-bind="with: $root.mainpage.editableworkitem">
+            <span data-bind="click: $root.mainpage.oncancelworkitem"></span>
         </div>
-        <div class="detail edit" data-bind="with: $root.mainPage.editableWorkItem">
-            <!-- ko template: { name: 'workItemEditor-template', data: $data }-->
+        <div class="detail edit" data-bind="with: $root.mainpage.editableworkitem">
+            <!-- ko template: { name: 'workitemeditor-template', data: $data }-->
             <!-- /ko-->
         </div>
-        <div class="metro-actionbar detail-view-edit opened" data-bind="with: $root.mainPage.editableWorkItem">
+        <div class="metro-actionbar detail-view-edit opened" data-bind="with: $root.mainpage.editableworkitem">
             <ul>
-                <li class="icon-action save"><span data-bind="click: $root.mainPage.onSaveWorkItem"></span></li>
+                <li class="icon-action save"><span data-bind="click: $root.mainpage.onsaveworkitem"></span></li>
             </ul>
         </div>
     </script>
@@ -642,12 +642,12 @@
             </div>
         </div>
 
-        <!--<div class="field">
+        <div class="field">
             <div class="tile-small sprint"></div>
             <div>
-                <span>Sprint</span><span class="medium accent-color" data-bind="text: Sprint"></span>
+                <span>Sprint</span><span class="medium accent-color" data-bind="text: SprintName"></span>
             </div>
-        </div>-->
+        </div>
 
         <div class="field">
             <div class="tile-small parent"></div>
@@ -1164,7 +1164,7 @@
             <div class="scroll-list pivot-default-opacity scrollable-list animate bottom45" id="settingPageScroll">
                 <div class="scroller-list">
                     <div class="list detail">
-                        <ul id="setting-list" class="setting-list" data-bind:'foreach: $root.settingPage.settingsKoModel.users'>
+                        <ul id="setting-list" class="setting-list" data-bind='foreach: $root.settingPage.settingsKoModel.users'>
                             <li>
                                 <h2>User name</h2>
                                 <div class="actions fright">
@@ -1175,7 +1175,7 @@
                         </ul>
 
                         <h2 class="title">roles</h2>
-                        <ul class="setting-list" data-bind:'foreach: $root.settingPage.settingsKoModel.roles'>
+                        <ul class="setting-list" data-bind='foreach: $root.settingPage.settingsKoModel.roles'>
                             <li>
                                 <h2>Role 1</h2>
                                 <div class="actions fright">
@@ -1246,7 +1246,7 @@
 
     <script type="text/javascript" src="Scripts/libs/knockout-2.1.0.debug.js"></script>
     <script type="text/javascript" src="Scripts/libs/datajs-1.0.3.min.js"></script>
-    <script type="text/javascript" src="Scripts/libs/JayData.js"></script>
+    <script type="text/javascript" src="Scripts/libs/jaydata.js"></script>
     <script type="text/javascript" src="Scripts/JayDataProviders/SqLiteProvider.js"></script>
     <script type="text/javascript" src="Scripts/JayDataProviders/StormProvider.js"></script>
     <script type="text/javascript" src="Scripts/JayDataProviders/InMemoryProvider.js"></script>
