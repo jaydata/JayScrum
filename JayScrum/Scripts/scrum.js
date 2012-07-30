@@ -180,6 +180,7 @@ $data.Class.define('JayScrum.Types.scrumModel', null, null, {
     settingPage: {}
 }, null);
 
+/*
 $(function () {
     $data.Model = new JayScrum.Types.scrumModel();
     ko.applyBindings($data.Model);
@@ -188,6 +189,29 @@ $(function () {
         initUI();
     }
 });
+*/
+JayScrum.pushObservablesToList= function (list, rawData) {
+    list([]);
+    for (var i = 0; i < rawData.length; i++) {
+        var obs = rawData[i].asKoObservable();
+        list.push(obs);
+    }
+};
+$(function(){
+    JayScrum.app = new JayScrum.FrameApp('#page');
+    JayScrum.app.registerFrame(new JayScrum.Frames.Main('MainFrame'));
+    JayScrum.app.registerFrame(new JayScrum.Frames.Projects('Projects'));
+    JayScrum.app.registerFrame(new JayScrum.Frames.Sprints('Sprints'));
+    JayScrum.app.registerFrame(new JayScrum.Frames.UserStories('UserStories'));
+    JayScrum.app.registerFrame(new JayScrum.Frames.ThemeSettings('ThemeSettings'));
+    JayScrum.app.registerFrame(new JayScrum.Frames.Repositories('Repositories'));
+    JayScrum.app.registerFrame(new JayScrum.Frames.Users('Users'));
+
+    JayScrum.app.visibleMetaData(false);
+    JayScrum.app.bind();
+    JayScrum.app.selectFrame('Repositories', undefined, true);
+})
+
 
 Date.prototype.todayUTC = function () {
     var d = Date.UTC(this.getFullYear(), this.getMonth(), this.getDate());

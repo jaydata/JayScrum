@@ -47,9 +47,8 @@
     </style>
 </head>
 <body accent="blue" theme="black" font="segoewp" onorientationchange="setupScroll()">
-    
     <div id="page">
-
+        <!--ko if: $root.visibleLoadingScreen-->
         <div class="metro-loading">
             <h1>JayScrum</h1>
 
@@ -61,142 +60,157 @@
                 <span class="accent-bg"></span>
             </div>
         </div>
-
-        <!-- ko if: $data.isActivePart('mainPage') -->
-        <div id="application" data-bind="with: $data.mainPage">
-
-            <!-- ko ifnot: $data.isActivePart('editableIteration') -->
-            <!-- ko ifnot: $data.isActivePart('editableWorkItem') -->
-            <!-- ko ifnot: $data.isActivePart('editableUserStory') -->
-            <!-- ko ifnot: $data.isActivePart('selectedWorkitem') -->
-            <!-- ko ifnot: $data.isActivePart('selectedUserStory') -->
-            <!-- ko ifnot: $data.isActivePart('main')-->
-            <div class="icon-action back topleft">
-                <span data-bind="click: $root.mainPage.onMainPageShow"></span>
-            </div>
-            <!-- /ko -->
-
-            <div class="main-header" data-bind="attr: { 'class': $data.isActivePart('main') ? 'main-header main-page' : 'main-header not-main-page' }">
-                <h1 class="title" data-bind="text: $root.mainPage.pageTitle"></h1>
-            </div>
-            <!-- /ko -->
-            <!-- /ko -->
-            <!-- /ko -->
-            <!-- /ko -->
-            <!-- /ko -->
-
-            <!-- ko if: $data.isActivePart('taskList') -->
-                <div class="icon-action main-top-right add"><span data-bind="click: $root.mainPage.onAddWorkItem"></span></div>
-            <!-- /ko -->
-            <!-- ko if: $data.isActivePart('userStoryList') -->
-                <div class="icon-action main-top-right add"><span data-bind="click: $root.mainPage.onAddUserStory"></span></div>
-            <!-- /ko -->
-
-            <!-- ko if: $data.isActivePart('main') -->
-            <!-- ko template: { name: 'dashBoard-template', data: $data } -->
-            <!-- /ko -->
-            <!-- /ko  -->
-
-            <!-- ko if: $data.isActivePart('settings') -->
-            <!-- ko template: { name: 'guiSettingPage-template', data: $data } -->
-            <!-- /ko -->
-            <!-- /ko -->
-
-            <!-- ko if: $data.isActivePart('taskList') -->
-            <!-- ko template: { name: 'scrumWall-template', data: $data } -->
-            <!-- /ko -->
-            <!-- /ko -->
-
-            <!-- ko if: $data.isActivePart('userStoryList') -->
-            <!-- ko template: { name: 'userStory-template', data: $data } -->
-            <!-- /ko -->
-            <!-- /ko -->
-
-            <!-- ko if: $data.isActivePart('iterationList') -->
-            <!-- ko template: { name: 'sprint-template', data: $data } -->
-            <!-- /ko -->
-            <!-- /ko -->
-
-            <!-- ko if: $data.isActivePart('projectList') -->
-            <!-- ko template: { name: 'project-template', data: $data } -->
-            <!-- /ko -->
-            <!-- /ko -->
-
-            <!-- ko if: $data.isActivePart('userStoryByProjectList') -->
-            <!-- ko template: { name: 'userStoryByProject-template', data: $data } -->
-            <!-- /ko -->
-            <!-- /ko -->
-
-            <!-- ko if: $data.isActivePart('selectedWorkitem') -->
-            <!-- ko template: { name: 'taskSelectView-template', data: $data } -->
-            <!-- /ko -->
-            <!-- /ko -->
-
-            <!-- ko if: $data.isActivePart('editableWorkItem') -->
-            <!-- ko template: { name: 'taskEditView-template', data: $data }-->
-            <!-- /ko-->
-            <!-- /ko-->
-
-            <!-- ko if: $data.isActivePart('selectedUserStory') -->
-            <!-- ko template: { name: 'userStorySelectView-template', data: $data } -->
-            <!-- /ko -->
-            <!-- /ko -->
-
-            <!-- ko if: $data.isActivePart('editableUserStory') -->
-            <!-- ko template: { name: 'userStoryEditView-template', data: $data } -->
-            <!-- /ko -->
-            <!-- /ko-->
-
-            <!-- ko if: $data.isActivePart('editableIteration') -->
-            <!-- ko template: { name: 'sprintEditView-template', data: $data } -->
-            <!-- /ko -->
-            <!-- /ko-->
-
-            <!-- ko if: $data.isActivePart('editableProject') -->
-            <!-- ko template: { name: 'projectEditView-template', data: $data } -->
-            <!-- /ko -->
-            <!-- /ko-->
-
-            <!-- ko ifnot: $data.isActivePart('settings') -->
-            <!-- ko ifnot: $data.isActivePart('editableWorkItem') -->
-            <div id="error-msg" class="metro-actionbar">
-                <ul>
-                    <li><span class="medium">No current sprint found!</span></li>
-                </ul>
-            </div>
-            <!-- /ko  -->
-            <!-- /ko  -->
-        </div>
-        <!-- /ko  -->
-
-        <!-- ko if: $root.isActivePart('settingPage') -->
-        <!-- ko template: { name: 'settingPage-template', data: $data }-->
-        <!-- /ko-->
-        <!-- /ko  -->
-
-        <!-- ko if: $root.isActivePart('usersPage') -->
-        <!-- ko template: { name: 'usersPage-template', data: $data }-->
-        <!-- /ko-->
-        <!-- /ko  -->
+        <!--/ko-->
     </div>
+    <!--<div id="page">-->
+
+        <!--<div class="metro-loading">-->
+            <!--<h1>JayScrum</h1>-->
+
+            <!--<div class="metro-dots loading">-->
+                <!--<span class="accent-bg"></span>-->
+                <!--<span class="accent-bg"></span>-->
+                <!--<span class="accent-bg"></span>-->
+                <!--<span class="accent-bg"></span>-->
+                <!--<span class="accent-bg"></span>-->
+            <!--</div>-->
+        <!--</div>-->
+
+        <!--&lt;!&ndash; ko if: $data.isActivePart('mainPage') &ndash;&gt;-->
+        <!--<div id="application" data-bind="with: $data.mainPage">-->
+
+            <!--&lt;!&ndash; ko ifnot: $data.isActivePart('editableIteration') &ndash;&gt;-->
+            <!--&lt;!&ndash; ko ifnot: $data.isActivePart('editableWorkItem') &ndash;&gt;-->
+            <!--&lt;!&ndash; ko ifnot: $data.isActivePart('editableUserStory') &ndash;&gt;-->
+            <!--&lt;!&ndash; ko ifnot: $data.isActivePart('selectedWorkitem') &ndash;&gt;-->
+            <!--&lt;!&ndash; ko ifnot: $data.isActivePart('selectedUserStory') &ndash;&gt;-->
+            <!--&lt;!&ndash; ko ifnot: $data.isActivePart('main')&ndash;&gt;-->
+            <!--<div class="icon-action back topleft">-->
+                <!--<span data-bind="click: $root.mainPage.onMainPageShow"></span>-->
+            <!--</div>-->
+            <!--&lt;!&ndash; /ko &ndash;&gt;-->
+
+            <!--<div class="main-header" data-bind="attr: { 'class': $data.isActivePart('main') ? 'main-header main-page' : 'main-header not-main-page' }">-->
+                <!--<h1 class="title" data-bind="text: $root.mainPage.pageTitle"></h1>-->
+            <!--</div>-->
+            <!--&lt;!&ndash; /ko &ndash;&gt;-->
+            <!--&lt;!&ndash; /ko &ndash;&gt;-->
+            <!--&lt;!&ndash; /ko &ndash;&gt;-->
+            <!--&lt;!&ndash; /ko &ndash;&gt;-->
+            <!--&lt;!&ndash; /ko &ndash;&gt;-->
+
+            <!--&lt;!&ndash; ko if: $data.isActivePart('taskList') &ndash;&gt;-->
+                <!--<div class="icon-action main-top-right add"><span data-bind="click: $root.mainPage.onAddWorkItem"></span></div>-->
+            <!--&lt;!&ndash; /ko &ndash;&gt;-->
+            <!--&lt;!&ndash; ko if: $data.isActivePart('userStoryList') &ndash;&gt;-->
+                <!--<div class="icon-action main-top-right add"><span data-bind="click: $root.mainPage.onAddUserStory"></span></div>-->
+            <!--&lt;!&ndash; /ko &ndash;&gt;-->
+
+            <!--&lt;!&ndash; ko if: $data.isActivePart('main') &ndash;&gt;-->
+            <!--&lt;!&ndash; ko template: { name: 'dashBoard-template', data: $data } &ndash;&gt;-->
+            <!--&lt;!&ndash; /ko &ndash;&gt;-->
+            <!--&lt;!&ndash; /ko  &ndash;&gt;-->
+
+            <!--&lt;!&ndash; ko if: $data.isActivePart('settings') &ndash;&gt;-->
+            <!--&lt;!&ndash; ko template: { name: 'guiSettingPage-template', data: $data } &ndash;&gt;-->
+            <!--&lt;!&ndash; /ko &ndash;&gt;-->
+            <!--&lt;!&ndash; /ko &ndash;&gt;-->
+
+            <!--&lt;!&ndash; ko if: $data.isActivePart('taskList') &ndash;&gt;-->
+            <!--&lt;!&ndash; ko template: { name: 'scrumWall-template', data: $data } &ndash;&gt;-->
+            <!--&lt;!&ndash; /ko &ndash;&gt;-->
+            <!--&lt;!&ndash; /ko &ndash;&gt;-->
+
+            <!--&lt;!&ndash; ko if: $data.isActivePart('userStoryList') &ndash;&gt;-->
+            <!--&lt;!&ndash; ko template: { name: 'userStory-template', data: $data } &ndash;&gt;-->
+            <!--&lt;!&ndash; /ko &ndash;&gt;-->
+            <!--&lt;!&ndash; /ko &ndash;&gt;-->
+
+            <!--&lt;!&ndash; ko if: $data.isActivePart('iterationList') &ndash;&gt;-->
+            <!--&lt;!&ndash; ko template: { name: 'sprint-template', data: $data } &ndash;&gt;-->
+            <!--&lt;!&ndash; /ko &ndash;&gt;-->
+            <!--&lt;!&ndash; /ko &ndash;&gt;-->
+
+            <!--&lt;!&ndash; ko if: $data.isActivePart('projectList') &ndash;&gt;-->
+            <!--&lt;!&ndash; ko template: { name: 'project-template', data: $data } &ndash;&gt;-->
+            <!--&lt;!&ndash; /ko &ndash;&gt;-->
+            <!--&lt;!&ndash; /ko &ndash;&gt;-->
+
+            <!--&lt;!&ndash; ko if: $data.isActivePart('userStoryByProjectList') &ndash;&gt;-->
+            <!--&lt;!&ndash; ko template: { name: 'userStoryByProject-template', data: $data } &ndash;&gt;-->
+            <!--&lt;!&ndash; /ko &ndash;&gt;-->
+            <!--&lt;!&ndash; /ko &ndash;&gt;-->
+
+            <!--&lt;!&ndash; ko if: $data.isActivePart('selectedWorkitem') &ndash;&gt;-->
+            <!--&lt;!&ndash; ko template: { name: 'taskSelectView-template', data: $data } &ndash;&gt;-->
+            <!--&lt;!&ndash; /ko &ndash;&gt;-->
+            <!--&lt;!&ndash; /ko &ndash;&gt;-->
+
+            <!--&lt;!&ndash; ko if: $data.isActivePart('editableWorkItem') &ndash;&gt;-->
+            <!--&lt;!&ndash; ko template: { name: 'taskEditView-template', data: $data }&ndash;&gt;-->
+            <!--&lt;!&ndash; /ko&ndash;&gt;-->
+            <!--&lt;!&ndash; /ko&ndash;&gt;-->
+
+            <!--&lt;!&ndash; ko if: $data.isActivePart('selectedUserStory') &ndash;&gt;-->
+            <!--&lt;!&ndash; ko template: { name: 'userStorySelectView-template', data: $data } &ndash;&gt;-->
+            <!--&lt;!&ndash; /ko &ndash;&gt;-->
+            <!--&lt;!&ndash; /ko &ndash;&gt;-->
+
+            <!--&lt;!&ndash; ko if: $data.isActivePart('editableUserStory') &ndash;&gt;-->
+            <!--&lt;!&ndash; ko template: { name: 'userStoryEditView-template', data: $data } &ndash;&gt;-->
+            <!--&lt;!&ndash; /ko &ndash;&gt;-->
+            <!--&lt;!&ndash; /ko&ndash;&gt;-->
+
+            <!--&lt;!&ndash; ko if: $data.isActivePart('editableIteration') &ndash;&gt;-->
+            <!--&lt;!&ndash; ko template: { name: 'sprintEditView-template', data: $data } &ndash;&gt;-->
+            <!--&lt;!&ndash; /ko &ndash;&gt;-->
+            <!--&lt;!&ndash; /ko&ndash;&gt;-->
+
+            <!--&lt;!&ndash; ko if: $data.isActivePart('editableProject') &ndash;&gt;-->
+            <!--&lt;!&ndash; ko template: { name: 'projectEditView-template', data: $data } &ndash;&gt;-->
+            <!--&lt;!&ndash; /ko &ndash;&gt;-->
+            <!--&lt;!&ndash; /ko&ndash;&gt;-->
+
+            <!--&lt;!&ndash; ko ifnot: $data.isActivePart('settings') &ndash;&gt;-->
+            <!--&lt;!&ndash; ko ifnot: $data.isActivePart('editableWorkItem') &ndash;&gt;-->
+            <!--<div id="error-msg" class="metro-actionbar">-->
+                <!--<ul>-->
+                    <!--<li><span class="medium">No current sprint found!</span></li>-->
+                <!--</ul>-->
+            <!--</div>-->
+            <!--&lt;!&ndash; /ko  &ndash;&gt;-->
+            <!--&lt;!&ndash; /ko  &ndash;&gt;-->
+        <!--</div>-->
+        <!--&lt;!&ndash; /ko  &ndash;&gt;-->
+
+        <!--&lt;!&ndash; ko if: $root.isActivePart('settingPage') &ndash;&gt;-->
+        <!--&lt;!&ndash; ko template: { name: 'settingPage-template', data: $data }&ndash;&gt;-->
+        <!--&lt;!&ndash; /ko&ndash;&gt;-->
+        <!--&lt;!&ndash; /ko  &ndash;&gt;-->
+
+        <!--&lt;!&ndash; ko if: $root.isActivePart('usersPage') &ndash;&gt;-->
+        <!--&lt;!&ndash; ko template: { name: 'usersPage-template', data: $data }&ndash;&gt;-->
+        <!--&lt;!&ndash; /ko&ndash;&gt;-->
+        <!--&lt;!&ndash; /ko  &ndash;&gt;-->
+    <!--</div>-->
 
     <script type="text/html" id="dashBoard-template">
         <div id="metro-tiles-scroll" class="scroll-out pivot-default-opacity">
             <div class="scroll-in">
                 <div id="metro-tiles">
                     <ul class="metro-tiles tolower">
-                        <!-- ko foreach: $root.mainPage.activeSprintList -->
-                        <li data-bind="attr: { 'class': $root.mainPage.isPinnedSprint($data) ? 'wide green' : 'wide lightred' }">
-                            <span data-bind="click: $root.mainPage.onTaskListShow">
+                        <!-- ko foreach: $data.data().activeSprintList -->
+                        <li data-bind="attr: { 'class': $parent.isPinnedSprint($data) ? 'wide green' : 'wide lightred' }">
+                            <span data-bind="click: $parent.onTaskListShow">
                                 <span class="middle twolined">
                                     <span class="day" data-bind="text: moment(FinishDate()).diff(moment(), 'days')"></span>
                                     <span class="text" data-bind="text: Name"></span>
                                     <span class="text">scrumwall</span>
-                                    <!--ko if: $root.mainPage.activeSprintsTaskIds-->
-                                    <span class="text" data-bind="text: $root.mainPage.getTaskLeftForSprint($data.Id())+' task left'"></span>
+                                    <!--ko if: $data.activeSprintsTaskIds-->
+                                    <span class="text" data-bind2="text: $root.mainPage.getTaskLeftForSprint($data.Id())+' task left'"></span>
                                     <!--/ko-->
                                 </span>
-                                <!--ko if: $root.mainPage.isPinnedSprint($data)-->
+                                <!--ko if: $parent.isPinnedSprint($data)-->
                                 <span class="pin"></span>
                                 <!--/ko-->
                             </span>
@@ -1075,7 +1089,7 @@
             </div>
         </div>
     </script>
-    <script type="text/html" id="settingPage-template">
+    <script type="text/html" id="repositories-template">
         <div id="settingPage">
             <div class="main-header">
                 <h1 class="title">repositories</h1>
@@ -1083,23 +1097,21 @@
             <div class="scroll-list pivot-default-opacity scrollable-list animate bottom45" id="settingPageScroll">
                 <div class="scroller-list">
                     <div class="list detail">
-                        <ul id="setting-list" class="setting-list" data-bind="foreach: $root.settingPage.settingsKoModel.settings">
+                        <ul id="setting-list" class="setting-list" data-bind="foreach: $data.data().settings">
                             <li>
                                 <h2 data-bind="text: Title"></h2>
                                 <div class="actions fright">
-                                    <span class="icon-action connect" data-bind="click: $root.settingPage.settingsKoModel.connecTo">
+                                    <span class="icon-action connect" data-bind="click: $parent.connectTo">
                                         <span></span></span>
-                                    <span class="icon-action edit" data-bind="click: $root.settingPage.settingsKoModel.editSetting">
+                                    <span class="icon-action edit" data-bind="click: $parent.editSetting">
                                         <span></span></span>
-                                    <span class="icon-action user" data-bind="click: $root.settingPage.onUserSettingShow">
-                                        <span></span></span>
-                                    <span class="icon-action delete" data-bind="click: $root.settingPage.settingsKoModel.deleteSetting">
+                                    <span class="icon-action delete" data-bind="click: $parent.deleteSetting">
                                         <span></span></span>
                                 </div>
                             </li>
                         </ul>
 
-                        <div id="settings-edit" class="detail edit reset-p" data-bind="with: $root.settingPage.settingsKoModel.selectedSetting">
+                        <div id="settings-edit" class="detail edit reset-p" data-bind="with: $data.data().selectedSetting">
                             <div class="tolower item reset-m">
                                 <div class="field hide">
                                     <div><span>Id</span></div>
@@ -1135,9 +1147,9 @@
                                 </div>
 
                                 <div class="split2">
-                                    <span class="btn-metro btn-large margin10_0" data-bind="click: $root.settingPage.settingsKoModel.saveSetting">
+                                    <span class="btn-metro btn-large margin10_0" data-bind="click: $parent.saveSetting">
                                         Save</span>
-                                    <span class="btn-metro btn-large margin10_0" data-bind="click: $root.settingPage.settingsKoModel.cancelSetting">
+                                    <span class="btn-metro btn-large margin10_0" data-bind="click: $parent.cancelSetting">
                                         Cancel</span>
                                 </div>
                             </div>
@@ -1148,7 +1160,7 @@
         </div>
         <div id="settingPageActionBar" class="metro-actionbar detail-view-edit opened">
             <ul>
-                <li class="icon-action add"><span data-bind="click: $root.settingPage.settingsKoModel.addSetting">
+                <li class="icon-action add"><span data-bind="click: $data.addSetting">
                 </span></li>
             </ul>
         </div>
@@ -1243,7 +1255,7 @@
     <!--[if !IE]> -->
     <script type="text/javascript" src="Scripts/libs/zeptojs.min.js"></script>
     <!-- <![endif]-->
-
+    <script type="text/javascript" src="Scripts/libs/q.js"></script>
     <script type="text/javascript" src="Scripts/libs/knockout-2.1.0.debug.js"></script>
     <script type="text/javascript" src="Scripts/libs/datajs-1.0.3.min.js"></script>
     <script type="text/javascript" src="Scripts/libs/jaydata.js"></script>
@@ -1251,12 +1263,52 @@
     <script type="text/javascript" src="Scripts/JayDataProviders/StormProvider.js"></script>
     <script type="text/javascript" src="Scripts/JayDataProviders/InMemoryProvider.js"></script>
     <script type="text/javascript" src="Scripts/JayDataModuls/knockout.js"></script>
+
+    <script type="text/javascript" src="Scripts/JayApp/FrameView.js"></script>
+    <script type="text/javascript" src="Scripts/JayApp/Frame.js"></script>
+    <script type="text/javascript" src="Scripts/JayApp/FrameApp.js"></script>
+
+    <script type="text/javascript" src="Scripts/Frames/Main.js"></script>
+    <script type="text/javascript" src="Scripts/Frames/Repositories.js"></script>
+    <script type="text/javascript" src="Scripts/Frames/Users.js"></script>
+    <script type="text/javascript" src="Scripts/Frames/ThemeSettings.js"></script>
+    <script type="text/javascript" src="Scripts/Frames/Projects.js"></script>
+    <script type="text/javascript" src="Scripts/Frames/UserStories.js"></script>
+    <script type="text/javascript" src="Scripts/Frames/Sprints.js"></script>
+
+    <script type="text/javascript" src="Scripts/RepositoryContext.js"></script>
     <script type="text/javascript" src="Scripts/ScrumLsEntities.js"></script>
     <script type="text/javascript" src="Scripts/IScroll/iscroll.min.js"></script>
     <script type="text/javascript" src="Scripts/IScroll/swipeview.js"></script>
     <script type="text/javascript" src="Scripts/Models/MainPage.js"></script>
-    <script type="text/javascript" src="Scripts/Models/SettingPage.js"></script>
     <script type="text/javascript" src="Scripts/init.js"></script>
     <script type="text/javascript" src="Scripts/scrum.js"></script>
+
+    <script type="text/html" id="jayAppMenu">
+        <div>
+            <span>menu: <i data-bind="text: $data.framePath"></i></span><br />
+            <ul data-bind="foreach: $data.frameContainer">
+                <!--ko template: {name: $data.selectedMetaView().templateName, data:$data.data}-->
+                <!--/ko-->
+            </ul>
+            <br />
+        </div>
+    </script>
+
+    <script type="text/html" id="jayAppMetaDefault">
+        <li data-bind="text: $data.name"></li>
+    </script>
+
+    <script type="text/html" id="jayAppContent">
+        <!--ko if: $data.selectedFrame()-->
+        <!--ko template: {name: $data.selectedFrame().selectedView().templateName, data:$data.selectedFrame()}-->
+        <!--/ko-->
+        <!--/ko-->
+    </script>
+
+    <script type="text/html" id="alma">
+        <div data-bind="text:$data.data().name">alma</div>
+    </script>
+
 </body>
 </html>
