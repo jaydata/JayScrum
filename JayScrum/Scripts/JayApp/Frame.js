@@ -31,8 +31,10 @@ $data.Class.define('JayScrum.Frame', null, null, {
         this.metaViews[name] = view;
     },
     backView:function(frameSetting){
+        var newView = JayScrum.app.selectedFrame().views[frameSetting.viewName];
         JayScrum.app.framePath.push(frameSetting);
-        JayScrum.app.selectedFrame().selectedView(JayScrum.app.selectedFrame().views[frameSetting.viewName]);
+        JayScrum.app.selectedFrame().selectedView(newView);
+        newView.initializaView();
     },
     selectView:function (name) {
         if (JayScrum.app.collectFramePath()) {
@@ -41,6 +43,7 @@ $data.Class.define('JayScrum.Frame', null, null, {
         }
 
         this.selectedView(this.views[name]);
+        this.views[name].initializaView();
     },
     selectMetaView:function (name) {
         if (this.selectedMetaView === undefined) {

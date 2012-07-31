@@ -5,11 +5,32 @@
  * Time: 9:28 AM
  * To change this template use File | Settings | File Templates.
  */
+$data.Class.define('JayScrum.Views.Projects', JayScrum.FrameView, null, {
+    constructor:function(name, path, tplSource){
+        this.templateName = name || 'project-template';
+    },
+    initializaView:function(){
+        console.log('==> initialize View');
+        $("h1.main-header").addClass("animate");
+        initScrollById("transition-projects", null, null, true);
+    }
+}, null);
+$data.Class.define('JayScrum.Views.ProjectEdit', JayScrum.FrameView, null, {
+    constructor:function(name, path, tplSource){
+        this.templateName = name || 'projectEditView-template';
+    },
+    initializaView:function(){
+        console.log('==> initialize Edit View');
+        $("h1.main-header").addClass("animate");
+        initScrollById('transition-projects', null, null, true);
+        $("div.metro-actionbar.detail-view-edit").addClass("opened");
+    }
+}, null);
 $data.Class.define('JayScrum.Frames.Projects', JayScrum.Frame, null, {
     constructor:function () {
         //register frameViews
-        this.registerView('projects', new JayScrum.FrameView('project-template'));
-        this.registerView('projects-edit', new JayScrum.FrameView('projectEditView-template'));
+        this.registerView('projects', new JayScrum.Views.Projects('project-template'));
+        this.registerView('projects-edit', new JayScrum.Views.ProjectEdit('projectEditView-template'));
         this.registerMetaView('defaultMeta', new JayScrum.FrameView('jayAppMetaDefault'));
         this.defaultViewName='projects';
         this.selectMetaView('defaultMeta');
@@ -29,7 +50,7 @@ $data.Class.define('JayScrum.Frames.Projects', JayScrum.Frame, null, {
         return dataLoadPromis.promise;
     },
     onAddProject: function (item) {
-        var item = new JayScrum.repository.Projects.createNew({ Id: 0, Name: '', Description: 'Project description' });
+        var item = new JayScrum.repository.Projects.createNew({ Id: 0, Name: '', Description: '' });
         item = item.asKoObservable();
         JayScrum.app.selectedFrame().onEditProject(item);
     },
@@ -44,9 +65,6 @@ $data.Class.define('JayScrum.Frames.Projects', JayScrum.Frame, null, {
         }
 
         JayScrum.app.selectedFrame().selectView('projects-edit');
-        $("h1.main-header").addClass("animate");
-        initScrollById('transition-projects', null, null, true);
-        $("div.metro-actionbar.detail-view-edit").addClass("opened");
     },
     onCancelProject: function (projectItem) {
         if (projectItem != null) {
@@ -75,8 +93,7 @@ $data.Class.define('JayScrum.Frames.Projects', JayScrum.Frame, null, {
         this._loadData()
             .then(function () {
                 JayScrum.app.hideLoading();
-                $("h1.main-header").addClass("animate");
-                initScrollById("transition-projects", null, null, true);
+                JayScrum.app.selectedFrame().selectedView().initializaView();
             });
     }
 }, null);

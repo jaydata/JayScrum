@@ -5,6 +5,7 @@
  * Time: 8:43 AM
  * To change this template use File | Settings | File Templates.
  */
+
 $data.Class.define('JayScrum.Frames.Main', JayScrum.Frame, null, {
     constructor:function () {
         //register frameViews
