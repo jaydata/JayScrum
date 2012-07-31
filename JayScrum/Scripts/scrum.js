@@ -190,6 +190,65 @@ $(function () {
     }
 });
 */
+$data.Class.define('JayScrum.ScrumApp', JayScrum.FrameApp, null,{
+    constructor:function(){
+        this.registerFrame(new JayScrum.Frames.Main('MainFrame'));
+        this.registerFrame(new JayScrum.Frames.ScrumWall('ScrumWall'));
+        this.registerFrame(new JayScrum.Frames.Projects('Projects'));
+        this.registerFrame(new JayScrum.Frames.Sprints('Sprints'));
+        this.registerFrame(new JayScrum.Frames.UserStories('UserStories'));
+        this.registerFrame(new JayScrum.Frames.ThemeSettings('ThemeSettings'));
+        this.registerFrame(new JayScrum.Frames.Repositories('Repositories'));
+        this.registerFrame(new JayScrum.Frames.Users('Users'));
+        this.visibleMetaData(false);
+        this.globalData = ko.observable({
+            stateOptionValues : ["To Do", "In Progress", "Done", "Removed"],
+            stateOptionUserStoryValues : ["New", "Approved", "Committed", "Removed", "Done"],
+            typeOptionValues : ['Task', 'Bug', 'UserStory', 'Issue', 'Epic'],
+            blockedOptionValues : ['No', 'Yes'],
+            projectList : ko.observableArray(),
+            userStoryList: ko.observableArray(),
+            userList: ko.observableArray(),
+            sprintList: ko.observableArray()
+        });
+    },
+    onRefreshProjectList:function () {
+        var loadPromise = Q.defer();
+        JayScrum.repository.Projects.toArray(function (projects) {
+            JayScrum.pushObservablesToList(JayScrum.app.globalData().projectList, projects);
+            loadPromise.resolve();
+        });
+        return loadPromise.promise;
+    },
+    onRefreshUserStoryList:function () {
+        var loadPromise = Q.defer();
+        JayScrum.repository.WorkItems
+            .where(function (item) {
+                return item.Type == "UserStory"
+            })
+            .toArray(function (userStoryResult) {
+                JayScrum.pushObservablesToList(JayScrum.app.globalData().userStoryList, userStoryResult);
+                loadPromise.resolve();
+            });
+        return loadPromise.promise;
+    },
+    onRefreshUserList:function () {
+        var loadPromise = Q.defer();
+        JayScrum.app.globalData().userList(['hajni', 'user1', 'user2', 'nochtap', 'kimi', 'hat izsák']);
+        loadPromise.resolve();
+        return loadPromise.promise;
+    },
+    onRefreshSprintListForDropDown:function () {
+        var loadPromise = Q.defer();
+        JayScrum.repository.Sprints
+            .toArray(function (sprints) {
+                JayScrum.pushObservablesToList(JayScrum.app.globalData().sprintList, sprints);
+                loadPromise.resolve();
+            });
+        return loadPromise.promise;
+    }
+},null);
+
 JayScrum.pushObservablesToList= function (list, rawData) {
     list([]);
     for (var i = 0; i < rawData.length; i++) {
@@ -198,17 +257,7 @@ JayScrum.pushObservablesToList= function (list, rawData) {
     }
 };
 $(function(){
-    JayScrum.app = new JayScrum.FrameApp('#page');
-    JayScrum.app.registerFrame(new JayScrum.Frames.Main('MainFrame'));
-    JayScrum.app.registerFrame(new JayScrum.Frames.ScrumWall('ScrumWall'));
-    JayScrum.app.registerFrame(new JayScrum.Frames.Projects('Projects'));
-    JayScrum.app.registerFrame(new JayScrum.Frames.Sprints('Sprints'));
-    JayScrum.app.registerFrame(new JayScrum.Frames.UserStories('UserStories'));
-    JayScrum.app.registerFrame(new JayScrum.Frames.ThemeSettings('ThemeSettings'));
-    JayScrum.app.registerFrame(new JayScrum.Frames.Repositories('Repositories'));
-    JayScrum.app.registerFrame(new JayScrum.Frames.Users('Users'));
-
-    JayScrum.app.visibleMetaData(false);
+    JayScrum.app = new JayScrum.ScrumApp('#page');
     JayScrum.app.bind();
     JayScrum.app.selectFrame('Repositories', undefined, true);
 })

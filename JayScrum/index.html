@@ -282,12 +282,13 @@
     </script>
 
     <script type="text/html" id="scrumWall-template">
-    <div class="main-header"
-         data-bind="attr: { 'class': 'main-header not-main-page' }">
-        <h1 class="title" data-bind="text: $root.selectedFrame().data().name"></h1>
-    </div>
-
-    </div>
+        <div class="icon-action back topleft">
+            <span data-bind="click: $root.backView"></span>
+        </div>
+        <div class="main-header"
+             data-bind="attr: { 'class': 'main-header not-main-page' }">
+            <h1 class="title" data-bind="text: $root.selectedFrame().data().name"></h1>
+        </div>
         <div id="wrapper" class="metro-pivot">
             <div id="scroller">
                 <div class="pivot-list">
@@ -595,33 +596,33 @@
                                     
                                 <div class="field">
                                     <div><span>Type</span></div>
-                                    <select class="medium accent-bg" onchange="refreshScroll(scrollToRefresh)" data-bind="options: $root.mainPage.typeOptionValues, value: Type">
+                                    <select class="medium accent-bg" onchange="refreshScroll(scrollToRefresh)" data-bind="options: $root.globalData().typeOptionValues, value: Type">
                                     </select>
                                 </div>
 
                                 <div class="field">
                                     <div><span>Project</span></div>
-                                    <select class="medium accent-bg with-icon" data-bind="options: $root.mainPage.projectList, optionsText: 'Name', optionsValue: 'Id', value: WorkItem_Project">
+                                    <select class="medium accent-bg with-icon" data-bind="options: $root.globalData().projectList, optionsText: 'Name', optionsValue: 'Id', value: WorkItem_Project">
                                     </select>
-                                    <span class="icon-action update fright" data-bind="click: $root.mainPage.onRefreshProjectList"><span></span></span>
+                                    <span class="icon-action update fright" data-bind="click: $root.onRefreshProjectList"><span></span></span>
                                 </div>
 
                                 <div class="field">
                                     <div><span>Sprint</span></div>
-                                    <select class="medium accent-bg with-icon" data-bind="options: $root.mainPage.sprintListForDropDown, optionsText: 'Name', optionsValue: 'Id', value: WorkItem_Sprint"></select>
-                                    <span class="icon-action update fright" data-bind="click: $root.mainPage.onRefreshSprintListForDropDown"><span></span></span>
+                                    <select class="medium accent-bg with-icon" data-bind="options: $root.globalData().sprintList, optionsText: 'Name', optionsValue: 'Id', value: WorkItem_Sprint"></select>
+                                    <span class="icon-action update fright" data-bind="click: $root.onRefreshSprintListForDropDown"><span></span></span>
                                 </div>
 
                                 <div class="field">
                                     <div><span>User story</span></div>
-                                    <select class="medium accent-bg with-icon" data-bind="options: $root.mainPage.userStoryList, optionsText: 'Title', optionsValue: 'Id', value: WorkItem_WorkItem">
+                                    <select class="medium accent-bg with-icon" data-bind="options: $root.globalData().userStoryList, optionsText: 'Title', optionsValue: 'Id', value: WorkItem_WorkItem">
                                     </select>
-                                    <span class="icon-action update fright" data-bind="click: $root.mainPage.onRefreshUserStoryList"><span></span></span>
+                                    <span class="icon-action update fright" data-bind="click: $root.onRefreshUserStoryList"><span></span></span>
                                 </div>
 
                                 <div class="field">
                                     <div><span>State</span></div>
-                                    <select class="medium accent-bg" data-bind="options: $root.mainPage.stateOptionValues, value: State">
+                                    <select class="medium accent-bg" data-bind="options: $root.globalData().stateOptionValues, value: State">
                                     </select>
                                 </div>
 
@@ -635,9 +636,9 @@
 
                                 <div class="field">
                                     <div><span>Assigned To</span></div>
-                                    <select class="medium accent-bg with-icon" data-bind="options: $root.mainPage.userList, value: AssignedTo">
+                                    <select class="medium accent-bg with-icon" data-bind="options: $root.globalData().userList, value: AssignedTo">
                                     </select>
-                                    <span class="icon-action update fright" data-bind="click: $root.mainPage.onRefreshUserList"><span></span></span>
+                                    <span class="icon-action update fright" data-bind="click: $root.onRefreshUserList"><span></span></span>
                                 </div>
 
                                 <div class="field">
@@ -1057,6 +1058,9 @@
         </div>
     </script>
     <script type="text/html" id="projectEditView-template">
+        <div class="icon-action back topleft">
+            <span data-bind="click: $root.backView"></span>
+        </div>
         <div class="detail edit" data-bind="with: $data.data().editableProject">
             <div id="transition-projects" class="scroll-out top50 pivot-default-opacity">
                 <div class="scroll-in">

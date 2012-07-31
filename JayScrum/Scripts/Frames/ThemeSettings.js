@@ -10,7 +10,7 @@ $data.Class.define('JayScrum.Frames.ThemeSettings', JayScrum.Frame, null, {
         //register frameViews
         this.registerView('theme', new JayScrum.FrameView('guiSettingPage-template'));
         this.registerMetaView('themeMeta', new JayScrum.FrameView('jayAppMetaDefault'));
-        this.selectView('theme');
+        this.defaultViewName='theme';
         this.selectMetaView('themeMeta');
         this.data = ko.observable({
             name:'ui settings'

@@ -12,7 +12,7 @@ $data.Class.define('JayScrum.Frames.UserStories', JayScrum.Frame, null, {
         this.registerView('userStorySelected', new JayScrum.FrameView('userStorySelectView-template'));
         this.registerView('userStoryEditor', new JayScrum.FrameView('userStoryEditView-template'));
         this.registerMetaView('defaultMeta', new JayScrum.FrameView('jayAppMetaDefault'));
-        this.selectView('userStory');
+        this.defaultViewName='userStory';
         this.selectMetaView('defaultMeta');
         this.data = ko.observable({
             name:'User Stories',
@@ -91,6 +91,24 @@ $data.Class.define('JayScrum.Frames.UserStories', JayScrum.Frame, null, {
         $("h1.main-header").addClass("animate");
 
     },
+    _onRefreshDropDownLists: function () {
+        var loadingPromise = Q.defer();
+        JayScrum.app.onRefreshProjectList()
+            .then(function () {
+                JayScrum.app.onRefreshUserStoryList()
+                    .then(function () {
+                        JayScrum.app.onRefreshUserList()
+                            .then(function () {
+                                JayScrum.app.onRefreshSprintListForDropDown()
+                                    .then(function () {
+                                        loadingPromise.resolve();
+                                    });
+                            });
+                    });
+            });
+
+        return loadingPromise.promise;
+    },
     onIndependentUserStoryListPullUp: function (scroller) {
         JayScrum.repository.WorkItems
             .where(function (item) { return item.Type == "UserStory" && item.WorkItem_Sprint == null })
@@ -160,16 +178,20 @@ $data.Class.define('JayScrum.Frames.UserStories', JayScrum.Frame, null, {
             initScrollById('swipeview-inside-us', null, null, true);
         }, 750);
     },
-    onEditUserStory: function (wrkItem, isEventCall) {
+    onEditUserStory:function (wrkItem, isEventCall) {
 //        $data.Model.mainPage.activePart('editableUserStory');
 //        $data.Model.mainPage.editableUserStory(wrkItem);
-        JayScrum.app.selectedFrame().selectView('userStoryEditor');
-        JayScrum.repository.WorkItems.attach(wrkItem);
+        JayScrum.app.selectedFrame()._onRefreshDropDownLists()
+            .then(function () {
+                JayScrum.app.selectedFrame().selectView('userStoryEditor');
+                JayScrum.repository.WorkItems.attach(wrkItem);
 
-        $("h1.main-header").addClass("animate");
-        var swipeHeight = $("div.detail-edit-fix-header h1").height();
-        $("div#wrapper-detailed-edit").css('top', swipeHeight);
-        initScrollById('wrapper-detailed-edit');
+                $("h1.main-header").addClass("animate");
+                var swipeHeight = $("div.detail-edit-fix-header h1").height();
+                $("div#wrapper-detailed-edit").css('top', swipeHeight);
+                initScrollById('wrapper-detailed-edit');
+            });
+
     },
     onSaveUserStory: function (wrkItem, isEventCall) {
         console.log("save workitem - type: user story");

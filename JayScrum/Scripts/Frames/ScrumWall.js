@@ -12,7 +12,7 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
         this.registerView('taskSelect', new JayScrum.FrameView('taskSelectView-template'));
         this.registerView('taskEdit', new JayScrum.FrameView('taskEditView-template'));
         this.registerMetaView('scrumWallMeta', new JayScrum.FrameView('jayAppMetaDefault'));
-        this.selectView('scrumWall');
+        this.defaultViewName='scrumWall';
         this.selectMetaView('scrumWallMeta');
 
         this.data = ko.observable({
@@ -101,16 +101,20 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
     },
     _onRefreshDropDownLists: function () {
         var loadingPromise = Q.defer();
+        JayScrum.app.onRefreshProjectList()
+            .then(function () {
+                JayScrum.app.onRefreshUserStoryList()
+                    .then(function () {
+                        JayScrum.app.onRefreshUserList()
+                            .then(function () {
+                                JayScrum.app.onRefreshSprintListForDropDown()
+                                    .then(function () {
+                                        loadingPromise.resolve();
+                                    });
+                            });
+                    });
+            });
 
-        loadingPromise.resolve();
-//        if ($data.Model.mainPage.sprintListForDropDown().length === 0) { sprintCallback = true; $data.Model.mainPage.onRefreshSprintListForDropDown(callback); }
-//
-//        if ($data.Model.mainPage.projectList().length === 0) { $data.Model.mainPage.onRefreshProjectList(); }
-//        if ($data.Model.mainPage.userStoryList().length === 0) { $data.Model.mainPage.onRefreshUserStoryList(); }
-//        if ($data.Model.mainPage.userList().length === 0) { $data.Model.mainPage.onRefreshUserList(); }
-//        if (!sprintCallback && callback) {
-//            callback();
-//        }
         return loadingPromise.promise;
     },
     onSelectWorkItem: function (wrkItem, isEventCall) {
@@ -161,18 +165,6 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
                 $("div#wrapper-detailed-edit").css('top', swipeHeight);
                 initScrollById('wrapper-detailed-edit', null, null, true);
             });
-
-        /*$data.Model.mainPage.onRefreshDropDownLists(function () {
-            $data.Model.mainPage.activePart('editableWorkItem');
-            $data.Model.mainPage.editableWorkItem(wrkItem);
-            $data.ScrumDb.WorkItems.attach(wrkItem);
-
-            $("h1.main-header").addClass("animate");
-            var swipeHeight = $("div.detail-edit-fix-header h1").height();
-            $("div#wrapper-detailed-edit").css('top', swipeHeight);
-            initScrollById('wrapper-detailed-edit', null, null, true);
-        });*/
-
     },
     onSaveWorkItem: function (wrkItem, isEventCall) {
         console.log("save workitem - type: task");
@@ -310,6 +302,7 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
             .orderByDescending(function (item) { return item.ChangedDate })
             .take(this.listLoadSize);
         this.data().currentSprint(initData);
+        this.data().name = initData.Name();
     },
     onFrameChangedFrom:function (activeFrameMeta, oldFrameMeta, frame) {
         this._loadData()

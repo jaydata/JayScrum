@@ -10,7 +10,7 @@ $data.Class.define('JayScrum.Frames.Main', JayScrum.Frame, null, {
         //register frameViews
         this.registerView('dashboard', new JayScrum.FrameView('dashBoard-template'));
         this.registerMetaView('dashboardMeta', new JayScrum.FrameView('jayAppMetaDefault'));
-        this.selectView('dashboard');
+        this.defaultViewName='dashboard';
         this.selectMetaView('dashboardMeta');
         this.data = ko.observable({
             name:'jayscrum',

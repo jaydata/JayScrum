@@ -11,7 +11,7 @@ $data.Class.define('JayScrum.Frames.Sprints', JayScrum.Frame, null, {
         this.registerView('sprints', new JayScrum.FrameView('sprint-template'));
         this.registerView('sprintEdit', new JayScrum.FrameView('sprintEditView-template'));
         this.registerMetaView('defaultMeta', new JayScrum.FrameView('jayAppMetaDefault'));
-        this.selectView('sprints');
+        this.defaultViewName='sprints';
         this.selectMetaView('defaultMeta');
         this.data = ko.observable({
             name:'Sprints',

@@ -2,6 +2,8 @@ $data.Class.define('JayScrum.Frame', null, null, {
     constructor:function (name) {
         this.name = name;
         this.metaData = new JayScrum.FrameMetadata('jayAppMetaDefault', { name:'FrameMeta' });
+        this.defaultViewName = 'defaultView';
+        this.selectedView = ko.observable();
     },
     name:{ dataType:$data.String },
     data:{ dataType:$data.Object },
@@ -28,10 +30,16 @@ $data.Class.define('JayScrum.Frame', null, null, {
         }
         this.metaViews[name] = view;
     },
+    backView:function(frameSetting){
+        JayScrum.app.framePath.push(frameSetting);
+        JayScrum.app.selectedFrame().selectedView(JayScrum.app.selectedFrame().views[frameSetting.viewName]);
+    },
     selectView:function (name) {
-        if (this.selectedView === undefined) {
-            this.selectedView = ko.observable();
+        if (JayScrum.app.collectFramePath()) {
+            var currentView = JayScrum.app.framePath.slice(-1)[0];
+            JayScrum.app.framePath.push({frameName:currentView.frameName, viewName:name, data:currentView.data});
         }
+
         this.selectedView(this.views[name]);
     },
     selectMetaView:function (name) {

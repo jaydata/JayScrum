@@ -10,7 +10,7 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
         //register frameViews
         this.registerView('settings', new JayScrum.FrameView('repositories-template'));
         this.registerMetaView('defaultMeta', new JayScrum.FrameView('jayAppMetaDefault'));
-        this.selectView('settings');
+        this.defaultViewName = 'settings';
         this.selectMetaView('defaultMeta');
 
         this.localContext = new JayScrum.Settings.RepositoryContext({ name: ['sqLite', 'indexedDb'], databaseName: 'JayScrumRepoSetting' });

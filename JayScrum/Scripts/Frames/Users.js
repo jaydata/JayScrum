@@ -10,7 +10,7 @@ $data.Class.define('JayScrum.Frames.Users', JayScrum.Frame, null, {
         //register frameViews
         this.registerView('settings', new JayScrum.FrameView('alma'));
         this.registerMetaView('defaultMeta', new JayScrum.FrameView('jayAppMetaDefault'));
-        this.selectView('settings');
+        this.defaultViewName='settings';
         this.selectMetaView('defaultMeta');
         this.data = ko.observable({
             name:'users'

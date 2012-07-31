@@ -52,19 +52,35 @@ $data.Class.define('JayScrum.FrameApp', null, null, {
         }
         throw 'not supported';
     },
+    backView:function(){
+        var actualFrameSetting = null;
+        var prevFrameSetting = null;
+        if (JayScrum.app.collectFramePath()) {
+            actualFrameSetting = JayScrum.app.framePath.pop();
+            prevFrameSetting = JayScrum.app.framePath.pop();
+        }
+        if(actualFrameSetting.frameName === prevFrameSetting.frameName){
+            JayScrum.app.selectedFrame().backView(prevFrameSetting);
+        }else{
+            JayScrum.app.selectFrame(prevFrameSetting.frameName, prevFrameSetting.viewName, prevFrameSetting.data);
+        }
+    },
     selectFrame:function (name, viewName, initData) {
 
         var frameIndex = this._frameHashTable[name];
-        var newActiveFrame = {frameName:name, viewName:viewName};
-        var oldActiveFrame = {frameName:null, viewName:null};
+        var newActiveFrame = {frameName:name, viewName:viewName, data:initData};
+        var oldActiveFrame = {frameName:null, viewName:null, data: null};
         if (this.collectFramePath()) {
             oldActiveFrame = this.framePath.slice(-1)[0];
         }
-
-        console.log('change frame from:'+JSON.stringify(oldActiveFrame)+' to '+JSON.stringify(newActiveFrame));
-
         var newFrame = this.frameContainer()[frameIndex];
         var oldFrame = this.selectedFrame();
+        if(viewName === undefined){
+            newActiveFrame.viewName = newFrame.defaultViewName;
+        }
+        console.log('change frame from:'+JSON.stringify(oldActiveFrame)+' to '+JSON.stringify(newActiveFrame));
+
+
 
         if (oldFrame) {
             oldFrame.onFrameChangingTo(newActiveFrame, oldActiveFrame, newFrame);
@@ -74,6 +90,7 @@ $data.Class.define('JayScrum.FrameApp', null, null, {
         if (this.collectFramePath()) {
             this.framePath.push(newActiveFrame);
         }
+        newFrame.selectedView(newFrame.views[newActiveFrame.viewName]);
         this.selectedFrame(newFrame);
 
         if (oldFrame) {
