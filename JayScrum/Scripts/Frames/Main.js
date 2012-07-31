@@ -13,7 +13,7 @@ $data.Class.define('JayScrum.Frames.Main', JayScrum.Frame, null, {
         this.selectView('dashboard');
         this.selectMetaView('dashboardMeta');
         this.data = ko.observable({
-            name:'dashboard',
+            name:'jayscrum',
             activeSprintList: ko.observableArray(),
             activeSprintsTaskIds: ko.observableArray()
         });
@@ -92,7 +92,7 @@ $data.Class.define('JayScrum.Frames.Main', JayScrum.Frame, null, {
 
         return loadDefer.promise;
     },
-    onFrameChangedFrom:function (activeFrameMeta, oldFrameMeta, initDatam, frame) {
+    onFrameChangedFrom:function (activeFrameMeta, oldFrameMeta, initData, frame) {
         this._loadData()
             .then(function () {
                 JayScrum.app.visibleLoadingScreen(false);
@@ -105,7 +105,7 @@ $data.Class.define('JayScrum.Frames.Main', JayScrum.Frame, null, {
         return pinnedSprints.indexOf(sprint.Id()) >= 0;
     },
     onTaskListShow:function(item){
-        console.log(item);
+        JayScrum.app.selectFrame('ScrumWall', undefined, item);
     },
     onSprintListShow:function(item){
         JayScrum.app.selectFrame('Sprints');

@@ -200,6 +200,7 @@ JayScrum.pushObservablesToList= function (list, rawData) {
 $(function(){
     JayScrum.app = new JayScrum.FrameApp('#page');
     JayScrum.app.registerFrame(new JayScrum.Frames.Main('MainFrame'));
+    JayScrum.app.registerFrame(new JayScrum.Frames.ScrumWall('ScrumWall'));
     JayScrum.app.registerFrame(new JayScrum.Frames.Projects('Projects'));
     JayScrum.app.registerFrame(new JayScrum.Frames.Sprints('Sprints'));
     JayScrum.app.registerFrame(new JayScrum.Frames.UserStories('UserStories'));
@@ -294,7 +295,7 @@ function refreshScroll(scroll, hideLoad) {
     console.log("scroll refreshed: " + scroll);
 }
 function initSwipeviewById(id, list, wrkItemId) {
-    showLoading();
+    //showLoading();
 
     var swipe = $("div#" + id),
         currentIndex = 0;
@@ -304,13 +305,13 @@ function initSwipeviewById(id, list, wrkItemId) {
 
         var gallery = new SwipeView("#" + id, { numberOfPages: list.length });
         gallery.onFlip(function () {
-            $data.Model.mainPage.selectedWorkItemPrev(list[gallery.masterPages[0].dataset.upcomingPageIndex]);
-            $data.Model.mainPage.selectedWorkItem(list[gallery.masterPages[1].dataset.upcomingPageIndex]);
-            $data.Model.mainPage.selectedWorkItemNext(list[gallery.masterPages[2].dataset.upcomingPageIndex]);
+            JayScrum.app.selectedFrame().data().selectedWorkItemPrev(list[gallery.masterPages[0].dataset.upcomingPageIndex]);
+            JayScrum.app.selectedFrame().data().selectedWorkItem(list[gallery.masterPages[1].dataset.upcomingPageIndex]);
+            JayScrum.app.selectedFrame().data().selectedWorkItemNext(list[gallery.masterPages[2].dataset.upcomingPageIndex]);
             switch (gallery.currentMasterPage) {
-                case 0: $data.Model.mainPage.selectedWorkItemActive($data.Model.mainPage.selectedWorkItemPrev()); break;
-                case 1: $data.Model.mainPage.selectedWorkItemActive($data.Model.mainPage.selectedWorkItem()); break;
-                case 2: $data.Model.mainPage.selectedWorkItemActive($data.Model.mainPage.selectedWorkItemNext()); break;
+                case 0: JayScrum.app.selectedFrame().data().selectedWorkItemActive(JayScrum.app.selectedFrame().data().selectedWorkItemPrev()); break;
+                case 1: JayScrum.app.selectedFrame().data().selectedWorkItemActive(JayScrum.app.selectedFrame().data().selectedWorkItem()); break;
+                case 2: JayScrum.app.selectedFrame().data().selectedWorkItemActive(JayScrum.app.selectedFrame().data().selectedWorkItemNext()); break;
             }
 
             // TODO: layout is broken on first load
@@ -327,7 +328,7 @@ function initSwipeviewById(id, list, wrkItemId) {
         gallery.goToPage(currentIndex);
     }
 
-    setTimeout(function () {
-        hideLoading();
-    }, 500);
+//    setTimeout(function () {
+//        hideLoading();
+//    }, 500);
 }

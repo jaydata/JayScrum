@@ -13,7 +13,7 @@ $data.Class.define('JayScrum.Frames.ThemeSettings', JayScrum.Frame, null, {
         this.selectView('theme');
         this.selectMetaView('themeMeta');
         this.data = ko.observable({
-            name:'themeMeta'
+            name:'ui settings'
         });
     },
     onFrameChangedFrom:function (activeFrameMeta, oldFrameMeta, initDatam, frame) {
