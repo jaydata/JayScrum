@@ -8,12 +8,24 @@
 $data.Class.define('JayScrum.Frames.ThemeSettings', JayScrum.Frame, null, {
     constructor:function () {
         //register frameViews
-        this.registerView('theme', new JayScrum.FrameView('alma'));
+        this.registerView('theme', new JayScrum.FrameView('guiSettingPage-template'));
         this.registerMetaView('themeMeta', new JayScrum.FrameView('jayAppMetaDefault'));
         this.selectView('theme');
         this.selectMetaView('themeMeta');
         this.data = ko.observable({
             name:'themeMeta'
         });
+    },
+    onFrameChangedFrom:function (activeFrameMeta, oldFrameMeta, initDatam, frame) {
+        JayScrum.app.visibleLoadingScreen(false);
+
+        $("h1.main-header").addClass("animate");
+        $("div.icon-action.back.topleft.main").show();
+        var font = $("body").attr('font');
+        $("div.field.fonts div.field").each(function () {
+            if ($(this).attr('font') == font)
+                $(this).addClass('active');
+        });
+        initScrollById("transition-settings");
     }
 }, null);

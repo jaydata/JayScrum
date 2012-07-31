@@ -545,6 +545,7 @@
             </ul>
         </div>
     </script>
+
     <script id="workItemEditor-template" type="text/html">
         <div id="wrapper-detailed-edit" class="scroll-out top50">
             <div class="scroll-in">
@@ -723,99 +724,7 @@
         </div>
         <!-- /ko -->
     </script>
-    <script type="text/html" id="userStorySelectView-template">
-        <div class="detail" data-bind="with: $data.selectedUserStory">
-            <div id="wrapper-detailed" class="scroll-out">
-                <div id="swipeview" class="scroller-in">
-                    <div class="list">
-                        <div class="icon-action back topleft absolute">
-                            <span data-bind="click: $root.mainPage.onCancelUserStory"></span>
-                        </div>
-                        <div class="pivot-content">
-                            <div class="item task" data-bind="attr: { 'class': 'item task ' + State() }">
 
-                                <!-- ko if: Title -->
-                                <h1 class="accent-color" data-bind="text: Title"></h1>
-                                <!-- /ko -->
-
-                                <div id="swipeview-inside-us">
-                                    <div class="tolower">
-                                        
-                                        <!-- ko template: { name: 'workItemSelector-template', data: $data }-->
-                                        <!-- /ko-->
-                                        
-                                        <br />
-
-                                        <div class="metro-pivot uslist" id="task-list">
-                                            <h2 class="font30 marginb20">
-                                                <span class="value">Tasks</span>
-                                                
-                                                <span class="fright">
-                                                    <span class="icon-action update marginr5_" data-bind="click:$root.mainPage.onRefreshWorkItemsOfUserStory"><span></span></span>
-                                                    <span class="icon-action add marginr5_"><span></span></span>
-                                                </span>
-                                            </h2>
-
-                                            <!--ko if: $root.mainPage.selectedWorkitemChildren().length > 0-->
-                                            <div class="list">
-                                                <!--ko foreach:$root.mainPage.selectedWorkitemChildren-->
-                                                <div class="item task list-item New">
-                                                    <!-- ko if: Title -->
-                                                    <h2 class="title margintop" data-bind="text: Title, click: $root.mainPage.onSelectWorkItemOfUserStory"></h2>
-                                                    <!-- /ko -->
-
-                                                    <div>
-                                                        <!-- ko if: RemainingWork -->
-                                                        <span class="small accent-bg" data-bind="text: RemainingWork()+' h'"></span>
-                                                        <!-- /ko -->
-
-                                                        <!-- ko if: AssignedTo -->
-                                                        <span class="small accent-color" data-bind="text: AssignedTo"></span>
-                                                        <!-- /ko -->
-
-                                                        <!-- ko if: Priority -->
-                                                        | <span class="small inactive" data-bind="text: 'prior: '+Priority()"></span>
-                                                        <!-- /ko -->
-                                                    </div>
-                                                </div>
-                                                <!--/ko-->
-                                            </div>
-                                            <!--/ko-->
-
-                                            <!--ko if: $root.mainPage.selectedWorkitemChildren().length < 1 -->
-                                                <p class="inactive">No task found for this user story</p>
-                                            <!--/ko-->
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="metro-actionbar detail-view opened" data-bind="with: $data.selectedUserStory">
-            <ul>
-                <li class="icon-action edit"><span data-bind="click: $root.mainPage.onEditUserStory"></span></li>
-                <li class="icon-action update"><span data-bind="click: $root.mainPage.onUpdateUserStory"></span></li>
-                <li class="icon-action delete"><span data-bind="click: $root.mainPage.onDeleteUserStory"></span></li>
-            </ul>
-        </div>
-    </script>
-    <script type="text/html" id="userStoryEditView-template">
-        <div class="icon-action back topleft absolute" data-bind="with: $root.mainPage.editableUserStory">
-            <span data-bind="click: $root.mainPage.onCancelUserStory"></span>
-        </div>
-        <div class="detail edit" data-bind="with: $root.mainPage.editableUserStory">
-             <!-- ko template: { name: 'workItemEditor-template', data: $data }-->
-        <!-- /ko-->
-        </div>
-        <div class="metro-actionbar detail-view-edit opened" data-bind="with: $root.mainPage.editableUserStory">
-            <ul>
-                <li class="icon-action save"><span data-bind="click: $root.mainPage.onSaveUserStory"></span></li>
-            </ul>
-        </div>
-    </script>
     <script type="text/html" id="userStory-template">
         <div id="wrapper" class="metro-pivot wrapper-container">
             <div id="scroller">
@@ -824,13 +733,13 @@
                         <h1 class="pivot-default">Independent</h1>
                         <div class="uslist scroll-list pivot-default-opacity scrollable-list" id='transition-us'>
                             <div class="scroller-list" data-sprintId="-1">
-                                <!-- ko template: { name: 'userStoryColumn-template', data: userStoryList }-->
+                                <!-- ko template: { name: 'userStoryColumn-template', data: $data.data().userStoryList }-->
                                 <!-- /ko-->
                             </div>
                         </div>
                     </div>
 
-                    <!-- ko foreach: userStoriesInSprintList-->
+                    <!-- ko foreach: $data.data().userStoriesInSprintList-->
                     <div class="pivot">
                         <h1 class="pivot-default animate" data-bind="text: $data.sprintName"></h1>
                         <div class="sprint-dates">
@@ -853,7 +762,7 @@
         <div class="list" data-bind="foreach: $data">
             <div class="item task list-item" data-bind="attr: { 'class': 'item task list-item ' + State() }">
                 <!-- ko if: Title -->
-                <h2 class="title margintop tolower" data-bind="text: Title, click: $root.mainPage.onSelectUserStory"></h2>
+                <h2 class="title margintop tolower" data-bind="text: Title, click: $root.selectedFrame().onSelectUserStory"></h2>
                 <!-- /ko -->
 
                 <!-- ko if: ProjectName -->
@@ -876,9 +785,103 @@
             </div>
         </div>
         <!--ko ifnot: $data.length-->
-            <p class="inactive">No item found for this list</p>
+        <p class="inactive">No item found for this list</p>
         <!--/ko-->
     </script>
+    <script type="text/html" id="userStorySelectView-template">
+        <div class="detail" data-bind="with: $data.data().selectedUserStory">
+            <div id="wrapper-detailed" class="scroll-out">
+                <div id="swipeview" class="scroller-in">
+                    <div class="list">
+                        <div class="icon-action back topleft absolute">
+                            <span data-bind="click: $root.selectedFrame().onCancelUserStory"></span>
+                        </div>
+                        <div class="pivot-content">
+                            <div class="item task" data-bind="attr: { 'class': 'item task ' + State() }">
+
+                                <!-- ko if: Title -->
+                                <h1 class="accent-color" data-bind="text: Title"></h1>
+                                <!-- /ko -->
+
+                                <div id="swipeview-inside-us">
+                                    <div class="tolower">
+                                        
+                                        <!-- ko template: { name: 'workItemSelector-template', data: $data }-->
+                                        <!-- /ko-->
+                                        
+                                        <br />
+
+                                        <div class="metro-pivot uslist" id="task-list">
+                                            <h2 class="font30 marginb20">
+                                                <span class="value">Tasks</span>
+                                                
+                                                <span class="fright">
+                                                    <span class="icon-action update marginr5_" data-bind="click:$root.selectedFrame().onRefreshWorkItemsOfUserStory"><span></span></span>
+                                                    <span class="icon-action add marginr5_"><span></span></span>
+                                                </span>
+                                            </h2>
+
+                                            <!--ko if: $parent.data().selectedUserStoryTaskList().length > 0-->
+                                            <div class="list">
+                                                <!--ko foreach: $parent.data().selectedUserStoryTaskList()-->
+                                                <div class="item task list-item New">
+                                                    <!-- ko if: Title -->
+                                                    <h2 class="title margintop" data-bind="text: Title, click: $root.selectedFrame().onSelectWorkItemOfUserStory"></h2>
+                                                    <!-- /ko -->
+
+                                                    <div>
+                                                        <!-- ko if: RemainingWork -->
+                                                        <span class="small accent-bg" data-bind="text: RemainingWork()+' h'"></span>
+                                                        <!-- /ko -->
+
+                                                        <!-- ko if: AssignedTo -->
+                                                        <span class="small accent-color" data-bind="text: AssignedTo"></span>
+                                                        <!-- /ko -->
+
+                                                        <!-- ko if: Priority -->
+                                                        | <span class="small inactive" data-bind="text: 'prior: '+Priority()"></span>
+                                                        <!-- /ko -->
+                                                    </div>
+                                                </div>
+                                                <!--/ko-->
+                                            </div>
+                                            <!--/ko-->
+
+                                            <!--ko if: $parent.data().selectedUserStoryTaskList().length < 1 -->
+                                                <p class="inactive">No task found for this user story</p>
+                                            <!--/ko-->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="metro-actionbar detail-view opened" data-bind="with: $data.data().selectedUserStory">
+            <ul>
+                <li class="icon-action edit"><span data-bind="click: $root.selectedFrame().onEditUserStory"></span></li>
+                <li class="icon-action update"><span data-bind="click: $root.selectedFrame().onUpdateUserStory"></span></li>
+                <li class="icon-action delete"><span data-bind="click: $root.selectedFrame().onDeleteUserStory"></span></li>
+            </ul>
+        </div>
+    </script>
+    <script type="text/html" id="userStoryEditView-template">
+        <div class="icon-action back topleft absolute" data-bind="with: $data.data().selectedUserStory">
+            <span data-bind="click: $root.selectedFrame().onCancelUserStory"></span>
+        </div>
+        <div class="detail edit" data-bind="with: $data.data().selectedUserStory">
+            <!-- ko template: { name: 'workItemEditor-template', data: $data }-->
+            <!-- /ko-->
+        </div>
+        <div class="metro-actionbar detail-view-edit opened" data-bind="with: $data.data().selectedUserStory">
+            <ul>
+                <li class="icon-action save"><span data-bind="click: $root.selectedFrame().onSaveUserStory"></span></li>
+            </ul>
+        </div>
+    </script>
+
 
    
     <script type="text/html" id="userStoryByProject-template">
@@ -905,24 +908,24 @@
     <script type="text/html" id="sprint-template">
         <div class="metro-pivot wrapper-container">
             <div class="pivot-list">
-                <div class="pivot uslist" data-bind="with: iterationPaths">
+                <div class="pivot uslist">
                     <div class="scroll-list scrollable-list bottom45 pivot-default-opacity" id="transition-iteration">
                         <div class="scroller-list">
-                            <div class="list" data-bind="foreach: $data">
+                            <div class="list" data-bind="foreach: $data.data().sprintList">
                                 <div class="item task list-item relative reset-p clear">
                                     <div class="actions fleft">
                                         <!-- ko if: $data.isPinned() -->
-                                        <span class="icon-action unpin" title="Click to unpin from dashboard"><span data-bind="click: $root.mainPage.onPinSprint">
+                                        <span class="icon-action unpin" title="Click to unpin from dashboard"><span data-bind="click: $parent.onPinSprint">
                                         </span></span>
                                         <!-- /ko -->
                                         <!-- ko ifnot: $data.isPinned() -->
-                                        <span class="icon-action pin" title="Click to pin to dashboard"><span data-bind="click: $root.mainPage.onPinSprint">
+                                        <span class="icon-action pin" title="Click to pin to dashboard"><span data-bind="click: $parent.onPinSprint">
                                         </span></span>
                                         <!-- /ko -->
                                     </div>
                                     
                                     <div class="fleft">
-                                        <h2 class="title margintop tolower accent-color" data-bind="text: Name, click: $root.mainPage.onEditSprint"></h2>
+                                        <h2 class="title margintop tolower accent-color" data-bind="text: Name, click: $parent.onEditSprint"></h2>
                                         <div class="sprint-dates white">
                                             <span data-bind="text: moment(StartDate()).format('YYYY.MM.DD')"></span>- <span data-bind="text: moment(FinishDate()).format('YYYY.MM.DD')"></span>
                                         </div>
@@ -935,17 +938,17 @@
             </div>
             <div class="metro-actionbar detail-view opened">
                 <ul>
-                    <li class="icon-action add"><span data-bind="click: $root.mainPage.onAddSprint"></span>
+                    <li class="icon-action add"><span data-bind="click: $data.onAddSprint"></span>
                     </li>
                 </ul>
             </div>
         </div>
     </script>
     <script type="text/html" id="sprintEditView-template">
-        <div class="icon-action back topleft absolute" data-bind="with: $root.mainPage.editableIteration">
-            <span data-bind="click: $root.mainPage.onCancelSprint"></span>
+        <div class="icon-action back topleft absolute" data-bind="with: $data.data().selectedSprint">
+            <span data-bind="click: $parent.onCancelSprint"></span>
         </div>
-        <div class="detail edit" data-bind="with: $root.mainPage.editableIteration">
+        <div class="detail edit" data-bind="with: $data.data().selectedSprint">
             <div id="transition-iteration-edit" class="scroll-out pivot-default-opacity top50">
                 <div class="scroll-in">
                     <div class="list">
@@ -973,22 +976,23 @@
                 </div>
             </div>
         </div>
-        <div class="metro-actionbar detail-view-edit" data-bind="with: $root.mainPage.editableIteration">
+        <div class="metro-actionbar detail-view-edit" data-bind="with: $data.data().selectedSprint">
             <ul>
-                <li class="icon-action save"><span data-bind="click: $root.mainPage.onSaveSprint"></span></li>
-                <li class="icon-action delete"><span data-bind="click: $root.mainPage.onDeleteSprint"></span></li>
+                <li class="icon-action save"><span data-bind="click: $parent.onSaveSprint"></span></li>
+                <li class="icon-action delete"><span data-bind="click: $parent.onDeleteSprint"></span></li>
             </ul>
         </div>
     </script>
+
     <script type="text/html" id="project-template">
         <div class="metro-pivot wrapper-container">
             <div class="pivot-list">
-                <div class="pivot uslist" data-bind="with: projectList">
+                <div class="pivot uslist">
                     <div class="scroll-list scrollable-list bottom45 pivot-default-opacity" id="transition-projects">
                         <div class="scroller-list">
-                            <div class="list project-list" data-bind="foreach: $data">
+                            <div class="list project-list" data-bind="foreach: $data.data().projectList">
                                 <div class="item task list-item clear">
-                                    <h2 class="title margintop tolower accent-color" data-bind="text: Name, click: $root.mainPage.onUserStoryByProjectListShow"></h2>
+                                    <h2 class="title margintop tolower accent-color" data-bind="text: Name, click: $parent.onEditProject"></h2>
                                     <p data-bind="text: Description"></p>
                                 </div>
                             </div>
@@ -998,14 +1002,14 @@
             </div>
             <div class="metro-actionbar detail-view opened">
                 <ul>
-                    <li class="icon-action add"><span data-bind="click: $root.mainPage.onAddProject"></span>
+                    <li class="icon-action add"><span data-bind="click: $data.onAddProject"></span>
                     </li>
                 </ul>
             </div>
         </div>
     </script>
     <script type="text/html" id="projectEditView-template">
-        <div class="detail edit" data-bind="with: $root.mainPage.editableProject">
+        <div class="detail edit" data-bind="with: $data.data().editableProject">
             <div id="transition-projects" class="scroll-out top50 pivot-default-opacity">
                 <div class="scroll-in">
                     <div class="list">
@@ -1027,13 +1031,14 @@
                 </div>
             </div>
         </div>
-        <div class="metro-actionbar detail-view-edit" data-bind="with: $root.mainPage.editableProject">
+        <div class="metro-actionbar detail-view-edit" data-bind="with: $data.data().editableProject">
             <ul>
-                <li class="icon-action save"><span data-bind="click: $root.mainPage.onSaveProject"></span></li>
-                <li class="icon-action delete"><span data-bind="click: $root.mainPage.onDeleteProject"></span></li>
+                <li class="icon-action save"><span data-bind="click: $parent.onSaveProject"></span></li>
+                <li class="icon-action delete"><span data-bind="click: $parent.onDeleteProject"></span></li>
             </ul>
         </div>
     </script>
+
     <script type="text/html" id="guiSettingPage-template">
         <div class="scroll-list pivot-default-opacity scrollable-list" id="transition-settings">
             <div class="scroller-list">
@@ -1089,6 +1094,7 @@
             </div>
         </div>
     </script>
+
     <script type="text/html" id="repositories-template">
         <div id="settingPage">
             <div class="main-header">
@@ -1285,13 +1291,21 @@
     <script type="text/javascript" src="Scripts/scrum.js"></script>
 
     <script type="text/html" id="jayAppMenu">
+        <!--<div class="icon-action back topleft">
+            <span data-bind="click: $root.mainPage.onMainPageShow"></span>
+        </div>
+
+        <div class="main-header"
+             data-bind="attr: { 'class': $data.isActivePart('main') ? 'main-header main-page' : 'main-header not-main-page' }">
+            <h1 class="title" data-bind="text: $root.mainPage.pageTitle"></h1>
+        </div>-->
         <div>
-            <span>menu: <i data-bind="text: $data.framePath"></i></span><br />
+            <span>menu: <i data-bind="text: $data.framePath"></i></span><br/>
             <ul data-bind="foreach: $data.frameContainer">
                 <!--ko template: {name: $data.selectedMetaView().templateName, data:$data.data}-->
                 <!--/ko-->
             </ul>
-            <br />
+            <br/>
         </div>
     </script>
 

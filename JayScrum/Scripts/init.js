@@ -147,9 +147,9 @@ function hideLoading() {
         loading.hide();
     });
 
-    if (document.querySelector('.metro-loading').style.opacity == "0") {
-        loading.hide();
-    }
+//    if (document.querySelector('.metro-loading').style.opacity == "0") {
+//        loading.hide();
+//    }
 
     console.log('hide loading');
 }

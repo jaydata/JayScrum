@@ -252,9 +252,9 @@ function initScrollById(id, fn, fn2, hideLoad) {
         transition.find('div.scroller-list').prepend(d);
     }
 
-    if (hideLoad) {
-        hideLoading();
-    }
+//    if (hideLoad) {
+//        hideLoading();
+//    }
     console.log('initing scroll: ' + id);
 }
 function initHorizontalScrollById(id, scrollToPage) {

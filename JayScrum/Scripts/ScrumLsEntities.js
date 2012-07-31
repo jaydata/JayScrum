@@ -216,7 +216,7 @@
 
 function testData() {
     var ctx = new LightSwitchApplication.ApplicationData({ name:'storm', url:'http://192.168.1.142:3000' });
-    $data.Model.settingPage.loginSettings.UserName = 'admin';
+    //$data.Model.settingPage.loginSettings.UserName = 'admin';
     ctx.Sprints.add(new LightSwitchApplication.Sprint({ Name:'Sprint 1', StartDate:moment().add('days', -30).utc().toDate(), FinishDate:moment().add('days', -23).utc().toDate() }));
     ctx.Sprints.add(new LightSwitchApplication.Sprint({ Name:'Sprint 2', StartDate:moment().add('days', -26).utc().toDate(), FinishDate:moment().add('days', -19).utc().toDate() }));
     ctx.Sprints.add(new LightSwitchApplication.Sprint({ Name:'Sprint 3', StartDate:moment().add('days', -22).utc().toDate(), FinishDate:moment().add('days', -15).utc().toDate() }));
@@ -241,7 +241,7 @@ function testData() {
     ctx.Projects.add(new LightSwitchApplication.Project({ Name:'Project 11', Description:'Fusce varius cursus libero, quis rhoncus ligula facilisis ac. Duis adipiscing congue justo eu bibendum. ' }));
     ctx.Projects.add(new LightSwitchApplication.Project({ Name:'Project 12', Description:'Phasellus vitae purus lorem. Duis lobortis, velit et dignissim congue, nibh ante gravida ipsum, quis luctus enim sapien vitae turpis. ' }));
 
-    $data.Model.settingPage.loginSettings.UserName = '';
+    //$data.Model.settingPage.loginSettings.UserName = '';
 
     var allSprints = null;
     var allProjects = null;
