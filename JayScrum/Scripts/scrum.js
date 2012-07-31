@@ -329,16 +329,14 @@ function initHorizontalScrollById(id, scrollToPage) {
             vScroll.disable();
         }
 
-        hideLoading();
+        //hideLoading();
     }
 }
 function refreshScroll(scroll, hideLoad) {
     setTimeout(function () {
         scroll.refresh();
 
-        if (hideLoad) {
-            hideLoading();
-        }
+
     }, 500);
 
     console.log("scroll refreshed: " + scroll);

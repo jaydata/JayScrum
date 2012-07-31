@@ -130,29 +130,6 @@ function setSettingsByValue(key, value) {
     }
 }
 
-// LOADING SCREEN
-function showLoading() {
-    loading.show();
-
-    loading.animate({
-        opacity: 1
-    }, 0, 'ease-out');
-
-    console.log('show loading');
-}
-function hideLoading() {
-    loading.animate({
-        opacity: 0
-    }, 500, 'ease-out', function () {
-        loading.hide();
-    });
-
-//    if (document.querySelector('.metro-loading').style.opacity == "0") {
-//        loading.hide();
-//    }
-
-    console.log('hide loading');
-}
 
 function initDateFieldsById(containerId) {
     var div = $("#" + containerId),

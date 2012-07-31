@@ -55,13 +55,13 @@ $data.Class.define('JayScrum.Frame', null, null, {
 
     },
     onFrameChangingFrom:function (newFrameData, oldFrameData, frame) {
-        this.frameApp.visibleLoadingScreen(true);
+        this.frameApp.showLoading();
     },
     onFrameChangedTo:function (newFrameData, oldFrameData, frame) {
 
     },
     onFrameChangedFrom:function (newFrameData, oldFrameData, frame) {
-        this.frameApp.visibleLoadingScreen(false);
+        this.frameApp.hideLoading();
     }
 
 }, null);

@@ -17,7 +17,7 @@ $data.Class.define('JayScrum.Frames.ThemeSettings', JayScrum.Frame, null, {
         });
     },
     onFrameChangedFrom:function (activeFrameMeta, oldFrameMeta, initDatam, frame) {
-        JayScrum.app.visibleLoadingScreen(false);
+        JayScrum.app.hideLoading();
 
         $("h1.main-header").addClass("animate");
         $("div.icon-action.back.topleft.main").show();

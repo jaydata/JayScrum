@@ -41,7 +41,7 @@ $data.Class.define('JayScrum.Frames.Sprints', JayScrum.Frame, null, {
         return loadingPromise.promise;
     },
     _initializeView: function(){
-        JayScrum.app.visibleLoadingScreen(false);
+        JayScrum.app.hideLoading();
         JayScrum.app.selectedFrame().selectView('sprints');
         $("h1.main-header").addClass("animate");
         $("div.icon-action.back.topleft.main").show();

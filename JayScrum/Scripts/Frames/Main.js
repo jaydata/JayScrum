@@ -95,7 +95,7 @@ $data.Class.define('JayScrum.Frames.Main', JayScrum.Frame, null, {
     onFrameChangedFrom:function (activeFrameMeta, oldFrameMeta, initData, frame) {
         this._loadData()
             .then(function () {
-                JayScrum.app.visibleLoadingScreen(false);
+                JayScrum.app.hideLoading();
                 initScrollById("metro-tiles-scroll", null, null, true);
             });
     },

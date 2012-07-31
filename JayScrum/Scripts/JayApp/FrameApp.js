@@ -32,6 +32,8 @@ $data.Class.define('JayScrum.FrameApp', null, null, {
         this.visibleContent = ko.observable(true);
         this.visibleLoadingScreen = ko.observable(false);
         this._frameHashTable = {};
+        //TODO csinád meg
+        this.loading = $(".metro-loading");
     },
     _createContainer:function (elementId, parent) {
         var containerNode = null;
@@ -43,6 +45,21 @@ $data.Class.define('JayScrum.FrameApp', null, null, {
             parent.appendChild(containerNode);
         }
         return containerNode;
+    },
+    showLoading:function () {
+        console.log('show loading screen');
+        JayScrum.app.loading.show();
+        JayScrum.app.loading.animate({
+            opacity:1
+        }, 0, 'ease-out');
+    },
+    hideLoading:function () {
+        console.log('hide loading screen');
+        JayScrum.app.loading.animate({
+            opacity:0
+        }, 500, 'ease-out', function () {
+            JayScrum.app.loading.hide();
+        })
     },
     registerFrame:function (frame) {
         if (frame instanceof JayScrum.Frame) {

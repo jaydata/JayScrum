@@ -86,7 +86,7 @@ $data.Class.define('JayScrum.Frames.UserStories', JayScrum.Frame, null, {
         initHorizontalScrollById("wrapper", 0);
     },
     _initializeView: function(){
-        JayScrum.app.visibleLoadingScreen(false);
+        JayScrum.app.hideLoading();
         JayScrum.app.selectedFrame().selectView('userStory');
         $("h1.main-header").addClass("animate");
 

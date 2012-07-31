@@ -60,8 +60,9 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
                                 JayScrum.app.selectedFrame()._loadTaskList(JayScrum.app.selectedFrame().doneListQuery, JayScrum.app.selectedFrame().data().doneList, 'transition3', null, null)
                                     .then(function(){
                                         initScrollById("transition4");
-                                        initHorizontalScrollById("wrapper", 1);})
-                                    .then(function(){loadingPromise.resolve();})
+                                        initHorizontalScrollById("wrapper", 1);
+                                        loadingPromise.resolve();
+                                    });
                             })
                     })
             })
@@ -303,11 +304,12 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
             .take(this.listLoadSize);
         this.data().currentSprint(initData);
         this.data().name = initData.Name();
+        JayScrum.app.showLoading();
     },
     onFrameChangedFrom:function (activeFrameMeta, oldFrameMeta, frame) {
         this._loadData()
             .then(function () {
-                JayScrum.app.visibleLoadingScreen(false);
+                JayScrum.app.hideLoading();
                 initScrollById("metro-tiles-scroll", null, null, true);
             });
     }

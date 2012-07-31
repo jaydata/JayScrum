@@ -74,7 +74,7 @@ $data.Class.define('JayScrum.Frames.Projects', JayScrum.Frame, null, {
     onFrameChangedFrom:function (activeFrameMeta, oldFrameMeta, initDatam, frame) {
         this._loadData()
             .then(function () {
-                JayScrum.app.visibleLoadingScreen(false);
+                JayScrum.app.hideLoading();
                 $("h1.main-header").addClass("animate");
                 initScrollById("transition-projects", null, null, true);
             });

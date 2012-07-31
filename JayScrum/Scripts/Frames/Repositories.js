@@ -32,7 +32,6 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
     },
 
     _initializeRepositoriesFrame: function () {
-        this.frameApp.visibleLoadingScreen(true);
         var app = this;
         this.localContext.Repositories.toArray(function (result) {
             app.data().settings(result);
@@ -92,7 +91,7 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
         JayScrum.app.selectedFrame()._initializeRepositoriesFrame();
     },
     onFrameChangingFrom: function(newFrameMeta, oldFrameMeta, initData, frame){
-        this.frameApp.visibleLoadingScreen(true);
+        JayScrum.app.showLoading();
         var self = this;
         this.localContext.onReady(function(){
             if(initData){
@@ -103,7 +102,7 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
         });
     },
     onFrameChangedFrom:function (newFrameMeta, oldFrameMeta, frame) {
-
+        JayScrum.app.hideLoading();
     },
     showActionBar:function () {
         $('div#settingPageActionBar').addClass("opened");
