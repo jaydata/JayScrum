@@ -268,9 +268,9 @@ function testData() {
                     }
                 };
 
-                var taskToSprint = function (sprintId, userStoryId, index) {
+                var taskToSprint = function (sprintId, userStoryId, index, context) {
                     for (var i = 0; i < 15; i++) {
-                        ctx.WorkItems.add(new LightSwitchApplication.WorkItem({
+                        context.WorkItems.add(new LightSwitchApplication.WorkItem({
                             Title:"Task 1" + index++, Description:"Donec est orci, molestie ac pellentesque in, lacinia et dui. Morbi vitae facilisis enim. Aliquam eu ullamcorper odio.Donec est orci, molestie ac pellentesque in, lacinia et dui. Morbi vitae facilisis enim. Aliquam eu ullamcorper odio. ",
                             Priority:Math.floor(Math.random() * 30), Effort:Math.floor(Math.random() * 100), BusinessValue:Math.floor(Math.random() * 1000), Type:"Task",
                             State:'To Do', RemainingWork:Math.floor(Math.random() * 11),
@@ -278,7 +278,7 @@ function testData() {
                             WorkItem_WorkItem:userStoryId,
                             CreatedDate:new Date().toISOString(), CreatedBy:'hajni', ChangedDate:new Date().toISOString(), ChangedBy:'hajni', AssignedTo:""
                         }));
-                        ctx.WorkItems.add(new LightSwitchApplication.WorkItem({
+                        context.WorkItems.add(new LightSwitchApplication.WorkItem({
                             Title:"Task 1" + index++, Description:"Donec est orci, molestie ac pellentesque in, lacinia et dui. Morbi vitae facilisis enim. Aliquam eu ullamcorper odio.Donec est orci, molestie ac pellentesque in, lacinia et dui. Morbi vitae facilisis enim. Aliquam eu ullamcorper odio. ",
                             Priority:Math.floor(Math.random() * 30), Effort:Math.floor(Math.random() * 100), BusinessValue:Math.floor(Math.random() * 1000), Type:"Task",
                             State:'To Do', RemainingWork:Math.floor(Math.random() * 11),
@@ -286,7 +286,7 @@ function testData() {
                             WorkItem_WorkItem:userStoryId,
                             CreatedDate:new Date().toISOString(), CreatedBy:'hajni', ChangedDate:new Date().toISOString(), ChangedBy:'hajni', AssignedTo:""
                         }));
-                        ctx.WorkItems.add(new LightSwitchApplication.WorkItem({
+                        context.WorkItems.add(new LightSwitchApplication.WorkItem({
                             Title:"Task 1" + index++, Description:"Donec est orci, molestie ac pellentesque in, lacinia et dui. Morbi vitae facilisis enim. Aliquam eu ullamcorper odio.Donec est orci, molestie ac pellentesque in, lacinia et dui. Morbi vitae facilisis enim. Aliquam eu ullamcorper odio. ",
                             Priority:Math.floor(Math.random() * 30), Effort:Math.floor(Math.random() * 100), BusinessValue:Math.floor(Math.random() * 1000), Type:"Task",
                             State:'To Do', RemainingWork:Math.floor(Math.random() * 11),
@@ -295,7 +295,7 @@ function testData() {
                             CreatedDate:new Date().toISOString(), CreatedBy:'hajni', ChangedDate:new Date().toISOString(), ChangedBy:'hajni', AssignedTo:""
                         }));
 
-                        ctx.WorkItems.add(new LightSwitchApplication.WorkItem({
+                        context.WorkItems.add(new LightSwitchApplication.WorkItem({
                             Title:"Task 1" + index++, Description:"Donec est orci, molestie ac pellentesque in, lacinia et dui. Morbi vitae facilisis enim. Aliquam eu ullamcorper odio.Donec est orci, molestie ac pellentesque in, lacinia et dui. Morbi vitae facilisis enim. Aliquam eu ullamcorper odio. ",
                             Priority:Math.floor(Math.random() * 30), Effort:Math.floor(Math.random() * 100), BusinessValue:Math.floor(Math.random() * 1000), Type:"Task",
                             State:'In Progress', RemainingWork:Math.floor(Math.random() * 11),
@@ -303,7 +303,7 @@ function testData() {
                             WorkItem_WorkItem:userStoryId,
                             CreatedDate:new Date().toISOString(), CreatedBy:'hajni', ChangedDate:new Date().toISOString(), ChangedBy:'hajni', AssignedTo:""
                         }));
-                        ctx.WorkItems.add(new LightSwitchApplication.WorkItem({
+                        context.WorkItems.add(new LightSwitchApplication.WorkItem({
                             Title:"Task 1" + index++, Description:"Donec est orci, molestie ac pellentesque in, lacinia et dui. Morbi vitae facilisis enim. Aliquam eu ullamcorper odio.Donec est orci, molestie ac pellentesque in, lacinia et dui. Morbi vitae facilisis enim. Aliquam eu ullamcorper odio. ",
                             Priority:Math.floor(Math.random() * 30), Effort:Math.floor(Math.random() * 100), BusinessValue:Math.floor(Math.random() * 1000), Type:"Task",
                             State:'In Progress', RemainingWork:Math.floor(Math.random() * 11),
@@ -312,7 +312,7 @@ function testData() {
                             CreatedDate:new Date().toISOString(), CreatedBy:'hajni', ChangedDate:new Date().toISOString(), ChangedBy:'hajni', AssignedTo:""
                         }));
 
-                        ctx.WorkItems.add(new LightSwitchApplication.WorkItem({
+                        context.WorkItems.add(new LightSwitchApplication.WorkItem({
                             Title:"Task 1" + index++, Description:"Donec est orci, molestie ac pellentesque in, lacinia et dui. Morbi vitae facilisis enim. Aliquam eu ullamcorper odio.Donec est orci, molestie ac pellentesque in, lacinia et dui. Morbi vitae facilisis enim. Aliquam eu ullamcorper odio. ",
                             Priority:Math.floor(Math.random() * 30), Effort:Math.floor(Math.random() * 100), BusinessValue:Math.floor(Math.random() * 1000), Type:"Task",
                             State:'Done', RemainingWork:Math.floor(Math.random() * 11),
@@ -329,14 +329,23 @@ function testData() {
                 ustoSprint(sprintResult[7].Id, projectResult[0].Id, 45, ctx);
                 ustoSprint(sprintResult[8].Id, projectResult[1].Id, 60, ctx);
 
-                taskToSprint(null, null, 0);
-                taskToSprint(sprintResult[5].Id, projectResult[0].Id, 15);
-                taskToSprint(sprintResult[6].Id, projectResult[1].Id, 30);
-                taskToSprint(sprintResult[7].Id, projectResult[0].Id, 45);
-                taskToSprint(sprintResult[8].Id, projectResult[1].Id, 60);
-
-                ctx.saveChanges(function () {
-                    console.log('ALL OK');
+                ctx.saveChanges(function(){
+                    console.log('UserStories save OK');
+                        ctx.WorkItems.toArray(function(userStoryResult){
+                            console.log('Get userStories OK');
+                            taskToSprint(null, null, 0, ctx);
+                            console.log(sprintResult[5].Name + userStoryResult[35].Title);
+                            taskToSprint(sprintResult[5].Id, userStoryResult[35].Id, 15, ctx);
+                            console.log(sprintResult[6].Name + userStoryResult[36].Title);
+                            taskToSprint(sprintResult[6].Id, userStoryResult[36].Id, 30, ctx);
+                            console.log(sprintResult[7].Name + userStoryResult[50].Title);
+                            taskToSprint(sprintResult[7].Id, userStoryResult[50].Id, 45, ctx);
+                            console.log(sprintResult[8].Name + userStoryResult[51].Title);
+                            taskToSprint(sprintResult[8].Id, userStoryResult[51].Id, 60, ctx);
+                            ctx.saveChanges(function () {
+                                console.log('ALL OK');
+                            });
+                        });
                 });
             });
         });
