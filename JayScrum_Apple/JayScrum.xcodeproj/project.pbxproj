@@ -37,7 +37,20 @@
 		848DC7EC15C90B43008431C2 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 848DC7EB15C90B43008431C2 /* AppDelegate.m */; };
 		848DC7EF15C90B44008431C2 /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 848DC7EE15C90B44008431C2 /* MainViewController.m */; };
 		848DC7F115C90B44008431C2 /* MainViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 848DC7F015C90B44008431C2 /* MainViewController.xib */; };
+		848DC81B15C9443D008431C2 /* www in Resources */ = {isa = PBXBuildFile; fileRef = 848DC81A15C9443D008431C2 /* www */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXBuildRule section */
+		848DC80E15C916E7008431C2 /* PBXBuildRule */ = {
+			isa = PBXBuildRule;
+			compilerSpec = com.apple.compilers.proxy.script;
+			fileType = text.plist;
+			isEditable = 1;
+			outputFiles = (
+			);
+			script = "# builtin-copyPlist\n";
+		};
+/* End PBXBuildRule section */
 
 /* Begin PBXFileReference section */
 		848DC79F15C90B43008431C2 /* JayScrum.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = JayScrum.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -77,6 +90,7 @@
 		848DC7F015C90B44008431C2 /* MainViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = MainViewController.xib; path = Classes/MainViewController.xib; sourceTree = "<group>"; };
 		848DC7F315C90B44008431C2 /* README */ = {isa = PBXFileReference; lastKnownFileType = text; name = README; path = Plugins/README; sourceTree = "<group>"; };
 		848DC7F415C90B44008431C2 /* verify.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = verify.sh; sourceTree = "<group>"; };
+		848DC81A15C9443D008431C2 /* www */ = {isa = PBXFileReference; lastKnownFileType = folder; path = www; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -151,6 +165,7 @@
 		848DC7BD15C90B43008431C2 /* JayScrum */ = {
 			isa = PBXGroup;
 			children = (
+				848DC81A15C9443D008431C2 /* www */,
 				848DC7C615C90B43008431C2 /* Cordova.framework */,
 				848DC7C815C90B43008431C2 /* Resources */,
 				848DC7E915C90B43008431C2 /* Classes */,
@@ -273,6 +288,7 @@
 				848DC79D15C90B43008431C2 /* ShellScript */,
 			);
 			buildRules = (
+				848DC80E15C916E7008431C2 /* PBXBuildRule */,
 			);
 			dependencies = (
 			);
@@ -328,6 +344,7 @@
 				848DC7E615C90B43008431C2 /* Capture.bundle in Resources */,
 				848DC7E815C90B43008431C2 /* Cordova.plist in Resources */,
 				848DC7F115C90B44008431C2 /* MainViewController.xib in Resources */,
+				848DC81B15C9443D008431C2 /* www in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -437,7 +454,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 3.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				SDKROOT = iphoneos;
 			};
 			name = Debug;
@@ -459,7 +476,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 3.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -545,6 +562,7 @@
 				848DC7F915C90B44008431C2 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
