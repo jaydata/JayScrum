@@ -5,69 +5,16 @@
  * Time: 9:03 AM
  * To change this template use File | Settings | File Templates.
  */
-$data.Class.define('JayScrum.Views.ScrumWall', JayScrum.FrameView, null, {
-    constructor:function(name, path, tplSource){
-        this.templateName = name || 'scrumWall-template';
-    },
-    initializaView:function(){
-        console.log('==> initialize ScrumWall View');
-
-        // TODO: beégetett ID-k vannak, alatta commentbe van a dinamikus verzió
-        initScrollById('transition0', JayScrum.app.selectedFrame().onRecentlyChangedListPullUp, JayScrum.app.selectedFrame().onRecentlyChangedListPullDown);
-        initScrollById('transition1', JayScrum.app.selectedFrame().onToDoListPullUp, JayScrum.app.selectedFrame().onToDoListPullDown);
-        initScrollById('transition2', JayScrum.app.selectedFrame().onInProgressListPullUp, JayScrum.app.selectedFrame().onInProgressListPullDown);
-        initScrollById('transition3', JayScrum.app.selectedFrame().onDoneListPullUp, JayScrum.app.selectedFrame().onDoneListPullDown);
-        initScrollById('transition4', null, null);
-        initHorizontalScrollById("wrapper", 1);
-
-        JayScrum.app.hideLoading();
-
-       /* var listCount = JayScrum.app.selectedFrame().data().userStoriesInSprintList().length;
-        for (var i = 0; i < listCount; i++) {
-            initScrollById("transition-us-" + i, JayScrum.app.selectedFrame().onUserStoryInSprintListPullUp, JayScrum.app.selectedFrame().onUserStoryInSprintListPullDown);
-        }
-
-        initHorizontalScrollById("wrapper", 0);*/
-    }
-}, null);
-$data.Class.define('JayScrum.Views.TaskSelect', JayScrum.FrameView, null, {
-    constructor:function(name, path, tplSource){
-        this.templateName = name || 'taskSelectView-template';
-    },
-    initializaView:function(){
-        console.log('==> initialize Task Select View');
-        JayScrum.app.hideLoading();
-
-        $("h1.main-header").addClass("animate");
-        $("div.icon-action.back.topleft.main").hide();
-        $("div.metro-actionbar.detail-view").addClass("opened");
-        initSwipeviewById("swipeview", JayScrum.app.selectedFrame().activeList, JayScrum.app.selectedFrame().data().selectedWorkItem().Id());
-    }
-}, null);
-$data.Class.define('JayScrum.Views.TaskEdit', JayScrum.FrameView, null, {
-    constructor:function(name, path, tplSource){
-        this.templateName = name || 'taskEditView-template';
-    },
-    initializaView:function(){
-        console.log('==> initialize Task Select View');
-        JayScrum.app.hideLoading();
-
-        $("h1.main-header").addClass("animate");
-        var swipeHeight = $("div.detail-edit-fix-header h1").height();
-        $("div#wrapper-detailed-edit").css('top', swipeHeight);
-        initScrollById('wrapper-detailed-edit', null, null, true);
-    }
-}, null);
 $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
     constructor:function () {
         //register frameViews
-        this.registerView('scrumWall', new JayScrum.Views.ScrumWall('scrumWall-template'));
-        this.registerView('taskSelect', new JayScrum.Views.TaskSelect('taskSelectView-template'));
-        this.registerView('taskEdit', new JayScrum.Views.TaskEdit('taskEditView-template'));
+        this.registerView('scrumWall', new JayScrum.FrameView('scrumWall-template'));
+        this.registerView('taskSelect', new JayScrum.FrameView('taskSelectView-template'));
+        this.registerView('taskEdit', new JayScrum.FrameView('taskEditView-template'));
         this.registerMetaView('scrumWallMeta', new JayScrum.FrameView('jayAppMetaDefault'));
         this.defaultViewName='scrumWall';
         this.selectMetaView('scrumWallMeta');
-        this.listLoadSize = 7;
+
         this.data = ko.observable({
             currentSprint: ko.observable(),
             name:'scrumWall',
@@ -97,7 +44,7 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
         var pDownFn = pullDownFn;
         query.toArray(function(result){
             JayScrum.pushObservablesToList(dList, result);
-            //initScrollById(lId, pUpFn, pDownFn);
+            initScrollById(lId, pUpFn, pDownFn);
             loadingPromise.resolve();
         })
         return loadingPromise.promise;
@@ -112,6 +59,8 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
                             .then(function(){
                                 JayScrum.app.selectedFrame()._loadTaskList(JayScrum.app.selectedFrame().doneListQuery, JayScrum.app.selectedFrame().data().doneList, 'transition3', null, null)
                                     .then(function(){
+                                        initScrollById("transition4");
+                                        initHorizontalScrollById("wrapper", 1);
                                         loadingPromise.resolve();
                                     });
                             })
@@ -175,12 +124,23 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
 //        $data.Model.mainPage.activePart('selectedWorkitem');
         JayScrum.app.selectedFrame().data().selectedWorkItem(wrkItem);
         JayScrum.app.selectedFrame().data().selectedWorkItemActive(wrkItem);
+        JayScrum.app.selectedFrame().selectView('taskSelect');
+
+        $("h1.main-header").addClass("animate");
+        $("div.icon-action.back.topleft.main").hide();
+        $("div.metro-actionbar.detail-view").addClass("opened");
 
         // SWIPEVIEW FOR TASKS
         if (isEventCall && isEventCall.srcElement.attributes['data-isInRecentlyChangedList'] && isEventCall.srcElement.attributes['data-isInRecentlyChangedList'].value === 'true') {
-            JayScrum.app.selectedFrame().activeList = JayScrum.app.selectedFrame().data().recentlyChangedTasks();
+
+            initSwipeviewById("swipeview", $data.Model.mainPage.recentlyChangedTasks(), wrkItem.Id());
+
         } else if (wrkItem.Type() == "Task") {
-            JayScrum.app.selectedFrame().activeList = JayScrum.app.selectedFrame()._findListById(wrkItem.Id(), wrkItem);
+
+            var workItemId  = wrkItem.Id(),
+                list        = JayScrum.app.selectedFrame()._findListById(workItemId, wrkItem);
+            initSwipeviewById("swipeview", list, workItemId);
+
         } else {
             $("div.detail div#wrapper-detailed div.list div.pivot-content").show();
 
@@ -193,7 +153,6 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
 
             console.log(scrollToRefresh);
         }
-        JayScrum.app.selectedFrame().selectView('taskSelect');
     },
     onEditWorkItem: function (wrkItem, isEventCall) {
         console.log('onEditWorkItem');
@@ -202,6 +161,10 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
             .then(function(){
                 JayScrum.repository.WorkItems.attach(wrkItem);
                 JayScrum.app.selectedFrame().selectView('taskEdit')
+                $("h1.main-header").addClass("animate");
+                var swipeHeight = $("div.detail-edit-fix-header h1").height();
+                $("div#wrapper-detailed-edit").css('top', swipeHeight);
+                initScrollById('wrapper-detailed-edit', null, null, true);
             });
     },
     onSaveWorkItem: function (wrkItem, isEventCall) {
@@ -225,19 +188,14 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
             currentLista = JayScrum.app.selectedFrame().data().todoList();
         }
         //save parentName
-        var us = JayScrum.app.globalData().userStoryList().filter(function (item) { return item.Id() == wrkItem.WorkItem_WorkItem() })[0];
+        var us = JayScrum.app.selectedFrame().data().userStoryList().filter(function (item) { return item.Id() == wrkItem.WorkItem_WorkItem() })[0];
         if (us) {
             wrkItem.ParentName(us.Title());
         }
         //projectname update
-        var project = JayScrum.app.globalData().projectList().filter(function (item) { return item.Id() == wrkItem.WorkItem_Project() })[0];
+        var project = JayScrum.app.selectedFrame().data().projectList().filter(function (item) { return item.Id() == wrkItem.WorkItem_Project() })[0];
         if (project) {
             wrkItem.ProjectName(project.Name());
-        }
-        //sprintname update
-        var sprint = JayScrum.app.globalData().sprintList().filter(function (item) { return item.Id() == wrkItem.WorkItem_Sprint() })[0];
-        if (project) {
-            wrkItem.SprintName(sprint.Name());
         }
         //save workItem
         wrkItem.ChangedDate(new Date());
@@ -247,14 +205,25 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
             currentLista.push(wrkItem);
         }
 
-        JayScrum.repository.saveChanges(function (error) {
-            JayScrum.app.backView();
+        JayScrum.repository.saveChanges({
+            success: function (error) {
+                $(".metro-loading").hide();
+                JayScrum.app.selectedFrame().onSelectWorkItem(wrkItem);
+                JayScrum.app.selectedFrame().data().recentlyChangedTasks.unshift(wrkItem);
+
+                hideLoading();
+            },
+            error: function (error) {
+                $data.Model.ScrumAsync();
+
+                hideLoading();
+            }
         });
     },
     onCancelWorkItem: function (wrkItem, isEventCall) {
         console.log("cancel workitem - type: task");
         JayScrum.repository.WorkItems.detach(wrkItem);
-        JayScrum.app.backView();
+        JayScrum.app.selectedFrame().onSelectWorkItem(wrkItem);
     },
     onAddWorkItem: function (wrkItem) {
         console.log("add workitem - type: task");
@@ -314,85 +283,6 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
         });
     },
 
-    // Pull up to load more functions
-    onRecentlyChangedListPullUp: function (scroller) {
-        //$data.Model.mainPage.pinnedQueryParam.sprintId = JayScrum.app.selectedFrame().data().currentSprint().Id();
-        JayScrum.app.selectedFrame().recentlyChangedListQuery
-            .skip(JayScrum.app.selectedFrame().data().recentlyChangedTasks().length)
-            .toArray(function (workItemsResult) {
-                JayScrum.app.selectedFrame().data().recentlyChangedTasks(JayScrum.app.selectedFrame().data().recentlyChangedTasks().concat(
-                    workItemsResult.map(function (item) { return item.asKoObservable(); })
-                ));
-                scroller.refresh();
-            });
-    },
-    onToDoListPullUp: function (scroller) {
-        //$data.Model.mainPage.pinnedQueryParam.sprintId = $data.Model.mainPage.currentSprint().Id();
-        JayScrum.app.selectedFrame().toDoListQuery
-            .skip(JayScrum.app.selectedFrame().data().todoList().length)
-            .toArray(function (workItemsResult) {
-                JayScrum.app.selectedFrame().data().todoList(JayScrum.app.selectedFrame().data().todoList().concat(
-                    workItemsResult.map(function (item) { return item.asKoObservable(); })
-                ));
-                scroller.refresh();
-            });
-    },
-    onInProgressListPullUp: function (scroller) {
-        //$data.Model.mainPage.pinnedQueryParam.sprintId = $data.Model.mainPage.currentSprint().Id();
-        JayScrum.app.selectedFrame().inProgressListQuery
-            .skip(JayScrum.app.selectedFrame().data().inProgList().length)
-            .toArray(function (workItemsResult) {
-                JayScrum.app.selectedFrame().data().inProgList(JayScrum.app.selectedFrame().data().inProgList().concat(
-                    workItemsResult.map(function (item) { return item.asKoObservable(); })
-                ));
-                scroller.refresh();
-            });
-    },
-    onDoneListPullUp: function (scroller) {
-        //$data.Model.mainPage.pinnedQueryParam.sprintId = $data.Model.mainPage.currentSprint().Id();
-        JayScrum.app.selectedFrame().doneListQuery
-            .skip(JayScrum.app.selectedFrame().data().doneList().length)
-            .toArray(function (workItemsResult) {
-                JayScrum.app.selectedFrame().data().doneList(JayScrum.app.selectedFrame().data().doneList().concat(
-                    workItemsResult.map(function (item) { return item.asKoObservable(); })
-                ));
-                scroller.refresh();
-            });
-    },
-
-    // Pull  down to refresh
-    onRecentlyChangedListPullDown: function (scroller) {
-        //$data.Model.mainPage.pinnedQueryParam.sprintId = $data.Model.mainPage.currentSprint().Id();
-        JayScrum.app.selectedFrame().recentlyChangedListQuery
-            .toArray(function (workItemsResult) {
-                JayScrum.pushObservablesToList(JayScrum.app.selectedFrame().data().recentlyChangedTasks, workItemsResult);
-                scroller.refresh();
-            });
-    },
-    onToDoListPullDown: function (scroller) {
-        //$data.Model.mainPage.pinnedQueryParam.sprintId = $data.Model.mainPage.currentSprint().Id();
-        JayScrum.app.selectedFrame().toDoListQuery
-            .toArray(function (workItemsResult) {
-                JayScrum.pushObservablesToList(JayScrum.app.selectedFrame().data().todoList, workItemsResult);
-                scroller.refresh();
-            });
-    },
-    onInProgressListPullDown: function (scroller) {
-        //$data.Model.mainPage.pinnedQueryParam.sprintId = $data.Model.mainPage.currentSprint().Id();
-        JayScrum.app.selectedFrame().inProgressListQuery
-            .toArray(function (workItemsResult) {
-                JayScrum.pushObservablesToList(JayScrum.app.selectedFrame().data().inProgList, workItemsResult);
-                scroller.refresh();
-            });
-    },
-    onDoneListPullDown: function (scroller) {
-        //$data.Model.mainPage.pinnedQueryParam.sprintId = $data.Model.mainPage.currentSprint().Id();
-        JayScrum.app.selectedFrame().doneListQuery
-            .toArray(function (workItemsResult) {
-                JayScrum.pushObservablesToList(JayScrum.app.selectedFrame().data().doneList, workItemsResult);
-                scroller.refresh();
-            });
-    },
 
     onFrameChangingFrom:function (activeFrameMeta, oldFrameMeta, initData, frame) {
         this.pinnedQueryParam = { sprintId: initData.Id() };
@@ -418,6 +308,9 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
     },
     onFrameChangedFrom:function (activeFrameMeta, oldFrameMeta, frame) {
         this._loadData()
-            .then(JayScrum.app.selectedFrame().selectedView().initializaView);
+            .then(function () {
+                JayScrum.app.hideLoading();
+                initScrollById("metro-tiles-scroll", null, null, true);
+            });
     }
 }, null);

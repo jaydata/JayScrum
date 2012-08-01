@@ -66,7 +66,7 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
         });
     },
     addSetting:function(item){
-        var newItem = new JayScrum.Settings.Repository({Title:'Repository', Url:'http://192.168.1.142:3000'});
+        var newItem = new JayScrum.Settings.Repository();
         this.localContext.Repositories.add(newItem);
         this.data().settings(null);
         this.data().selectedSetting(newItem.asKoObservable());
