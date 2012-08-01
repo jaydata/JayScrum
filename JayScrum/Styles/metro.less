@@ -1003,11 +1003,7 @@ input.accent-bg {
 			}
 						
 			.icon { height: 62px !important; top: 41% !important; }
-			
-		    .icon-us {
-			    background: url(../Images/icon_papers.png) no-repeat center center; background-size: 50%;
-		    }
-		    
+	    
 		    .icon-57 {
 		        background: url(../Images/icon_57x57.png) no-repeat center center;
 		        height: 57px !important;
@@ -1018,6 +1014,7 @@ input.accent-bg {
 		        &.sprints   { background-position: center -114px; }
 		        &.projects  { background-position: center -171px; }
 		        &.users     { background-position: center -228px; }
+		        &.us        { background-position: center -285px; }
 		    }
 	    }
     }
@@ -1183,7 +1180,7 @@ body[theme=white] .detail .tile-small {
 	    }
 	}
 	
-	&.main-top-right    { margin: 0 0 0 15px; }
+	&.main-top-right    { margin: 0 0 0 10px; .position(relative, -5px); }
 	
 	a, span { 
 		.iblock; .size(100%, 100%); background: url(../Images/icon_actions.png) no-repeat;

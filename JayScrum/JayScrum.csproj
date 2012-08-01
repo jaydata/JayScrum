@@ -59,7 +59,19 @@
   <ItemGroup>
     <Content Include="Images\icon_pull.png" />
     <Content Include="Images\icon_pull_arrow.png" />
+    <Content Include="Scripts\app.js" />
     <Content Include="Scripts\cordova-1.9.0.js" />
+    <Content Include="Scripts\Frames\Main.js" />
+    <Content Include="Scripts\Frames\Projects.js" />
+    <Content Include="Scripts\Frames\Repositories.js" />
+    <Content Include="Scripts\Frames\ScrumWall.js" />
+    <Content Include="Scripts\Frames\Sprints.js" />
+    <Content Include="Scripts\Frames\ThemeSettings.js" />
+    <Content Include="Scripts\Frames\Users.js" />
+    <Content Include="Scripts\Frames\UserStories.js" />
+    <Content Include="Scripts\JayApp\Frame.js" />
+    <Content Include="Scripts\JayApp\FrameApp.js" />
+    <Content Include="Scripts\JayApp\FrameView.js" />
     <Content Include="Scripts\JayDataProviders\InMemoryProvider.js" />
     <Content Include="Scripts\JayDataProviders\SqLiteProvider.js" />
     <Content Include="Scripts\JayDataProviders\StormProvider.js" />
@@ -122,9 +134,11 @@
     <Content Include="Scripts\libs\knockout-2.1.0.debug.js" />
     <Content Include="Scripts\libs\knockout-2.1.0.js" />
     <Content Include="Scripts\libs\moment.js" />
+    <Content Include="Scripts\libs\q.js" />
     <Content Include="Scripts\libs\zeptojs.min.js" />
     <Content Include="Scripts\Models\MainPage.js" />
     <Content Include="Scripts\Models\SettingPage.js" />
+    <Content Include="Scripts\RepositoryContext.js" />
     <Content Include="Scripts\scrum.js" />
     <Content Include="Scripts\ScrumEntities.js" />
     <Content Include="Scripts\ScrumLsEntities.js" />
@@ -132,6 +146,7 @@
     <Content Include="Styles\metro.css" />
     <Content Include="Styles\mixins.css" />
     <Content Include="Web.config" />
+    <Content Include="Scripts\libs\q.js~" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />

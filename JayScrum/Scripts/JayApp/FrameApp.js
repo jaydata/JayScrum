@@ -98,7 +98,6 @@ $data.Class.define('JayScrum.FrameApp', null, null, {
         console.log('change frame from:'+JSON.stringify(oldActiveFrame)+' to '+JSON.stringify(newActiveFrame));
 
 
-
         if (oldFrame) {
             oldFrame.onFrameChangingTo(newActiveFrame, oldActiveFrame, newFrame);
         }

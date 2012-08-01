@@ -6,6 +6,29 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JayScrum", "JayScrum\JayScrum.csproj", "{1D6CB6B9-1A62-420C-84E5-54CB2EFC3C72}"
 EndProject
 Global
+	GlobalSection(TeamFoundationVersionControl) = preSolution
+		SccAuxPath0 = http://avantfs:8080/tfs/defaultcollection
+		SccAuxPath1 = http://avantfs:8080/tfs/defaultcollection
+		SccAuxPath2 = http://avantfs:8080/tfs/defaultcollection
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccLocalPath0 = JayScrumServer_ls\\Common
+		SccLocalPath1 = JayScrumServer_ls\\Client
+		SccLocalPath2 = JayScrumServer_ls\\Server
+		SccNumberOfProjects = 3
+		SccProjectName0 = JayScrumServer_ls/Common
+		SccProjectName1 = JayScrumServer_ls/Client
+		SccProjectName2 = JayScrumServer_ls/Server
+		SccProjectTopLevelParentUniqueName0 = JayScrumServer_ls\\JayScrumServer_ls.lsproj
+		SccProjectTopLevelParentUniqueName1 = JayScrumServer_ls\\JayScrumServer_ls.lsproj
+		SccProjectTopLevelParentUniqueName2 = JayScrumServer_ls\\JayScrumServer_ls.lsproj
+		SccProjectUniqueName0 = JayScrumServer_ls\\Common\\Common.csproj
+		SccProjectUniqueName1 = JayScrumServer_ls\\Client\\Client.csproj
+		SccProjectUniqueName2 = JayScrumServer_ls\\Server\\Server.csproj
+		SccProvider0 = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccProvider1 = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccProvider2 = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = http://avantfs:8080/tfs/defaultcollection
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU

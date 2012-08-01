@@ -11,16 +11,17 @@ $data.Class.define('JayScrum.Views.ScrumWall', JayScrum.FrameView, null, {
     },
     initializaView:function(){
         console.log('==> initialize ScrumWall View');
-        JayScrum.app.hideLoading();
-        $("h1.main-header").addClass("animate");
-
-        initScrollById("metro-tiles-scroll", null, null);
+        
+        // TODO: beégetett ID-k vannak, alatta commentbe van a dinamikus verzió
         initScrollById('transition0', null, null);
         initScrollById('transition1', null, null);
         initScrollById('transition2', null, null);
         initScrollById('transition3', null, null);
         initScrollById('transition4', null, null);
         initHorizontalScrollById("wrapper", 1);
+
+        JayScrum.app.hideLoading();
+
        /* var listCount = JayScrum.app.selectedFrame().data().userStoriesInSprintList().length;
         for (var i = 0; i < listCount; i++) {
             initScrollById("transition-us-" + i, JayScrum.app.selectedFrame().onUserStoryInSprintListPullUp, JayScrum.app.selectedFrame().onUserStoryInSprintListPullDown);
