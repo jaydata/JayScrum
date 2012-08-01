@@ -216,7 +216,7 @@
 
 function testData() {
     var ctx = new LightSwitchApplication.ApplicationData({ name:'storm', url:'http://192.168.1.142:3000' });
-    //$data.Model.settingPage.loginSettings.UserName = 'admin';
+    //'hajni' = 'admin';
     ctx.Sprints.add(new LightSwitchApplication.Sprint({ Name:'Sprint 1', StartDate:moment().add('days', -30).utc().toDate(), FinishDate:moment().add('days', -23).utc().toDate() }));
     ctx.Sprints.add(new LightSwitchApplication.Sprint({ Name:'Sprint 2', StartDate:moment().add('days', -26).utc().toDate(), FinishDate:moment().add('days', -19).utc().toDate() }));
     ctx.Sprints.add(new LightSwitchApplication.Sprint({ Name:'Sprint 3', StartDate:moment().add('days', -22).utc().toDate(), FinishDate:moment().add('days', -15).utc().toDate() }));
@@ -241,7 +241,7 @@ function testData() {
     ctx.Projects.add(new LightSwitchApplication.Project({ Name:'Project 11', Description:'Fusce varius cursus libero, quis rhoncus ligula facilisis ac. Duis adipiscing congue justo eu bibendum. ' }));
     ctx.Projects.add(new LightSwitchApplication.Project({ Name:'Project 12', Description:'Phasellus vitae purus lorem. Duis lobortis, velit et dignissim congue, nibh ante gravida ipsum, quis luctus enim sapien vitae turpis. ' }));
 
-    //$data.Model.settingPage.loginSettings.UserName = '';
+    //'hajni' = '';
 
     var allSprints = null;
     var allProjects = null;
@@ -258,67 +258,67 @@ function testData() {
 
                 var ustoSprint = function (sprintId, projectId, index, context) {
                     for (var i = 0; i < 15; i++) {
-                        context.WorkItems.add(new $data.ScrumDb.WorkItems.createNew({
+                        context.WorkItems.add(new LightSwitchApplication.WorkItem({
                             Title:"User Story 1" + index++, Description:"Donec est orci, molestie ac pellentesque in, lacinia et dui. Morbi vitae facilisis enim. Aliquam eu ullamcorper odio.Donec est orci, molestie ac pellentesque in, lacinia et dui. Morbi vitae facilisis enim. Aliquam eu ullamcorper odio. ",
                             Priority:Math.floor(Math.random() * 30), Effort:Math.floor(Math.random() * 100), BusinessValue:Math.floor(Math.random() * 1000), Type:"UserStory",
                             WorkItem_Sprint:sprintId,
                             WorkItem_Project:projectId,
-                            CreatedDate:new Date().toISOString(), CreatedBy:$data.Model.settingPage.loginSettings.UserName, ChangedDate:new Date().toISOString(), ChangedBy:$data.Model.settingPage.loginSettings.UserName, AssignedTo:"", State:"New"
+                            CreatedDate:new Date().toISOString(), CreatedBy:'hajni', ChangedDate:new Date().toISOString(), ChangedBy:'hajni', AssignedTo:"", State:"New"
                         }));
                     }
                 };
 
                 var taskToSprint = function (sprintId, userStoryId, index) {
                     for (var i = 0; i < 15; i++) {
-                        ctx.WorkItems.add(new $data.ScrumDb.WorkItems.createNew({
+                        ctx.WorkItems.add(new LightSwitchApplication.WorkItem({
                             Title:"Task 1" + index++, Description:"Donec est orci, molestie ac pellentesque in, lacinia et dui. Morbi vitae facilisis enim. Aliquam eu ullamcorper odio.Donec est orci, molestie ac pellentesque in, lacinia et dui. Morbi vitae facilisis enim. Aliquam eu ullamcorper odio. ",
                             Priority:Math.floor(Math.random() * 30), Effort:Math.floor(Math.random() * 100), BusinessValue:Math.floor(Math.random() * 1000), Type:"Task",
                             State:'To Do', RemainingWork:Math.floor(Math.random() * 11),
                             WorkItem_Sprint:sprintId,
                             WorkItem_WorkItem:userStoryId,
-                            CreatedDate:new Date().toISOString(), CreatedBy:$data.Model.settingPage.loginSettings.UserName, ChangedDate:new Date().toISOString(), ChangedBy:$data.Model.settingPage.loginSettings.UserName, AssignedTo:""
+                            CreatedDate:new Date().toISOString(), CreatedBy:'hajni', ChangedDate:new Date().toISOString(), ChangedBy:'hajni', AssignedTo:""
                         }));
-                        ctx.WorkItems.add(new $data.ScrumDb.WorkItems.createNew({
+                        ctx.WorkItems.add(new LightSwitchApplication.WorkItem({
                             Title:"Task 1" + index++, Description:"Donec est orci, molestie ac pellentesque in, lacinia et dui. Morbi vitae facilisis enim. Aliquam eu ullamcorper odio.Donec est orci, molestie ac pellentesque in, lacinia et dui. Morbi vitae facilisis enim. Aliquam eu ullamcorper odio. ",
                             Priority:Math.floor(Math.random() * 30), Effort:Math.floor(Math.random() * 100), BusinessValue:Math.floor(Math.random() * 1000), Type:"Task",
                             State:'To Do', RemainingWork:Math.floor(Math.random() * 11),
                             WorkItem_Sprint:sprintId,
                             WorkItem_WorkItem:userStoryId,
-                            CreatedDate:new Date().toISOString(), CreatedBy:$data.Model.settingPage.loginSettings.UserName, ChangedDate:new Date().toISOString(), ChangedBy:$data.Model.settingPage.loginSettings.UserName, AssignedTo:""
+                            CreatedDate:new Date().toISOString(), CreatedBy:'hajni', ChangedDate:new Date().toISOString(), ChangedBy:'hajni', AssignedTo:""
                         }));
-                        ctx.WorkItems.add(new $data.ScrumDb.WorkItems.createNew({
+                        ctx.WorkItems.add(new LightSwitchApplication.WorkItem({
                             Title:"Task 1" + index++, Description:"Donec est orci, molestie ac pellentesque in, lacinia et dui. Morbi vitae facilisis enim. Aliquam eu ullamcorper odio.Donec est orci, molestie ac pellentesque in, lacinia et dui. Morbi vitae facilisis enim. Aliquam eu ullamcorper odio. ",
                             Priority:Math.floor(Math.random() * 30), Effort:Math.floor(Math.random() * 100), BusinessValue:Math.floor(Math.random() * 1000), Type:"Task",
                             State:'To Do', RemainingWork:Math.floor(Math.random() * 11),
                             WorkItem_Sprint:sprintId,
                             WorkItem_WorkItem:userStoryId,
-                            CreatedDate:new Date().toISOString(), CreatedBy:$data.Model.settingPage.loginSettings.UserName, ChangedDate:new Date().toISOString(), ChangedBy:$data.Model.settingPage.loginSettings.UserName, AssignedTo:""
+                            CreatedDate:new Date().toISOString(), CreatedBy:'hajni', ChangedDate:new Date().toISOString(), ChangedBy:'hajni', AssignedTo:""
                         }));
 
-                        ctx.WorkItems.add(new $data.ScrumDb.WorkItems.createNew({
+                        ctx.WorkItems.add(new LightSwitchApplication.WorkItem({
                             Title:"Task 1" + index++, Description:"Donec est orci, molestie ac pellentesque in, lacinia et dui. Morbi vitae facilisis enim. Aliquam eu ullamcorper odio.Donec est orci, molestie ac pellentesque in, lacinia et dui. Morbi vitae facilisis enim. Aliquam eu ullamcorper odio. ",
                             Priority:Math.floor(Math.random() * 30), Effort:Math.floor(Math.random() * 100), BusinessValue:Math.floor(Math.random() * 1000), Type:"Task",
                             State:'In Progress', RemainingWork:Math.floor(Math.random() * 11),
                             WorkItem_Sprint:sprintId,
                             WorkItem_WorkItem:userStoryId,
-                            CreatedDate:new Date().toISOString(), CreatedBy:$data.Model.settingPage.loginSettings.UserName, ChangedDate:new Date().toISOString(), ChangedBy:$data.Model.settingPage.loginSettings.UserName, AssignedTo:""
+                            CreatedDate:new Date().toISOString(), CreatedBy:'hajni', ChangedDate:new Date().toISOString(), ChangedBy:'hajni', AssignedTo:""
                         }));
-                        ctx.WorkItems.add(new $data.ScrumDb.WorkItems.createNew({
+                        ctx.WorkItems.add(new LightSwitchApplication.WorkItem({
                             Title:"Task 1" + index++, Description:"Donec est orci, molestie ac pellentesque in, lacinia et dui. Morbi vitae facilisis enim. Aliquam eu ullamcorper odio.Donec est orci, molestie ac pellentesque in, lacinia et dui. Morbi vitae facilisis enim. Aliquam eu ullamcorper odio. ",
                             Priority:Math.floor(Math.random() * 30), Effort:Math.floor(Math.random() * 100), BusinessValue:Math.floor(Math.random() * 1000), Type:"Task",
                             State:'In Progress', RemainingWork:Math.floor(Math.random() * 11),
                             WorkItem_Sprint:sprintId,
                             WorkItem_WorkItem:userStoryId,
-                            CreatedDate:new Date().toISOString(), CreatedBy:$data.Model.settingPage.loginSettings.UserName, ChangedDate:new Date().toISOString(), ChangedBy:$data.Model.settingPage.loginSettings.UserName, AssignedTo:""
+                            CreatedDate:new Date().toISOString(), CreatedBy:'hajni', ChangedDate:new Date().toISOString(), ChangedBy:'hajni', AssignedTo:""
                         }));
 
-                        ctx.WorkItems.add(new $data.ScrumDb.WorkItems.createNew({
+                        ctx.WorkItems.add(new LightSwitchApplication.WorkItem({
                             Title:"Task 1" + index++, Description:"Donec est orci, molestie ac pellentesque in, lacinia et dui. Morbi vitae facilisis enim. Aliquam eu ullamcorper odio.Donec est orci, molestie ac pellentesque in, lacinia et dui. Morbi vitae facilisis enim. Aliquam eu ullamcorper odio. ",
                             Priority:Math.floor(Math.random() * 30), Effort:Math.floor(Math.random() * 100), BusinessValue:Math.floor(Math.random() * 1000), Type:"Task",
                             State:'Done', RemainingWork:Math.floor(Math.random() * 11),
                             WorkItem_Sprint:sprintId,
                             WorkItem_WorkItem:userStoryId,
-                            CreatedDate:new Date().toISOString(), CreatedBy:$data.Model.settingPage.loginSettings.UserName, ChangedDate:new Date().toISOString(), ChangedBy:$data.Model.settingPage.loginSettings.UserName, AssignedTo:""
+                            CreatedDate:new Date().toISOString(), CreatedBy:'hajni', ChangedDate:new Date().toISOString(), ChangedBy:'hajni', AssignedTo:""
                         }));
                     }
                 }

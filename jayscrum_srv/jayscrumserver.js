@@ -22,7 +22,7 @@ ObjectID = function(id){
 
 app.use('/', function(req, res){
     console.log('');console.log('');console.log('');
-    console.log('Request start: '+req.method);
+    console.log('Request start('+new Date().toTimeString()+'): '+req.method);
 	if(req.url === "/favicon.ico"){
 		console.log("get favicon");
 		res.writeHead(401,{});

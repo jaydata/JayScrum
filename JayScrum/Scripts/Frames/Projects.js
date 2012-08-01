@@ -21,6 +21,7 @@ $data.Class.define('JayScrum.Views.ProjectEdit', JayScrum.FrameView, null, {
     },
     initializaView:function(){
         console.log('==> initialize Edit View');
+        JayScrum.app.hideLoading();
         $("h1.main-header").addClass("animate");
         initScrollById('transition-projects', null, null, true);
         $("div.metro-actionbar.detail-view-edit").addClass("opened");
@@ -73,7 +74,7 @@ $data.Class.define('JayScrum.Frames.Projects', JayScrum.Frame, null, {
         }
         JayScrum.app.selectedFrame()._loadData()
             .then(function(){
-                JayScrum.app.selectedFrame().selectView('projects');
+                JayScrum.app.backView();
                 JayScrum.app.selectedFrame().data().editableProject(null);
             });
     },
@@ -92,7 +93,7 @@ $data.Class.define('JayScrum.Frames.Projects', JayScrum.Frame, null, {
     onFrameChangedFrom:function (activeFrameMeta, oldFrameMeta, initDatam, frame) {
         this._loadData()
             .then(function () {
-                JayScrum.app.hideLoading();
+
                 JayScrum.app.selectedFrame().selectedView().initializaView();
             });
     }
