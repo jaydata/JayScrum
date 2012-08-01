@@ -193,6 +193,34 @@ $data.Class.define('JayScrum.Frames.UserStories', JayScrum.Frame, null, {
             });
     },
 
+    onAddUserStory: function(wrkItem){
+        var item = new JayScrum.repository.WorkItems.createNew({
+            Id: null,
+            Title: "",
+            Type: "UserStory",
+            Description: "",
+            CreatedDate: new Date().toISOString(),
+            CreatedBy: 'Admin', //$data.Model.settingPage.loginSettings.UserName,
+            ChangedDate: new Date().toISOString(),
+            ChangedBy: 'Admin', //$data.Model.settingPage.loginSettings.UserName,
+            Priority: 0,
+            AssignedTo: "",
+            State: "New",
+            //Project: "JayStack",
+            Effort: 0,
+            BusinessValue: 0,
+            RemainingWork: 0
+            //Reason: "New task",
+            //IterationPath: $data.Model.mainPage.currentSprint().IterationPath(),
+            //AreaPath: $data.Model.mainPage.currentSprint().AreaPath()
+            //ParentName: " ",
+            //FinishDate: "",
+            //StartDate: ""
+        });
+        item = item.asKoObservable();
+        JayScrum.app.selectedFrame().data().selectedUserStory(item);
+        JayScrum.app.selectedFrame().onEditUserStory(item);
+    },
     onSelectUserStory: function (wrkItem, isEventCall) {
         JayScrum.app.selectedFrame().data().selectedUserStory(wrkItem);
         JayScrum.app.selectedFrame().selectView('userStorySelected');
@@ -200,7 +228,11 @@ $data.Class.define('JayScrum.Frames.UserStories', JayScrum.Frame, null, {
     onEditUserStory:function (wrkItem, isEventCall) {
         JayScrum.app.selectedFrame()._onRefreshDropDownLists()
             .then(function () {
-                JayScrum.repository.WorkItems.attach(wrkItem);
+                if(wrkItem.Id() === null){
+                    JayScrum.repository.WorkItems.add(wrkItem);
+                }else{
+                    JayScrum.repository.WorkItems.attach(wrkItem);
+                }
                 JayScrum.app.selectedFrame().selectView('userStoryEditor');
             });
 

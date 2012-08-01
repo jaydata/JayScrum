@@ -12,7 +12,7 @@ $data.Class.define('JayScrum.Views.ScrumWall', JayScrum.FrameView, null, {
     initializaView:function(){
         console.log('==> initialize ScrumWall View');
 
-        // TODO: beégetett ID-k vannak, alatta commentbe van a dinamikus verzió
+        // TODO: beï¿½getett ID-k vannak, alatta commentbe van a dinamikus verziï¿½
         initScrollById('transition0', JayScrum.app.selectedFrame().onRecentlyChangedListPullUp, JayScrum.app.selectedFrame().onRecentlyChangedListPullDown);
         initScrollById('transition1', JayScrum.app.selectedFrame().onToDoListPullUp, JayScrum.app.selectedFrame().onToDoListPullDown);
         initScrollById('transition2', JayScrum.app.selectedFrame().onInProgressListPullUp, JayScrum.app.selectedFrame().onInProgressListPullDown);
@@ -242,11 +242,6 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
         //save workItem
         wrkItem.ChangedDate(new Date());
 
-        if (wrkItem.Id() === 0) {
-            JayScrum.repository.WorkItems.add(wrkItem);
-            currentLista.push(wrkItem);
-        }
-
         JayScrum.repository.saveChanges(function (error) {
             JayScrum.app.backView();
         });
@@ -260,9 +255,7 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
         console.log("add workitem - type: task");
         //showLoading();
 
-        $("h1.main-header").addClass("animate");
-
-        var item = new $data.ScrumDb.WorkItems.createNew({
+        var item = new JayScrum.repository.WorkItems.createNew({
             Id: 0,
             Title: "",
             Type: "Task",
@@ -287,9 +280,12 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
         });
 
         item = item.asKoObservable();
-        JayScrum.app.selectedFrame().onEditWorkItem(item);
-
-        console.log(item);
+        JayScrum.app.selectedFrame().data().selectedWorkItemActive(item);
+        JayScrum.app.selectedFrame()._onRefreshDropDownLists()
+            .then(function(){
+                JayScrum.repository.WorkItems.add(item);
+                JayScrum.app.selectedFrame().selectView('taskEdit')
+            });
     },
     onUpdateWorkItem: function (workItem, isEventCall) {
         console.log("update workitem");
