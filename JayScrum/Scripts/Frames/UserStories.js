@@ -209,7 +209,8 @@ $data.Class.define('JayScrum.Frames.UserStories', JayScrum.Frame, null, {
             //Project: "JayStack",
             Effort: 0,
             BusinessValue: 0,
-            RemainingWork: 0
+            RemainingWork: 0,
+            IsBlocked:false
             //Reason: "New task",
             //IterationPath: $data.Model.mainPage.currentSprint().IterationPath(),
             //AreaPath: $data.Model.mainPage.currentSprint().AreaPath()

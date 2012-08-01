@@ -234,7 +234,7 @@ $data.Class.define('JayScrum.ScrumApp', JayScrum.FrameApp, null,{
     },
     onRefreshUserList:function () {
         var loadPromise = Q.defer();
-        JayScrum.app.globalData().userList(['hajni', 'user1', 'user2', 'nochtap', 'kimi', 'hat izsák']);
+        JayScrum.app.globalData().userList(['', 'hajni', 'robesz', 'zpace', 'nochtap', 'kimi', 'viktor', 'vektor']);
         loadPromise.resolve();
         return loadPromise.promise;
     },

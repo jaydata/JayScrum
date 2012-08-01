@@ -10,9 +10,6 @@ $data.Class.define('JayScrum.Views.ScrumWall', JayScrum.FrameView, null, {
         this.templateName = name || 'scrumWall-template';
     },
     initializaView:function(){
-        console.log('==> initialize ScrumWall View');
-
-        // TODO: be�getett ID-k vannak, alatta commentbe van a dinamikus verzi�
         initScrollById('transition0', JayScrum.app.selectedFrame().onRecentlyChangedListPullUp, JayScrum.app.selectedFrame().onRecentlyChangedListPullDown);
         initScrollById('transition1', JayScrum.app.selectedFrame().onToDoListPullUp, JayScrum.app.selectedFrame().onToDoListPullDown);
         initScrollById('transition2', JayScrum.app.selectedFrame().onInProgressListPullUp, JayScrum.app.selectedFrame().onInProgressListPullDown);
@@ -21,13 +18,6 @@ $data.Class.define('JayScrum.Views.ScrumWall', JayScrum.FrameView, null, {
         initHorizontalScrollById("wrapper", 1);
 
         JayScrum.app.hideLoading();
-
-       /* var listCount = JayScrum.app.selectedFrame().data().userStoriesInSprintList().length;
-        for (var i = 0; i < listCount; i++) {
-            initScrollById("transition-us-" + i, JayScrum.app.selectedFrame().onUserStoryInSprintListPullUp, JayScrum.app.selectedFrame().onUserStoryInSprintListPullDown);
-        }
-
-        initHorizontalScrollById("wrapper", 0);*/
     }
 }, null);
 $data.Class.define('JayScrum.Views.TaskSelect', JayScrum.FrameView, null, {
@@ -270,7 +260,8 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
             WorkItem_Sprint: JayScrum.app.selectedFrame().data().currentSprint().innerInstance.Id,
             Effort: 0,
             BusinessValue: 0,
-            RemainingWork: 0
+            RemainingWork: 0,
+            IsBlocked:false
             //Reason: "New task",
             //IterationPath: $data.Model.mainPage.currentSprint().IterationPath(),
             //AreaPath: $data.Model.mainPage.currentSprint().AreaPath()
@@ -393,19 +384,19 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
     onFrameChangingFrom:function (activeFrameMeta, oldFrameMeta, initData, frame) {
         this.pinnedQueryParam = { sprintId: initData.Id() };
         this.toDoListQuery = JayScrum.repository.WorkItems
-            .where(function (item) { return item.Type == "Task" && item.WorkItem_Sprint == this.sprintId && item.State == 'To Do' }, this.pinnedQueryParam)
+            .where(function (item) { return (item.Type == "Task" || item.Type == 'Bug') && item.WorkItem_Sprint == this.sprintId && item.State == 'To Do' }, this.pinnedQueryParam)
             .orderBy(function (item) { return item.Priority; })
             .take(this.listLoadSize);
         this.inProgressListQuery = JayScrum.repository.WorkItems
-            .where(function (item) { return item.Type == "Task" && item.WorkItem_Sprint == this.sprintId && item.State == 'In Progress' }, this.pinnedQueryParam)
+            .where(function (item) { return (item.Type == "Task" || item.Type == 'Bug') && item.WorkItem_Sprint == this.sprintId && item.State == 'In Progress' }, this.pinnedQueryParam)
             .orderBy(function (item) { return item.Priority; })
             .take(this.listLoadSize);
         this.doneListQuery = JayScrum.repository.WorkItems
-            .where(function (item) { return item.Type == "Task" && item.WorkItem_Sprint == this.sprintId && item.State == 'Done' }, this.pinnedQueryParam)
+            .where(function (item) { return (item.Type == "Task" || item.Type == 'Bug') && item.WorkItem_Sprint == this.sprintId && item.State == 'Done' }, this.pinnedQueryParam)
             .orderBy(function (item) { return item.Priority; })
             .take(this.listLoadSize);
         this.recentlyChangedListQuery = JayScrum.repository.WorkItems
-            .where(function (item) { return item.Type == "Task" && item.WorkItem_Sprint == this.sprintId && item.ChangedDate >= moment().add('days', -1).utc().toDate() }, this.pinnedQueryParam)
+            .where(function (item) { return (item.Type == "Task" || item.Type == 'Bug') && item.WorkItem_Sprint == this.sprintId && item.ChangedDate >= moment().add('days', -1).utc().toDate() }, this.pinnedQueryParam)
             .orderByDescending(function (item) { return item.ChangedDate })
             .take(this.listLoadSize);
         this.data().currentSprint(initData);
