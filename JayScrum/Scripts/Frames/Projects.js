@@ -10,7 +10,7 @@ $data.Class.define('JayScrum.Views.Projects', JayScrum.FrameView, null, {
         this.templateName = name || 'project-template';
     },
     initializaView:function(){
-        console.log('==> initialize View');
+        JayScrum.app.hideLoading();
         $("h1.main-header").addClass("animate");
         initScrollById("transition-projects", null, null, true);
     }
@@ -20,7 +20,6 @@ $data.Class.define('JayScrum.Views.ProjectEdit', JayScrum.FrameView, null, {
         this.templateName = name || 'projectEditView-template';
     },
     initializaView:function(){
-        console.log('==> initialize Edit View');
         JayScrum.app.hideLoading();
         $("h1.main-header").addClass("animate");
         initScrollById('transition-projects', null, null, true);

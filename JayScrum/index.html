@@ -138,7 +138,7 @@
         <div class="main-header" data-bind="attr: { 'class': 'main-header not-main-page' }">
             <h1 class="title pivot-default animate" data-bind="text: $root.selectedFrame().data().name"></h1>
         </div>
-        <div class="icon-action main-top-right add"><span data-bind="click: null"></span></div>
+        <div class="icon-action main-top-right add"><span data-bind="click: $root.selectedFrame().onAddWorkItem"></span></div>
         <div id="wrapper" class="metro-pivot">
             <div id="scroller">
                 <div class="pivot-list">
@@ -614,6 +614,7 @@
              data-bind="attr: { 'class': 'main-header not-main-page' }">
             <h1 class="title" data-bind="text: $root.selectedFrame().data().name"></h1>
         </div>
+        <div class="icon-action main-top-right add"><span data-bind="click: $root.selectedFrame().onAddUserStory"></span></div>
         <div id="wrapper" class="metro-pivot wrapper-container">
             <div id="scroller">
                 <div class="pivot-list us-dated-list">
@@ -1098,8 +1099,8 @@
 
     <script type="text/html" id="usersPage-template">
         <div id="settingPage">
-            <div class="icon-action back topleft" data-bind="with: $data.mainPage">
-                <span data-bind="click: $root.mainPage.onMainPageShow"></span>
+            <div class="icon-action back topleft">
+                <span data-bind="click: $root.backView"></span>
             </div>
             <div class="main-header">
                 <h1 class="title">users</h1>
@@ -1107,23 +1108,23 @@
             <div class="scroll-list pivot-default-opacity scrollable-list animate bottom45" id="settingPageScroll">
                 <div class="scroller-list">
                     <div class="list detail">
-                        <ul id="setting-list" class="setting-list" data-bind='foreach: $root.settingPage.settingsKoModel.users'>
+                        <ul id="setting-list" class="setting-list" data-bind='foreach: $data.data().users'>
                             <li>
                                 <h2>User name</h2>
                                 <div class="actions fright">
-                                    <span class="icon-action edit" data-bind="click: $root.settingPage.settingsKoModel.editSetting"><span></span></span>
-                                    <span class="icon-action delete" data-bind="click: $root.settingPage.settingsKoModel.deleteSetting"><span></span></span>
+                                    <span class="icon-action edit" data-bind="click: $parent.editSetting"><span></span></span>
+                                    <span class="icon-action delete" data-bind="click: $parent.deleteSetting"><span></span></span>
                                 </div>
                             </li>
                         </ul>
 
                         <h2 class="title">roles</h2>
-                        <ul class="setting-list" data-bind='foreach: $root.settingPage.settingsKoModel.roles'>
+                        <ul class="setting-list" data-bind='foreach: $data.data().roles'>
                             <li>
                                 <h2>Role 1</h2>
                                 <div class="actions fright">
-                                    <span class="icon-action edit" data-bind="click: $root.settingPage.settingsKoModel.editSetting"><span></span></span>
-                                    <span class="icon-action delete" data-bind="click: $root.settingPage.settingsKoModel.deleteSetting"><span></span></span>
+                                    <span class="icon-action edit" data-bind="click: $parent.editSetting"><span></span></span>
+                                    <span class="icon-action delete" data-bind="click: $parent.deleteSetting"><span></span></span>
                                 </div>
                             </li>
                         </ul>
@@ -1160,8 +1161,8 @@
                                 </div>
 
                                 <div class="split2">
-                                    <span class="btn-metro btn-large margin10_0" data-bind="click: $root.settingPage.settingsKoModel.saveSetting">Save</span>
-                                    <span class="btn-metro btn-large margin10_0" data-bind="click: $root.settingPage.settingsKoModel.cancelSetting">Cancel</span>
+                                    <span class="btn-metro btn-large margin10_0" data-bind="click: $parent.saveSetting">Save</span>
+                                    <span class="btn-metro btn-large margin10_0" data-bind="click: $parent.cancelSetting">Cancel</span>
                                 </div>
                             </div>
                         </div>
