@@ -1,0 +1,7 @@
+//
+// Prefix header for all source files of the 'JayScrum' target in the 'JayScrum' project
+//
+
+#ifdef __OBJC__
+    #import <UIKit/UIKit.h>
+#endif
