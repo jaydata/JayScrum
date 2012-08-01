@@ -54,12 +54,16 @@ $data.Class.define('JayScrum.FrameApp', null, null, {
         }, 0, 'ease-out');
     },
     hideLoading:function () {
-        console.log('hide loading screen');
+        console.log('hiding loading screen..');
         JayScrum.app.loading.animate({
-            opacity:0
+            opacity: 0
         }, 500, 'ease-out', function () {
+            console.log('done loading screen hiding!');
             JayScrum.app.loading.hide();
-        })
+        });
+
+        //TODO: az animate callback-je nem mindig hívódik meg, ezért 2x rejtjük el
+        JayScrum.app.loading.hide();
     },
     registerFrame:function (frame) {
         if (frame instanceof JayScrum.Frame) {

@@ -147,7 +147,7 @@
                         <div class="scroll-list pivot-default-opacity" id="transition0">
                             <div class="scroller-list">
                                 <div class="list" data-bind="foreach: $data.data().recentlyChangedTasks">
-                                    <div class="item task list-item" data-bind="attr: { 'class': 'item task list-item ' + State() }">
+                                    <div class="item task list-item" data-bind="attr: { 'class': 'item task list-item ' + State() + ' ' + IsBlocked() }">
                                         <!-- ko if: Title -->
                                         <h2 class="title margintop tolower" data-isInRecentlyChangedList="true" data-bind="text: Title, click: $root.selectedFrame().onSelectWorkItem"></h2>
                                         <!-- /ko -->
@@ -187,7 +187,7 @@
                         <div class="scroll-list pivot-default-opacity" id="transition1">
                             <div class="scroller-list">
                                 <div class="list" data-bind="foreach: $data.data().todoList">
-                                    <div data-bind="attr: { 'class': 'item task list-item ' + 'IsBlocked()' }">
+                                    <div data-bind="attr: { 'class': 'item task list-item ' + IsBlocked() }">
                                         <!-- ko if: Title -->
                                         <h2 class="title margintop tolower" data-bind="text: Title, click: $root.selectedFrame().onSelectWorkItem"></h2>
                                         <!-- /ko -->
@@ -228,7 +228,7 @@
                             <div class="scroller-list">
                                 <div class="list" data-bind="foreach: $data.data().inProgList">
                                     <div class="task-template-inprog">
-                                        <div class="item task list-item">
+                                        <div data-bind="attr: { 'class': 'item task list-item ' + IsBlocked() }">
                                             <!-- ko if: Title -->
                                             <h2 class="title margintop tolower" data-bind="text: Title, click: $root.selectedFrame().onSelectWorkItem"></h2>
                                             <!-- /ko -->
@@ -270,7 +270,7 @@
                         <div class="scroll-list pivot-default-opacity" id="transition3">
                             <div class="scroller-list">
                                 <div class="list" data-bind="foreach: $data.data().doneList">
-                                    <div class="item task list-item">
+                                    <div class="item task list-item" data-bind="attr: { 'class': 'item task list-item ' + IsBlocked() }">
                                         <!-- ko if: Title -->
                                         <h2 class="title margintop tolower" data-bind="text: Title, click: $root.selectedFrame().onSelectWorkItem">
                                         </h2>
@@ -463,12 +463,14 @@
                                     <span class="icon-action update fright" data-bind="click: $root.onRefreshSprintListForDropDown"><span></span></span>
                                 </div>
 
+                                <!-- ko if: Type() == 'Task' -->
                                 <div class="field">
                                     <div><span>User story</span></div>
                                     <select class="medium accent-bg with-icon" data-bind="options: $root.globalData().userStoryList, optionsText: 'Title', optionsValue: 'Id', value: WorkItem_WorkItem">
                                     </select>
                                     <span class="icon-action update fright" data-bind="click: $root.onRefreshUserStoryList"><span></span></span>
                                 </div>
+                                <!-- /ko -->
 
                                 <div class="field">
                                     <div><span>State</span></div>
@@ -522,14 +524,10 @@
         </div>
     </script>
     <script id="workItemSelector-template" type="text/html">
-        <p data-bind="html: Description"></p>
-
-        <div class="field">
-            <div class="tile-small type"></div>
-            <div>
-                <span>Type</span><span class="medium accent-color" data-bind="text: Type"></span>
-            </div>
+        <div class="fleft tile-mini accent-bg">
+            <span class="icon" data-bind="attr: { 'class': 'icon ' + State() }"></span>
         </div>
+        <span class="description" data-bind="html: Description"></span>
 
         <div class="field">
             <div class="tile-small project"></div>
@@ -541,16 +539,18 @@
         <div class="field">
             <div class="tile-small sprint"></div>
             <div>
-                <span>Sprint</span><span class="medium accent-color" data-bind="text: SprintName"></span>
+                <!--<span>Sprint</span><span class="medium accent-color" data-bind="text: Sprint"></span>-->
             </div>
         </div>
 
+        <!-- ko if: Type() == 'Task' -->
         <div class="field">
             <div class="tile-small parent"></div>
             <div>
                 <span>User Story</span><span class="medium accent-color" data-bind="text: ParentName"></span>
             </div>
         </div>
+        <!-- /ko -->
 
         <div class="field">
             <div class="tile-small state"></div>
@@ -648,7 +648,7 @@
     </script>
     <script type="text/html" id="userStoryColumn-template">
         <div class="list" data-bind="foreach: $data">
-            <div class="item task list-item" data-bind="attr: { 'class': 'item task list-item ' + State() }">
+            <div class="item task list-item" data-bind="attr: { 'class': 'item task list-item ' + State() + ' ' + IsBlocked() }">
                 <!-- ko if: Title -->
                 <h2 class="title margintop tolower" data-bind="text: Title, click: $root.selectedFrame().onSelectUserStory"></h2>
                 <!-- /ko -->
@@ -702,10 +702,15 @@
                                         <div class="metro-pivot uslist" id="task-list">
                                             <h2 class="font30 marginb20">
                                                 <span class="value">Tasks</span>
-                                                
+
                                                 <span class="fright">
-                                                    <span class="icon-action update marginr5_" data-bind="click:$root.selectedFrame().onRefreshWorkItemsOfUserStory"><span></span></span>
-                                                    <span class="icon-action add marginr5_"><span></span></span>
+                                                    <!-- ko if: $parent.data().selectedUserStoryTaskList().length < 1 -->
+                                                    <span class="icon-action download marginr5_" data-bind="click: $root.selectedFrame().onRefreshWorkItemsOfUserStory"><span></span></span>
+                                                    <!-- /ko -->
+                                                    <!-- ko if: $parent.data().selectedUserStoryTaskList().length > 0 -->
+                                                    <span class="icon-action update marginr5_" data-bind="click: $root.selectedFrame().onRefreshWorkItemsOfUserStory"><span></span></span>
+                                                    <!-- /ko -->
+                                                    <span class="icon-action add marginr5_" data-bind="click: null"><span></span></span>
                                                 </span>
                                             </h2>
 
@@ -736,7 +741,7 @@
                                             <!--/ko-->
 
                                             <!--ko if: $parent.data().selectedUserStoryTaskList().length < 1 -->
-                                                <p class="inactive">No task found for this user story</p>
+                                                <p class="inactive">Click the icon to download user story's tasks</p>
                                             <!--/ko-->
                                         </div>
                                     </div>
@@ -798,7 +803,7 @@
              data-bind="attr: { 'class': 'main-header not-main-page' }">
             <h1 class="title" data-bind="text: $root.selectedFrame().data().name"></h1>
         </div>
-        <div class="metro-pivot wrapper-container">
+        <div class="metro-pivot reset wrapper-container">
             <div class="pivot-list">
                 <div class="pivot uslist">
                     <div class="scroll-list scrollable-list bottom45 pivot-default-opacity" id="transition-iteration">
@@ -816,7 +821,7 @@
                                         <!-- /ko -->
                                     </div>
                                     
-                                    <div class="fleft">
+                                    <div class="fleft item-details">
                                         <h2 class="title margintop tolower accent-color" data-bind="text: Name, click: $parent.onEditSprint"></h2>
                                         <div class="sprint-dates white">
                                             <span data-bind="text: moment(StartDate()).format('YYYY.MM.DD')"></span>- <span data-bind="text: moment(FinishDate()).format('YYYY.MM.DD')"></span>
@@ -837,14 +842,14 @@
         </div>
     </script>
     <script type="text/html" id="sprintEditView-template">
-        <div class="icon-action back topleft absolute" data-bind="with: $data.data().selectedSprint">
+        <div class="icon-action back topleft" data-bind="with: $data.data().selectedSprint">
             <span data-bind="click: $parent.onCancelSprint"></span>
         </div>
         <div class="main-header" data-bind="attr: { 'class': 'main-header not-main-page' }">
             <h1 class="title">Sprint data</h1>
         </div>
         <div class="detail edit" data-bind="with: $data.data().selectedSprint">
-            <div id="transition-iteration-edit" class="scroll-out pivot-default-opacity top50">
+            <div id="transition-iteration-edit" class="scroll-out pivot-default-opacity">
                 <div class="scroll-in">
                     <div class="list">
                         <div class="pivot-content">
@@ -883,18 +888,21 @@
         <div class="icon-action back topleft">
             <span data-bind="click: $root.backView"></span>
         </div>
-        <div class="main-header"
-             data-bind="attr: { 'class': 'main-header not-main-page' }">
+        <div class="main-header" data-bind="attr: { 'class': 'main-header not-main-page' }">
             <h1 class="title" data-bind="text: $root.selectedFrame().data().name"></h1>
         </div>
-        <div class="metro-pivot wrapper-container">
+        <div class="metro-pivot wrapper-container reset">
             <div class="pivot-list">
                 <div class="pivot uslist">
                     <div class="scroll-list scrollable-list bottom45 pivot-default-opacity" id="transition-projects">
                         <div class="scroller-list">
                             <div class="list project-list" data-bind="foreach: $data.data().projectList">
                                 <div class="item task list-item clear">
-                                    <h2 class="title margintop tolower accent-color" data-bind="text: Name, click: $parent.onEditProject"></h2>
+                                    <h2 class="title margintop tolower accent-color">
+                                        <span data-bind="text: Name, click: null"></span>
+                                        <span class="icon-action edit fright" data-bind="click: $parent.onEditProject"><span></span></span>
+                                    </h2>
+
                                     <p data-bind="text: Description"></p>
                                 </div>
                             </div>
@@ -914,8 +922,11 @@
         <div class="icon-action back topleft" data-bind="with: $data.data().editableProject">
             <span data-bind="click: $parent.onCancelProject"></span>
         </div>
+        <div class="main-header">
+            <h1 class="title">Project data</h1>
+        </div>
         <div class="detail edit" data-bind="with: $data.data().editableProject">
-            <div id="transition-projects" class="scroll-out top50 pivot-default-opacity">
+            <div id="transition-projects" class="scroll-out pivot-default-opacity">
                 <div class="scroll-in">
                     <div class="list">
                         <div class="pivot-content">
@@ -1018,7 +1029,7 @@
                     <div class="list detail">
                         <ul id="setting-list" class="setting-list" data-bind="foreach: $data.data().settings">
                             <li>
-                                <h2 data-bind="text: Title"></h2>
+                                <h2 data-bind="text: Title, click: $parent.connectTo"></h2>
                                 <div class="actions fright">
                                     <span class="icon-action connect" data-bind="click: $parent.connectTo">
                                         <span></span></span>

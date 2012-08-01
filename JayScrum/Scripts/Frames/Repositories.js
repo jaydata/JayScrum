@@ -37,7 +37,8 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
             app.data().settings(result);
             app.data().selectedSetting(null);
             app.showActionBar();
-            app.frameApp.visibleLoadingScreen(false);
+
+            JayScrum.app.hideLoading();
         });
     },
     _getDefaultRepository: function (callBack) {
@@ -57,7 +58,9 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
         var entity = JayScrum.app.selectedFrame().localContext.Repositories.attachOrGet(item);
         JayScrum.app.selectedFrame().data().selectedSetting(entity.asKoObservable());
         JayScrum.app.selectedFrame().data().settings(null);
+
         JayScrum.app.selectedFrame().hideActionBar();
+        initScrollById('settingPageScroll');
     },
     deleteSetting:function(item){
         JayScrum.app.selectedFrame().localContext.Repositories.remove(item);
@@ -71,7 +74,7 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
         this.data().settings(null);
         this.data().selectedSetting(newItem.asKoObservable());
 
-        this.hideActionBar();
+        JayScrum.app.selectedFrame().hideActionBar();
         initScrollById('settingPageScroll');
     },
     saveSetting:function(item){
@@ -80,15 +83,16 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
             JayScrum.app.selectedFrame()._initializeRepositoriesFrame();
         });
 
-
         initScrollById("settingPageScroll");
     },
     cancelSetting:function(item){
         console.log(item);
         JayScrum.app.selectedFrame().localContext.Repositories.detach(arguments[0]);
         JayScrum.app.selectedFrame().data().selectedSetting(null);
-
         JayScrum.app.selectedFrame()._initializeRepositoriesFrame();
+
+        JayScrum.app.selectedFrame().hideActionBar();
+        initScrollById("settingPageScroll");
     },
     onFrameChangingFrom: function(newFrameMeta, oldFrameMeta, initData, frame){
         JayScrum.app.showLoading();
@@ -96,12 +100,13 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
         this.localContext.onReady(function(){
             if(initData){
                 self._getDefaultRepository(self._handleDefaultRepo);
-            }else{
+            } else {
                 self._initializeRepositoriesFrame();
             }
         });
     },
     onFrameChangedFrom:function (newFrameMeta, oldFrameMeta, frame) {
+        initScrollById('settingPageScroll');
         JayScrum.app.hideLoading();
     },
     showActionBar:function () {

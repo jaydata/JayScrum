@@ -819,7 +819,7 @@ input.accent-bg, textarea.accent-bg {
 	        &.us-dated-list {
 	            .pivot > h1 {
 	                margin-bottom: 0;
-	                .maxsize(95%, 45px); .ohidden;
+	                .maxsize(95%, 40px); .ohidden;
 	            }
 	            .scroll-list.scrollable-list { top: 75px; }
 	        }
@@ -839,7 +839,7 @@ input.accent-bg, textarea.accent-bg {
 	            .item {
 	                padding: 0 0 0 10px;
 	                
-	                &.true {
+	                &.yes {
 	                	border-left: 4px solid @colorBlocked !important;
 	                	color: @colorRemoved;
 	                
@@ -1205,7 +1205,6 @@ body[theme=white] .detail .tile-small {
 	&.edit span         { background-position: 0 -270px; }
 	&.delete span       { background-position: 0 -630px; }
 	&.update span       { background-position: 0 -540px; }
-	&.download span     { background-position: 0 -1110px; .rotate(180deg); }
 	&.save span         { background-position: 0 -240px; }
 	&.undo span         { background-position: 0 -720px; }
 	&.client span       { background-position: 0 -870px; }
@@ -1318,11 +1317,10 @@ textarea {
     .scroll-list    { .size(100%, 100%); }
     p               { margin: 5px 0; line-height: 24px !important; .ohidden; .font-size(18); .clear; }
     .scroll-out     { padding: 0 12px; }
-    .tile-mini      { margin: 0 15px 15px 5px !important; }
+    .tile-mini      { margin-left: 45px !important; }
     
 	.field { 
-		.size(auto, auto, 30px); .ohidden; .clear;
-		margin: 5px 0 20px;
+		.size(auto, auto, 30px); .ohidden; margin: 5px 0 20px;
 		
 		&:first-child           { margin-top: 20px; }
 		
@@ -1535,17 +1533,13 @@ body[theme="white"] .detail .field .field.active    { border-color: Black !impor
     .btn-large      { max-width: 600px; }
     
     .setting-list {
-        max-width: 600px; .reset-p; margin: 10px 0 15px;
+        max-width: 600px; .reset-mp;
         
         li {
             .ohidden; .relative;
             margin: 0 0 10px; min-height: 34px;
             
-            h2 {
-                max-width: 55%; font-size: 24px; 
-                
-                &:hover { cursor: pointer; }
-            }
+            h2          { .fleft; max-width: 55%; }
         }
     }
 }
@@ -1788,7 +1782,7 @@ body[theme="white"] .detail .field .field.active    { border-color: Black !impor
         .btn-large      { max-width: 100%; }
     
         .setting-list {
-            max-width: 100%; .reset-p; margin: 10px 0 15px;
+            max-width: 100%; .reset-p; margin: 0 0 15px;
         }
         
         .field { .taleft; }
