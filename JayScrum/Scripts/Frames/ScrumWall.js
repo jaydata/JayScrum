@@ -314,6 +314,8 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
     },
 
 
+
+
     onFrameChangingFrom:function (activeFrameMeta, oldFrameMeta, initData, frame) {
         this.pinnedQueryParam = { sprintId: initData.Id() };
         this.toDoListQuery = JayScrum.repository.WorkItems

@@ -87,7 +87,6 @@ $data.Class.define('JayScrum.Frames.UserStories', JayScrum.Frame, null, {
                     .toArray(function (sprinIds) {
                         JayScrum.app.selectedFrame().data().userStoriesInSprintList([]);
                         Q.fcall(JayScrum.app.selectedFrame()._getUserStoryInSprintList, sprinIds, null)
-                            //.then(JayScrum.app.selectedFrame()._initializeUserStoriesLists())
                             .then(function(){loadingPromise.resolve();});
 
                     });
@@ -258,7 +257,6 @@ $data.Class.define('JayScrum.Frames.UserStories', JayScrum.Frame, null, {
 
     onRefreshWorkItemsOfUserStory: function (userStory) {
         console.log(userStory.Id());
-        //showLoading();
 
         JayScrum.repository.WorkItems
             .where(function (item) { return item.Type == "Task" && item.WorkItem_WorkItem == this.userStoryId }, { userStoryId: userStory.Id() })
