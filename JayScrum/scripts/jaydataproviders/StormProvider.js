@@ -163,7 +163,7 @@ $C('$data.storageProviders.Storm.StormProvider', $data.StorageProviderBase, null
             or: { mapTo: ' || ', dataType: "boolean", allowedIn: [$data.Expressions.FilterExpression, $data.Expressions.OrderExpression] },
             and: { mapTo: ' && ', dataType: "boolean", allowedIn: [$data.Expressions.FilterExpression, $data.Expressions.OrderExpression] },
 
-            "in": { mapTo: ".indexOf(", allowedIn: [$data.Expressions.FilterExpression], rightValue: ') > -1', reverse: true }
+            "in": { mapTo: " in ", allowedIn: [$data.Expressions.FilterExpression] }
         }
     },
     supportedUnaryOperators: {
@@ -214,7 +214,7 @@ $C('$data.storageProviders.Storm.StormProvider', $data.StorageProviderBase, null
                 '$data.Blob': function (blob) { return blob; },
                 '$data.Object': function (o) { if (o === undefined) { return new $data.Object(); } return JSON.parse(o); },
                 '$data.Array': function (o) { if (o === undefined) { return new $data.Array(); } return JSON.parse(o); },
-                '$data.ObjectID': function (o) { return o; }
+                '$data.ObjectID': function (id) { return id; }
             },
             toDb: {
                 '$data.Integer': function (number) { return number; },
@@ -225,7 +225,7 @@ $C('$data.storageProviders.Storm.StormProvider', $data.StorageProviderBase, null
                 '$data.Blob': function (blob) { return blob; },
                 '$data.Object': function (o) { return JSON.stringify(o); },
                 '$data.Array': function (o) { return JSON.stringify(o); },
-                '$data.ObjectID': function (o) { return 'ObjectID("' + o + '")';}
+                '$data.ObjectID': function (id) { return '"' + id + '"'; }
             }
         }
     }
