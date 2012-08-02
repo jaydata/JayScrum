@@ -6,7 +6,7 @@
  * To change this template use File | Settings | File Templates.
  */
 
-$data.Class.define('JayScrum.Frames.Main', JayScrum.Frame, null, {
+$data.Class.define('JayScrum.frames.Main', JayScrum.Frame, null, {
     constructor:function () {
         //register frameViews
         this.registerView('dashboard', new JayScrum.FrameView('dashBoard-template'));

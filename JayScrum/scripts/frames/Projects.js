@@ -15,6 +15,16 @@ $data.Class.define('JayScrum.Views.Projects', JayScrum.FrameView, null, {
         initScrollById("transition-projects", null, null, true);
     }
 }, null);
+$data.Class.define('JayScrum.Views.ProjectSelect', JayScrum.FrameView, null, {
+    constructor:function(name, path, tplSource){
+        this.templateName = name || 'projectSelectView-template';
+    },
+    initializaView:function(){
+        JayScrum.app.hideLoading();
+        $("h1.main-header").addClass("animate");
+        initScrollById("transition-projects", null, null, true);
+    }
+}, null);
 $data.Class.define('JayScrum.Views.ProjectEdit', JayScrum.FrameView, null, {
     constructor:function(name, path, tplSource){
         this.templateName = name || 'projectEditView-template';
@@ -30,14 +40,16 @@ $data.Class.define('JayScrum.Frames.Projects', JayScrum.Frame, null, {
     constructor:function () {
         //register frameViews
         this.registerView('projects', new JayScrum.Views.Projects('project-template'));
-        this.registerView('projects-edit', new JayScrum.Views.ProjectEdit('projectEditView-template'));
+        this.registerView('project-select', new JayScrum.Views.ProjectSelect('projectSelectView-template'));
+        this.registerView('project-edit', new JayScrum.Views.ProjectEdit('projectEditView-template'));
         this.registerMetaView('defaultMeta', new JayScrum.FrameView('jayAppMetaDefault'));
         this.defaultViewName='projects';
         this.selectMetaView('defaultMeta');
         this.data = ko.observable({
             name:'Projects',
             projectList:ko.observableArray(),
-            editableProject: ko.observable()
+            selectedProject: ko.observable(),
+            userStoriesOfProject: ko.observableArray()
         });
     },
     _loadData:function () {
@@ -55,7 +67,7 @@ $data.Class.define('JayScrum.Frames.Projects', JayScrum.Frame, null, {
         JayScrum.app.selectedFrame().onEditProject(item);
     },
     onEditProject: function (item) {
-        JayScrum.app.selectedFrame().data().editableProject(item);
+        JayScrum.app.selectedFrame().data().selectedProject(item);
 
         var project = item.innerInstance;
         if (project.Id > 0) {
@@ -64,7 +76,7 @@ $data.Class.define('JayScrum.Frames.Projects', JayScrum.Frame, null, {
             JayScrum.repository.Projects.add(project);
         }
 
-        JayScrum.app.selectedFrame().selectView('projects-edit');
+        JayScrum.app.selectedFrame().selectView('project-edit');
     },
     onCancelProject: function (projectItem) {
         if (projectItem != null) {
@@ -74,7 +86,7 @@ $data.Class.define('JayScrum.Frames.Projects', JayScrum.Frame, null, {
         JayScrum.app.selectedFrame()._loadData()
             .then(function(){
                 JayScrum.app.backView();
-                JayScrum.app.selectedFrame().data().editableProject(null);
+                JayScrum.app.selectedFrame().data().selectedProject(null);
             });
     },
     onSaveProject: function (projectItem) {
@@ -89,6 +101,56 @@ $data.Class.define('JayScrum.Frames.Projects', JayScrum.Frame, null, {
             JayScrum.app.selectedFrame().onCancelProject();
         });
     },
+    onSelectProject:function(wrkItem){
+        JayScrum.app.selectedFrame().data().selectedProject(wrkItem);
+        JayScrum.app.selectedFrame().selectView('project-select');
+    },
+    onRefreshUserStoriesOfProject: function (project) {
+        JayScrum.repository.WorkItems
+            .where(function (item) { return ( item.Type == "UserStory") && item.WorkItem_Project == this.projectId;}, { projectId: project.Id() })
+            .orderBy(function (item) { return item.Priority; })
+            .toArray(function (userStories) {
+                JayScrum.pushObservablesToList(JayScrum.app.selectedFrame().data().userStoriesOfProject, userStories);
+
+                refreshScroll(scrollToRefresh, true);
+            });
+    },
+    onAddNewUserStoryToProject:function(project){
+        console.log('US');
+
+        var item = (new JayScrum.repository.WorkItems.createNew({
+            Id: null,
+            Title: "",
+            Type: "Task",
+            Description: "",
+            CreatedDate: new Date().toISOString(),
+            CreatedBy: 'Admin', //$data.Model.settingPage.loginSettings.UserName, //TODO: add user data
+            ChangedDate: new Date().toISOString(),
+            ChangedBy: 'Admin', //$data.Model.settingPage.loginSettings.UserName, //TODO: add user data
+            Priority: 0,
+            AssignedTo: "",
+            State: "To Do",
+            //WorkItem_Sprint: JayScrum.app.selectedFrame().data().currentSprint().innerInstance.Id,
+            Effort: 0,
+            BusinessValue: 0,
+            RemainingWork: 0,
+            IsBlocked:false,
+            WorkItem_Project:project.Id()
+            //Reason: "New task",
+            //IterationPath: $data.Model.mainPage.currentSprint().IterationPath(),
+            //AreaPath: $data.Model.mainPage.currentSprint().AreaPath()
+            //ParentName: " ",
+            //FinishDate: "",
+            //StartDate: ""
+        })).asKoObservable();
+        console.log(item);
+        JayScrum.repository.add(item);
+        JayScrum.app.selectFrame('UserStories', 'userStoryEditor', item);
+    },
+    onSelectUserStoryOfProject: function (wrkItem) {
+        JayScrum.app.selectFrame('UserStories', 'userStorySelected', wrkItem);
+    },
+
     onFrameChangedFrom:function (activeFrameMeta, oldFrameMeta, initDatam, frame) {
         this._loadData()
             .then(function () {

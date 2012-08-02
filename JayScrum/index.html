@@ -711,7 +711,7 @@
                                                     <!-- ko if: $parent.data().selectedUserStoryTaskList().length > 0 -->
                                                     <span class="icon-action update marginr5_" data-bind="click: $root.selectedFrame().onRefreshWorkItemsOfUserStory"><span></span></span>
                                                     <!-- /ko -->
-                                                    <span class="icon-action add marginr5_" data-bind="click: null"><span></span></span>
+                                                    <span class="icon-action add marginr5_" data-bind="width:$data.data, click: $root.selectedFrame().onAddNewTaskToUserStory"><span></span></span>
                                                 </span>
                                             </h2>
 
@@ -775,7 +775,6 @@
             </ul>
         </div>
     </script>
-
     <script type="text/html" id="userStoryByProject-template">
         <div id="wrapper" class="metro-pivot wrapper-container">
             <div id="scroller">
@@ -900,7 +899,7 @@
                             <div class="list project-list" data-bind="foreach: $data.data().projectList">
                                 <div class="item task list-item clear">
                                     <h2 class="title margintop tolower accent-color">
-                                        <span data-bind="text: Name, click: null"></span>
+                                        <span data-bind="text: Name, click: $parent.onSelectProject"></span>
                                         <span class="icon-action edit fright" data-bind="click: $parent.onEditProject"><span></span></span>
                                     </h2>
 
@@ -920,13 +919,13 @@
         </div>
     </script>
     <script type="text/html" id="projectEditView-template">
-        <div class="icon-action back topleft" data-bind="with: $data.data().editableProject">
+        <div class="icon-action back topleft" data-bind="with: $data.data().selectedProject">
             <span data-bind="click: $parent.onCancelProject"></span>
         </div>
         <div class="main-header">
             <h1 class="title">Project data</h1>
         </div>
-        <div class="detail edit" data-bind="with: $data.data().editableProject">
+        <div class="detail edit" data-bind="with: $data.data().selectedProject">
             <div id="transition-projects" class="scroll-out pivot-default-opacity">
                 <div class="scroll-in">
                     <div class="list">
@@ -948,11 +947,92 @@
                 </div>
             </div>
         </div>
-        <div class="metro-actionbar detail-view-edit" data-bind="with: $data.data().editableProject">
+        <div class="metro-actionbar detail-view-edit" data-bind="with: $data.data().selectedProject">
             <ul>
                 <li class="icon-action save"><span data-bind="click: $parent.onSaveProject"></span></li>
                 <li class="icon-action delete"><span data-bind="click: $parent.onDeleteProject"></span></li>
             </ul>
+        </div>
+    </script>
+    <script type="text/html" id="projectSelectView-template">
+        <div class="icon-action back topleft">
+            <span data-bind="click: $root.backView"></span>
+        </div>
+        <div class="main-header" data-bind="attr: { 'class': 'main-header not-main-page' }">
+            <h1 class="title" data-bind="text: $root.selectedFrame().data().name"></h1>
+        </div>
+        <div class="metro-pivot wrapper-container reset">
+            <div class="pivot-list">
+                <div class="pivot uslist">
+                    <div class="scroll-list scrollable-list bottom45 pivot-default-opacity" id="transition-projects">
+                        <div class="scroller-list">
+                            <div class="list project-list" data-bind="with: $data.data().selectedProject">
+                                <div class="item task list-item clear">
+                                    <h2 class="title margintop tolower accent-color">
+                                        <span data-bind="text: Name, click: null"></span>
+                                        <span class="icon-action edit fright" data-bind="click: $parent.onEditProject"><span></span></span>
+                                    </h2>
+
+                                    <p data-bind="text: Description"></p>
+
+                                    <div class="metro-pivot uslist" id="userstory-list">
+                                        <h2 class="font30 marginb20">
+                                            <span class="value">user stories</span>
+
+                                                <span class="fright">
+                                                    <!-- ko if: $parent.data().userStoriesOfProject().length < 1 -->
+                                                    <span class="icon-action download marginr5_" data-bind="click: $root.selectedFrame().onRefreshUserStoriesOfProject"><span></span></span>
+                                                    <!-- /ko -->
+                                                    <!-- ko if: $parent.data().userStoriesOfProject().length > 0 -->
+                                                    <span class="icon-action update marginr5_" data-bind="click: $root.selectedFrame().onRefreshUserStoriesOfProject"><span></span></span>
+                                                    <!-- /ko -->
+                                                    <span class="icon-action add marginr5_" data-bind="width:$data.data, click: $root.selectedFrame().onAddNewUserStoryToProject"><span></span></span>
+                                                </span>
+                                        </h2>
+
+                                        <!--ko if: $parent.data().userStoriesOfProject().length > 0-->
+                                        <div class="list">
+                                            <!--ko foreach: $parent.data().userStoriesOfProject()-->
+                                            <div class="item task list-item New">
+                                                <!-- ko if: Title -->
+                                                <h2 class="title margintop" data-bind="text: Title, click: $root.selectedFrame().onSelectUserStoryOfProject"></h2>
+                                                <!-- /ko -->
+
+                                                <div>
+                                                    <!-- ko if: RemainingWork -->
+                                                    <span class="small accent-bg" data-bind="text: RemainingWork()+' h'"></span>
+                                                    <!-- /ko -->
+
+                                                    <!-- ko if: AssignedTo -->
+                                                    <span class="small accent-color" data-bind="text: AssignedTo"></span>
+                                                    <!-- /ko -->
+
+                                                    <!-- ko if: Priority -->
+                                                    | <span class="small inactive" data-bind="text: 'prior: '+Priority()"></span>
+                                                    <!-- /ko -->
+                                                </div>
+                                            </div>
+                                            <!--/ko-->
+                                        </div>
+                                        <!--/ko-->
+
+                                        <!--ko if: $parent.data().userStoriesOfProject().length < 1 -->
+                                        <p class="inactive">Click the icon to download user story's tasks</p>
+                                        <!--/ko-->
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="metro-actionbar detail-view opened">
+                <ul>
+                    <li class="icon-action add"><span data-bind="click: $data.onAddProject"></span>
+                    </li>
+                </ul>
+            </div>
         </div>
     </script>
 
@@ -1180,43 +1260,43 @@
 
     <!-- #endregion TEMPLATES -->
 
-    <script type="text/javascript" src="Scripts/cordova-1.9.0.js"></script>
-    <script type="text/javascript" src="Scripts/libs/moment.js"></script>
+    <script type="text/javascript" src="scripts/cordova-1.9.0.js"></script>
+    <script type="text/javascript" src="scripts/libs/moment.js"></script>
     <!--[if IE]>
-    <script type="text/javascript" src="Scripts/libs/jquery-1.7.2.min.js"></script>
+    <script type="text/javascript" src="scripts/libs/jquery-1.7.2.min.js"></script>
     <![endif]-->
     <!--[if !IE]> -->
-    <script type="text/javascript" src="Scripts/libs/zeptojs.min.js"></script>
+    <script type="text/javascript" src="scripts/libs/zeptojs.min.js"></script>
     <!-- <![endif]-->
-    <script type="text/javascript" src="Scripts/libs/q.js"></script>
-    <script type="text/javascript" src="Scripts/libs/knockout-2.1.0.debug.js"></script>
-    <script type="text/javascript" src="Scripts/libs/datajs-1.0.3.min.js"></script>
-    <script type="text/javascript" src="Scripts/libs/jaydata.js"></script>
-    <script type="text/javascript" src="Scripts/JayDataProviders/SqLiteProvider.js"></script>
-    <script type="text/javascript" src="Scripts/JayDataProviders/StormProvider.js"></script>
-    <script type="text/javascript" src="Scripts/JayDataProviders/InMemoryProvider.js"></script>
-    <script type="text/javascript" src="Scripts/JayDataModuls/knockout.js"></script>
+    <script type="text/javascript" src="scripts/libs/q.js"></script>
+    <script type="text/javascript" src="scripts/libs/knockout-2.1.0.debug.js"></script>
+    <script type="text/javascript" src="scripts/libs/datajs-1.0.3.min.js"></script>
+    <script type="text/javascript" src="scripts/libs/jaydata.js"></script>
+    <script type="text/javascript" src="scripts/jaydataproviders/SqLiteProvider.js"></script>
+    <script type="text/javascript" src="scripts/jaydataproviders/StormProvider.js"></script>
+    <script type="text/javascript" src="scripts/jaydataproviders/InMemoryProvider.js"></script>
+    <script type="text/javascript" src="scripts/jaydatamodules/knockout.js"></script>
 
-    <script type="text/javascript" src="Scripts/JayApp/FrameView.js"></script>
-    <script type="text/javascript" src="Scripts/JayApp/Frame.js"></script>
-    <script type="text/javascript" src="Scripts/JayApp/FrameApp.js"></script>
+    <script type="text/javascript" src="scripts/JayApp/FrameView.js"></script>
+    <script type="text/javascript" src="scripts/JayApp/Frame.js"></script>
+    <script type="text/javascript" src="scripts/JayApp/FrameApp.js"></script>
 
-    <script type="text/javascript" src="Scripts/Frames/Main.js"></script>
-    <script type="text/javascript" src="Scripts/Frames/ScrumWall.js"></script>
-    <script type="text/javascript" src="Scripts/Frames/Repositories.js"></script>
-    <script type="text/javascript" src="Scripts/Frames/Users.js"></script>
-    <script type="text/javascript" src="Scripts/Frames/ThemeSettings.js"></script>
-    <script type="text/javascript" src="Scripts/Frames/Projects.js"></script>
-    <script type="text/javascript" src="Scripts/Frames/UserStories.js"></script>
-    <script type="text/javascript" src="Scripts/Frames/Sprints.js"></script>
+    <script type="text/javascript" src="scripts/frames/Main.js"></script>
+    <script type="text/javascript" src="scripts/frames/ScrumWall.js"></script>
+    <script type="text/javascript" src="scripts/frames/Repositories.js"></script>
+    <script type="text/javascript" src="scripts/frames/Users.js"></script>
+    <script type="text/javascript" src="scripts/frames/ThemeSettings.js"></script>
+    <script type="text/javascript" src="scripts/frames/Projects.js"></script>
+    <script type="text/javascript" src="scripts/frames/UserStories.js"></script>
+    <script type="text/javascript" src="scripts/frames/Sprints.js"></script>
 
-    <script type="text/javascript" src="Scripts/RepositoryContext.js"></script>
-    <script type="text/javascript" src="Scripts/ScrumLsEntities.js"></script>
-    <script type="text/javascript" src="Scripts/IScroll/iscroll.min.js"></script>
-    <script type="text/javascript" src="Scripts/IScroll/swipeview.js"></script>
-    <script type="text/javascript" src="Scripts/Models/MainPage.js"></script>
-    <script type="text/javascript" src="Scripts/init.js"></script>
-    <script type="text/javascript" src="Scripts/scrum.js"></script>
+    <script type="text/javascript" src="scripts/RepositoryContext.js"></script>
+    <script type="text/javascript" src="scripts/ScrumLsEntities.js"></script>
+    <script type="text/javascript" src="scripts/IScroll/iscroll.min.js"></script>
+    <script type="text/javascript" src="scripts/IScroll/swipeview.js"></script>
+    <script type="text/javascript" src="scripts/Models/MainPage.js"></script>
+    <script type="text/javascript" src="scripts/init.js"></script>
+    <script type="text/javascript" src="scripts/scrum.js"></script>
 
     <script type="text/html" id="jayAppMenu">
         <div>

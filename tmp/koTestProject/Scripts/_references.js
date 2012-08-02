@@ -1,8 +1,8 @@
 ﻿/// <reference path="/Scripts/lib/ko.js"/>
-/// <reference path="/Scripts/lib/datajs-1.0.3.js"/>
-/// <reference path="/Scripts/lib/JayData.js"/>
-/// <reference path="/Scripts/JayDataModuls/knockout.js"/>
-/// <reference path="/Scripts/FrameView.js"/>
-/// <reference path="/Scripts/Frame.js"/>
-/// <reference path="/Scripts/FrameApp.js"/>
-/// <reference path="/Scripts/app.js"/>
+/// <reference path="/scripts/lib/datajs-1.0.3.js"/>
+/// <reference path="/scripts/lib/JayData.js"/>
+/// <reference path="/scripts/jaydatamodules/knockout.js"/>
+/// <reference path="/scripts/FrameView.js"/>
+/// <reference path="/scripts/Frame.js"/>
+/// <reference path="/scripts/FrameApp.js"/>
+/// <reference path="/scripts/app.js"/>

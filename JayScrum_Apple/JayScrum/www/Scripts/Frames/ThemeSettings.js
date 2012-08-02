@@ -5,7 +5,7 @@
  * Time: 10:58 AM
  * To change this template use File | Settings | File Templates.
  */
-$data.Class.define('JayScrum.Frames.ThemeSettings', JayScrum.Frame, null, {
+$data.Class.define('JayScrum.frames.ThemeSettings', JayScrum.Frame, null, {
     constructor:function () {
         //register frameViews
         this.registerView('theme', new JayScrum.FrameView('guiSettingPage-template'));

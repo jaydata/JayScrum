@@ -5,7 +5,7 @@
  * Time: 9:28 AM
  * To change this template use File | Settings | File Templates.
  */
-$data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
+$data.Class.define('JayScrum.frames.Repositories', JayScrum.Frame, null, {
     constructor:function () {
         //register frameViews
         this.registerView('settings', new JayScrum.FrameView('repositories-template'));

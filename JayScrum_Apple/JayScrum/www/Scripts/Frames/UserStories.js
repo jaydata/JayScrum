@@ -5,7 +5,7 @@
  * Time: 9:28 AM
  * To change this template use File | Settings | File Templates.
  */
-$data.Class.define('JayScrum.Frames.UserStories', JayScrum.Frame, null, {
+$data.Class.define('JayScrum.frames.UserStories', JayScrum.Frame, null, {
     constructor:function () {
         //register frameViews
         this.registerView('userStory', new JayScrum.FrameView('userStory-template'));

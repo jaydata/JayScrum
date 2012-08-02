@@ -292,7 +292,7 @@ $data.Class.define('JayScrum.Frames.UserStories', JayScrum.Frame, null, {
         console.log(userStory.Id());
 
         JayScrum.repository.WorkItems
-            .where(function (item) { return item.Type == "Task" && item.WorkItem_WorkItem == this.userStoryId }, { userStoryId: userStory.Id() })
+            .where(function (item) { return  item.WorkItem_WorkItem == this.userStoryId && ( item.Type == "Task" || item.Type == "UserStory");}, { userStoryId: userStory.Id() })
             .orderBy(function (item) { return item.Priority; })
             .toArray(function (workItems) {
                 JayScrum.pushObservablesToList(JayScrum.app.selectedFrame().data().selectedUserStoryTaskList, workItems);
@@ -301,17 +301,62 @@ $data.Class.define('JayScrum.Frames.UserStories', JayScrum.Frame, null, {
             });
     },
     onSelectWorkItemOfUserStory: function (wrkItem, isEventCall) {
-        $data.Model.mainPage.activePart('selectedWorkitem');
-        $data.Model.mainPage.selectedWorkItem(wrkItem);
-        $("h1.main-header").addClass("animate");
-        $("div.icon-action.back.topleft.main").hide();
-        $("div.metro-actionbar.detail-view").addClass("opened");
-
-        initSwipeviewById("swipeview", $data.Model.mainPage.selectedWorkitemChildren(), wrkItem.Id());
+        JayScrum.app.selectFrame('ScrumWall', 'taskSelect', {wrkItem:  wrkItem, list:JayScrum.app.selectedFrame().data().selectedUserStoryTaskList()});
     },
+    onAddNewTaskToUserStory:function(userStory){
+        console.log('US');
 
-    onFrameChangedFrom:function (activeFrameMeta, oldFrameMeta, initDatam, frame) {
-        this._loadData()
-            .then(JayScrum.app.selectedFrame().selectedView().initializaView);
+        var item = (new JayScrum.repository.WorkItems.createNew({
+            Id: null,
+            Title: "",
+            Type: "Task",
+            Description: "",
+            CreatedDate: new Date().toISOString(),
+            CreatedBy: 'Admin', //$data.Model.settingPage.loginSettings.UserName, //TODO: add user data
+            ChangedDate: new Date().toISOString(),
+            ChangedBy: 'Admin', //$data.Model.settingPage.loginSettings.UserName, //TODO: add user data
+            Priority: 0,
+            AssignedTo: "",
+            State: "To Do",
+            //WorkItem_Sprint: JayScrum.app.selectedFrame().data().currentSprint().innerInstance.Id,
+            Effort: 0,
+            BusinessValue: 0,
+            RemainingWork: 0,
+            IsBlocked:false,
+            WorkItem_WorkItem:userStory.Id()
+            //Reason: "New task",
+            //IterationPath: $data.Model.mainPage.currentSprint().IterationPath(),
+            //AreaPath: $data.Model.mainPage.currentSprint().AreaPath()
+            //ParentName: " ",
+            //FinishDate: "",
+            //StartDate: ""
+        })).asKoObservable();
+        console.log(item);
+        JayScrum.repository.add(item);
+        JayScrum.app.selectFrame('ScrumWall', 'taskEdit', item);
+    },
+    onFrameChangingFrom: function(activeFrameMeta, oldFrameMeta, initData, frame){
+        switch(activeFrameMeta.viewName){
+            case 'userStorySelected':
+                this.data().selectedUserStory(initData);
+                break;
+            case 'userStoryEditor':
+                this.data().selectedUserStory(initData);
+                break;
+            default:
+                break;
+        }
+    },
+    onFrameChangedFrom:function (activeFrameMeta, oldFrameMeta, frame) {
+        switch(activeFrameMeta.viewName){
+            case 'userStorySelected':
+            case 'userStoryEditor':
+                JayScrum.app.selectedFrame().selectedView().initializaView();
+                break;
+            default:
+                this._loadData()
+                    .then(JayScrum.app.selectedFrame().selectedView().initializaView);
+                break;
+        }
     }
 }, null);

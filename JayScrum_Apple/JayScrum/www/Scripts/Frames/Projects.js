@@ -26,7 +26,7 @@ $data.Class.define('JayScrum.Views.ProjectEdit', JayScrum.FrameView, null, {
         $("div.metro-actionbar.detail-view-edit").addClass("opened");
     }
 }, null);
-$data.Class.define('JayScrum.Frames.Projects', JayScrum.Frame, null, {
+$data.Class.define('JayScrum.frames.Projects', JayScrum.Frame, null, {
     constructor:function () {
         //register frameViews
         this.registerView('projects', new JayScrum.Views.Projects('project-template'));

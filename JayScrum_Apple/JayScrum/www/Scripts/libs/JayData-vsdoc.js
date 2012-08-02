@@ -271,7 +271,7 @@ Object.isNullOrUndefined = function (value) {
 
 })();
 
-/********* Scripts/datajs-1.0.3.js ********/
+/********* scripts/datajs-1.0.3.js ********/
 
 // Copyright (c) Microsoft.  All rights reserved.
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation
@@ -26592,7 +26592,7 @@ $data.Class.define("$data.Facebook.types.FbPage", $data.Entity, null, {
     pic_square: { type: "string", isPublic: true },
     pic: { type: "string", isPublic: true },
     pic_large: { type: "string", isPublic: true },
-    pic_cover: { type: "string", isPublic: true },	//object	The JSON object containing three fields: cover_id (the ID of the cover photo), source (the URL for the cover photo), andoffset_y (indicating percentage offset from top [0-100])
+    pic_cover: { type: "string", isPublic: true },	//object	The JSON object containing three fields:ï¿½cover_idï¿½(the ID of the cover photo),ï¿½sourceï¿½(the URL for the cover photo), andoffset_yï¿½(indicating percentage offset from top [0-100])
     unread_notif_count: { type: "int", isPublic: false },
     new_like_count: { type: "int", isPublic: false },
     fan_count: { type: "int", isPublic: true },
@@ -26607,18 +26607,18 @@ $data.Class.define("$data.Facebook.types.FbPage", $data.Entity, null, {
     company_overview: { type: "string", isPublic: true },
     mission: { type: "string", isPublic: true },
     products: { type: "string", isPublic: true },
-    location: { type: "string", isPublic: true }, //	array	Applicable to all Places.
-    parking: { type: "string", isPublic: true }, //     array	Applicable to Businesses and Places. Can be one of street, lot orvalet
-    hours: { type: "string", isPublic: true }, //	array	Applicable to Businesses and Places.
+    location: { type: "string", isPublic: true }, //	array	Applicable to allï¿½Places.
+    parking: { type: "string", isPublic: true }, //     array	Applicable toï¿½Businessesï¿½andï¿½Places. Can be one ofï¿½street,ï¿½lotï¿½orvalet
+    hours: { type: "string", isPublic: true }, //	array	Applicable toï¿½Businessesï¿½andï¿½Places.
     pharma_safety_info: { type: "string", isPublic: true },
     public_transit: { type: "string", isPublic: true },
     attire: { type: "string", isPublic: true },
-    payment_options: { type: "string", isPublic: true },	//array	Applicable to Restaurants or Nightlife.
+    payment_options: { type: "string", isPublic: true },	//array	Applicable toï¿½Restaurantsï¿½orï¿½Nightlife.
     culinary_team: { type: "string", isPublic: true },
     general_manager: { type: "string", isPublic: true },
     price_range: { type: "string", isPublic: true },
-    restaurant_services: { type: "string", isPublic: true },//	array	Applicable to Restaurants.
-    restaurant_specialties: { type: "string", isPublic: true },//	array	Applicable to Restaurants.
+    restaurant_services: { type: "string", isPublic: true },//	array	Applicable toï¿½Restaurants.
+    restaurant_specialties: { type: "string", isPublic: true },//	array	Applicable toï¿½Restaurants.
     phone: { type: "string", isPublic: true },
     release_date: { type: "string", isPublic: true },
     genre: { type: "string", isPublic: true },
@@ -27730,7 +27730,7 @@ $data.Class.define("$data.Yahoo.YQLContext", $data.EntityContext, null, {
         ///<param name="targetId" type="string"/>
         ///<param name="callback" type="function"/>
 
-        //Adat tulajdonság jelölése. Akár ugy is mint tmpl-ben: prefix: '\\${', postfix: '}'
+        //Adat tulajdonsï¿½g jelï¿½lï¿½se. Akï¿½r ugy is mint tmpl-ben: prefix: '\\${', postfix: '}'
         var prefix = '\\${', postfix = '}';
         return this.toArray(function (data) {
             var template = document.getElementById(templateId);

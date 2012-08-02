@@ -5,7 +5,7 @@
  * Time: 9:03 AM
  * To change this template use File | Settings | File Templates.
  */
-$data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
+$data.Class.define('JayScrum.frames.ScrumWall', JayScrum.Frame, null, {
     constructor:function () {
         //register frameViews
         this.registerView('scrumWall', new JayScrum.FrameView('scrumWall-template'));
