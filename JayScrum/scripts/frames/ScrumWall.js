@@ -8,21 +8,43 @@
 $data.Class.define('JayScrum.Views.ScrumWall', JayScrum.FrameView, null, {
     constructor:function(name, path, tplSource){
         this.templateName = name || 'scrumWall-template';
+        this.recChange_iScroll = null;
+        this.todo_iScroll = null;
+        this.inProgress_iScroll = null;
+        this.done_iScroll = null;
+        this.burndown_iScroll = null;
+        this.vertical_iScroll = null;
     },
     initializaView:function(){
-        initScrollById('transition0', JayScrum.app.selectedFrame().onRecentlyChangedListPullUp, JayScrum.app.selectedFrame().onRecentlyChangedListPullDown);
-        initScrollById('transition1', JayScrum.app.selectedFrame().onToDoListPullUp, JayScrum.app.selectedFrame().onToDoListPullDown);
-        initScrollById('transition2', JayScrum.app.selectedFrame().onInProgressListPullUp, JayScrum.app.selectedFrame().onInProgressListPullDown);
-        initScrollById('transition3', JayScrum.app.selectedFrame().onDoneListPullUp, JayScrum.app.selectedFrame().onDoneListPullDown);
-        initScrollById('transition4', null, null);
-        initHorizontalScrollById("wrapper", 1);
+        this.recChange_iScroll = JayScrum.app.initScrollById('transition0', JayScrum.app.selectedFrame().onRecentlyChangedListPullUp, JayScrum.app.selectedFrame().onRecentlyChangedListPullDown);
+        this.todo_iScroll= JayScrum.app.initScrollById('transition1', JayScrum.app.selectedFrame().onToDoListPullUp, JayScrum.app.selectedFrame().onToDoListPullDown);
+        this.inProgress_iScroll = JayScrum.app.initScrollById('transition2', JayScrum.app.selectedFrame().onInProgressListPullUp, JayScrum.app.selectedFrame().onInProgressListPullDown);
+        this.done_iScroll = JayScrum.app.initScrollById('transition3', JayScrum.app.selectedFrame().onDoneListPullUp, JayScrum.app.selectedFrame().onDoneListPullDown);
+        this.burndown_iScroll = JayScrum.app.initScrollById('transition4', null, null);
+        this.vertical_iScroll = JayScrum.app.initHorizontalScrollById("wrapper", 1);
 
         JayScrum.app.hideLoading();
+    },
+    tearDownView:function(){
+        if(this.vertical_iScroll){this.vertical_iScroll.destroy()};
+        this.recChange_iScroll.destroy();
+        this.todo_iScroll.destroy();
+        this.inProgress_iScroll.destroy();
+        this.done_iScroll.destroy();
+        this.burndown_iScroll.destroy();
+
+        this.vertical_iScroll = null;
+        this.recChange_iScroll = null;
+        this.todo_iScroll = null;
+        this.inProgress_iScroll = null;
+        this.done_iScroll = null;
+        this.burndown_iScroll = null;
     }
 }, null);
 $data.Class.define('JayScrum.Views.TaskSelect', JayScrum.FrameView, null, {
     constructor:function(name, path, tplSource){
         this.templateName = name || 'taskSelectView-template';
+        this.swipeView = null;
     },
     initializaView:function(){
         console.log('==> initialize Task Select View');
@@ -31,16 +53,23 @@ $data.Class.define('JayScrum.Views.TaskSelect', JayScrum.FrameView, null, {
         $("h1.main-header").addClass("animate");
         $("div.icon-action.back.topleft.main").hide();
         $("div.metro-actionbar.detail-view").addClass("opened");
-        initSwipeviewById("swipeview", JayScrum.app.selectedFrame().activeList, JayScrum.app.selectedFrame().data().selectedWorkItem().Id());
+        this.swipeView = JayScrum.app.initSwipeviewById("swipeview", JayScrum.app.selectedFrame().activeList, JayScrum.app.selectedFrame().data().selectedWorkItem().Id());
+    },
+    tearDownView:function(){
+        this.swipeView.i_scroll.destroy();
+        this.swipeView.i_scroll = null;
+        this.swipeView.destroy();
+        this.swipeView = null;
     }
 }, null);
 $data.Class.define('JayScrum.Views.TaskEdit', JayScrum.FrameView, null, {
     constructor:function(name, path, tplSource){
         this.templateName = name || 'taskEditView-template';
+        this.i_scroll = null;
     },
     initializaView:function () {
         console.log('==> initialize Task Select View');
-
+        var self = this;
         JayScrum.app.selectedFrame()._onRefreshDropDownLists()
             .then(function () {
                 JayScrum.app.hideLoading();
@@ -48,9 +77,13 @@ $data.Class.define('JayScrum.Views.TaskEdit', JayScrum.FrameView, null, {
                 $("h1.main-header").addClass("animate");
                 var swipeHeight = $("div.detail-edit-fix-header h1").height();
                 $("div#wrapper-detailed-edit").css('top', swipeHeight);
-                initScrollById('wrapper-detailed-edit', null, null, true);
+                self.i_scroll = JayScrum.app.initScrollById('wrapper-detailed-edit', null, null, true);
             }
         );
+    },
+    tearDownView: function(){
+        this.i_scroll.destroy();
+        this.i_scroll = null;
     }
 }, null);
 $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
@@ -92,7 +125,6 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
         var pDownFn = pullDownFn;
         query.toArray(function(result){
             JayScrum.pushObservablesToList(dList, result);
-            //initScrollById(lId, pUpFn, pDownFn);
             loadingPromise.resolve();
         })
         return loadingPromise.promise;
@@ -167,7 +199,6 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
     onSelectWorkItem: function (wrkItem, isEventCall) {
         console.log('onSelectWorkItem');
 
-//        $data.Model.mainPage.activePart('selectedWorkitem');
         JayScrum.app.selectedFrame().data().selectedWorkItem(wrkItem);
         JayScrum.app.selectedFrame().data().selectedWorkItemActive(wrkItem);
 
@@ -177,16 +208,16 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
         } else if (wrkItem.Type() == "Task") {
             JayScrum.app.selectedFrame().activeList = JayScrum.app.selectedFrame()._findListById(wrkItem.Id(), wrkItem);
         } else {
-            $("div.detail div#wrapper-detailed div.list div.pivot-content").show();
-
-            var swipeviewUs = $("div#swipeview-inside-us"),
-                title = swipeviewUs.prev(),
-                minusHeight = title.height() + 15;
-
-            swipeviewUs.css('top', minusHeight);
-            initScrollById('swipeview-inside-us');
-
-            console.log(scrollToRefresh);
+//            $("div.detail div#wrapper-detailed div.list div.pivot-content").show();
+//
+//            var swipeviewUs = $("div#swipeview-inside-us"),
+//                title = swipeviewUs.prev(),
+//                minusHeight = title.height() + 15;
+//
+//            swipeviewUs.css('top', minusHeight);
+//            initScrollById('swipeview-inside-us');
+//
+//            console.log(scrollToRefresh);
         }
         JayScrum.app.selectedFrame().selectView('taskSelect');
     },
@@ -432,7 +463,7 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
             JayScrum.app.selectedFrame().selectedView().initializaView();
         } else {
             this._loadData()
-                .then(JayScrum.app.selectedFrame().selectedView().initializaView);
+                .then(function(){JayScrum.app.selectedFrame().selectedView().initializaView()});
         }
     }
 }, null);

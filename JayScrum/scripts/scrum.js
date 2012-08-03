@@ -246,6 +246,103 @@ $data.Class.define('JayScrum.ScrumApp', JayScrum.FrameApp, null,{
                 loadPromise.resolve();
             });
         return loadPromise.promise;
+    },
+    initScrollById:function (id, fn, fn2, hideLoad) {
+        var i_scroll = null,
+            transition = $("div#" + id);
+
+        i_scroll = new iScroll(id, new iScrollOptions(fn, fn2));
+        transition.addClass("animate").prev().addClass("animate");
+
+        // pull up to load more
+        if (fn) {
+            var d = document.createElement('div');
+            d.className = "scroll-up list-item";
+            d.innerHTML = "<span class='pullUpIcon'></span><span class='pullUpLabel'>Pull up to load more...</span>";
+            transition.find('div.scroller-list').append(d);
+        }
+
+        // pull down to refresh
+        if (fn2) {
+            var d = document.createElement('div');
+            d.className = "scroll-down list-item";
+            d.innerHTML = "<span class='pullDownIcon'></span><span class='pullDownLabel'>Pull down to refresh...</span>";
+            transition.find('div.scroller-list').prepend(d);
+        }
+        return i_scroll;
+    },
+    initSwipeviewById:function (id, list, wrkItemId) {
+
+        var swipe = $("div#" + id),
+            currentIndex = 0,
+            gallery = null;
+
+        if (list != null && swipe.length > 0) {
+            list.filter(function (item, index) {
+                if (item.Id() == wrkItemId) {
+                    currentIndex = index;
+                }
+            }, this);
+
+            gallery = new SwipeView("#" + id, { numberOfPages:list.length });
+            gallery.onFlip(function () {
+                JayScrum.app.selectedFrame().data().selectedWorkItemPrev(list[gallery.masterPages[0].dataset.upcomingPageIndex]);
+                JayScrum.app.selectedFrame().data().selectedWorkItem(list[gallery.masterPages[1].dataset.upcomingPageIndex]);
+                JayScrum.app.selectedFrame().data().selectedWorkItemNext(list[gallery.masterPages[2].dataset.upcomingPageIndex]);
+                switch (gallery.currentMasterPage) {
+                    case 0:
+                        JayScrum.app.selectedFrame().data().selectedWorkItemActive(JayScrum.app.selectedFrame().data().selectedWorkItemPrev());
+                        break;
+                    case 1:
+                        JayScrum.app.selectedFrame().data().selectedWorkItemActive(JayScrum.app.selectedFrame().data().selectedWorkItem());
+                        break;
+                    case 2:
+                        JayScrum.app.selectedFrame().data().selectedWorkItemActive(JayScrum.app.selectedFrame().data().selectedWorkItemNext());
+                        break;
+                }
+
+                // TODO: layout is broken on first load
+                var swipeviewUs = $("#swipeview-inside-" + gallery.currentMasterPage),
+                    title = swipeviewUs.prev(),
+                    minusHeight = title.height() + 15;
+
+                console.log(minusHeight);
+                var self = gallery;
+                swipeviewUs.css('top', minusHeight);
+                setTimeout(function () {
+                    if (self.i_scroll) {
+                        self.i_scroll.destroy();
+                        self.i_scroll = null;
+                    }
+                    self.i_scroll = JayScrum.app.initScrollById('swipeview-inside-' + gallery.currentMasterPage);
+                }, 100);
+            });
+            gallery.goToPage(currentIndex);
+        }
+        return gallery;
+    },
+    initHorizontalScrollById:function (id, scrollToPage) {
+        var wrapper = $("div#" + id),
+            vScroll = null;
+        if (wrapper.length > 0) {
+            var columns = wrapper.find("div.pivot-list div.pivot").length,
+                scrollerWidth = columns * 335;
+            wrapper.find("div#scroller").width(scrollerWidth);
+
+            vScroll = new iScroll(id, {
+                snap:'.pivot',
+                momentum:false,
+                hScrollbar:false,
+                vScrollbar:false,
+                useTransition:true,
+                lockDirection:true
+            });
+            vScroll.scrollToPage(scrollToPage, 0, 0);
+            if (window.outerWidth >= scrollerWidth) {
+                vScroll.disable();
+            }
+        }
+        return vScroll;
     }
 },null);
 
@@ -273,109 +370,4 @@ Date.prototype.addDays = function (days) {
 }
 Date.prototype.diffInDays = function (date) {
     return 55;
-}
-// SCROLL
-function initScrollById(id, fn, fn2, hideLoad) {
-
-    var transition = $("div#" + id);
-
-    if (id == 'wrapper-detailed-edit' || id == 'swipeview-inside-us') {
-        scrollToRefresh = new iScroll(id, new iScrollOptions(fn, fn2));
-    } else if (transition.length > 0) {
-        new iScroll(id, new iScrollOptions(fn, fn2));
-        transition.addClass("animate").prev().addClass("animate");
-    }
-
-    // pull up to load more
-    if (fn) {
-        var d = document.createElement('div');
-        d.className = "scroll-up list-item";
-        d.innerHTML = "<span class='pullUpIcon'></span><span class='pullUpLabel'>Pull up to load more...</span>";
-        transition.find('div.scroller-list').append(d);
-    }
-
-    // pull down to refresh
-    if (fn2) {
-        var d = document.createElement('div');
-        d.className = "scroll-down list-item";
-        d.innerHTML = "<span class='pullDownIcon'></span><span class='pullDownLabel'>Pull down to refresh...</span>";
-        transition.find('div.scroller-list').prepend(d);
-    }
-
-//    if (hideLoad) {
-//        hideLoading();
-//    }
-    console.log('initing scroll: ' + id);
-}
-function initHorizontalScrollById(id, scrollToPage) {
-
-    var wrapper = $("div#" + id);
-    if (wrapper.length > 0) {
-        var columns = wrapper.find("div.pivot-list div.pivot").length,
-            scrollerWidth = columns * 335;
-        wrapper.find("div#scroller").width(scrollerWidth);
-
-        vScroll = new iScroll(id, {
-            snap: '.pivot',
-            momentum: false,
-            hScrollbar: false,
-            vScrollbar: false,
-            useTransition: true,
-            lockDirection: true
-        });
-        vScroll.scrollToPage(scrollToPage, 0, 0);
-
-        if (window.outerWidth >= scrollerWidth) {
-            vScroll.disable();
-        }
-
-        //hideLoading();
-    }
-}
-function refreshScroll(scroll, hideLoad) {
-    setTimeout(function () {
-        scroll.refresh();
-
-
-    }, 500);
-
-    console.log("scroll refreshed: " + scroll);
-}
-function initSwipeviewById(id, list, wrkItemId) {
-    //showLoading();
-
-    var swipe = $("div#" + id),
-        currentIndex = 0;
-
-    if (list != null && swipe.length > 0) {
-        list.filter(function (item, index) { if (item.Id() == wrkItemId) { currentIndex = index; } }, this);
-
-        var gallery = new SwipeView("#" + id, { numberOfPages: list.length });
-        gallery.onFlip(function () {
-            JayScrum.app.selectedFrame().data().selectedWorkItemPrev(list[gallery.masterPages[0].dataset.upcomingPageIndex]);
-            JayScrum.app.selectedFrame().data().selectedWorkItem(list[gallery.masterPages[1].dataset.upcomingPageIndex]);
-            JayScrum.app.selectedFrame().data().selectedWorkItemNext(list[gallery.masterPages[2].dataset.upcomingPageIndex]);
-            switch (gallery.currentMasterPage) {
-                case 0: JayScrum.app.selectedFrame().data().selectedWorkItemActive(JayScrum.app.selectedFrame().data().selectedWorkItemPrev()); break;
-                case 1: JayScrum.app.selectedFrame().data().selectedWorkItemActive(JayScrum.app.selectedFrame().data().selectedWorkItem()); break;
-                case 2: JayScrum.app.selectedFrame().data().selectedWorkItemActive(JayScrum.app.selectedFrame().data().selectedWorkItemNext()); break;
-            }
-
-            // TODO: layout is broken on first load
-            var swipeviewUs = $("#swipeview-inside-" + gallery.currentMasterPage),
-                title = swipeviewUs.prev(),
-                minusHeight = title.height() + 15;
-
-            console.log(minusHeight);
-            swipeviewUs.css('top', minusHeight);
-            setTimeout(function () {
-                initScrollById('swipeview-inside-' + gallery.currentMasterPage);
-            }, 100);
-        });
-        gallery.goToPage(currentIndex);
-    }
-
-//    setTimeout(function () {
-//        hideLoading();
-//    }, 500);
 }

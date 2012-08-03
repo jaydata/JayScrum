@@ -8,25 +8,35 @@
 $data.Class.define('JayScrum.Views.Sprints', JayScrum.FrameView, null, {
     constructor:function(name, path, tplSource){
         this.templateName = name || 'print-template';
+        this.i_scroll = null;
     },
     initializaView:function(){
         console.log('==> initialize View');
         JayScrum.app.hideLoading();
         $("h1.main-header").addClass("animate");
         $("div.icon-action.back.topleft.main").show();
-        initScrollById("transition-iteration", null, null, true);
+        this.i_scroll = JayScrum.app.initScrollById("transition-iteration");
+    },
+    tearDownView:function(){
+        this.i_scroll.destroy();
+        this.i_scroll = null;
     }
 }, null);
 $data.Class.define('JayScrum.Views.SprintEdit', JayScrum.FrameView, null, {
     constructor:function(name, path, tplSource){
         this.templateName = name || 'sprintEditView-template';
+        this.i_scroll = null;
     },
     initializaView:function(){
         console.log('==> initialize View');
         $("h1.main-header").addClass("animate");
-        initScrollById('transition-iteration-edit');
+        this.i_scroll = JayScrum.app.initScrollById("transition-iteration-edit");
         initDateFieldsById('transition-iteration-edit');
         $("div.metro-actionbar.detail-view-edit").addClass("opened");
+    },
+    tearDownView:function(){
+        this.i_scroll.destroy();
+        this.i_scroll = null;
     }
 }, null);
 $data.Class.define('JayScrum.Frames.Sprints', JayScrum.Frame, null, {
@@ -127,8 +137,4 @@ $data.Class.define('JayScrum.Frames.Sprints', JayScrum.Frame, null, {
             JayScrum.app.selectedFrame().onCancelSprint();
         });
     },
-    onFrameChangedFrom:function (activeFrameMeta, oldFrameMeta, initDatam, frame) {
-        this._loadData()
-            .then(JayScrum.app.selectedFrame().selectedView().initializaView);
-    }
 }, null);

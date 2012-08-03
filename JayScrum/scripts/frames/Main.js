@@ -5,11 +5,24 @@
  * Time: 8:43 AM
  * To change this template use File | Settings | File Templates.
  */
-
+$data.Class.define('JayScrum.Views.Main', JayScrum.FrameView, null, {
+    constructor:function(name, path, tplSource){
+        this.templateName = name || 'dashBoard-template';
+        this.i_scroll = null;
+    },
+    initializaView:function(){
+        JayScrum.app.hideLoading();
+        this.i_scroll = JayScrum.app.initScrollById("metro-tiles-scroll", null, null, true);
+    },
+    tearDownView:function(){
+        this.i_scroll.destroy();
+        this.i_scroll = null;
+    }
+}, null);
 $data.Class.define('JayScrum.Frames.Main', JayScrum.Frame, null, {
     constructor:function () {
         //register frameViews
-        this.registerView('dashboard', new JayScrum.FrameView('dashBoard-template'));
+        this.registerView('dashboard', new JayScrum.Views.Main('dashBoard-template'));
         this.registerMetaView('dashboardMeta', new JayScrum.FrameView('jayAppMetaDefault'));
         this.defaultViewName='dashboard';
         this.selectMetaView('dashboardMeta');
@@ -93,13 +106,13 @@ $data.Class.define('JayScrum.Frames.Main', JayScrum.Frame, null, {
 
         return loadDefer.promise;
     },
-    onFrameChangedFrom:function (activeFrameMeta, oldFrameMeta, initData, frame) {
-        this._loadData()
-            .then(function () {
-                JayScrum.app.hideLoading();
-                initScrollById("metro-tiles-scroll", null, null, true);
-            });
-    },
+//    onFrameChangedFrom:function (activeFrameMeta, oldFrameMeta, initData, frame) {
+//        this._loadData()
+//            .then(function () {
+//                JayScrum.app.hideLoading();
+//                initScrollById("metro-tiles-scroll", null, null, true);
+//            });
+//    },
     isPinnedSprint: function (sprint) {
         var pinnedSprints = getSetting('pinnedSprints');
         if (!pinnedSprints) { pinnedSprints = []; }

@@ -8,32 +8,47 @@
 $data.Class.define('JayScrum.Views.Projects', JayScrum.FrameView, null, {
     constructor:function(name, path, tplSource){
         this.templateName = name || 'project-template';
+        this.i_scroll = null;
     },
     initializaView:function(){
         JayScrum.app.hideLoading();
         $("h1.main-header").addClass("animate");
-        initScrollById("transition-projects", null, null, true);
+        this.i_scroll = JayScrum.app.initScrollById("transition-projects");
+    },
+    tearDownView:function(){
+        this.i_scroll.destroy();
+        this.i_scroll = null;
     }
 }, null);
 $data.Class.define('JayScrum.Views.ProjectSelect', JayScrum.FrameView, null, {
     constructor:function(name, path, tplSource){
         this.templateName = name || 'projectSelectView-template';
+        this.i_scroll = null;
     },
     initializaView:function(){
         JayScrum.app.hideLoading();
         $("h1.main-header").addClass("animate");
-        initScrollById("transition-projects", null, null, true);
+        this.i_scroll = JayScrum.app.initScrollById("transition-projects");
+    },
+    tearDownView:function(){
+        this.i_scroll.destroy();
+        this.i_scroll = null;
     }
 }, null);
 $data.Class.define('JayScrum.Views.ProjectEdit', JayScrum.FrameView, null, {
     constructor:function(name, path, tplSource){
         this.templateName = name || 'projectEditView-template';
+        this.i_scroll = null;
     },
     initializaView:function(){
         JayScrum.app.hideLoading();
         $("h1.main-header").addClass("animate");
-        initScrollById('transition-projects', null, null, true);
+        this.i_scroll = JayScrum.app.initScrollById("transition-projects");
         $("div.metro-actionbar.detail-view-edit").addClass("opened");
+    },
+    tearDownView:function(){
+        this.i_scroll.destroy();
+        this.i_scroll = null;
     }
 }, null);
 $data.Class.define('JayScrum.Frames.Projects', JayScrum.Frame, null, {
@@ -112,7 +127,7 @@ $data.Class.define('JayScrum.Frames.Projects', JayScrum.Frame, null, {
             .toArray(function (userStories) {
                 JayScrum.pushObservablesToList(JayScrum.app.selectedFrame().data().userStoriesOfProject, userStories);
 
-                refreshScroll(scrollToRefresh, true);
+                JayScrum.app.selectedFrame().selectedView().i_scroll.refresh();
             });
     },
     onAddNewUserStoryToProject:function(project){
@@ -149,13 +164,5 @@ $data.Class.define('JayScrum.Frames.Projects', JayScrum.Frame, null, {
     },
     onSelectUserStoryOfProject: function (wrkItem) {
         JayScrum.app.selectFrame('UserStories', 'userStorySelected', wrkItem);
-    },
-
-    onFrameChangedFrom:function (activeFrameMeta, oldFrameMeta, initDatam, frame) {
-        this._loadData()
-            .then(function () {
-
-                JayScrum.app.selectedFrame().selectedView().initializaView();
-            });
     }
 }, null);

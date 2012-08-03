@@ -5,10 +5,24 @@
  * Time: 9:28 AM
  * To change this template use File | Settings | File Templates.
  */
+$data.Class.define('JayScrum.Views.RepositorySettings', JayScrum.FrameView, null, {
+    constructor:function(name, path, tplSource){
+        this.templateName = name || 'repositories-template';
+        this.i_scroll = null;
+    },
+    initializaView:function(){
+        JayScrum.app.hideLoading();
+        this.i_scroll = JayScrum.app.initScrollById('settingPageScroll');
+    },
+    tearDownView:function(){
+        this.i_scroll.destroy();
+        this.i_scroll = null;
+    }
+}, null);
 $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
     constructor:function () {
         //register frameViews
-        this.registerView('settings', new JayScrum.FrameView('repositories-template'));
+        this.registerView('settings', new JayScrum.Views.RepositorySettings('repositories-template'));
         this.registerMetaView('defaultMeta', new JayScrum.FrameView('jayAppMetaDefault'));
         this.defaultViewName = 'settings';
         this.selectMetaView('defaultMeta');
@@ -60,7 +74,8 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
         JayScrum.app.selectedFrame().data().settings(null);
 
         JayScrum.app.selectedFrame().hideActionBar();
-        initScrollById('settingPageScroll');
+        JayScrum.app.selectedFrame().selectedView().i_scroll.destroy();
+        JayScrum.app.selectedFrame().selectedView().i_scroll = JayScrum.app.initScrollById('settingPageScroll');
     },
     deleteSetting:function(item){
         JayScrum.app.selectedFrame().localContext.Repositories.remove(item);
@@ -69,13 +84,14 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
         });
     },
     addSetting:function(item){
-        var newItem = new JayScrum.Settings.Repository({Title:'Repository', Url:'http://192.168.1.142:3000'});
+        var newItem = new JayScrum.Settings.Repository({Title:'Repository', Url:'http://192.168.1.125:3000'});
         this.localContext.Repositories.add(newItem);
         this.data().settings(null);
         this.data().selectedSetting(newItem.asKoObservable());
 
         JayScrum.app.selectedFrame().hideActionBar();
-        initScrollById('settingPageScroll');
+        JayScrum.app.selectedFrame().selectedView().i_scroll.destroy();
+        JayScrum.app.selectedFrame().selectedView().i_scroll = JayScrum.app.initScrollById('settingPageScroll');
     },
     saveSetting:function(item){
         $("div#settingPage input:focus").trigger('blur');
@@ -83,7 +99,8 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
             JayScrum.app.selectedFrame()._initializeRepositoriesFrame();
         });
 
-        initScrollById("settingPageScroll");
+        JayScrum.app.selectedFrame().selectedView().i_scroll.destroy();
+        JayScrum.app.selectedFrame().selectedView().i_scroll = JayScrum.app.initScrollById("settingPageScroll");
     },
     cancelSetting:function(item){
         console.log(item);
@@ -92,7 +109,8 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
         JayScrum.app.selectedFrame()._initializeRepositoriesFrame();
 
         JayScrum.app.selectedFrame().hideActionBar();
-        initScrollById("settingPageScroll");
+        JayScrum.app.selectedFrame().selectedView().i_scroll.destroy();
+        JayScrum.app.selectedFrame().selectedView().i_scroll = JayScrum.app.initScrollById("settingPageScroll");
     },
     onFrameChangingFrom: function(newFrameMeta, oldFrameMeta, initData, frame){
         JayScrum.app.showLoading();
@@ -104,10 +122,6 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
                 self._initializeRepositoriesFrame();
             }
         });
-    },
-    onFrameChangedFrom:function (newFrameMeta, oldFrameMeta, frame) {
-        initScrollById('settingPageScroll');
-        JayScrum.app.hideLoading();
     },
     showActionBar:function () {
         $('div#settingPageActionBar').addClass("opened");

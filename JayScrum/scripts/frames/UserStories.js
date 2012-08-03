@@ -8,24 +8,43 @@
 $data.Class.define('JayScrum.Views.UserStory', JayScrum.FrameView, null, {
     constructor:function(name, path, tplSource){
         this.templateName = name || 'userStory-template';
+        this.independent_iScroll = null;
+        this.sprint_iScrolls = null;
+        this.horizontalScroll = null;
     },
     initializaView:function(){
         console.log('==> initialize View');
         JayScrum.app.hideLoading();
         $("h1.main-header").addClass("animate");
 
-        initScrollById("transition-us", JayScrum.app.selectedFrame().onIndependentUserStoryListPullUp, JayScrum.app.selectedFrame().onIndependentUserStoryListPullDown);
+        this.independent_iScroll = JayScrum.app.initScrollById("transition-us", JayScrum.app.selectedFrame().onIndependentUserStoryListPullUp, JayScrum.app.selectedFrame().onIndependentUserStoryListPullDown);
         var listCount = JayScrum.app.selectedFrame().data().userStoriesInSprintList().length;
+        this.sprint_iScrolls = [];
         for (var i = 0; i < listCount; i++) {
-            initScrollById("transition-us-" + i, JayScrum.app.selectedFrame().onUserStoryInSprintListPullUp, JayScrum.app.selectedFrame().onUserStoryInSprintListPullDown);
+            this.sprint_iScrolls.push(
+            JayScrum.app.initScrollById("transition-us-" + i, JayScrum.app.selectedFrame().onUserStoryInSprintListPullUp, JayScrum.app.selectedFrame().onUserStoryInSprintListPullDown)
+            )
         }
 
-        initHorizontalScrollById("wrapper", 0);
+        this.horizontalScroll = JayScrum.app.initHorizontalScrollById("wrapper", 0);
+    },
+    tearDownView: function(){
+        this.independent_iScroll.destroy();
+        this.independent_iScroll = null;
+        this.horizontalScroll.destroy();
+        this.horizontalScroll = null;
+        while(this.sprint_iScrolls.length>0){
+            var scroll = this.sprint_iScrolls.pop();
+            scroll.destroy();
+            scroll = null;
+        }
+        this.sprint_iScrolls = null;
     }
 }, null);
 $data.Class.define('JayScrum.Views.UserStorySelected', JayScrum.FrameView, null, {
     constructor:function(name, path, tplSource){
         this.templateName = name || 'userStorySelectView-template';
+        this.i_scroll = null;
     },
     initializaView:function(){
         console.log('==> initialize View');
@@ -37,15 +56,20 @@ $data.Class.define('JayScrum.Views.UserStorySelected', JayScrum.FrameView, null,
             minusHeight = title.height() + 15;
 
         swipeviewUs.css('top', minusHeight);
-
+        var self = this;
         setTimeout(function () {
-            initScrollById('swipeview-inside-us', null, null, true);
+            self.i_scroll = JayScrum.app.initScrollById('swipeview-inside-us', null, null, true);
         }, 750);
+    },
+    tearDownView: function(){
+        this.i_scroll.destroy();
+        this.i_scroll = null;
     }
 }, null);
 $data.Class.define('JayScrum.Views.UserStoryEditor', JayScrum.FrameView, null, {
     constructor:function(name, path, tplSource){
         this.templateName = name || 'userStoryEditView-template';
+        this.i_scroll = null;
     },
     initializaView:function(){
         console.log('==> initialize View');
@@ -53,7 +77,11 @@ $data.Class.define('JayScrum.Views.UserStoryEditor', JayScrum.FrameView, null, {
         $("h1.main-header").addClass("animate");
         var swipeHeight = $("div.detail-edit-fix-header h1").height();
         $("div#wrapper-detailed-edit").css('top', swipeHeight);
-        initScrollById('wrapper-detailed-edit');
+        this.i_scroll = JayScrum.app.initScrollById('wrapper-detailed-edit');
+    },
+    tearDownView: function(){
+        this.i_scroll.destroy();
+        this.i_scroll = null;
     }
 }, null);
 $data.Class.define('JayScrum.Frames.UserStories', JayScrum.Frame, null, {
@@ -146,7 +174,7 @@ $data.Class.define('JayScrum.Frames.UserStories', JayScrum.Frame, null, {
     onIndependentUserStoryListPullUp: function (scroller) {
         JayScrum.repository.WorkItems
             .where(function (item) { return item.Type == "UserStory" && item.WorkItem_Sprint == null })
-            .skip($data.Model.mainPage.userStoryList().length)
+            .skip(JayScrum.app.selectedFrame().data().userStoryList().length)
             .take(7)
             .toArray(function (userStoryResult) {
                 JayScrum.app.selectedFrame().data().userStoryList(JayScrum.app.selectedFrame().data().userStoryList().concat(
@@ -297,7 +325,7 @@ $data.Class.define('JayScrum.Frames.UserStories', JayScrum.Frame, null, {
             .toArray(function (workItems) {
                 JayScrum.pushObservablesToList(JayScrum.app.selectedFrame().data().selectedUserStoryTaskList, workItems);
 
-                refreshScroll(scrollToRefresh, true);
+                JayScrum.app.selectedFrame().selectedView().i_scroll.refresh();
             });
     },
     onSelectWorkItemOfUserStory: function (wrkItem, isEventCall) {
@@ -355,7 +383,7 @@ $data.Class.define('JayScrum.Frames.UserStories', JayScrum.Frame, null, {
                 break;
             default:
                 this._loadData()
-                    .then(JayScrum.app.selectedFrame().selectedView().initializaView);
+                    .then(function(){JayScrum.app.selectedFrame().selectedView().initializaView()});
                 break;
         }
     }

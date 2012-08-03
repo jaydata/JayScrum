@@ -5,6 +5,27 @@
  * Time: 10:58 AM
  * To change this template use File | Settings | File Templates.
  */
+$data.Class.define('JayScrum.Views.ThemeSetting', JayScrum.FrameView, null, {
+    constructor:function(name, path, tplSource){
+        this.templateName = name || 'guiSettingPage-template';
+        this.i_scroll = null;
+    },
+    initializaView:function(){
+        console.log('==> initialize View');
+        JayScrum.app.hideLoading();
+        $("h1.main-header").addClass("animate");
+        $("div.icon-action.back.topleft.main").show();
+        $("div.field.fonts div.field").each(function () {
+            if ($(this).attr('font') == font)
+                $(this).addClass('active');
+        });
+        this.i_scroll = JayScrum.app.initScrollById("transition-settings");
+    },
+    tearDownView:function(){
+        this.i_scroll.destroy();
+        this.i_scroll = null;
+    }
+}, null);
 $data.Class.define('JayScrum.Frames.ThemeSettings', JayScrum.Frame, null, {
     constructor:function () {
         //register frameViews
@@ -15,17 +36,5 @@ $data.Class.define('JayScrum.Frames.ThemeSettings', JayScrum.Frame, null, {
         this.data = ko.observable({
             name:'ui settings'
         });
-    },
-    onFrameChangedFrom:function (activeFrameMeta, oldFrameMeta, initDatam, frame) {
-        JayScrum.app.hideLoading();
-
-        $("h1.main-header").addClass("animate");
-        $("div.icon-action.back.topleft.main").show();
-        var font = $("body").attr('font');
-        $("div.field.fonts div.field").each(function () {
-            if ($(this).attr('font') == font)
-                $(this).addClass('active');
-        });
-        initScrollById("transition-settings");
     }
 }, null);

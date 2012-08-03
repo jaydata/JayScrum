@@ -446,7 +446,7 @@
                                     
                                 <div class="field">
                                     <div><span>Type</span></div>
-                                    <select class="medium accent-bg" onchange="refreshScroll(scrollToRefresh)" data-bind="options: $root.globalData().typeOptionValues, value: Type">
+                                    <select class="medium accent-bg" onchange="JayScrum.app.selectedFrame().selectedView().i_scroll.refresh();" data-bind="options: $root.globalData().typeOptionValues, value: Type">
                                     </select>
                                 </div>
 
