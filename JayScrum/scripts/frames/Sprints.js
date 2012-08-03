@@ -11,7 +11,6 @@ $data.Class.define('JayScrum.Views.Sprints', JayScrum.FrameView, null, {
         this.i_scroll = null;
     },
     initializaView:function(){
-        console.log('==> initialize View');
         JayScrum.app.hideLoading();
         $("h1.main-header").addClass("animate");
         $("div.icon-action.back.topleft.main").show();
@@ -28,7 +27,6 @@ $data.Class.define('JayScrum.Views.SprintEdit', JayScrum.FrameView, null, {
         this.i_scroll = null;
     },
     initializaView:function(){
-        console.log('==> initialize View');
         $("h1.main-header").addClass("animate");
         this.i_scroll = JayScrum.app.initScrollById("transition-iteration-edit");
         initDateFieldsById('transition-iteration-edit');
@@ -74,7 +72,11 @@ $data.Class.define('JayScrum.Frames.Sprints', JayScrum.Frame, null, {
             });
         return loadingPromise.promise;
     },
-
+    _resetData: function(){
+        console.log('reset data');
+        this.data().sprintList.removeAll();
+        this.data().selectedSprint(null);
+    },
     onPinSprint: function (sprint) {
         var pinnedSprints = getSetting('pinnedSprints');
         if (pinnedSprints) {

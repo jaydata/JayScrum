@@ -106,6 +106,11 @@ $data.Class.define('JayScrum.Frames.Main', JayScrum.Frame, null, {
 
         return loadDefer.promise;
     },
+    _resetData:function(){
+        console.log('reset data');
+        this.data().activeSprintList.removeAll();
+        this.data().activeSprintsTaskIds.removeAll();
+    },
 //    onFrameChangedFrom:function (activeFrameMeta, oldFrameMeta, initData, frame) {
 //        this._loadData()
 //            .then(function () {

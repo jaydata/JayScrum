@@ -13,7 +13,6 @@ $data.Class.define('JayScrum.Views.UserStory', JayScrum.FrameView, null, {
         this.horizontalScroll = null;
     },
     initializaView:function(){
-        console.log('==> initialize View');
         JayScrum.app.hideLoading();
         $("h1.main-header").addClass("animate");
 
@@ -47,7 +46,6 @@ $data.Class.define('JayScrum.Views.UserStorySelected', JayScrum.FrameView, null,
         this.i_scroll = null;
     },
     initializaView:function(){
-        console.log('==> initialize View');
         JayScrum.app.hideLoading();
         $("h1.main-header").addClass("animate");
 
@@ -72,8 +70,6 @@ $data.Class.define('JayScrum.Views.UserStoryEditor', JayScrum.FrameView, null, {
         this.i_scroll = null;
     },
     initializaView:function(){
-        console.log('==> initialize View');
-
         $("h1.main-header").addClass("animate");
         var swipeHeight = $("div.detail-edit-fix-header h1").height();
         $("div#wrapper-detailed-edit").css('top', swipeHeight);
@@ -120,6 +116,13 @@ $data.Class.define('JayScrum.Frames.UserStories', JayScrum.Frame, null, {
                     });
             });
         return loadingPromise.promise;
+    },
+    _resetData: function(){
+        console.log('reset data');
+        this.data().userStoryList.removeAll();
+        this.data().userStoriesInSprintList.removeAll();
+        this.data().selectedUserStoryTaskList.removeAll();
+        this.data().selectedUserStory(null);
     },
     _getUserStoryInSprintList: function (sprintDataList, promise) {
         if(sprintDataList.length<1){
@@ -267,8 +270,6 @@ $data.Class.define('JayScrum.Frames.UserStories', JayScrum.Frame, null, {
 
     },
     onSaveUserStory: function (wrkItem, isEventCall) {
-        console.log("save workitem - type: user story");
-        console.log(wrkItem.ChangedBy());
         JayScrum.app.showLoading();
 
         //this.clear();
@@ -317,8 +318,6 @@ $data.Class.define('JayScrum.Frames.UserStories', JayScrum.Frame, null, {
     },
 
     onRefreshWorkItemsOfUserStory: function (userStory) {
-        console.log(userStory.Id());
-
         JayScrum.repository.WorkItems
             .where(function (item) { return  item.WorkItem_WorkItem == this.userStoryId && ( item.Type == "Task" || item.Type == "UserStory");}, { userStoryId: userStory.Id() })
             .orderBy(function (item) { return item.Priority; })
@@ -332,8 +331,6 @@ $data.Class.define('JayScrum.Frames.UserStories', JayScrum.Frame, null, {
         JayScrum.app.selectFrame('ScrumWall', 'taskSelect', {wrkItem:  wrkItem, list:JayScrum.app.selectedFrame().data().selectedUserStoryTaskList()});
     },
     onAddNewTaskToUserStory:function(userStory){
-        console.log('US');
-
         var item = (new JayScrum.repository.WorkItems.createNew({
             Id: null,
             Title: "",
@@ -359,7 +356,6 @@ $data.Class.define('JayScrum.Frames.UserStories', JayScrum.Frame, null, {
             //FinishDate: "",
             //StartDate: ""
         })).asKoObservable();
-        console.log(item);
         JayScrum.repository.add(item);
         JayScrum.app.selectFrame('ScrumWall', 'taskEdit', item);
     },

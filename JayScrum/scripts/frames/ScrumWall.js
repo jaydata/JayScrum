@@ -47,7 +47,6 @@ $data.Class.define('JayScrum.Views.TaskSelect', JayScrum.FrameView, null, {
         this.swipeView = null;
     },
     initializaView:function(){
-        console.log('==> initialize Task Select View');
         JayScrum.app.hideLoading();
 
         $("h1.main-header").addClass("animate");
@@ -68,7 +67,6 @@ $data.Class.define('JayScrum.Views.TaskEdit', JayScrum.FrameView, null, {
         this.i_scroll = null;
     },
     initializaView:function () {
-        console.log('==> initialize Task Select View');
         var self = this;
         JayScrum.app.selectedFrame()._onRefreshDropDownLists()
             .then(function () {
@@ -147,6 +145,18 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
 
         return loadingPromise.promise;
     },
+    _resetData: function(){
+        console.log('reset data');
+        this.data().currentSprint(null);
+        this.data().recentlyChangedTasks.removeAll();
+        this.data().todoList.removeAll();
+        this.data().inProgList.removeAll();
+        this.data().doneList.removeAll();
+        this.data().selectedWorkItem(null);
+        this.data().selectedWorkItemNext(null);
+        this.data().selectedWorkItemPrev(null);
+        this.data().selectedWorkItemActive(null);
+    },
     _findListById: function (wrkItemId, data) {
         var todoList = JayScrum.app.selectedFrame().data().todoList()
         for (var i = 0; i < todoList.length; i++) {
@@ -197,8 +207,6 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
         return loadingPromise.promise;
     },
     onSelectWorkItem: function (wrkItem, isEventCall) {
-        console.log('onSelectWorkItem');
-
         JayScrum.app.selectedFrame().data().selectedWorkItem(wrkItem);
         JayScrum.app.selectedFrame().data().selectedWorkItemActive(wrkItem);
 
@@ -222,13 +230,10 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
         JayScrum.app.selectedFrame().selectView('taskSelect');
     },
     onEditWorkItem: function (wrkItem, isEventCall) {
-        console.log('onEditWorkItem');
         JayScrum.repository.WorkItems.attach(wrkItem);
         JayScrum.app.selectedFrame().selectView('taskEdit')
     },
     onSaveWorkItem: function (wrkItem, isEventCall) {
-        console.log("save workitem - type: task");
-
         var currentLista = null;
         if (wrkItem.State() == 'In Progress') {
             if (wrkItem.Reason() == 'Work finished')
@@ -269,14 +274,10 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
         });
     },
     onCancelWorkItem: function (wrkItem, isEventCall) {
-        console.log("cancel workitem - type: task");
         JayScrum.repository.WorkItems.detach(wrkItem);
         JayScrum.app.backView();
     },
     onAddWorkItem: function (wrkItem) {
-        console.log("add workitem - type: task");
-        //showLoading();
-
         var item = new JayScrum.repository.WorkItems.createNew({
             Id: null,
             Title: "",
@@ -308,8 +309,6 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
         JayScrum.app.selectedFrame().selectView('taskEdit')
     },
     onUpdateWorkItem: function (workItem, isEventCall) {
-        console.log("update workitem");
-
        JayScrum.repository.WorkItems.where(function (item) { return item.Id == this.currentItem.Id }, { currentItem: workItem }).toArray({
             success: function (result) {
                 workItem.innerInstance = result[0];

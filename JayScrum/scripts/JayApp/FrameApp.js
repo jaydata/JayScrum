@@ -47,18 +47,15 @@ $data.Class.define('JayScrum.FrameApp', null, null, {
         return containerNode;
     },
     showLoading:function () {
-        console.log('show loading screen');
         JayScrum.app.loading.show();
         JayScrum.app.loading.animate({
             opacity:1
         }, 0, 'ease-out');
     },
     hideLoading:function () {
-        console.log('hiding loading screen..');
         JayScrum.app.loading.animate({
             opacity: 0
         }, 500, 'ease-out', function () {
-            console.log('done loading screen hiding!');
             JayScrum.app.loading.hide();
         });
 
@@ -99,8 +96,6 @@ $data.Class.define('JayScrum.FrameApp', null, null, {
         if(viewName === undefined){
             newActiveFrame.viewName = newFrame.defaultViewName;
         }
-        console.log('change frame from:'+JSON.stringify(oldActiveFrame)+' to '+JSON.stringify(newActiveFrame));
-
 
         if (oldFrame) {
             oldFrame.onFrameChangingTo(newActiveFrame, oldActiveFrame, newFrame);
@@ -117,8 +112,6 @@ $data.Class.define('JayScrum.FrameApp', null, null, {
             oldFrame.onFrameChangedTo(newActiveFrame, oldActiveFrame, newFrame);
         }
         newFrame.onFrameChangedFrom(newActiveFrame, oldActiveFrame, oldFrame);
-
-        console.log('app path: '+JSON.stringify(this.framePath()));
     },
     bind:function () {
         ko.applyBindings(this, this.mainElement);

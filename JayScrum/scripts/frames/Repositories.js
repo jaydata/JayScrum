@@ -62,7 +62,6 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
         return this.localContext.Repositories.toArray(callBack);
     },
     connectTo:function(repoSetting){
-        console.log(repoSetting);
         JayScrum.repository = new LightSwitchApplication.ApplicationData({ name: 'storm', url: repoSetting.Url, user: repoSetting.UserName, password: repoSetting.Password });
         JayScrum.repository.onReady(function(){
             JayScrum.app.selectFrame('MainFrame');
@@ -103,7 +102,6 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
         JayScrum.app.selectedFrame().selectedView().i_scroll = JayScrum.app.initScrollById("settingPageScroll");
     },
     cancelSetting:function(item){
-        console.log(item);
         JayScrum.app.selectedFrame().localContext.Repositories.detach(arguments[0]);
         JayScrum.app.selectedFrame().data().selectedSetting(null);
         JayScrum.app.selectedFrame()._initializeRepositoriesFrame();

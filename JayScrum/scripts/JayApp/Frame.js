@@ -56,7 +56,9 @@ $data.Class.define('JayScrum.Frame', null, null, {
         this.frameApp = app;
     },
     onFrameChangingTo:function (newFrameData, oldFrameData, frame) {
-
+        if(newFrameData.frameName !== oldFrameData.frameName){
+            this._resetData();
+        }
     },
     onFrameChangingFrom:function (newFrameData, oldFrameData, frame) {
         this.frameApp.showLoading();
@@ -68,6 +70,9 @@ $data.Class.define('JayScrum.Frame', null, null, {
         var q = Q.defer();
         q.resolve();
         return q.promise;
+    },
+    _resetData: function(){
+
     },
     onFrameChangedFrom:function (newFrameData, oldFrameData, frame) {
         this._loadData()

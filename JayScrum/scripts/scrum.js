@@ -18,14 +18,11 @@ var debug = true,
             //console.log(this.y, this.maxScrollY);
 
             if (this.y < 0 && this.y < this.maxScrollY - 100 && !this.addNewItem) {
-                console.log("Release to load more");
 
                 $(this.scroller).find("div.scroll-up").addClass("flip");
                 $(this.scroller).find("div.scroll-up span.pullUpLabel").html("Release to refresh");
                 this.addNewItem = true;
             } else if (this.y > 0 && this.y > this.maxScrollY - 200 && !this.clearList) {
-                console.log("Release to refresh");
-
                 $(this.scroller).find("div.scroll-down").addClass("flip");
                 $(this.scroller).find("div.scroll-down span.pullDownLabel").html("Release to refresh");
                 this.clearList = true;
@@ -36,7 +33,6 @@ var debug = true,
                 $(this.scroller).find("div.scroll-up").removeClass("flip");
                 $(this.scroller).find("div.scroll-up span.pullUpLabel").html("Pull up to load more");
 
-                console.log("onScrollEnd = " + this.y);
                 this.addNewItem = undefined;
 
                 if (this.options.refreshFunction) {
@@ -48,7 +44,6 @@ var debug = true,
                 $(this.scroller).find("div.scroll-down").removeClass("flip");
                 $(this.scroller).find("div.scroll-down span.pullDownLabel").html("Pull down to refresh");
 
-                console.log("onScrollEnd = " + this.y);
                 this.clearList = undefined;
 
                 if (this.options.clearFunction) {
@@ -306,7 +301,7 @@ $data.Class.define('JayScrum.ScrumApp', JayScrum.FrameApp, null,{
                     title = swipeviewUs.prev(),
                     minusHeight = title.height() + 15;
 
-                console.log(minusHeight);
+                //console.log(minusHeight);
                 var self = gallery;
                 swipeviewUs.css('top', minusHeight);
                 setTimeout(function () {

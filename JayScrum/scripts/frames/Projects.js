@@ -76,6 +76,12 @@ $data.Class.define('JayScrum.Frames.Projects', JayScrum.Frame, null, {
         });
         return dataLoadPromis.promise;
     },
+    _restData:function(){
+        console.log('reset data');
+        this.data().projectList.removeAll();
+        this.data().userStoriesOfProject.removeAll();
+        this.data().selectedProject(null);
+    },
     onAddProject: function (item) {
         var item = new JayScrum.repository.Projects.createNew({ Id: 0, Name: '', Description: '' });
         item = item.asKoObservable();
@@ -131,8 +137,6 @@ $data.Class.define('JayScrum.Frames.Projects', JayScrum.Frame, null, {
             });
     },
     onAddNewUserStoryToProject:function(project){
-        console.log('US');
-
         var item = (new JayScrum.repository.WorkItems.createNew({
             Id: null,
             Title: "",
@@ -158,7 +162,6 @@ $data.Class.define('JayScrum.Frames.Projects', JayScrum.Frame, null, {
             //FinishDate: "",
             //StartDate: ""
         })).asKoObservable();
-        console.log(item);
         JayScrum.repository.add(item);
         JayScrum.app.selectFrame('UserStories', 'userStoryEditor', item);
     },

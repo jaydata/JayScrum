@@ -11,7 +11,6 @@ $data.Class.define('JayScrum.Views.ThemeSetting', JayScrum.FrameView, null, {
         this.i_scroll = null;
     },
     initializaView:function(){
-        console.log('==> initialize View');
         JayScrum.app.hideLoading();
         $("h1.main-header").addClass("animate");
         $("div.icon-action.back.topleft.main").show();
