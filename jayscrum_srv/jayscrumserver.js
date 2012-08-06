@@ -39,6 +39,7 @@ app.use('/', function(req, res){
                     'Access-Control-Allow-Headers': 'X-PINGOTHER, Content-Type',
                     'Access-Control-Allow-Methods': 'POST, GET, OPTIONS'
                 });
+                console.log(result.length);
                 res.write(JSON.stringify(result));
 		        res.end();
 		    };
