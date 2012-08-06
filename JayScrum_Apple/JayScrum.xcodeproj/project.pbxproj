@@ -37,7 +37,7 @@
 		848DC7EC15C90B43008431C2 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 848DC7EB15C90B43008431C2 /* AppDelegate.m */; };
 		848DC7EF15C90B44008431C2 /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 848DC7EE15C90B44008431C2 /* MainViewController.m */; };
 		848DC7F115C90B44008431C2 /* MainViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 848DC7F015C90B44008431C2 /* MainViewController.xib */; };
-		848DC81B15C9443D008431C2 /* www in Resources */ = {isa = PBXBuildFile; fileRef = 848DC81A15C9443D008431C2 /* www */; };
+		84FF4CF915D01A430070C1E5 /* www in Resources */ = {isa = PBXBuildFile; fileRef = 84FF4CF815D01A430070C1E5 /* www */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildRule section */
@@ -90,7 +90,7 @@
 		848DC7F015C90B44008431C2 /* MainViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = MainViewController.xib; path = Classes/MainViewController.xib; sourceTree = "<group>"; };
 		848DC7F315C90B44008431C2 /* README */ = {isa = PBXFileReference; lastKnownFileType = text; name = README; path = Plugins/README; sourceTree = "<group>"; };
 		848DC7F415C90B44008431C2 /* verify.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = verify.sh; sourceTree = "<group>"; };
-		848DC81A15C9443D008431C2 /* www */ = {isa = PBXFileReference; lastKnownFileType = folder; path = www; sourceTree = "<group>"; };
+		84FF4CF815D01A430070C1E5 /* www */ = {isa = PBXFileReference; lastKnownFileType = folder; path = www; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -165,7 +165,7 @@
 		848DC7BD15C90B43008431C2 /* JayScrum */ = {
 			isa = PBXGroup;
 			children = (
-				848DC81A15C9443D008431C2 /* www */,
+				84FF4CF815D01A430070C1E5 /* www */,
 				848DC7C615C90B43008431C2 /* Cordova.framework */,
 				848DC7C815C90B43008431C2 /* Resources */,
 				848DC7E915C90B43008431C2 /* Classes */,
@@ -344,7 +344,7 @@
 				848DC7E615C90B43008431C2 /* Capture.bundle in Resources */,
 				848DC7E815C90B43008431C2 /* Cordova.plist in Resources */,
 				848DC7F115C90B44008431C2 /* MainViewController.xib in Resources */,
-				848DC81B15C9443D008431C2 /* www in Resources */,
+				84FF4CF915D01A430070C1E5 /* www in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
