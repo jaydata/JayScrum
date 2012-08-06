@@ -15,8 +15,10 @@ $data.Class.define('JayScrum.Views.RepositorySettings', JayScrum.FrameView, null
         this.i_scroll = JayScrum.app.initScrollById('settingPageScroll');
     },
     tearDownView:function(){
-        this.i_scroll.destroy();
-        this.i_scroll = null;
+        if(this.i_scroll){
+            this.i_scroll.destroy();
+            this.i_scroll = null;
+        }
     }
 }, null);
 $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
