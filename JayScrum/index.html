@@ -822,10 +822,15 @@
                                     </div>
                                     
                                     <div class="fleft item-details">
-                                        <h2 class="title margintop tolower accent-color" data-bind="text: Name, click: $parent.onEditSprint"></h2>
+                                        <h2 class="title margintop tolower accent-color">
+                                            <span data-bind="text: Name, click: $parent.onSelectSprint"></span>
+                                            <span class="icon-action edit fright"  data-bind="click: $parent.onEditSprint"><span></span></span></h2>
+
                                         <div class="sprint-dates white">
-                                            <span data-bind="text: moment(StartDate()).format('YYYY.MM.DD')"></span>- <span data-bind="text: moment(FinishDate()).format('YYYY.MM.DD')"></span>
+                                            <span data-bind="text: moment(StartDate()).format('YYYY.MM.DD')"></span>-
+                                            <span data-bind="text: moment(FinishDate()).format('YYYY.MM.DD')"></span>
                                         </div>
+
                                     </div>
                                 </div>
                             </div>

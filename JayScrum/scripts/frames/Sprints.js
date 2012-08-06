@@ -139,4 +139,7 @@ $data.Class.define('JayScrum.Frames.Sprints', JayScrum.Frame, null, {
             JayScrum.app.selectedFrame().onCancelSprint();
         });
     },
+    onSelectSprint: function(item){
+        JayScrum.app.selectFrame('ScrumWall', undefined, item);
+    }
 }, null);
