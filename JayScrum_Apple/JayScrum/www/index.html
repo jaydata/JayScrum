@@ -14,7 +14,7 @@
     <link rel="apple-touch-icon-precomposed" href="Images/icons/android.png" />
     <link rel="shortcut icon" href="Images/icons/favicon.ico" type="image/x-icon" />
 
-    <link rel="stylesheet" href="Styles/mixins.css" type="text/css" />
+    <!--<link rel="stylesheet" href="Styles/mixins.css" type="text/css" />-->
     <link rel="stylesheet" href="Styles/metro.css" type="text/css" />
     
     <style type="text/css">
@@ -48,7 +48,6 @@
 </head>
 <body accent="blue" theme="black" font="segoewp" onorientationchange="setupScroll()">
     <div id="page">
-        <!--ko2 if: $root.visibleLoadingScreen-->
         <div class="metro-loading">
             <h1>JayScrum</h1>
 
@@ -60,162 +59,13 @@
                 <span class="accent-bg"></span>
             </div>
         </div>
-        <!--/ko2-->
-    </div>
-    <!--<div id="page">-->
-
-        <!--<div class="metro-loading">-->
-            <!--<h1>JayScrum</h1>-->
-
-            <!--<div class="metro-dots loading">-->
-                <!--<span class="accent-bg"></span>-->
-                <!--<span class="accent-bg"></span>-->
-                <!--<span class="accent-bg"></span>-->
-                <!--<span class="accent-bg"></span>-->
-                <!--<span class="accent-bg"></span>-->
-            <!--</div>-->
-        <!--</div>-->
-
-        <!--&lt;!&ndash; ko if: $data.isActivePart('mainPage') &ndash;&gt;-->
-        <!--<div id="application" data-bind="with: $data.mainPage">-->
-
-            <!--&lt;!&ndash; ko ifnot: $data.isActivePart('editableIteration') &ndash;&gt;-->
-            <!--&lt;!&ndash; ko ifnot: $data.isActivePart('editableWorkItem') &ndash;&gt;-->
-            <!--&lt;!&ndash; ko ifnot: $data.isActivePart('editableUserStory') &ndash;&gt;-->
-            <!--&lt;!&ndash; ko ifnot: $data.isActivePart('selectedWorkitem') &ndash;&gt;-->
-            <!--&lt;!&ndash; ko ifnot: $data.isActivePart('selectedUserStory') &ndash;&gt;-->
-            <!--&lt;!&ndash; ko ifnot: $data.isActivePart('main')&ndash;&gt;-->
-            <!--<div class="icon-action back topleft">-->
-                <!--<span data-bind="click: $root.mainPage.onMainPageShow"></span>-->
-            <!--</div>-->
-            <!--&lt;!&ndash; /ko &ndash;&gt;-->
-
-            <!--<div class="main-header" data-bind="attr: { 'class': $data.isActivePart('main') ? 'main-header main-page' : 'main-header not-main-page' }">-->
-                <!--<h1 class="title" data-bind="text: $root.mainPage.pageTitle"></h1>-->
-            <!--</div>-->
-            <!--&lt;!&ndash; /ko &ndash;&gt;-->
-            <!--&lt;!&ndash; /ko &ndash;&gt;-->
-            <!--&lt;!&ndash; /ko &ndash;&gt;-->
-            <!--&lt;!&ndash; /ko &ndash;&gt;-->
-            <!--&lt;!&ndash; /ko &ndash;&gt;-->
-
-            <!--&lt;!&ndash; ko if: $data.isActivePart('taskList') &ndash;&gt;-->
-                <!--<div class="icon-action main-top-right add"><span data-bind="click: $root.mainPage.onAddWorkItem"></span></div>-->
-            <!--&lt;!&ndash; /ko &ndash;&gt;-->
-            <!--&lt;!&ndash; ko if: $data.isActivePart('userStoryList') &ndash;&gt;-->
-                <!--<div class="icon-action main-top-right add"><span data-bind="click: $root.mainPage.onAddUserStory"></span></div>-->
-            <!--&lt;!&ndash; /ko &ndash;&gt;-->
-
-            <!--&lt;!&ndash; ko if: $data.isActivePart('main') &ndash;&gt;-->
-            <!--&lt;!&ndash; ko template: { name: 'dashBoard-template', data: $data } &ndash;&gt;-->
-            <!--&lt;!&ndash; /ko &ndash;&gt;-->
-            <!--&lt;!&ndash; /ko  &ndash;&gt;-->
-
-            <!--&lt;!&ndash; ko if: $data.isActivePart('settings') &ndash;&gt;-->
-            <!--&lt;!&ndash; ko template: { name: 'guiSettingPage-template', data: $data } &ndash;&gt;-->
-            <!--&lt;!&ndash; /ko &ndash;&gt;-->
-            <!--&lt;!&ndash; /ko &ndash;&gt;-->
-
-            <!--&lt;!&ndash; ko if: $data.isActivePart('taskList') &ndash;&gt;-->
-            <!--&lt;!&ndash; ko template: { name: 'scrumWall-template', data: $data } &ndash;&gt;-->
-            <!--&lt;!&ndash; /ko &ndash;&gt;-->
-            <!--&lt;!&ndash; /ko &ndash;&gt;-->
-
-            <!--&lt;!&ndash; ko if: $data.isActivePart('userStoryList') &ndash;&gt;-->
-            <!--&lt;!&ndash; ko template: { name: 'userStory-template', data: $data } &ndash;&gt;-->
-            <!--&lt;!&ndash; /ko &ndash;&gt;-->
-            <!--&lt;!&ndash; /ko &ndash;&gt;-->
-
-            <!--&lt;!&ndash; ko if: $data.isActivePart('iterationList') &ndash;&gt;-->
-            <!--&lt;!&ndash; ko template: { name: 'sprint-template', data: $data } &ndash;&gt;-->
-            <!--&lt;!&ndash; /ko &ndash;&gt;-->
-            <!--&lt;!&ndash; /ko &ndash;&gt;-->
-
-            <!--&lt;!&ndash; ko if: $data.isActivePart('projectList') &ndash;&gt;-->
-            <!--&lt;!&ndash; ko template: { name: 'project-template', data: $data } &ndash;&gt;-->
-            <!--&lt;!&ndash; /ko &ndash;&gt;-->
-            <!--&lt;!&ndash; /ko &ndash;&gt;-->
-
-            <!--&lt;!&ndash; ko if: $data.isActivePart('userStoryByProjectList') &ndash;&gt;-->
-            <!--&lt;!&ndash; ko template: { name: 'userStoryByProject-template', data: $data } &ndash;&gt;-->
-            <!--&lt;!&ndash; /ko &ndash;&gt;-->
-            <!--&lt;!&ndash; /ko &ndash;&gt;-->
-
-            <!--&lt;!&ndash; ko if: $data.isActivePart('selectedWorkitem') &ndash;&gt;-->
-            <!--&lt;!&ndash; ko template: { name: 'taskSelectView-template', data: $data } &ndash;&gt;-->
-            <!--&lt;!&ndash; /ko &ndash;&gt;-->
-            <!--&lt;!&ndash; /ko &ndash;&gt;-->
-
-            <!--&lt;!&ndash; ko if: $data.isActivePart('editableWorkItem') &ndash;&gt;-->
-            <!--&lt;!&ndash; ko template: { name: 'taskEditView-template', data: $data }&ndash;&gt;-->
-            <!--&lt;!&ndash; /ko&ndash;&gt;-->
-            <!--&lt;!&ndash; /ko&ndash;&gt;-->
-
-            <!--&lt;!&ndash; ko if: $data.isActivePart('selectedUserStory') &ndash;&gt;-->
-            <!--&lt;!&ndash; ko template: { name: 'userStorySelectView-template', data: $data } &ndash;&gt;-->
-            <!--&lt;!&ndash; /ko &ndash;&gt;-->
-            <!--&lt;!&ndash; /ko &ndash;&gt;-->
-
-            <!--&lt;!&ndash; ko if: $data.isActivePart('editableUserStory') &ndash;&gt;-->
-            <!--&lt;!&ndash; ko template: { name: 'userStoryEditView-template', data: $data } &ndash;&gt;-->
-            <!--&lt;!&ndash; /ko &ndash;&gt;-->
-            <!--&lt;!&ndash; /ko&ndash;&gt;-->
-
-            <!--&lt;!&ndash; ko if: $data.isActivePart('editableIteration') &ndash;&gt;-->
-            <!--&lt;!&ndash; ko template: { name: 'sprintEditView-template', data: $data } &ndash;&gt;-->
-            <!--&lt;!&ndash; /ko &ndash;&gt;-->
-            <!--&lt;!&ndash; /ko&ndash;&gt;-->
-
-            <!--&lt;!&ndash; ko if: $data.isActivePart('editableProject') &ndash;&gt;-->
-            <!--&lt;!&ndash; ko template: { name: 'projectEditView-template', data: $data } &ndash;&gt;-->
-            <!--&lt;!&ndash; /ko &ndash;&gt;-->
-            <!--&lt;!&ndash; /ko&ndash;&gt;-->
-
-            <!--&lt;!&ndash; ko ifnot: $data.isActivePart('settings') &ndash;&gt;-->
-            <!--&lt;!&ndash; ko ifnot: $data.isActivePart('editableWorkItem') &ndash;&gt;-->
-            <!--<div id="error-msg" class="metro-actionbar">-->
-                <!--<ul>-->
-                    <!--<li><span class="medium">No current sprint found!</span></li>-->
-                <!--</ul>-->
-            <!--</div>-->
-            <!--&lt;!&ndash; /ko  &ndash;&gt;-->
-            <!--&lt;!&ndash; /ko  &ndash;&gt;-->
-        <!--</div>-->
-        <!--&lt;!&ndash; /ko  &ndash;&gt;-->
-
-        <!--&lt;!&ndash; ko if: $root.isActivePart('settingPage') &ndash;&gt;-->
-        <!--&lt;!&ndash; ko template: { name: 'settingPage-template', data: $data }&ndash;&gt;-->
-        <!--&lt;!&ndash; /ko&ndash;&gt;-->
-        <!--&lt;!&ndash; /ko  &ndash;&gt;-->
-
-        <!--&lt;!&ndash; ko if: $root.isActivePart('usersPage') &ndash;&gt;-->
-        <!--&lt;!&ndash; ko template: { name: 'usersPage-template', data: $data }&ndash;&gt;-->
-        <!--&lt;!&ndash; /ko&ndash;&gt;-->
-        <!--&lt;!&ndash; /ko  &ndash;&gt;-->
-    <!--</div>-->
-
-
-
-<!--
-    <div class="icon-action back topleft">&ndash;&gt;
-        <span data-bind="click: $root.mainPage.onMainPageShow"></span>
     </div>
 
-    <div class="main-header"
-         data-bind="attr: { 'class': $data.isActivePart('main') ? 'main-header main-page' : 'main-header not-main-page' }">
-        <h1 class="title" data-bind="text: $root.selectedFrame().data().name"></h1>
-    </div>
--->
-
-
-
-
-
+    <!-- #region TEMPLATES -->
 
     <script type="text/html" id="dashBoard-template">
-        <div class="main-header"
-             data-bind="attr: { 'class': 'main-header main-page' }">
-            <h1 class="title" data-bind="text: $root.selectedFrame().data().name"></h1>
+        <div class="main-header" data-bind="attr: { 'class': 'main-header main-page' }">
+            <h1 class="pivot-default animate" data-bind="text: $root.selectedFrame().data().name"></h1>
         </div>
 
         <div id="metro-tiles-scroll" class="scroll-out pivot-default-opacity">
@@ -253,7 +103,7 @@
                         </li>
                         <li class="lightgreen">
                             <span data-bind="click: $data.onUserStoryListShow">
-                                <span class="middle icon icon-us"></span>
+                                <span class="middle icon icon-57 us"></span>
                                 <span class="text">User Stories</span>
                             </span>
                         </li>
@@ -285,10 +135,10 @@
         <div class="icon-action back topleft">
             <span data-bind="click: $root.backView"></span>
         </div>
-        <div class="main-header"
-             data-bind="attr: { 'class': 'main-header not-main-page' }">
-            <h1 class="title" data-bind="text: $root.selectedFrame().data().name"></h1>
+        <div class="main-header" data-bind="attr: { 'class': 'main-header not-main-page' }">
+            <h1 class="title pivot-default animate" data-bind="text: $root.selectedFrame().data().name"></h1>
         </div>
+        <div class="icon-action main-top-right add"><span data-bind="click: null"></span></div>
         <div id="wrapper" class="metro-pivot">
             <div id="scroller">
                 <div class="pivot-list">
@@ -990,6 +840,9 @@
         <div class="icon-action back topleft absolute" data-bind="with: $data.data().selectedSprint">
             <span data-bind="click: $parent.onCancelSprint"></span>
         </div>
+        <div class="main-header" data-bind="attr: { 'class': 'main-header not-main-page' }">
+            <h1 class="title">Sprint data</h1>
+        </div>
         <div class="detail edit" data-bind="with: $data.data().selectedSprint">
             <div id="transition-iteration-edit" class="scroll-out pivot-default-opacity top50">
                 <div class="scroll-in">
@@ -1058,8 +911,8 @@
         </div>
     </script>
     <script type="text/html" id="projectEditView-template">
-        <div class="icon-action back topleft">
-            <span data-bind="click: $root.backView"></span>
+        <div class="icon-action back topleft" data-bind="with: $data.data().editableProject">
+            <span data-bind="click: $parent.onCancelProject"></span>
         </div>
         <div class="detail edit" data-bind="with: $data.data().editableProject">
             <div id="transition-projects" class="scroll-out top50 pivot-default-opacity">
@@ -1313,6 +1166,7 @@
         </div>
     </script>
 
+    <!-- #endregion TEMPLATES -->
 
     <script type="text/javascript" src="Scripts/cordova-1.9.0.js"></script>
     <script type="text/javascript" src="Scripts/libs/moment.js"></script>
@@ -1353,14 +1207,6 @@
     <script type="text/javascript" src="Scripts/scrum.js"></script>
 
     <script type="text/html" id="jayAppMenu">
-        <!--<div class="icon-action back topleft">
-            <span data-bind="click: $root.mainPage.onMainPageShow"></span>
-        </div>
-
-        <div class="main-header"
-             data-bind="attr: { 'class': $data.isActivePart('main') ? 'main-header main-page' : 'main-header not-main-page' }">
-            <h1 class="title" data-bind="text: $root.mainPage.pageTitle"></h1>
-        </div>-->
         <div>
             <span>menu: <i data-bind="text: $data.framePath"></i></span><br/>
             <ul data-bind="foreach: $data.frameContainer">
@@ -1370,18 +1216,15 @@
             <br/>
         </div>
     </script>
-
     <script type="text/html" id="jayAppMetaDefault">
         <li data-bind="text: $data.name"></li>
     </script>
-
     <script type="text/html" id="jayAppContent">
         <!--ko if: $data.selectedFrame()-->
         <!--ko template: {name: $data.selectedFrame().selectedView().templateName, data:$data.selectedFrame()}-->
         <!--/ko-->
         <!--/ko-->
     </script>
-
     <script type="text/html" id="alma">
         <div data-bind="text:$data.data().name">alma</div>
     </script>
