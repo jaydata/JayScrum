@@ -22,7 +22,7 @@ ObjectID = function(id){
 
 app.use('/', function(req, res){
     console.log('');console.log('');console.log('');
-    console.log('Request start: '+req.method);
+    console.log('Request start('+new Date().toTimeString()+'): '+req.method);
 	if(req.url === "/favicon.ico"){
 		console.log("get favicon");
 		res.writeHead(401,{});
@@ -39,6 +39,7 @@ app.use('/', function(req, res){
                     'Access-Control-Allow-Headers': 'X-PINGOTHER, Content-Type',
                     'Access-Control-Allow-Methods': 'POST, GET, OPTIONS'
                 });
+                console.log(result.length);
                 res.write(JSON.stringify(result));
 		        res.end();
 		    };
@@ -134,3 +135,4 @@ app.use('/', function(req, res){
 });
 
 app.listen(3000);
+console.log('Application setup finish, jaydata version: '+$data.version);
