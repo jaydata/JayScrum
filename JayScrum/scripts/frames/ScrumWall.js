@@ -26,7 +26,9 @@ $data.Class.define('JayScrum.Views.ScrumWall', JayScrum.FrameView, null, {
         JayScrum.app.hideLoading();
     },
     tearDownView:function(){
-        if(this.vertical_iScroll){this.vertical_iScroll.destroy()};
+        if(this.vertical_iScroll){
+            this.vertical_iScroll.destroy();
+        };
         this.recChange_iScroll.destroy();
         this.todo_iScroll.destroy();
         this.inProgress_iScroll.destroy();
@@ -55,9 +57,13 @@ $data.Class.define('JayScrum.Views.TaskSelect', JayScrum.FrameView, null, {
         this.swipeView = JayScrum.app.initSwipeviewById("swipeview", JayScrum.app.selectedFrame().activeList, JayScrum.app.selectedFrame().data().selectedWorkItem().Id());
     },
     tearDownView:function(){
-        this.swipeView.i_scroll.destroy();
-        this.swipeView.i_scroll = null;
-        this.swipeView.destroy();
+        if(this.swipeView && this.swipeView.i_scroll){
+            this.swipeView.i_scroll.destroy();
+            this.swipeView.i_scroll = null;
+        }
+        if(this.swipeView){
+            this.swipeView.destroy();
+        }
         this.swipeView = null;
     }
 }, null);
@@ -146,7 +152,6 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
         return loadingPromise.promise;
     },
     _resetData: function(){
-        console.log('reset data');
         this.data().currentSprint(null);
         this.data().recentlyChangedTasks.removeAll();
         this.data().todoList.removeAll();
@@ -215,17 +220,6 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
             JayScrum.app.selectedFrame().activeList = JayScrum.app.selectedFrame().data().recentlyChangedTasks();
         } else if (wrkItem.Type() == "Task") {
             JayScrum.app.selectedFrame().activeList = JayScrum.app.selectedFrame()._findListById(wrkItem.Id(), wrkItem);
-        } else {
-//            $("div.detail div#wrapper-detailed div.list div.pivot-content").show();
-//
-//            var swipeviewUs = $("div#swipeview-inside-us"),
-//                title = swipeviewUs.prev(),
-//                minusHeight = title.height() + 15;
-//
-//            swipeviewUs.css('top', minusHeight);
-//            initScrollById('swipeview-inside-us');
-//
-//            console.log(scrollToRefresh);
         }
         JayScrum.app.selectedFrame().selectView('taskSelect');
     },

@@ -14,6 +14,7 @@ var debug = true,
         this.hideScrollbar = true;
         this.bounce = true;
         this.lockDirection = true;
+        //this.handleClick = false;
         this.onScrollMove = function () {
             //console.log(this.y, this.maxScrollY);
 
@@ -314,7 +315,7 @@ $data.Class.define('JayScrum.ScrumApp', JayScrum.FrameApp, null,{
             });
             setTimeout(function(){
                 gallery.goToPage(currentIndex);
-            }, 200)
+            }, 200);
 
         }
         return gallery;
@@ -333,7 +334,8 @@ $data.Class.define('JayScrum.ScrumApp', JayScrum.FrameApp, null,{
                 hScrollbar:false,
                 vScrollbar:false,
                 useTransition:true,
-                lockDirection:true
+                lockDirection:true,
+                handleClick:false
             });
             vScroll.scrollToPage(scrollToPage, 0, 0);
             if (window.outerWidth >= scrollerWidth) {

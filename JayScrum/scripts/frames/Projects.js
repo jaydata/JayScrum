@@ -69,7 +69,7 @@ $data.Class.define('JayScrum.Frames.Projects', JayScrum.Frame, null, {
     },
     _loadData:function () {
         var dataLoadPromis = Q.defer();
-        JayScrum.repository.Projects.toArray(function (projects) {
+        JayScrum.repository.Projects.orderBy(function(item){return item.Name}).toArray(function (projects) {
             JayScrum.pushObservablesToList(JayScrum.app.selectedFrame().data().projectList, projects);
 
             dataLoadPromis.resolve();
@@ -83,7 +83,7 @@ $data.Class.define('JayScrum.Frames.Projects', JayScrum.Frame, null, {
         this.data().selectedProject(null);
     },
     onAddProject: function (item) {
-        var item = new JayScrum.repository.Projects.createNew({ Id: 0, Name: '', Description: '' });
+        var item = new JayScrum.repository.Projects.createNew({ Id: null, Name: '', Description: '' });
         item = item.asKoObservable();
         JayScrum.app.selectedFrame().onEditProject(item);
     },
@@ -91,7 +91,7 @@ $data.Class.define('JayScrum.Frames.Projects', JayScrum.Frame, null, {
         JayScrum.app.selectedFrame().data().selectedProject(item);
 
         var project = item.innerInstance;
-        if (project.Id > 0) {
+        if (project.Id !== null) {
             JayScrum.repository.Projects.attach(project);
         } else {
             JayScrum.repository.Projects.add(project);
@@ -107,7 +107,11 @@ $data.Class.define('JayScrum.Frames.Projects', JayScrum.Frame, null, {
         JayScrum.app.selectedFrame()._loadData()
             .then(function(){
                 JayScrum.app.backView();
-                JayScrum.app.selectedFrame().data().selectedProject(null);
+                if(projectItem.Id() === null){
+                    JayScrum.app.selectedFrame().data().selectedProject(null);
+                }else{
+                    JayScrum.app.selectedFrame().data().selectedProject(projectItem);
+                }
             });
     },
     onSaveProject: function (projectItem) {
