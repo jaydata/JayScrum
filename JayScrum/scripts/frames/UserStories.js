@@ -255,7 +255,8 @@ $data.Class.define('JayScrum.Frames.UserStories', JayScrum.Frame, null, {
     },
     onSelectUserStory: function (wrkItem, isEventCall) {
         JayScrum.app.selectedFrame().data().selectedUserStory(wrkItem);
-        JayScrum.app.selectedFrame().selectView('userStorySelected');
+        JayScrum.app.selectedFrame().data().selectedUserStoryTaskList.removeAll();
+        JayScrum.app.selectedFrame().selectView('userStorySelected', wrkItem);
     },
     onEditUserStory:function (wrkItem, isEventCall) {
         JayScrum.app.selectedFrame()._onRefreshDropDownLists()
@@ -328,7 +329,7 @@ $data.Class.define('JayScrum.Frames.UserStories', JayScrum.Frame, null, {
             });
     },
     onSelectWorkItemOfUserStory: function (wrkItem, isEventCall) {
-        JayScrum.app.selectFrame('ScrumWall', 'taskSelect', {wrkItem:  wrkItem, list:JayScrum.app.selectedFrame().data().selectedUserStoryTaskList()});
+        JayScrum.app.selectFrame('ScrumWall', 'taskSelect', {wrkItem:  wrkItem, list:JayScrum.app.selectedFrame().data().selectedUserStoryTaskList()}, true);
     },
     onAddNewTaskToUserStory:function(userStory){
         var item = (new JayScrum.repository.WorkItems.createNew({
@@ -357,7 +358,7 @@ $data.Class.define('JayScrum.Frames.UserStories', JayScrum.Frame, null, {
             //StartDate: ""
         })).asKoObservable();
         JayScrum.repository.add(item);
-        JayScrum.app.selectFrame('ScrumWall', 'taskEdit', item);
+        JayScrum.app.selectFrame('ScrumWall', 'taskEdit', item, true);
     },
     onFrameChangingFrom: function(activeFrameMeta, oldFrameMeta, initData, frame){
         switch(activeFrameMeta.viewName){

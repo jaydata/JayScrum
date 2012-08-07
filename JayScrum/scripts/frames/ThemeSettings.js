@@ -13,9 +13,8 @@ $data.Class.define('JayScrum.Views.ThemeSetting', JayScrum.FrameView, null, {
     initializaView:function(){
         JayScrum.app.hideLoading();
         $("h1.main-header").addClass("animate");
-        $("div.icon-action.back.topleft.main").show();
         $("div.field.fonts div.field").each(function () {
-            if ($(this).attr('font') == font)
+            if ($(this).attr('font') == getSetting('settings').font)
                 $(this).addClass('active');
         });
         this.i_scroll = JayScrum.app.initScrollById("transition-settings");

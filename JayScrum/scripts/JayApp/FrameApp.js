@@ -80,15 +80,15 @@ $data.Class.define('JayScrum.FrameApp', null, null, {
         if(actualFrameSetting.frameName === prevFrameSetting.frameName){
             JayScrum.app.selectedFrame().backView(prevFrameSetting);
         }else{
-            JayScrum.app.selectFrame(prevFrameSetting.frameName, prevFrameSetting.viewName, prevFrameSetting.data);
+            JayScrum.app.selectFrame(prevFrameSetting.frameName, prevFrameSetting.viewName, prevFrameSetting.data, null, actualFrameSetting);
         }
     },
-    selectFrame:function (name, viewName, initData) {
+    selectFrame:function (name, viewName, initData, disableResetData, oldFrame) {
 
         var frameIndex = this._frameHashTable[name];
         var newActiveFrame = {frameName:name, viewName:viewName, data:initData};
-        var oldActiveFrame = {frameName:null, viewName:null, data: null};
-        if (this.collectFramePath()) {
+        var oldActiveFrame = oldFrame || {frameName:null, viewName:null, data: null};
+        if (!oldFrame && this.collectFramePath()) {
             oldActiveFrame = this.framePath.slice(-1)[0];
         }
         var newFrame = this.frameContainer()[frameIndex];
@@ -98,7 +98,7 @@ $data.Class.define('JayScrum.FrameApp', null, null, {
         }
 
         if (oldFrame) {
-            oldFrame.onFrameChangingTo(newActiveFrame, oldActiveFrame, newFrame);
+            oldFrame.onFrameChangingTo(newActiveFrame, oldActiveFrame, newFrame, disableResetData);
         }
         newFrame.onFrameChangingFrom(newActiveFrame, oldActiveFrame, initData, oldFrame);
 

@@ -310,9 +310,12 @@ $data.Class.define('JayScrum.ScrumApp', JayScrum.FrameApp, null,{
                         self.i_scroll = null;
                     }
                     self.i_scroll = JayScrum.app.initScrollById('swipeview-inside-' + gallery.currentMasterPage);
-                }, 100);
+                }, 0);
             });
-            gallery.goToPage(currentIndex);
+            setTimeout(function(){
+                gallery.goToPage(currentIndex);
+            }, 200)
+
         }
         return gallery;
     },

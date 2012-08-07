@@ -1215,11 +1215,13 @@
                     </div>
                 </div>
             </div>
-            <div data-bind="if:  $data.data().errorMsg">
-                Error:
-
-            <span data-bind="text: $data.data().errorMsg"></span>
+            <!--ko if: $data.data().errorMsg-->
+            <div id="error-msg" class="metro-actionbar opened" style="height:88px">
+                <ul>
+                    <li><span class="medium" data-bind="text: $data.data().errorMsg"></span></li>
+                </ul>
             </div>
+            <!--/ko-->
         </div>
         <div id="settingPageActionBar" class="metro-actionbar detail-view-edit opened">
             <ul>

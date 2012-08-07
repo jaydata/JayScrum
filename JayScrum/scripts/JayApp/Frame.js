@@ -37,10 +37,10 @@ $data.Class.define('JayScrum.Frame', null, null, {
         JayScrum.app.selectedFrame().selectedView(newView);
         newView.initializaView();
     },
-    selectView:function (name) {
+    selectView:function (name, initData) {
         if (JayScrum.app.collectFramePath()) {
             var currentView = JayScrum.app.framePath.slice(-1)[0];
-            JayScrum.app.framePath.push({frameName:currentView.frameName, viewName:name, data:currentView.data});
+            JayScrum.app.framePath.push({frameName:currentView.frameName, viewName:name, data:initData || currentView.data});
         }
         this.selectedView().tearDownView();
         this.selectedView(this.views[name]);
@@ -55,8 +55,8 @@ $data.Class.define('JayScrum.Frame', null, null, {
     frameRegistredApp:function (app) {
         this.frameApp = app;
     },
-    onFrameChangingTo:function (newFrameData, oldFrameData, frame) {
-        if(newFrameData.frameName !== oldFrameData.frameName){
+    onFrameChangingTo:function (newFrameData, oldFrameData, frame, disableResetData) {
+        if(newFrameData.frameName !== oldFrameData.frameName && !disableResetData){
             this._resetData();
         }
     },
