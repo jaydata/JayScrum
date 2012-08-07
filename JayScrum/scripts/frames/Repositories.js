@@ -34,9 +34,14 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
         this.data = ko.observable({
             name:'settings',
             selectedSetting: ko.observable(),
-            settings: ko.observableArray()
+            settings: ko.observableArray(),
+            errorMsg: ko.observable()
         });
 
+    },
+    _resetData: function(){
+        this.data().settings.removeAll();
+        this.data().errorMsg(null);
     },
     _handleDefaultRepo:function(result){
         if (result && result.length > 0) {
@@ -116,9 +121,10 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
         JayScrum.app.showLoading();
         var self = this;
         this.localContext.onReady(function(){
-            if(initData){
+            if(initData && initData.autoConnect){
                 self._getDefaultRepository(self._handleDefaultRepo);
             } else {
+                if(initData && initData.error){self.data().errorMsg(initData.error);}
                 self._initializeRepositoriesFrame();
             }
         });

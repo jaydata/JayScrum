@@ -15,7 +15,9 @@ $data.Class.define('JayScrum.Views.Main', JayScrum.FrameView, null, {
         this.i_scroll = JayScrum.app.initScrollById("metro-tiles-scroll", null, null, true);
     },
     tearDownView:function(){
-        this.i_scroll.destroy();
+        if(this.i_scroll){
+            this.i_scroll.destroy();
+        }
         this.i_scroll = null;
     }
 }, null);
@@ -64,9 +66,7 @@ $data.Class.define('JayScrum.Frames.Main', JayScrum.Frame, null, {
                         if (additionalSprintIds.length > 0) {
                             var p1 = Q.defer();
                             JayScrum.repository.Sprints
-                                .where(function (item) {
-                                    return item.Id in this.sprintIds
-                                }, { sprintIds:additionalSprintIds })
+                                .where(function (item) {return item.Id in this.sprintIds }, { sprintIds:additionalSprintIds })
                                 .toArray(function (sprintList) {
                                     for (var s in sprintList) {
                                         self.data().activeSprintList.push(sprintList[s].asKoObservable());
@@ -97,10 +97,8 @@ $data.Class.define('JayScrum.Frames.Main', JayScrum.Frame, null, {
                         });
                 },
                 error:function (error) {
-                    $("div#error-msg").addClass("opened");
-                    console.log(error.stack);
                     loadDefer.reject();
-                    //alert(error);
+                    JayScrum.app.selectFrame('Repositories',undefined, {error:'Connection error: '+error});
                 }
             });
 
@@ -111,13 +109,6 @@ $data.Class.define('JayScrum.Frames.Main', JayScrum.Frame, null, {
         this.data().activeSprintList.removeAll();
         this.data().activeSprintsTaskIds.removeAll();
     },
-//    onFrameChangedFrom:function (activeFrameMeta, oldFrameMeta, initData, frame) {
-//        this._loadData()
-//            .then(function () {
-//                JayScrum.app.hideLoading();
-//                initScrollById("metro-tiles-scroll", null, null, true);
-//            });
-//    },
     isPinnedSprint: function (sprint) {
         var pinnedSprints = getSetting('pinnedSprints');
         if (!pinnedSprints) { pinnedSprints = []; }

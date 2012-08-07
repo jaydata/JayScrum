@@ -351,7 +351,7 @@ JayScrum.pushObservablesToList= function (list, rawData) {
 $(function(){
     JayScrum.app = new JayScrum.ScrumApp('#page');
     JayScrum.app.bind();
-    JayScrum.app.selectFrame('Repositories', undefined, true);
+    JayScrum.app.selectFrame('Repositories', undefined, {autoConnect:true});
 })
 
 

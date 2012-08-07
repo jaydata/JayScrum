@@ -21,14 +21,16 @@ $data.Class.define('JayScrum.Views.ThemeSetting', JayScrum.FrameView, null, {
         this.i_scroll = JayScrum.app.initScrollById("transition-settings");
     },
     tearDownView:function(){
-        this.i_scroll.destroy();
+        if(this.i_scroll){
+            this.i_scroll.destroy();
+        }
         this.i_scroll = null;
     }
 }, null);
 $data.Class.define('JayScrum.Frames.ThemeSettings', JayScrum.Frame, null, {
     constructor:function () {
         //register frameViews
-        this.registerView('theme', new JayScrum.FrameView('guiSettingPage-template'));
+        this.registerView('theme', new JayScrum.Views.ThemeSetting('guiSettingPage-template'));
         this.registerMetaView('themeMeta', new JayScrum.FrameView('jayAppMetaDefault'));
         this.defaultViewName='theme';
         this.selectMetaView('themeMeta');
