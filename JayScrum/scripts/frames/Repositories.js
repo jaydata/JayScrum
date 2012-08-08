@@ -69,7 +69,7 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
         return this.localContext.Repositories.toArray(callBack);
     },
     connectTo:function(repoSetting){
-        JayScrum.repository = new LightSwitchApplication.ApplicationData({ name: 'storm', url: repoSetting.Url, user: repoSetting.UserName, password: repoSetting.Password });
+        JayScrum.repository = new LightSwitchApplication.ApplicationData({ name: 'oData', oDataServiceHost: repoSetting.Url, user: repoSetting.UserName, password: repoSetting.Password });
         JayScrum.repository.onReady(function(){
             JayScrum.app.selectFrame('MainFrame');
         });

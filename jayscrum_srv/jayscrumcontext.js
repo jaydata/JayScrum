@@ -107,7 +107,7 @@
         'FinishDate':{ type:'Edm.DateTime', nullable:false, required:true }
         //'WorkItems': { type: 'Array', elementType: 'LightSwitchApplication.WorkItem', inverseProperty: 'Sprint' }
     });
-    $data.EntityContext.extend('LightSwitchApplication.ApplicationData', {
+    $data.Class.defineEx('LightSwitchApplication.ApplicationData',[$data.EntityContext, $data.ServiceBase], null, {
         WorkItems:{ type:$data.EntitySet, elementType:LightSwitchApplication.WorkItem },
         Projects:{ type:$data.EntitySet, elementType:LightSwitchApplication.Project },
         Sprints:{ type:$data.EntitySet, elementType:LightSwitchApplication.Sprint }/*,
