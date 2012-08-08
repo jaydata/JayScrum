@@ -1001,7 +1001,7 @@
             <span data-bind="click: $root.backView"></span>
         </div>
         <div class="main-header" data-bind="attr: { 'class': 'main-header not-main-page' }">
-            <h1 class="title" data-bind="text: $root.selectedFrame().data().name"></h1>
+            <h1 class="title" data-bind="text: $data.data().selectedProject().Name"></h1>
         </div>
         <div class="metro-pivot wrapper-container reset">
             <div class="pivot-list">
@@ -1010,12 +1010,6 @@
                         <div class="scroller-list">
                             <div class="list project-list" data-bind="with: $data.data().selectedProject">
                                 <div class="item task list-item clear">
-                                    <h2 class="title margintop tolower accent-color">
-                                        <span data-bind="text: Name, click: null"></span>
-                                        <span class="icon-action edit fright" data-bind="click: $parent.onEditProject"><span>
-                                        </span></span>
-                                    </h2>
-
                                     <p data-bind="text: Description"></p>
 
                                     <div class="metro-pivot uslist" id="userstory-list">
