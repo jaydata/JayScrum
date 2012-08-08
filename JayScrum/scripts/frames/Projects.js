@@ -128,6 +128,7 @@ $data.Class.define('JayScrum.Frames.Projects', JayScrum.Frame, null, {
     },
     onSelectProject:function(wrkItem){
         JayScrum.app.selectedFrame().data().selectedProject(wrkItem);
+        JayScrum.app.selectedFrame().data().userStoriesOfProject.removeAll();
         JayScrum.app.selectedFrame().selectView('project-select');
     },
     onRefreshUserStoriesOfProject: function (project) {

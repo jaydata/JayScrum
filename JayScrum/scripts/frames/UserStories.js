@@ -101,6 +101,8 @@ $data.Class.define('JayScrum.Frames.UserStories', JayScrum.Frame, null, {
         var loadingPromise = Q.defer();
         JayScrum.repository.WorkItems
             .where(function (item) { return item.Type == "UserStory" && item.WorkItem_Sprint == null })
+            .orderBy(function(item){return item.CreatedDate;})
+            .orderBy(function(item){return item.Title;})
             .take(7)
             .toArray(function (userStoryResult) {
                 JayScrum.pushObservablesToList(JayScrum.app.selectedFrame().data().userStoryList, userStoryResult);
@@ -135,6 +137,8 @@ $data.Class.define('JayScrum.Frames.UserStories', JayScrum.Frame, null, {
 
         JayScrum.repository.WorkItems
             .where(function (item) { return item.Type == "UserStory" && item.WorkItem_Sprint == this.sprintId }, { sprintId: sprintData.Id })
+            .orderBy(function(item){return item.CreatedDate;})
+            .orderBy(function(item){return item.Title;})
             .take(7)
             .toArray(function (usList) {
 
@@ -344,18 +348,13 @@ $data.Class.define('JayScrum.Frames.UserStories', JayScrum.Frame, null, {
             Priority: 0,
             AssignedTo: "",
             State: "To Do",
-            //WorkItem_Sprint: JayScrum.app.selectedFrame().data().currentSprint().innerInstance.Id,
             Effort: 0,
             BusinessValue: 0,
             RemainingWork: 0,
             IsBlocked:false,
-            WorkItem_WorkItem:userStory.Id()
-            //Reason: "New task",
-            //IterationPath: $data.Model.mainPage.currentSprint().IterationPath(),
-            //AreaPath: $data.Model.mainPage.currentSprint().AreaPath()
-            //ParentName: " ",
-            //FinishDate: "",
-            //StartDate: ""
+            WorkItem_WorkItem:userStory.Id(),
+            WorkItem_Project: userStory.WorkItem_Project(),
+            WorkItem_Sprint: userStory.WorkItem_Sprint()
         })).asKoObservable();
         JayScrum.repository.add(item);
         JayScrum.app.selectFrame('ScrumWall', 'taskEdit', item, true);
