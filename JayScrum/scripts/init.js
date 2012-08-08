@@ -132,6 +132,7 @@ function setSettingsByValue(key, value) {
 
 
 function initDateFieldsById(containerId) {
+    return;
     var div = $("#" + containerId),
         dateFields = div.find("input.field-date"),
         date = null,
@@ -141,7 +142,7 @@ function initDateFieldsById(containerId) {
         $self = $(this);
         date = moment($self.next('.field-date-value').val()).format("YYYY-MM-DD");
         $self.val(date);
-
+        $self.next('.field-date-value').attr('type','date');
         console.log(date);
     });
 }
