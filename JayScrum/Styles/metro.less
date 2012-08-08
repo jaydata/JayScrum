@@ -646,7 +646,8 @@ div[id^="swipeview-inside"]{
 
 /*#region MAIN-HEADER */
 .main-header {
-    .iblock; z-index: 450; pointer-events: none; max-height: 50px; padding: 5px 0 0 10px;
+    .iblock; .maxsize(65%, 50px);
+    z-index: 450; pointer-events: none; padding: 5px 0 0 10px;
     
     h1 { .position(relative, -5px); }
 }
@@ -819,7 +820,7 @@ input.accent-bg, textarea.accent-bg {
 	        &.us-dated-list {
 	            .pivot > h1 {
 	                margin-bottom: 0;
-	                .maxsize(95%, 45px); .ohidden;
+	                .maxsize(95%, 45px);
 	            }
 	            .scroll-list.scrollable-list { top: 75px; }
 	        }
@@ -1040,7 +1041,12 @@ input.accent-bg, textarea.accent-bg {
 	.item {
 		.ohidden; margin: 0 0 20px; padding-left: 10px;
 		
-		h2.title, h4.title { .maxsize(95%, 24px); .ohidden; }
+		h2.title, h4.title  
+		{
+		    .maxsize(95%, 24px); 
+		    
+		    > span:first-child { .maxsize(60%, 24px); .iblock; }
+		}
 		
 		.title {
 		    &:hover { cursor: pointer; }
@@ -1079,7 +1085,7 @@ input.accent-bg, textarea.accent-bg {
 	}
 	
 	&.reset {
-	    h2.title, h4.title { .maxsize(inherit, inherit); .ovisible; }
+	    h2.title, h4.title { .maxsize(inherit, inherit); .ovisible_; }
     }
     
     .item-details { .maxsize(80%); }
@@ -1584,7 +1590,10 @@ body[theme="white"] .detail .field .field.active    { border-color: Black !impor
 	    }
 	}
 	
-	.icon-action.topleft { .fnone; }
+	.icon-action {
+	    &.topleft { .fleft; }
+	    &.main-top-right    { .position(relative, -10px); }    
+	}
 	
 	.metro-pivot {
 		.item {
@@ -1748,7 +1757,7 @@ body[theme="white"] .detail .field .field.active    { border-color: Black !impor
 	
 	.icon-action {
 	    &.topleft           { .fleft; }
-	    &.main-top-right    { .position(relative, -5px); }
+	    &.main-top-right    { .position(relative, -10px); }
 	}
 	
 	#wrapper {

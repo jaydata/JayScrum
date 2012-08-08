@@ -162,6 +162,18 @@ font-family: 'SegoeWPLight', 'Century Gothic', Arial !important; }
 
 .segoeuilight { 
 font-family: 'SegoeUILight', 'Century Gothic', Arial !important; }
+
+.font16 { font-size: 16px; }
+.font20 { font-size: 20px; }
+.font28 { font-size: 28px; }
+.font30 { font-size: 30px; }
+
+.font100    { font-size: 100%; }
+.font95     { font-size: 90%; }
+.font90     { font-size: 90%; }
+.font80     { font-size: 80%; }
+.font70     { font-size: 70%; }
+.font60     { font-size: 60%; }
 /*#endregion FONT */
 
 /*#region LAYOUT */
@@ -172,11 +184,16 @@ font-family: 'SegoeUILight', 'Century Gothic', Arial !important; }
 .tdunder    { text-decoration: underline; }
 .tdunder_   { text-decoration: underline !important; }
 .tdthrough  { text-decoration: line-through; }
+.tdthrough_  { text-decoration: line-through !important; }
 
 .taleft     { text-align: left; }
+.taleft_     { text-align: left !important; }
 .tacenter   { text-align: center; }
+.tacenter_  { text-align: center !important; }
 .taright    { text-align: right; }
+.taright_    { text-align: right !important; }
 .tajustify  { text-align: justify; }
+.tajustify_  { text-align: justify !important; }
 
 .fwbold     { font-weight: bold; }
 .fwbold_    { font-weight: bold !important; }
@@ -188,11 +205,14 @@ font-family: 'SegoeUILight', 'Century Gothic', Arial !important; }
 .fleft      { float: left; }
 .fleft_     { float: left !important; }
 .fright     { float: right; }
+.fright_    { float: right !important; }
 .fnone      { float: none; }
 .fnone_     { float: none !important; }
 
 .clear      { clear: both; }
+.clear_     { clear: both !important; }
 .cnone      { clear: none; }
+.cnone_     { clear: none !important; }
 
 .toupper    { text-transform: uppercase; }
 .tolower    { text-transform: lowercase; }
@@ -200,6 +220,7 @@ font-family: 'SegoeUILight', 'Century Gothic', Arial !important; }
 .capitalize { text-transform: capitalize; }
 
 .show       { display: block; }
+.show_      { display: block !important; }
 .hide       { display: none; }
 .hide_      { display: none !important; }
 .iblock     { display: inline-block; }
@@ -212,6 +233,14 @@ font-family: 'SegoeUILight', 'Century Gothic', Arial !important; }
 .noborder_  { border: none !important; }
 
 .vamiddle   { vertical-align: middle; }
+
+ul.listreset {
+    list-style-type: none; 
+    
+    li { list-style-type: none;  }
+}
+.nobg 		{ background: none; }
+.nobg_ 		{ background: none !important; }
 
 .box {
 	-webkit-box-sizing: border-box;
@@ -282,12 +311,15 @@ font-family: 'SegoeUILight', 'Century Gothic', Arial !important; }
 .marginr20                  { margin-right: 20px; }
 .margin0_0_20               { margin: 0 0 20px; }
 .margin10_0                 { margin: 10px 0; }
+.marginb0                   { margin-bottom: 0px; }
+.marginb0_                  { margin-bottom: 0px !important; }
 .marginb5                   { margin-bottom: 5px; }
 .marginb5_                  { margin-bottom: 5px !important; }
 .marginb10                  { margin-bottom: 10px; }
 .marginb10_                 { margin-bottom: 10px !important; }
 .marginb15                  { margin-bottom: 15px; }
 .marginb20                  { margin-bottom: 20px; }
+.marginb25                  { margin-bottom: 25px; }
 .margin20_0_10              { margin: 20px 0 10px; }
 .margin5_0_10_0             { margin: 5px 0 10px; }
 
@@ -305,8 +337,7 @@ font-family: 'SegoeUILight', 'Century Gothic', Arial !important; }
     &:hover { cursor: pointer; }
 }
 
-.font28 { font-size: 28px; }
-.font30 { font-size: 30px; }
+.pointer { cursor: pointer; }
 
 .code-snippet {
     min-height: 20px;
@@ -448,7 +479,8 @@ line-height: @line-height; }
 
 .maxsize(@maxwidth: auto, @maxheight: auto){
 max-width: @maxwidth;
-max-height: @maxheight; }
+max-height: @maxheight;
+overflow: hidden; }
 
 .opacity(@opacity: 1){
 -webkit-opacity : @opacity;
@@ -647,9 +679,9 @@ background : -moz-linear-gradient(center bottom,
 		@endColor @lastStop); }
 
 .vertical-gradient (@startColor: #555, @endColor: #333) {
-	background-image: -webkit-gradient(linear, left top, left bottom, from(@startColor), to(@endColor));
-	background-image: -webkit-linear-gradient(@startColor, @endColor);
-	background-image: -moz-linear-gradient(@startColor, @endColor); }
+	background-image: -webkit-gradient(linear, left top, left bottom, from(@startColor), to(@endColor)) !important;
+	background-image: -webkit-linear-gradient(@startColor, @endColor) !important;
+	background-image: -moz-linear-gradient(@startColor, @endColor) !important; }
 
 .vertical-three-color-gradient (@startColor: #00b3ee, @colorStop: 0.5, @midColor: #7a43b6, @endColor: #c3325f) {
 	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(@startColor), color-stop(@colorStop, @midColor), to(@endColor));
@@ -718,5 +750,12 @@ transition-duration: @duration; }
 -ms-transition: all @duration @ease;
 -o-transition: all @duration @ease;
 transition : all @duration @ease; }
+
+.notransition(){
+-webkit-transition : none !important;
+-moz-transition : none !important;
+-ms-transition: none !important;
+-o-transition: none !important;
+transition : none !important; }
 
 /*#endregion CSS TRANSITIONS */
