@@ -68,11 +68,32 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
     _getAllRepositorySettings: function (callBack) {
         return this.localContext.Repositories.toArray(callBack);
     },
-    connectTo:function(repoSetting){
-        JayScrum.repository = new LightSwitchApplication.ApplicationData({ name: 'oData', oDataServiceHost: repoSetting.Url, user: repoSetting.UserName, password: repoSetting.Password });
-        JayScrum.repository.onReady(function(){
-            JayScrum.app.selectFrame('MainFrame');
+    connectTo:function (repoSetting) {
+        var urlparser = document.createElement('a');
+        urlparser.href = repoSetting.Url;
+        var dbName = urlparser.pathname.slice(1);
+        if(dbName[dbName.length-1] === '/'){
+            dbName = dbName.slice(0,-1);
+        }
+
+        var createDbUrl = urlparser.protocol + '//' + urlparser.host + '/CreateDatabase?dbName=' + dbName + '&schemaName=JayScrum';
+        $.ajax({
+            url:createDbUrl,
+            error:function (xhr, status, error) {
+                console.log(error);
+            },
+            success:function (data, status, xhr) {
+                JayScrum.repository = new LightSwitchApplication.ApplicationData({
+                    name:'oData',
+                    oDataServiceHost:repoSetting.Url,
+                    user:repoSetting.UserName,
+                    password:repoSetting.Password });
+                JayScrum.repository.onReady(function () {
+                    JayScrum.app.selectFrame('MainFrame');
+                });
+            }
         });
+
     },
     editSetting:function(item){
         var entity = JayScrum.app.selectedFrame().localContext.Repositories.attachOrGet(item);
