@@ -241,7 +241,7 @@ $data.Class.define('JayScrum.ScrumApp', JayScrum.FrameApp, null,{
             .orderBy(function(item){return item.FinishDate;})
             .toArray(function (sprints) {
                 JayScrum.pushObservablesToList(JayScrum.app.globalData().sprintList, sprints);
-                JayScrum.app.globalData().sprintList.splice(0,0,{Name:ko.observable(''), Id:ko.observable('')});
+                JayScrum.app.globalData().sprintList.splice(0,0,{Name:ko.observable(''), Id:ko.observable(null)});
                 loadPromise.resolve();
             });
         return loadPromise.promise;
