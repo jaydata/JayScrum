@@ -1,3 +1,4 @@
+var Q = require('q');
 (function (global, $data, undefined) {
     function registerEdmTypes() {
 
@@ -108,12 +109,44 @@
         //'WorkItems': { type: 'Array', elementType: 'LightSwitchApplication.WorkItem', inverseProperty: 'Sprint' }
     });
     $data.ServiceBase.extend('LightSwitchApplication.ApplicationService', {
-        getSprintData: $data.JayService.serviceFunction()
+        getSprintData:$data.JayService.serviceFunction()
             .param("a", "number")
-            .returnsArrayOf("number")
+            .returnsArrayOf("$data.Object")
             (function (a) {
-                var self = this;
-                return function(){ this.success([1,2,3,4]);};
+                return function () {
+//                    console.dir(this);
+//                    console.dir(this.context);
+                    var self = this;
+                    this.context.Sprints
+                        .where(function (item) { return item.Id in this.sprintIds }, { sprintIds:['NTAyM2E5ZDg2ODJmYTQ4NjU0MDAwMDE5','NTAyM2E5ZDg2ODJmYTQ4NjU0MDAwMDFh', 'NTAyM2E5ZDg2ODJmYTQ4NjU0MDAwMDFj'] })
+                        .toArray(function (sprintList) {
+                            var loadPromise = Q.defer();
+                            var promise = loadPromise.promise;
+                            for (var i=0;i<sprintList.length;i++){
+                                var currentSprint = sprintList[i];
+                                promise = promise.then(function(value){
+                                    console.log('data start:'+i);
+                                    var innerPromise = Q.defer();
+                                    self.context.WorkItems
+                                        .where(function (item) {return item.WorkItem_Sprint == this.sprintId && item.State != "Done"}, {sprintId: currentSprint.Id})
+                                        .length(function (result) {
+                                            var data = JSON.parse(JSON.stringify(currentSprint.initData));
+                                            data.taskLeft = result;
+                                            value.push(data);
+                                            console.log('data End:'+i);
+                                            console.log(value);
+                                            innerPromise.resolve(value);
+                                        });
+
+                                    return innerPromise.promise;
+
+                                });
+                            }
+
+                            promise.then(function (value) {self.success(value);});
+                            loadPromise.resolve([]);
+                        });
+                };
             })
 
     });
