@@ -36,15 +36,22 @@ app.use($data.JayService.OData.BatchProcessor.connectBodyReader);
 app.use("/CreateDatabase", function(req, res){
     var dbName = req.query.dbName, dbType = req.query.schemaName;
 
-
-
-    var appdb = new appContextType({ name:'mongoDB', databaseName:'appdb_00' });
-
     var result = {
-       _command: 'CreateDatabase',
+        _command: 'CreateDatabase',
         dbName: dbName,
         dbType: dbType
     }
+
+    if(dbName == ''){
+        result.status = 'error';
+        result.message = 'empty db name';
+        res.end(JSON.stringify(result));
+        return;
+    }
+
+    var appdb = new appContextType({ name:'mongoDB', databaseName:'appdb_00' });
+
+
 
     appdb.onReady( function() {
         appdb.Databases.filter("it.dbName == this.dbName", {dbName: dbName}).toArray( function(items) {
