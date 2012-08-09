@@ -38,7 +38,21 @@ $data.Class.define('JayScrum.Frames.Main', JayScrum.Frame, null, {
         var loadDefer = Q.defer();
         var self = this;
 
-        JayScrum.repository.Sprints
+        var pinnedSprints = getSetting('pinnedSprints');
+        JayScrum.repository.getSprintsData(pinnedSprints).toArray({success:function(sprintsData){
+            for (var s in sprintsData) {
+                self.data().activeSprintList.push(sprintsData[s]);
+            }
+            initUI();
+            loadDefer.resolve();
+        },
+            error:function (error) {
+                loadDefer.reject();
+                JayScrum.app.selectFrame('Repositories',undefined, {error:'Connection error: '+error});
+            }
+        });
+
+        /*JayScrum.repository.Sprints
             .where(function (item) {
                 return item.StartDate <= this.currentDate && item.FinishDate >= this.currentDate;
             }, { currentDate:moment.utc().toDate() })
@@ -90,7 +104,7 @@ $data.Class.define('JayScrum.Frames.Main', JayScrum.Frame, null, {
 //                            return p1.promise;
 //                        }
 //                    })
-//                        /*.then(function () {
+//                        *//*.then(function () {
 //                            var p2 = Q.defer();
 //                            var sprintIds = self.data().activeSprintList().map(function (s) {
 //                                return s.Id();
@@ -104,7 +118,7 @@ $data.Class.define('JayScrum.Frames.Main', JayScrum.Frame, null, {
 //                                    p2.resolve();
 //                                });
 //                            return p2.promise;
-//                        })*/
+//                        })*//*
 //                        .then(function () {
 //                            initUI();
 //                            loadDefer.resolve();
@@ -114,7 +128,7 @@ $data.Class.define('JayScrum.Frames.Main', JayScrum.Frame, null, {
                     loadDefer.reject();
                     JayScrum.app.selectFrame('Repositories',undefined, {error:'Connection error: '+error});
                 }
-            });
+            });*/
 
         return loadDefer.promise;
     },

@@ -116,7 +116,8 @@ var Q = require('q');
                 return function () {
                     var self = this;
                     var sprints = this.context.Sprints
-                        .where(function (item) { return item.Id in this.sprintIds }, { sprintIds:['NTAyM2E5ZDg2ODJmYTQ4NjU0MDAwMDE5','NTAyM2E5ZDg2ODJmYTQ4NjU0MDAwMDFh', 'NTAyM2E5ZDg2ODJmYTQ4NjU0MDAwMDFj'] })
+                        .where(function (item) { return ((item.Id in this.sprintIds) || (item.StartDate<=this.now && item.FinishDate>=this.now)) }, { sprintIds:JSON.parse(sprintIdList), now:new Date() })
+                        .orderBy(function(item){return item.FinishDate;})
                         .toArray();
 
                     Q.when(sprints)
