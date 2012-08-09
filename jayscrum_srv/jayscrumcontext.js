@@ -107,7 +107,17 @@
         'FinishDate':{ type:'Edm.DateTime', nullable:false, required:true }
         //'WorkItems': { type: 'Array', elementType: 'LightSwitchApplication.WorkItem', inverseProperty: 'Sprint' }
     });
-    $data.Class.defineEx('LightSwitchApplication.ApplicationData',[$data.EntityContext, $data.ServiceBase], null, {
+    $data.ServiceBase.extend('LightSwitchApplication.ApplicationService', {
+        getSprintData: $data.JayService.serviceFunction()
+            .param("a", "number")
+            .returnsArrayOf("number")
+            (function (a) {
+                var self = this;
+                return function(){ this.success([1,2,3,4]);};
+            })
+
+    });
+    $data.Class.defineEx('LightSwitchApplication.ApplicationData',[$data.EntityContext, LightSwitchApplication.ApplicationService], null, {
         WorkItems:{ type:$data.EntitySet, elementType:LightSwitchApplication.WorkItem },
         Projects:{ type:$data.EntitySet, elementType:LightSwitchApplication.Project },
         Sprints:{ type:$data.EntitySet, elementType:LightSwitchApplication.Sprint }/*,

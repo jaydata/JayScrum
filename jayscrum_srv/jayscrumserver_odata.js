@@ -3,18 +3,7 @@ var ctx = require('./jayscrumcontext.js');
 
 var connect = require('connect');
 var app = connect();
-app.use("/CreateDatabase", function(req, res){
-    res.writeHead(200, {
-        'Content-Type':'application/json',
-        'Access-Control-Allow-Origin':'*',
-        'Access-Control-Allow-Headers':'X-PINGOTHER, Content-Type',
-        'Access-Control-Allow-Methods':'POST, GET, OPTIONS'
-    });
-    console.log('Create database');
-    //res.write('OK');
-    res.end();
 
-});
 app.use(function (req, res, next) {
 
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -26,7 +15,12 @@ app.use(function (req, res, next) {
         next();
     }
 });
+app.use("/CreateDatabase", function(req, res){
+    console.log('Create database');
+    //res.write('OK');
+    res.end();
 
+});
 app.use(connect.query());
 app.use($data.JayService.OData.BatchProcessor.connectBodyReader);
 

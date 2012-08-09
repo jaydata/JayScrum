@@ -308,6 +308,7 @@ $data.Class.define('JayScrum.Frames.UserStories', JayScrum.Frame, null, {
         if (sprint) {
             wrkItem.SprintName(sprint.Name());
         }
+        if(wrkItem.WorkItem_Sprint() === ''){ wrkItem.WorkItem_Sprint(null)}
         //save workItem
         wrkItem.ChangedDate(new Date());
 
