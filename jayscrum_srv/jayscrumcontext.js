@@ -124,7 +124,7 @@ var Q = require('q');
                         .then(function (sprintList) {
                             var workitemQueries = sprintList.map(function(item){
                                 return self.context.WorkItems
-                                        .where(function (item) {return item.WorkItem_Sprint == this.sprintId && item.State != "Done"}, {sprintId: item.Id})
+                                        .where(function (item) {return item.WorkItem_Sprint == this.sprintId && item.State != "Done" && (item.Type=='Task' || item.Type == 'Bug')}, {sprintId: item.Id})
                                         .length();
                             });
 
