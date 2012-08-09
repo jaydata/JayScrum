@@ -118,6 +118,7 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
         JayScrum.app.selectedFrame().selectedView().i_scroll = JayScrum.app.initScrollById("settingPageScroll");
     },
     onFrameChangingFrom: function(newFrameMeta, oldFrameMeta, initData, frame){
+        var loadingPromise = Q.defer();
         JayScrum.app.showLoading();
         var self = this;
         this.localContext.onReady(function(){
@@ -127,7 +128,9 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
                 if(initData && initData.error){self.data().errorMsg(initData.error);}
                 self._initializeRepositoriesFrame();
             }
+            loadingPromise.resolve();
         });
+        return loadingPromise.promise;
     },
     showActionBar:function () {
         $('div#settingPageActionBar').addClass("opened");

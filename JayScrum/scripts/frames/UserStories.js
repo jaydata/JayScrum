@@ -60,7 +60,9 @@ $data.Class.define('JayScrum.Views.UserStorySelected', JayScrum.FrameView, null,
         }, 750);
     },
     tearDownView: function(){
-        this.i_scroll.destroy();
+        if(this.i_scroll !== null){
+            this.i_scroll.destroy();
+        }
         this.i_scroll = null;
     }
 }, null);
@@ -303,7 +305,7 @@ $data.Class.define('JayScrum.Frames.UserStories', JayScrum.Frame, null, {
         }
         //sprintname update
         var sprint = JayScrum.app.globalData().sprintList().filter(function (item) { return item.Id() == wrkItem.WorkItem_Sprint() })[0];
-        if (project) {
+        if (sprint) {
             wrkItem.SprintName(sprint.Name());
         }
         //save workItem
@@ -360,16 +362,25 @@ $data.Class.define('JayScrum.Frames.UserStories', JayScrum.Frame, null, {
         JayScrum.app.selectFrame('ScrumWall', 'taskEdit', item, true);
     },
     onFrameChangingFrom: function(activeFrameMeta, oldFrameMeta, initData, frame){
+        var loadingPromise = Q.defer();
+        var self = this;
         switch(activeFrameMeta.viewName){
             case 'userStorySelected':
                 this.data().selectedUserStory(initData);
+                loadingPromise.resolve();
                 break;
             case 'userStoryEditor':
-                this.data().selectedUserStory(initData);
+                this._onRefreshDropDownLists()
+                    .then(function(){
+                        self.data().selectedUserStory(initData);
+                        loadingPromise.resolve();
+                    });
                 break;
             default:
+                loadingPromise.resolve();
                 break;
         }
+        return loadingPromise.promise;
     },
     onFrameChangedFrom:function (activeFrameMeta, oldFrameMeta, frame) {
         switch(activeFrameMeta.viewName){

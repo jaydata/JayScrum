@@ -100,18 +100,20 @@ $data.Class.define('JayScrum.FrameApp', null, null, {
         if (oldFrame) {
             oldFrame.onFrameChangingTo(newActiveFrame, oldActiveFrame, newFrame, disableResetData);
         }
-        newFrame.onFrameChangingFrom(newActiveFrame, oldActiveFrame, initData, oldFrame);
+        var self = this;
+        newFrame.onFrameChangingFrom(newActiveFrame, oldActiveFrame, initData, oldFrame)
+            .then(function() {
+                if (self.collectFramePath()) {
+                    self.framePath.push(newActiveFrame);
+                }
+                newFrame.selectedView(newFrame.views[newActiveFrame.viewName]);
+                self.selectedFrame(newFrame);
 
-        if (this.collectFramePath()) {
-            this.framePath.push(newActiveFrame);
-        }
-        newFrame.selectedView(newFrame.views[newActiveFrame.viewName]);
-        this.selectedFrame(newFrame);
-
-        if (oldFrame) {
-            oldFrame.onFrameChangedTo(newActiveFrame, oldActiveFrame, newFrame);
-        }
-        newFrame.onFrameChangedFrom(newActiveFrame, oldActiveFrame, oldFrame);
+                if (oldFrame) {
+                    oldFrame.onFrameChangedTo(newActiveFrame, oldActiveFrame, newFrame);
+                }
+                newFrame.onFrameChangedFrom(newActiveFrame, oldActiveFrame, oldFrame);
+            });
     },
     bind:function () {
         ko.applyBindings(this, this.mainElement);

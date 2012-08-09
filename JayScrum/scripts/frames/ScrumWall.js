@@ -404,6 +404,8 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
     },
 
     onFrameChangingFrom:function (activeFrameMeta, oldFrameMeta, initData, frame) {
+        JayScrum.app.showLoading();
+        var loadingPromise = Q.defer();
         if (initData.innerInstance instanceof LightSwitchApplication.Sprint) {
             this.pinnedQueryParam = { sprintId:initData.Id() };
             this.toDoListQuery = JayScrum.repository.WorkItems
@@ -449,7 +451,8 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
                 this.activeList = initData.list;
             }
         }
-        JayScrum.app.showLoading();
+        loadingPromise.resolve();
+        return loadingPromise.promise;
     },
     onFrameChangedFrom:function (activeFrameMeta, oldFrameMeta, frame) {
         if (activeFrameMeta.viewName === 'taskEdit' || activeFrameMeta.viewName === 'taskSelect') {

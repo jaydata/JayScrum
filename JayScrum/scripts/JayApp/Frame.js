@@ -61,7 +61,7 @@ $data.Class.define('JayScrum.Frame', null, null, {
         }
     },
     onFrameChangingFrom:function (newFrameData, oldFrameData, frame) {
-        this.frameApp.showLoading();
+        return Q.fcall(JayScrum.app.showLoading);
     },
     onFrameChangedTo:function (newFrameData, oldFrameData, frame) {
         this.selectedView().tearDownView();

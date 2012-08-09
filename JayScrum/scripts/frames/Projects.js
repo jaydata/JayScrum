@@ -145,7 +145,7 @@ $data.Class.define('JayScrum.Frames.Projects', JayScrum.Frame, null, {
         var item = (new JayScrum.repository.WorkItems.createNew({
             Id: null,
             Title: "",
-            Type: "Task",
+            Type: "UserStory",
             Description: "",
             CreatedDate: new Date().toISOString(),
             CreatedBy: 'Admin', //$data.Model.settingPage.loginSettings.UserName, //TODO: add user data
@@ -154,7 +154,6 @@ $data.Class.define('JayScrum.Frames.Projects', JayScrum.Frame, null, {
             Priority: 0,
             AssignedTo: "",
             State: "To Do",
-            //WorkItem_Sprint: JayScrum.app.selectedFrame().data().currentSprint().innerInstance.Id,
             Effort: 0,
             BusinessValue: 0,
             RemainingWork: 0,

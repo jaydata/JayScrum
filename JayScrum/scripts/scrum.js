@@ -237,8 +237,11 @@ $data.Class.define('JayScrum.ScrumApp', JayScrum.FrameApp, null,{
     onRefreshSprintListForDropDown:function () {
         var loadPromise = Q.defer();
         JayScrum.repository.Sprints
+            .where(function(item){return item.FinishDate>this.now;}, {now: new Date()})
+            .orderBy(function(item){return item.FinishDate;})
             .toArray(function (sprints) {
                 JayScrum.pushObservablesToList(JayScrum.app.globalData().sprintList, sprints);
+                JayScrum.app.globalData().sprintList.splice(0,0,{Name:ko.observable(''), Id:ko.observable('')});
                 loadPromise.resolve();
             });
         return loadPromise.promise;
