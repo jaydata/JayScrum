@@ -21,6 +21,7 @@ app.use($data.JayService.OData.BatchProcessor.connectBodyReader);
 //app.use("/", connect.static("/home/borzav/sf/jay/jaydata"));
 
 app.use("/", $data.JayService.createAdapter(LightSwitchApplication.ApplicationData, function () {
+    console.log(arguments);
     return new LightSwitchApplication.ApplicationData({ name:'mongoDB', databaseName:'jayScrum' });
 }));
 
