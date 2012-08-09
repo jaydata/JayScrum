@@ -103,7 +103,7 @@ $data.Class.define('JayScrum.Frames.UserStories', JayScrum.Frame, null, {
         var loadingPromise = Q.defer();
         JayScrum.repository.WorkItems
             .where(function (item) { return item.Type == "UserStory" && item.WorkItem_Sprint == null })
-            .orderBy(function(item){return item.CreatedDate;})
+            .orderByDescending(function(item){return item.ChangedDate;})
             .orderBy(function(item){return item.Title;})
             .take(7)
             .toArray(function (userStoryResult) {
@@ -139,7 +139,7 @@ $data.Class.define('JayScrum.Frames.UserStories', JayScrum.Frame, null, {
 
         JayScrum.repository.WorkItems
             .where(function (item) { return item.Type == "UserStory" && item.WorkItem_Sprint == this.sprintId }, { sprintId: sprintData.Id })
-            .orderBy(function(item){return item.CreatedDate;})
+            .orderByDescending(function(item){return item.ChangedDate;})
             .orderBy(function(item){return item.Title;})
             .take(7)
             .toArray(function (usList) {
@@ -183,6 +183,9 @@ $data.Class.define('JayScrum.Frames.UserStories', JayScrum.Frame, null, {
     onIndependentUserStoryListPullUp: function (scroller) {
         JayScrum.repository.WorkItems
             .where(function (item) { return item.Type == "UserStory" && item.WorkItem_Sprint == null })
+
+            .orderByDescending(function(item){return item.ChangedDate;})
+            .orderBy(function(item){return item.Title;})
             .skip(JayScrum.app.selectedFrame().data().userStoryList().length)
             .take(7)
             .toArray(function (userStoryResult) {
@@ -195,6 +198,8 @@ $data.Class.define('JayScrum.Frames.UserStories', JayScrum.Frame, null, {
     onIndependentUserStoryListPullDown: function (scroller) {
         JayScrum.repository.WorkItems
             .where(function (item) { return item.Type == "UserStory" && item.WorkItem_Sprint == null })
+            .orderByDescending(function(item){return item.ChangedDate;})
+            .orderBy(function(item){return item.Title;})
             .take(7)
             .toArray(function (userStoryResult) {
                 JayScrum.pushObservablesToList(JayScrum.app.selectedFrame().data().userStoryList, userStoryResult);
@@ -207,6 +212,8 @@ $data.Class.define('JayScrum.Frames.UserStories', JayScrum.Frame, null, {
 
         JayScrum.repository.WorkItems
             .where(function (item) { return item.Type == "UserStory" && item.WorkItem_Sprint == this.sprintId }, { sprintId: currentList.sprintId })
+            .orderByDescending(function(item){return item.ChangedDate;})
+            .orderBy(function(item){return item.Title;})
             .skip(currentList.list().length)
             .take(7)
             .toArray(function (usList) {
@@ -222,6 +229,8 @@ $data.Class.define('JayScrum.Frames.UserStories', JayScrum.Frame, null, {
 
         JayScrum.repository.WorkItems
             .where(function (item) { return item.Type == "UserStory" && item.WorkItem_Sprint == this.sprintId }, { sprintId: currentList.sprintId })
+            .orderByDescending(function(item){return item.ChangedDate;})
+            .orderBy(function(item){return item.Title;})
             .take(7)
             .toArray(function (usList) {
                 var newData = usList.map(function (item) { return item.asKoObservable(); });
@@ -308,7 +317,6 @@ $data.Class.define('JayScrum.Frames.UserStories', JayScrum.Frame, null, {
         if (sprint) {
             wrkItem.SprintName(sprint.Name());
         }
-        if(wrkItem.WorkItem_Sprint() === ''){ wrkItem.WorkItem_Sprint(null)}
         //save workItem
         wrkItem.ChangedDate(new Date());
 
