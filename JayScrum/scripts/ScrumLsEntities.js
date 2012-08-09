@@ -162,8 +162,8 @@
     $data.EntityContext.extend('LightSwitchApplication.ApplicationData', {
         WorkItems:{ type:$data.EntitySet, elementType:LightSwitchApplication.WorkItem },
         Projects:{ type:$data.EntitySet, elementType:LightSwitchApplication.Project },
-        Sprints:{ type:$data.EntitySet, elementType:LightSwitchApplication.Sprint }/*,
-         Microsoft_LightSwitch_GetCanInformation: $data.EntityContext.generateServiceOperation({ serviceName: 'Microsoft_LightSwitch_GetCanInformation', returnType: 'Edm.String', params: [{ dataServiceMembers: 'Edm.String' }], method: 'GET' })*/
+        Sprints:{ type:$data.EntitySet, elementType:LightSwitchApplication.Sprint },
+        getSprintsData: $data.EntityContext.generateServiceOperation({ serviceName:'getSprintsData', returnType: $data.Queryable, elementType: '$data.Object', params: [{ sprintIds: '$data.Array' }], method: 'GET' })
     });
     ///Security
     /* $data.Entity.extend('Microsoft.LightSwitch.Security.UserRegistration', {

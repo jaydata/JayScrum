@@ -76,7 +76,7 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
             dbName = dbName.slice(0,-1);
         }
 
-        var createDbUrl = urlparser.protocol + '//' + urlparser.host + '/CreateDatabase?dbName=' + dbName + '&schemaName=JayScrum';
+        var createDbUrl = urlparser.protocol + '//' + urlparser.host + '/CreateDatabase?dbName=' + dbName + '&schemaName=jayscrumcontext';
         $.ajax({
             url:createDbUrl,
             error:function (xhr, status, error) {

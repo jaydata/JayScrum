@@ -61,40 +61,54 @@ $data.Class.define('JayScrum.Frames.Main', JayScrum.Frame, null, {
                             additionalSprintIds.push(pinnedSprints[id]);
                         }
                     }
-
-                    Q.fcall(function () {
-                        if (additionalSprintIds.length > 0) {
-                            var p1 = Q.defer();
-                            JayScrum.repository.Sprints
-                                .where(function (item) {return item.Id in this.sprintIds }, { sprintIds:additionalSprintIds })
-                                .toArray(function (sprintList) {
-                                    for (var s in sprintList) {
-                                        self.data().activeSprintList.push(sprintList[s].asKoObservable());
-                                    }
-                                    p1.resolve();
-                                });
-                            return p1.promise;
+                    var sprintDataLoader = Q.defer();
+                    JayScrum.repository.getSprintsData(additionalSprintIds).toArray(function(sprintsData){
+                        console.log(sprintsData);
+                        for (var s in sprintsData) {
+                            self.data().activeSprintList.push(sprintsData[s]);
                         }
-                    })
-                        /*.then(function () {
-                            var p2 = Q.defer();
-                            var sprintIds = self.data().activeSprintList().map(function (s) {
-                                return s.Id();
-                            });
-                            JayScrum.repository.WorkItems
-                                .where(function (wi) { return wi.Type == 'Task' && wi.State != 'Done' && wi.WorkItem_Sprint in this.sprintIds }, { sprintIds:sprintIds })
-                                .select(function (wi) { return { WorkItemId:wi.Id, SprintId:wi.WorkItem_Sprint }})
-                                .orderBy(function (wi) { return wi.WorkItem_Sprint; })
-                                .toArray(function (result) {
-                                    $data.Model.mainPage.activeSprintsTaskIds(result);
-                                    p2.resolve();
-                                });
-                            return p2.promise;
-                        })*/
-                        .then(function () {
-                            initUI();
+                        sprintDataLoader.resolve();
+                    });
+                        sprintDataLoader.promise.then(function(){
+                            console.log('alma');
+                            //initUI();
                             loadDefer.resolve();
                         });
+
+
+//                    Q.fcall(function () {
+//                        if (additionalSprintIds.length > 0) {
+//                            var p1 = Q.defer();
+//                            JayScrum.repository.Sprints
+//                                .where(function (item) {return item.Id in this.sprintIds }, { sprintIds:additionalSprintIds })
+//                                .toArray(function (sprintList) {
+//                                    for (var s in sprintList) {
+//                                        self.data().activeSprintList.push(sprintList[s].asKoObservable());
+//                                    }
+//                                    p1.resolve();
+//                                });
+//                            return p1.promise;
+//                        }
+//                    })
+//                        /*.then(function () {
+//                            var p2 = Q.defer();
+//                            var sprintIds = self.data().activeSprintList().map(function (s) {
+//                                return s.Id();
+//                            });
+//                            JayScrum.repository.WorkItems
+//                                .where(function (wi) { return wi.Type == 'Task' && wi.State != 'Done' && wi.WorkItem_Sprint in this.sprintIds }, { sprintIds:sprintIds })
+//                                .select(function (wi) { return { WorkItemId:wi.Id, SprintId:wi.WorkItem_Sprint }})
+//                                .orderBy(function (wi) { return wi.WorkItem_Sprint; })
+//                                .toArray(function (result) {
+//                                    $data.Model.mainPage.activeSprintsTaskIds(result);
+//                                    p2.resolve();
+//                                });
+//                            return p2.promise;
+//                        })*/
+//                        .then(function () {
+//                            initUI();
+//                            loadDefer.resolve();
+//                        });
                 },
                 error:function (error) {
                     loadDefer.reject();
@@ -112,7 +126,7 @@ $data.Class.define('JayScrum.Frames.Main', JayScrum.Frame, null, {
     isPinnedSprint: function (sprint) {
         var pinnedSprints = getSetting('pinnedSprints');
         if (!pinnedSprints) { pinnedSprints = []; }
-        return pinnedSprints.indexOf(sprint.Id()) >= 0;
+        return pinnedSprints.indexOf(sprint.Id) >= 0;
     },
     onTaskListShow:function(item){
         JayScrum.app.selectFrame('ScrumWall', undefined, item);

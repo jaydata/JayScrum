@@ -1,4 +1,3 @@
-var Q = require('q');
 (function (global, $data, undefined) {
     function registerEdmTypes() {
 
@@ -109,36 +108,12 @@ var Q = require('q');
         //'WorkItems': { type: 'Array', elementType: 'LightSwitchApplication.WorkItem', inverseProperty: 'Sprint' }
     });
     $data.ServiceBase.extend('LightSwitchApplication.ApplicationService', {
-        getSprintsData:$data.JayService.serviceFunction()
-            .param("sprintIds", "Array")
-            .returnsArrayOf("$data.Object")
-            (function (sprintIdList) {
-                return function () {
-                    var self = this;
-                    var sprints = this.context.Sprints
-                        .where(function (item) { return item.Id in this.sprintIds }, { sprintIds:['NTAyM2E5ZDg2ODJmYTQ4NjU0MDAwMDE5','NTAyM2E5ZDg2ODJmYTQ4NjU0MDAwMDFh', 'NTAyM2E5ZDg2ODJmYTQ4NjU0MDAwMDFj'] })
-                        .toArray();
-
-                    Q.when(sprints)
-                        .then(function (sprintList) {
-                            var workitemQueries = sprintList.map(function(item){
-                                return self.context.WorkItems
-                                        .where(function (item) {return item.WorkItem_Sprint == this.sprintId && item.State != "Done"}, {sprintId: item.Id})
-                                        .length();
-                            });
-
-                            Q.all(workitemQueries)
-                                .then(function(){
-                                    var data = workitemQueries.map(function(item, index){
-                                        var d = sprintList[index].initData;
-                                        d.tasksLeft = item.valueOf();
-                                        return  d;
-                                    });
-
-                                    self.success(data);
-                                });
-                        });
-                };
+        getSprintData: $data.JayService.serviceFunction()
+            .param("a", "number")
+            .returnsArrayOf("number")
+            (function (a) {
+                var self = this;
+                return function(){ this.success([1,2,3,4]);};
             })
 
     });
