@@ -332,6 +332,18 @@ $data.Class.define('JayScrum.Frames.UserStories', JayScrum.Frame, null, {
         JayScrum.repository.WorkItems.detach(wrkItem);
         JayScrum.app.backView();
     },
+    onUpdateUserStory: function (workItem, isEventCall) {
+        JayScrum.repository.WorkItems.where(function (item) { return item.Id == this.currentItem.Id }, { currentItem: workItem }).toArray({
+            success: function (result) {
+
+                var propName = result[0].getType().memberDefinitions.getPublicMappedPropertyNames();
+                propName.forEach(function(propName){
+                    workItem[propName](result[0][propName]);
+                },this);
+            },
+            error: function (error) { console.log("Refresh error!!"); console.dir(error); }
+        });
+    },
 
     onRefreshWorkItemsOfUserStory: function (userStory) {
         JayScrum.repository.WorkItems
