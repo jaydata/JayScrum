@@ -164,5 +164,6 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
     },
     hideActionBar:function () {
         $('div#settingPageActionBar').removeClass("opened");
+        $('div#error-msg').removeClass('opened');
     }
 }, null);

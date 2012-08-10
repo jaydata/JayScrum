@@ -15,6 +15,13 @@ var debug = true,
         this.bounce = true;
         this.lockDirection = true;
         //this.handleClick = false;
+
+        this.onScrollStart = function () {
+            if ($('input:focus, select:focus, textarea:focus').length > 0) {
+                $(':focus').blur();
+            }
+        };
+
         this.onScrollMove = function () {
             //console.log(this.y, this.maxScrollY);
 
@@ -359,7 +366,7 @@ JayScrum.pushObservablesToList= function (list, rawData) {
 $(function(){
     JayScrum.app = new JayScrum.ScrumApp('#page');
     JayScrum.app.bind();
-    JayScrum.app.selectFrame('Repositories', undefined, {autoConnect:true});
+    JayScrum.app.selectFrame('Repositories', undefined, { autoConnect: true });
 })
 
 

@@ -1800,7 +1800,7 @@ div[id^="swipeview-inside"] > div:nth-child(2) > div:first-child {
 /*#region MAIN-HEADER */
 .main-header {
   display: inline-block;
-  max-width: 65%;
+  max-width: 70%;
   max-height: 52px;
   overflow: hidden;
   z-index: 450;
@@ -3539,6 +3539,9 @@ body[theme="white"] .detail .field .field.active {
 @media only screen and (max-width: 768px) and (min-width: 768px) and (orientation: portrait) {
   .main-header.main-page {
     display: block;
+    max-width: inherit;
+    max-height: inherit;
+    overflow: hidden;
   }
   .main-header.main-page h1 {
     display: block;
