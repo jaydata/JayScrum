@@ -76,14 +76,11 @@
                         <li data-bind="attr: { 'class': $parent.isPinnedSprint($data) ? 'wide green' : 'wide lightred' }">
                             <span data-bind="click: $parent.onTaskListShow">
                                 <span class="middle twolined">
-                                    <span class="day" data-bind="text: moment(FinishDate()).diff(moment(), 'days')">
+                                    <span class="day" data-bind="text: moment(FinishDate).diff(moment(), 'days')">
                                     </span>
                                     <span class="text" data-bind="text: Name"></span>
                                     <span class="text">scrumwall</span>
-                                    <!--ko if: $data.activeSprintsTaskIds-->
-                                    <span class="text" data-bind2="text: $root.mainPage.getTaskLeftForSprint($data.Id())+' task left'">
-                                    </span>
-                                    <!--/ko-->
+                                    <span class="text" data-bind="text: tasksLeft+' task left'"></span>
                                 </span>
                                 <!--ko if: $parent.isPinnedSprint($data)-->
                                 <span class="pin"></span>
@@ -1174,7 +1171,7 @@
 
                                 <div class="field">
                                     <div><span>Url</span></div>
-                                    <input class="medium accent-bg" type="text" data-bind="value: Url, valueUpdate:['afterkeydown','propertychange','input']" />
+                                    <input class="medium accent-bg" type="text" data-bind="value: Url, valueUpdate:['afterkeydown','propertychange','input']" placeholder="Databse name or full URL" />
                                 </div>
 
                                 <div class="field">
@@ -1326,6 +1323,7 @@
     <script type="text/javascript" src="scripts/jaydataproviders/InMemoryProvider.js"></script>
     <script type="text/javascript" src="scripts/jaydataproviders/oDataProvider.js"></script>
     <script type="text/javascript" src="scripts/jaydatamodules/knockout.js"></script>
+    <script type="text/javascript" src="scripts/jaydatamodules/qDeferred.js"></script>
 
     <script type="text/javascript" src="scripts/JayApp/FrameView.js"></script>
     <script type="text/javascript" src="scripts/JayApp/Frame.js"></script>
@@ -1347,6 +1345,8 @@
     <script type="text/javascript" src="scripts/Models/MainPage.js"></script>
     <script type="text/javascript" src="scripts/init.js"></script>
     <script type="text/javascript" src="scripts/scrum.js"></script>
+
+    <script type="text/javascript" src="scripts/JaySvcUtil/JaySvcUtil.js"></script>
 
     <script type="text/html" id="jayAppMenu">
         <div>

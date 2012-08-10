@@ -184,13 +184,14 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
                 return [].concat(doneList);
             }
         }
-        var userStoryList = JayScrum.app.selectedFrame().data().userStoryList();
+
+        /*var userStoryList = JayScrum.app.selectedFrame().data().userStoryList();
         for (var i = 0; i < userStoryList.length; i++) {
             if (userStoryList[i].Id() === wrkItemId) {
                 if (data) { userStoryList[i] = data; }
                 return [].concat(userStoryList);
             }
-        }
+        }*/
         return null;
     },
     _onRefreshDropDownLists: function () {
@@ -263,6 +264,22 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
         //save workItem
         wrkItem.ChangedDate(new Date());
         wrkItem.IsBlocked(wrkItem.IsBlocked()==='true'?true:false);
+
+        JayScrum.app.selectedFrame().data().todoList.remove(function(item){return item.Id() == wrkItem.Id()});
+        JayScrum.app.selectedFrame().data().inProgList.remove(function(item){return item.Id() == wrkItem.Id()});
+        JayScrum.app.selectedFrame().data().doneList.remove(function(item){return item.Id() == wrkItem.Id()});
+        switch(wrkItem.State()){
+            case 'To Do':
+                JayScrum.app.selectedFrame().data().todoList.push(wrkItem);
+                break;
+            case 'In Progress':
+                JayScrum.app.selectedFrame().data().inProgList.push(wrkItem);
+                break;
+            case 'Done':
+                JayScrum.app.selectedFrame().data().doneList.push(wrkItem);
+                break;
+            default:break;
+        }
         JayScrum.repository.saveChanges(function (error) {
             JayScrum.app.backView();
         });
@@ -284,17 +301,11 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
             Priority: 0,
             AssignedTo: "",
             State: "To Do",
-            WorkItem_Sprint: JayScrum.app.selectedFrame().data().currentSprint().innerInstance.Id,
+            WorkItem_Sprint: JayScrum.app.selectedFrame().data().currentSprint.Id,
             Effort: 0,
             BusinessValue: 0,
             RemainingWork: 0,
             IsBlocked:false
-            //Reason: "New task",
-            //IterationPath: $data.Model.mainPage.currentSprint().IterationPath(),
-            //AreaPath: $data.Model.mainPage.currentSprint().AreaPath()
-            //ParentName: " ",
-            //FinishDate: "",
-            //StartDate: ""
         });
 
         item = item.asKoObservable();
@@ -325,7 +336,6 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
 
     // Pull up to load more functions
     onRecentlyChangedListPullUp: function (scroller) {
-        //$data.Model.mainPage.pinnedQueryParam.sprintId = JayScrum.app.selectedFrame().data().currentSprint().Id();
         JayScrum.app.selectedFrame().recentlyChangedListQuery
             .skip(JayScrum.app.selectedFrame().data().recentlyChangedTasks().length)
             .toArray(function (workItemsResult) {
@@ -336,7 +346,6 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
             });
     },
     onToDoListPullUp: function (scroller) {
-        //$data.Model.mainPage.pinnedQueryParam.sprintId = $data.Model.mainPage.currentSprint().Id();
         JayScrum.app.selectedFrame().toDoListQuery
             .skip(JayScrum.app.selectedFrame().data().todoList().length)
             .toArray(function (workItemsResult) {
@@ -347,7 +356,6 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
             });
     },
     onInProgressListPullUp: function (scroller) {
-        //$data.Model.mainPage.pinnedQueryParam.sprintId = $data.Model.mainPage.currentSprint().Id();
         JayScrum.app.selectedFrame().inProgressListQuery
             .skip(JayScrum.app.selectedFrame().data().inProgList().length)
             .toArray(function (workItemsResult) {
@@ -358,7 +366,6 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
             });
     },
     onDoneListPullUp: function (scroller) {
-        //$data.Model.mainPage.pinnedQueryParam.sprintId = $data.Model.mainPage.currentSprint().Id();
         JayScrum.app.selectedFrame().doneListQuery
             .skip(JayScrum.app.selectedFrame().data().doneList().length)
             .toArray(function (workItemsResult) {
@@ -371,7 +378,6 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
 
     // Pull  down to refresh
     onRecentlyChangedListPullDown: function (scroller) {
-        //$data.Model.mainPage.pinnedQueryParam.sprintId = $data.Model.mainPage.currentSprint().Id();
         JayScrum.app.selectedFrame().recentlyChangedListQuery
             .toArray(function (workItemsResult) {
                 JayScrum.pushObservablesToList(JayScrum.app.selectedFrame().data().recentlyChangedTasks, workItemsResult);
@@ -379,7 +385,6 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
             });
     },
     onToDoListPullDown: function (scroller) {
-        //$data.Model.mainPage.pinnedQueryParam.sprintId = $data.Model.mainPage.currentSprint().Id();
         JayScrum.app.selectedFrame().toDoListQuery
             .toArray(function (workItemsResult) {
                 JayScrum.pushObservablesToList(JayScrum.app.selectedFrame().data().todoList, workItemsResult);
@@ -387,7 +392,6 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
             });
     },
     onInProgressListPullDown: function (scroller) {
-        //$data.Model.mainPage.pinnedQueryParam.sprintId = $data.Model.mainPage.currentSprint().Id();
         JayScrum.app.selectedFrame().inProgressListQuery
             .toArray(function (workItemsResult) {
                 JayScrum.pushObservablesToList(JayScrum.app.selectedFrame().data().inProgList, workItemsResult);
@@ -395,7 +399,6 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
             });
     },
     onDoneListPullDown: function (scroller) {
-        //$data.Model.mainPage.pinnedQueryParam.sprintId = $data.Model.mainPage.currentSprint().Id();
         JayScrum.app.selectedFrame().doneListQuery
             .toArray(function (workItemsResult) {
                 JayScrum.pushObservablesToList(JayScrum.app.selectedFrame().data().doneList, workItemsResult);
@@ -406,50 +409,50 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
     onFrameChangingFrom:function (activeFrameMeta, oldFrameMeta, initData, frame) {
         JayScrum.app.showLoading();
         var loadingPromise = Q.defer();
-        if (initData.innerInstance instanceof LightSwitchApplication.Sprint) {
-            this.pinnedQueryParam = { sprintId:initData.Id() };
-            this.toDoListQuery = JayScrum.repository.WorkItems
-                .where(function (item) {
-                    return  item.WorkItem_Sprint == this.sprintId && item.State == 'To Do' && (item.Type == "Task" || item.Type == 'Bug');
-                }, this.pinnedQueryParam)
-                .orderBy(function (item) {
-                    return item.Priority;
-                })
-                .take(this.listLoadSize);
-            this.inProgressListQuery = JayScrum.repository.WorkItems
-                .where(function (item) {
-                    return item.WorkItem_Sprint == this.sprintId && item.State == 'In Progress' && (item.Type == "Task" || item.Type == 'Bug');
-                }, this.pinnedQueryParam)
-                .orderBy(function (item) {
-                    return item.Priority;
-                })
-                .take(this.listLoadSize);
-            this.doneListQuery = JayScrum.repository.WorkItems
-                .where(function (item) {
-                    return item.WorkItem_Sprint == this.sprintId && item.State == 'Done' && (item.Type == "Task" || item.Type == 'Bug');
-                }, this.pinnedQueryParam)
-                .orderBy(function (item) {
-                    return item.Priority;
-                })
-                .take(this.listLoadSize);
-            this.recentlyChangedListQuery = JayScrum.repository.WorkItems
-                .where(function (item) {
-                    return item.WorkItem_Sprint == this.sprintId && item.ChangedDate >= moment().add('days', -1).utc().toDate() && (item.Type == "Task" || item.Type == 'Bug');
-                }, this.pinnedQueryParam)
-                .orderByDescending(function (item) {
-                    return item.ChangedDate
-                })
-                .take(this.listLoadSize);
-            this.data().currentSprint(initData);
-            this.data().name = initData.Name();
-        } else {
-            if (activeFrameMeta.viewName === 'taskEdit') {
+        switch(activeFrameMeta.viewName){
+            case 'taskEdit':break;
                 this.data().selectedWorkItemActive(initData);
-            }else if(activeFrameMeta.viewName === 'taskSelect'){
+            case 'taskSelect':break;
                 this.data().selectedWorkItem(initData.wrkItem);
                 this.data().selectedWorkItemActive(initData.wrkItem);
                 this.activeList = initData.list;
-            }
+            default:
+                this.pinnedQueryParam = { sprintId:initData.Id };
+                this.toDoListQuery = JayScrum.repository.WorkItems
+                    .where(function (item) {
+                        return  item.WorkItem_Sprint == this.sprintId && item.State == 'To Do' && (item.Type == "Task" || item.Type == 'Bug');
+                    }, this.pinnedQueryParam)
+                    .orderBy(function (item) {
+                        return item.Priority;
+                    })
+                    .take(this.listLoadSize);
+                this.inProgressListQuery = JayScrum.repository.WorkItems
+                    .where(function (item) {
+                        return item.WorkItem_Sprint == this.sprintId && item.State == 'In Progress' && (item.Type == "Task" || item.Type == 'Bug');
+                    }, this.pinnedQueryParam)
+                    .orderBy(function (item) {
+                        return item.Priority;
+                    })
+                    .take(this.listLoadSize);
+                this.doneListQuery = JayScrum.repository.WorkItems
+                    .where(function (item) {
+                        return item.WorkItem_Sprint == this.sprintId && item.State == 'Done' && (item.Type == "Task" || item.Type == 'Bug');
+                    }, this.pinnedQueryParam)
+                    .orderBy(function (item) {
+                        return item.Priority;
+                    })
+                    .take(this.listLoadSize);
+                this.recentlyChangedListQuery = JayScrum.repository.WorkItems
+                    .where(function (item) {
+                        return item.WorkItem_Sprint == this.sprintId && item.ChangedDate >= moment().add('days', -1).utc().toDate() && (item.Type == "Task" || item.Type == 'Bug');
+                    }, this.pinnedQueryParam)
+                    .orderByDescending(function (item) {
+                        return item.ChangedDate
+                    })
+                    .take(this.listLoadSize);
+                this.data().currentSprint(initData);
+                this.data().name = initData.Name;
+                break;
         }
         loadingPromise.resolve();
         return loadingPromise.promise;
