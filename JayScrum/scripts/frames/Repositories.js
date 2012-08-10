@@ -70,7 +70,7 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
     },
     connectTo:function (repoSetting) {
         if(repoSetting.Url.indexOf('http') !== 0){
-            repoSetting.Url = 'http://app1.storm.jaystack.com/'+repoSetting.Url;
+            repoSetting.Url = 'http://app1.storm.jaystack.com:3000/'+repoSetting.Url;
         }
 
 
