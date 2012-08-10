@@ -12,7 +12,7 @@ function publishDatabaseInstance(urlName, dbName, dbType) {
     console.log("dbContextType:" + dbContextType);
 
     app.use("/" + urlName, $data.JayService.createAdapter(dbContextType, function() {
-        return new dbContextType({name: 'mongoDB', databaseName: dbName })
+        return new dbContextType({name: 'mongoDB', databaseName: dbName/*, address:'db1.storm.jaystack.com'*/ })
     }));
 }
 
@@ -49,7 +49,7 @@ app.use("/CreateDatabase", function(req, res){
         return;
     }
 
-    var appdb = new appContextType({ name:'mongoDB', databaseName:'appdb_00' });
+    var appdb = new appContextType({ name:'mongoDB', databaseName:'appdb_00'/*, address:'db1.storm.jaystack.com'*/ });
 
 
 
