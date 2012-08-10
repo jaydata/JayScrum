@@ -316,13 +316,11 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
     onUpdateWorkItem: function (workItem, isEventCall) {
        JayScrum.repository.WorkItems.where(function (item) { return item.Id == this.currentItem.Id }, { currentItem: workItem }).toArray({
             success: function (result) {
-                workItem.innerInstance = result[0];
 
-                JayScrum.app.selectedFrame().data().selectedWorkItemActive(workItem.innerInstance.asKoObservable());
-                JayScrum.app.selectedFrame().data().selectedWorkItemPrev(JayScrum.app.selectedFrame().data().selectedWorkItemPrev().innerInstance.asKoObservable());
-                JayScrum.app.selectedFrame().data().selectedWorkItem(JayScrum.app.selectedFrame().data().selectedWorkItem().innerInstance.asKoObservable());
-                JayScrum.app.selectedFrame().data().selectedWorkItemNext(JayScrum.app.selectedFrame().data().selectedWorkItemNext().innerInstance.asKoObservable());
-                JayScrum.app.selectedFrame().selectView('taskSelect');
+                var propName = result[0].getType().memberDefinitions.getPublicMappedPropertyNames();
+                propName.forEach(function(propName){
+                    workItem[propName](result[0][propName]);
+                },this);
             },
             error: function (error) { console.log("Refresh error!!"); console.dir(error); }
         });
@@ -410,12 +408,14 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
         JayScrum.app.showLoading();
         var loadingPromise = Q.defer();
         switch(activeFrameMeta.viewName){
-            case 'taskEdit':break;
+            case 'taskEdit':
                 this.data().selectedWorkItemActive(initData);
-            case 'taskSelect':break;
+                break;
+            case 'taskSelect':
                 this.data().selectedWorkItem(initData.wrkItem);
                 this.data().selectedWorkItemActive(initData.wrkItem);
                 this.activeList = initData.list;
+                break;
             default:
                 this.pinnedQueryParam = { sprintId:initData.Id };
                 this.toDoListQuery = JayScrum.repository.WorkItems
