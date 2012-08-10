@@ -69,6 +69,12 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
         return this.localContext.Repositories.toArray(callBack);
     },
     connectTo:function (repoSetting) {
+        if(repoSetting.Url.indexOf('http') !== 0){
+            repoSetting.Url = 'http://app1.storm.jaystack.com/'+repoSetting.Url;
+        }
+
+
+
         var urlparser = document.createElement('a');
         urlparser.href = repoSetting.Url;
         var dbName = urlparser.pathname.slice(1);
@@ -111,7 +117,7 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
         });
     },
     addSetting:function(item){
-        var newItem = new JayScrum.Settings.Repository({Title:'Repository', Url:'http://192.168.1.125:3000'});
+        var newItem = new JayScrum.Settings.Repository({Title:'Repository'});
         this.localContext.Repositories.add(newItem);
         this.data().settings(null);
         this.data().selectedSetting(newItem.asKoObservable());

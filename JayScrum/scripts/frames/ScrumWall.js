@@ -184,13 +184,14 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
                 return [].concat(doneList);
             }
         }
-        var userStoryList = JayScrum.app.selectedFrame().data().userStoryList();
+
+        /*var userStoryList = JayScrum.app.selectedFrame().data().userStoryList();
         for (var i = 0; i < userStoryList.length; i++) {
             if (userStoryList[i].Id() === wrkItemId) {
                 if (data) { userStoryList[i] = data; }
                 return [].concat(userStoryList);
             }
-        }
+        }*/
         return null;
     },
     _onRefreshDropDownLists: function () {
@@ -263,6 +264,22 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
         //save workItem
         wrkItem.ChangedDate(new Date());
         wrkItem.IsBlocked(wrkItem.IsBlocked()==='true'?true:false);
+
+        JayScrum.app.selectedFrame().data().todoList.remove(function(item){return item.Id() == wrkItem.Id()});
+        JayScrum.app.selectedFrame().data().inProgList.remove(function(item){return item.Id() == wrkItem.Id()});
+        JayScrum.app.selectedFrame().data().doneList.remove(function(item){return item.Id() == wrkItem.Id()});
+        switch(wrkItem.State()){
+            case 'To Do':
+                JayScrum.app.selectedFrame().data().todoList.push(wrkItem);
+                break;
+            case 'In Progress':
+                JayScrum.app.selectedFrame().data().inProgList.push(wrkItem);
+                break;
+            case 'Done':
+                JayScrum.app.selectedFrame().data().doneList.push(wrkItem);
+                break;
+            default:break;
+        }
         JayScrum.repository.saveChanges(function (error) {
             JayScrum.app.backView();
         });
