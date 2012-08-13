@@ -1,0 +1,7 @@
+#!/bin/bash
+cp -R JayScrum/Images/ JayScrum_Android/JayScrum/www/Images
+cp -R JayScrum/Properties/ JayScrum_Android/JayScrum/www/Properties
+cp -R JayScrum/Scripts/ JayScrum_Android/JayScrum/www/Scripts
+cp -R JayScrum/Styles/ JayScrum_Android/JayScrum/www/Styles
+cp JayScrum/index.html JayScrum_Android/JayScrum/www
+rm JayScrum_Android/JayScrum/www/Scripts/cordova-1.9.0ios.js
