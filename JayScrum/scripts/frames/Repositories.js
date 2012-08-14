@@ -73,8 +73,6 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
             repoSetting.Url = 'http://app1.storm.jaystack.com:3000/'+repoSetting.Url;
         }
 
-
-
         var urlparser = document.createElement('a');
         urlparser.href = repoSetting.Url;
         var dbName = urlparser.pathname.slice(1);
@@ -87,6 +85,7 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
             url:createDbUrl,
             error:function (xhr, status, error) {
                 console.log(error);
+                JayScrum.app.selectedFrame()._initializeRepositoriesFrame();
             },
             success:function (data, status, xhr) {
                 JayScrum.repository = new LightSwitchApplication.ApplicationData({
