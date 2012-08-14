@@ -35,7 +35,8 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
             name:'settings',
             selectedSetting: ko.observable(),
             settings: ko.observableArray(),
-            errorMsg: ko.observable()
+            errorMsg: ko.observable(),
+            isRegistration: ko.observable(false)
         });
 
     },
@@ -125,6 +126,20 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
         JayScrum.app.selectedFrame().selectedView().i_scroll.destroy();
         JayScrum.app.selectedFrame().selectedView().i_scroll = JayScrum.app.initScrollById('settingPageScroll');
     },
+    buyDatabase: function(){
+        console.log('buy db');
+    },
+    createDatabase: function(){
+        this.data().isRegistration(true);
+        var newItem = new JayScrum.Settings.Repository({Title:'Repository'});
+        this.localContext.Repositories.add(newItem);
+        this.data().settings(null);
+        this.data().selectedSetting(newItem.asKoObservable());
+
+        JayScrum.app.selectedFrame().hideActionBar();
+        JayScrum.app.selectedFrame().selectedView().i_scroll.destroy();
+        JayScrum.app.selectedFrame().selectedView().i_scroll = JayScrum.app.initScrollById('settingPageScroll');
+    },
     saveSetting:function(item){
         $("div#settingPage input:focus").trigger('blur');
         JayScrum.app.selectedFrame().localContext.saveChanges(function () {
@@ -137,6 +152,7 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
     cancelSetting:function(item){
         JayScrum.app.selectedFrame().localContext.Repositories.detach(arguments[0]);
         JayScrum.app.selectedFrame().data().selectedSetting(null);
+        JayScrum.app.selectedFrame().data().isRegistration(false);
         JayScrum.app.selectedFrame()._initializeRepositoriesFrame();
 
         JayScrum.app.selectedFrame().hideActionBar();
