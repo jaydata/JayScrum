@@ -76,8 +76,7 @@
                         <li data-bind="attr: { 'class': $parent.isPinnedSprint($data) ? 'wide green' : 'wide lightred' }">
                             <span data-bind="click: $parent.onTaskListShow">
                                 <span class="middle twolined">
-                                    <span class="day" data-bind="text: moment(FinishDate).diff(moment(), 'days')">
-                                    </span>
+                                    <span class="day" data-bind="text: moment(FinishDate).diff(moment(), 'days')"></span>
                                     <span class="text" data-bind="text: Name"></span>
                                     <span class="text">scrumwall</span>
                                     <span class="text" data-bind="text: tasksLeft+' task left'"></span>
@@ -138,8 +137,9 @@
             <h1 class="title pivot-default animate" data-bind="text: $root.selectedFrame().data().name">
             </h1>
         </div>
-        <div class="icon-action main-top-right add"><span data-bind="click: $root.selectedFrame().onAddWorkItem">
-        </span></div>
+        <div class="icon-action main-top-right add">
+            <span data-bind="click: $root.selectedFrame().onAddWorkItem"></span>
+        </div>
         <div id="wrapper" class="metro-pivot reset">
             <div id="scroller">
                 <div class="pivot-list">
@@ -634,8 +634,9 @@
             data-bind="attr: { 'class': 'main-header not-main-page' }">
             <h1 class="title" data-bind="text: $root.selectedFrame().data().name"></h1>
         </div>
-        <div class="icon-action main-top-right add"><span data-bind="click: $root.selectedFrame().onAddUserStory">
-        </span></div>
+        <div class="icon-action main-top-right add">
+            <span data-bind="click: $root.selectedFrame().onAddUserStory"></span>
+        </div>
         <div id="wrapper" class="metro-pivot reset wrapper-container">
             <div id="scroller">
                 <div class="pivot-list us-dated-list">
@@ -846,10 +847,12 @@
                                         </span></span>
 
                                         <!-- ko if: $data.isPinned() -->
-                                        <span class="icon-action unpin fright" title="Click to unpin from dashboard"><span data-bind="click: $parent.onPinSprint"></span></span>
+                                        <span class="icon-action unpin fright" title="Click to unpin from dashboard"><span
+                                            data-bind="click: $parent.onPinSprint"></span></span>
                                         <!-- /ko -->
                                         <!-- ko ifnot: $data.isPinned() -->
-                                        <span class="icon-action pin fright" title="Click to pin to dashboard"><span data-bind="click: $parent.onPinSprint"></span></span>
+                                        <span class="icon-action pin fright" title="Click to pin to dashboard"><span data-bind="click: $parent.onPinSprint">
+                                        </span></span>
                                         <!-- /ko -->
                                     </h2>
 
@@ -892,12 +895,12 @@
                                     <div class="field">
                                         <div><span>Start Date</span></div>
                                         <!--<input class="medium accent-bg field-date" type="date"  />-->
-                                        <input class="medium accent-bg field-date-value" type="text" data-bind="value: StartDate"/>
+                                        <input class="medium accent-bg field-date-value" type="text" data-bind="value: StartDate" />
                                     </div>
                                     <div class="field">
                                         <div><span>End Date</span></div>
                                         <!--<input class="medium accent-bg field-date" type="date" />-->
-                                        <input class="medium accent-bg field-date-value" type="text" data-bind="value: FinishDate"/>
+                                        <input class="medium accent-bg field-date-value" type="text" data-bind="value: FinishDate" />
                                     </div>
                                 </div>
                             </div>
@@ -1171,7 +1174,8 @@
 
                                 <div class="field">
                                     <div><span>Url</span></div>
-                                    <input class="medium accent-bg" type="text" data-bind="value: Url, valueUpdate:['afterkeydown','propertychange','input']" placeholder="Databse name or full URL" />
+                                    <input class="medium accent-bg" type="text" data-bind="value: Url, valueUpdate:['afterkeydown','propertychange','input']"
+                                        placeholder="Databse name or full URL" />
                                 </div>
 
                                 <div class="field">
@@ -1204,7 +1208,7 @@
                 </div>
             </div>
             <!--ko if: $data.data().errorMsg-->
-            <div id="error-msg" class="metro-actionbar opened" style="height:88px">
+            <div id="error-msg" class="metro-actionbar opened" style="height: 88px">
                 <ul>
                     <li><span class="medium" data-bind="text: $data.data().errorMsg"></span></li>
                 </ul>
@@ -1216,6 +1220,26 @@
                 <li class="icon-action add"><span data-bind="click: $data.addSetting"></span></li>
             </ul>
         </div>
+
+        <!--ko if: $data.data().settings() != null -->
+        <!--ko if: $data.data().settings().length < 1 -->
+        <div class="hint-screen" data-bind="attr: { 'class': 'hint-screen ' + $data.data().settings().length }">
+            <div class="container">
+                <h1>Welcome to JayScrum!</h1>
+                <p>
+                    In this Agile focused Application you can manage your team's current sprint with
+                    it's user stories, tasks, users and so on. To get started you have to create
+                    a Repository for your Application where everything will be stored. You don't have to
+                    do any configuration or more, just create your first database and get started now!
+                </p>
+
+                <div class="tacenter">
+                    <span class="btn-metro btn-large" data-bind="click: $data.addSetting">Create database</span>
+                </div>
+            </div>
+        </div>
+        <!--/ko-->
+        <!--/ko-->
     </script>
 
     <script type="text/html" id="usersPage-template">
