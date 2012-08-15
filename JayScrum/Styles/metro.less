@@ -1055,7 +1055,7 @@ input.accent-bg, textarea.accent-bg {
 		{
 		    .maxsize(95%, 24px); 
 		    
-		    > span:first-child { .maxsize(60%, 24px); .iblock; }
+		    > span:first-child { .maxsize(60%, 35px); .iblock; line-height: 30px; }
 		}
 		
 		.title {
@@ -1546,15 +1546,14 @@ body[theme="white"] .detail .field .field.active    { border-color: Black !impor
 
 /*#region SETTING PAGE */
 #settingPage 
-{
-    .mauto; max-width: 768px;
-    
+{    
     h1              { padding: 0px; margin-bottom: 15px; }
     h2.title        { font-size: 35px; line-height: 35px; margin-bottom: 10px; }
     .btn-large      { max-width: 450px; }
-    
+    .scroller-list  { padding: 0 30px 0 10px !important; }
+        
     .setting-list {
-        max-width: 768px; .reset-p; margin: 10px 0 15px;
+        .reset-p; margin: 10px 0 15px;
         
         li {
             .ohidden; .relative;
@@ -1606,7 +1605,7 @@ body[theme="white"] .detail .field .field.active    { border-color: Black !impor
 	.main-header 
 	{
 	    &.main-page {
-	        h1 { .tacenter; max-width: inherit;  width: auto; }
+	        h1 { .tacenter; max-width: inherit;  width: auto; text-indent: -15px; }
 	    }
 	}
 	
@@ -1675,7 +1674,7 @@ body[theme="white"] .detail .field .field.active    { border-color: Black !impor
         .transition();
         
 	    &.main-page {
-	        h1 { .tacenter; max-width: inherit;  width: auto; }
+	        h1 { .tacenter; max-width: inherit;  width: auto; text-indent: -15px; }
 	    }
         
         h1 { .font-size(40); }
@@ -1734,6 +1733,7 @@ body[theme="white"] .detail .field .field.active    { border-color: Black !impor
 }
 /*#endregion Screen (480-768) */
 
+/*#region iPad Portrait */
 @media only screen and (max-width: 768px) and (min-width: 768px) and (orientation:portrait){
    
     #metro-tiles-scroll {
@@ -1746,19 +1746,17 @@ body[theme="white"] .detail .field .field.active    { border-color: Black !impor
         }
     }
 }
+/*#endregion iPad Portrait */
 
 /*#region Screen (768+) */
 @media only screen and (min-width: 769px) {
 	.pivot h1 { font-size: 37px !important; margin-bottom: 5px; }
 	
 	.main-header {
-	    /*-webkit-transition: -webkit-transform 750ms, margin 750ms;
-        -webkit-transform: translate3d(15px, 0, 0);
-        margin: 0 0 0 45px;*/
         .transition();
 	    
 	    h1 {
-	        .font-size(45); line-height: 50px;
+	        .font-size(38); line-height: 45px;
 	        
 	        &.default {
                 -webkit-transform: translate3d(200px, 0, 0);
@@ -1802,9 +1800,7 @@ body[theme="white"] .detail .field .field.active    { border-color: Black !impor
         }
 	}
 	
-	.scroll-list {
-	    .relative; .show; .fleft; .size(100%, 95%);
-	}
+	.scroll-list { .relative; .show; .fleft; .size(100%, 95%); }
 	
 	.metro-loading {
 	    h1, h2 { font-size: 65px !important; }
@@ -1848,6 +1844,19 @@ body[theme="white"] .detail .field .field.active    { border-color: Black !impor
 	        }
 	    }
 	}
+	
+	#settingPage {
+        .mauto; max-width: 768px;
+        
+        .setting-list { max-width: 768px; }
+    }
+    
+    .maxw768
+    {
+        .mauto; max-width: 768px;
+        
+        .maxlist { max-width: 768px; }
+    }
 }
 /*#endregion Screen (1024+) */
 
