@@ -1,6 +1,6 @@
 @import "mixins.less";
 
-/*#region JQUERY METRO */
+/*#region METRO THEME */
 /* 
 accent: { orange, red, green, blue, magenta, purple, pink, teal, lime, brown }
 class for accent-text color     : "accent-color"
@@ -8,8 +8,52 @@ class for accent-bg             : "accent-bg"
 class for theme-bg              : "theme-bg"
 */
 
+li 
+{
+    @tile: #1774bc;
+    @wide: #19a053;
+    @pinned: green;
+    
+    &.tile  { background: @tile; border: 1px solid lighten(@tile, 10%); }
+    &.wide  {
+        background: @wide; border: 1px solid lighten(@wide, 5%);
+        
+        &.pinned  { background: @pinned; border: 1px solid lighten(@pinned, 5%); }
+    }
+}
+
+body[theme=black] {
+    background: black; color: white;
+    
+    div[theme=black], .metro-loading { background: black; color: white; }
+    
+    li.tile {
+        background: #414141; /* gray */
+    }
+    
+    /*
+    &.orange        { background: #dd9616; }
+	&.darkorange    { background: #e76321; }
+	&.purple        { background: #69349c; }
+	&.pink          { background: pink; }
+	&.darkpink      { background: #b71c46; }
+	&.done          { background: @colorDone; }
+	&.red           { background: #800000; }
+	&.yellow        { background: #ccc102; }
+	&.gray          { background: #414141; }
+	&.lightblue     { background: #00b5df; }
+	&.darkblue      { background: #293f7b; }
+	&.blue          { background: #1774bc; }
+	&.lightgreen    { background: #65bf10; }
+	&.green         { background: #19a053; }
+	&.lightred      { background: #d64d34; }
+	&.greenblue     { background: #00586d; }
+	&.brown         { background: #833801; }
+    */
+}
+
 body[theme=white], div[theme=white], body[theme=white] .metro-loading               { background: white; color: black; }
-body[theme=black], div[theme=black], body[theme=black] .metro-loading               { background: black; color: white; }
+
 body[theme=darkblue], div[theme=darkblue], body[theme=darkblue] .metro-loading      { background: #30508B; color: white; }
 body[theme=darkgray], div[theme=darkgray], body[theme=darkgray] .metro-loading      { background: #5A5A5A; color: white; }
 body[theme=img_1], body[theme=img_1] .metro-loading                                 { background: url(../Images/bg/bg_1.jpg); color: white; }
@@ -128,7 +172,7 @@ div[font=mixed]{
 }
 /*#endregion FONT */
 
-/*#endregion JQUERY METRO */
+/*#endregion METRO THEME */
 
 /*#region GENERAL */
 body * {
@@ -964,6 +1008,12 @@ input.accent-bg, textarea.accent-bg {
 		    
 		    #metro > .tile;
 		
+		    &.tile 
+		    {
+		        .text { .capitalize_; }
+		        .number { .transition(1s, ); }
+		    }
+		
 		    &.wide {
 			    #metro > .tilewide;
 			    
@@ -1009,12 +1059,12 @@ input.accent-bg, textarea.accent-bg {
             span.middle { margin-top: -30px !important; }
             	
 			.day {
-			    .size(auto, 55px, 30px); .tacenter; .iblock; 
-			    min-width: 55px; padding-top: 5px;
-			    border-top: 9px solid #fff; border-bottom: 1px solid #fff;
-			    border-left: 1px solid #fff; border-right: 1px solid #fff;
+			    .size(auto, 55px, 30px); .tacenter; .show; font-size: 28px; width: 100%;
+			    padding-top: 5px; margin-top: 35px;
+			    /*border-top: 9px solid #fff; border-bottom: 1px solid #fff;
+			    border-left: 1px solid #fff; border-right: 1px solid #fff;*/
 			}
-						
+		
 			.icon { height: 62px !important; top: 41% !important; }
 	    
 		    .icon-57 {
