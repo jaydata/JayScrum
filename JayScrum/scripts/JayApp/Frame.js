@@ -77,6 +77,7 @@ $data.Class.define('JayScrum.Frame', null, null, {
     onFrameChangedFrom:function (newFrameData, oldFrameData, frame) {
         this._loadData()
             .then(function(){
+                JayScrum.app.hideLoading();
                JayScrum.app.selectedFrame().selectedView().initializaView();
             });
     }

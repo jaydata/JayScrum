@@ -1196,9 +1196,8 @@
                                 </div>
 
                                 <div class="field">
-                                    <div><span>Url</span></div>
-                                    <input class="medium accent-bg" type="text" data-bind="value: Url, valueUpdate:['afterkeydown','propertychange','input']"
-                                        placeholder="Databse name or full URL" />
+                                    <div><span data-bind="text:  $parent.data().isRegistration()?'db name':'url'"></span></div>
+                                    <input class="medium accent-bg" type="text" data-bind="value: Url, valueUpdate:['afterkeydown','propertychange','input'], attr:{'placeholder': $parent.data().isRegistration()?'Databse name':'Databse name or full URL'}" />
                                 </div>
 
                                 <div class="field">
@@ -1220,8 +1219,14 @@
                                 </div>
 
                                 <div class="split2">
+                                    <!--ko ifnot: $parent.data().isRegistration-->
                                     <span class="btn-metro btn-large margin10_0" data-bind="click: $parent.saveSetting">
                                         Save</span>
+                                    <!--/ko-->
+                                    <!--ko if: $parent.data().isRegistration-->
+                                    <span class="btn-metro btn-large margin10_0" data-bind="click: $parent.buyDatabase">
+                                        Buy</span>
+                                    <!--/ko-->
                                     <span class="btn-metro btn-large margin10_0" data-bind="click: $parent.cancelSetting">
                                         Cancel</span>
                                 </div>
@@ -1241,6 +1246,7 @@
         <div id="settingPageActionBar" class="metro-actionbar detail-view-edit opened">
             <ul>
                 <li class="icon-action add"><span data-bind="click: $data.addSetting"></span></li>
+                <li class="icon-action add"><span data-bind="click: $data.createDatabase"></span></li>
             </ul>
         </div>
 
