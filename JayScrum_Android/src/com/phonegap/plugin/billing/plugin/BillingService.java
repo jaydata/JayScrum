@@ -128,6 +128,7 @@ public class BillingService extends Service implements ServiceConnection {
                     onRemoteException(e);
                 }
             }
+            
             return false;
         }
 

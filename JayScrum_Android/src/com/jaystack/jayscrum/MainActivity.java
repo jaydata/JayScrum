@@ -105,7 +105,7 @@ public class MainActivity extends DroidGap {
         @Override
         public void onRequestPurchaseResponse(RequestPurchase request, ResponseCode responseCode) {
         	//fireJavaScriptEvent("onRequestPurchaseResponse", "");
-
+        	Log.d(TAG, "!!! onRequestPurchaseResponse call");
         	try {
 	            JSONObject oResult = new JSONObject();
                 oResult.put("event", "onRequestPurchaseResponse");
@@ -141,6 +141,7 @@ public class MainActivity extends DroidGap {
 	            }
         	} catch (Exception e) {
 				// TODO: handle exception
+        		Log.d(TAG, "!!!! exception !!!!");
 			}
         }
 

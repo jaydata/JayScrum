@@ -20,6 +20,7 @@ public class CallbackBillingPlugin extends Plugin {
 	public PluginResult execute(String action, JSONArray args, String callbackId) {
 		//Check the action that javascript has sent.
 		Log.d(TAG, "CallbackBillingPlugin CALLED");
+		
 		try {
 			if (action.equals("test")){
 				Log.d(TAG, "TEST");
