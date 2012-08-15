@@ -73,45 +73,42 @@
                 <div id="metro-tiles">
                     <ul class="metro-tiles tolower">
                         <!-- ko foreach: $data.data().activeSprintList -->
-                        <li data-bind="attr: { 'class': $parent.isPinnedSprint($data) ? 'wide green' : 'wide lightred' }">
+                        <li data-bind="attr: { 'class': $parent.isPinnedSprint($data) ? 'wide pinned' : 'wide' }">
                             <span data-bind="click: $parent.onTaskListShow">
-                                <span class="middle twolined">
-                                    <span class="day" data-bind="text: moment(FinishDate).diff(moment(), 'days')"></span>
-                                    <span class="text" data-bind="text: Name"></span>
-                                    <span class="text">scrumwall</span>
-                                    <span class="text" data-bind="text: tasksLeft+' task left'"></span>
-                                </span>
+                                <span class="day" data-bind="text: moment(FinishDate).diff(moment(), 'days') + ' days left'"></span>
+                                <span class="number" data-bind="text: Name"></span>
+                                <span class="text" data-bind="text: tasksLeft+' task left'"></span>
                                 <!--ko if: $parent.isPinnedSprint($data)-->
-                                <span class="pin"></span>
+                                <!--<span class="pin"></span>-->
                                 <!--/ko-->
                             </span>
                         </li>
                         <!-- /ko -->
-                        <li class="blue">
+                        <li class="tile">
                             <span data-bind="click: $data.onProjectListShow">
                                 <span class="middle icon icon-57 projects"></span>
                                 <span class="text">Projects</span>
                             </span>
                         </li>
-                        <li class="lightblue">
+                        <li class="tile">
                             <span data-bind="click: $data.onSprintListShow">
                                 <span class="middle icon icon-57 sprints"></span>
                                 <span class="text">Sprints</span>
                             </span>
                         </li>
-                        <li class="lightgreen">
+                        <li class="tile">
                             <span data-bind="click: $data.onUserStoryListShow">
                                 <span class="middle icon icon-57 us"></span>
                                 <span class="text">User Stories</span>
                             </span>
                         </li>
-                        <li class="orange">
+                        <li class="tile">
                             <span data-bind="click: $data.onSettingsShow">
                                 <span class="middle icon icon-57 settings"></span>
                                 <span class="text">UI Settings</span>
                             </span>
                         </li>
-                        <li class="darkpink">
+                        <li class="tile">
                             <span data-bind="click: $data.onRepositorySettingShow">
                                 <span class="middle icon icon-57 repos"></span>
                                 <span class="text">Repositories</span>
