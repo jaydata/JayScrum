@@ -120,7 +120,7 @@
         'RowVersion':{ type:'Edm.Binary', nullable:false, concurrencyMode:$data.ConcurrencyMode.Fixed, computed:true },
         'Title':{ type:'Edm.String', nullable:false, required:true, maxLength:255 },
         'Type':{ type:'Edm.String', nullable:false, required:true, maxLength:255 },
-        'Description':{ type:'Edm.String', maxLength:255 },
+        'Description':{ type:'Edm.String', maxLength:1024 },
         'CreatedDate':{ type:'Edm.DateTime', nullable:false, required:true },
         'CreatedBy':{ type:'Edm.String', nullable:false, required:true, maxLength:255 },
         'ChangedDate':{ type:'Edm.DateTime', nullable:false, required:true },
@@ -163,7 +163,8 @@
         WorkItems:{ type:$data.EntitySet, elementType:LightSwitchApplication.WorkItem },
         Projects:{ type:$data.EntitySet, elementType:LightSwitchApplication.Project },
         Sprints:{ type:$data.EntitySet, elementType:LightSwitchApplication.Sprint },
-        getSprintsData: $data.EntityContext.generateServiceOperation({ serviceName:'getSprintsData', returnType: $data.Queryable, elementType: '$data.Object', params: [{ sprintIds: '$data.Array' }], method: 'GET' })
+        getSprintsData: $data.EntityContext.generateServiceOperation({ serviceName:'getSprintsData', returnType: $data.Queryable, elementType: '$data.Object', params: [{ sprintIds: '$data.Array' }], method: 'GET' }),
+        getBurndownData: $data.EntityContext.generateServiceOperation({ serviceName:'getBurndownData', returnType: $data.Object, params: [{ sprintId: '$data.String' }], method: 'GET' })
     });
     ///Security
     /* $data.Entity.extend('Microsoft.LightSwitch.Security.UserRegistration', {

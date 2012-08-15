@@ -108,12 +108,12 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
             inProgList: ko.observableArray(),
             doneList: ko.observableArray(),
             summaryList:ko.observable({
-                BackLogItemCountInSprint:0,
-                SprintAllTaskCount: 0,
-                SprintToDoTaskCount: 0,
-                SprintInProgTaskCount: 0,
-                SprintInProgTaskRemainingWork: 0,
-                SprintDoneTaskCount: 0
+                BackLogItemCountInSprint:ko.observable(0),
+                SprintAllTaskCount: ko.observable(0),
+                SprintToDoTaskCount: ko.observable(0),
+                SprintInProgTaskCount: ko.observable(0),
+                SprintInProgTaskRemainingWork: ko.observable(0),
+                SprintDoneTaskCount: ko.observable(0)
             }),
             selectedWorkItem:ko.observable(),
             selectedWorkItemActive:ko.observable(),
@@ -143,7 +143,18 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
                             .then(function(){
                                 JayScrum.app.selectedFrame()._loadTaskList(JayScrum.app.selectedFrame().doneListQuery, JayScrum.app.selectedFrame().data().doneList, 'transition3', null, null)
                                     .then(function(){
-                                        loadingPromise.resolve();
+                                        console.log('sprintID: '+JayScrum.app.selectedFrame().data().currentSprint().Id);
+                                        JayScrum.repository.getBurndownData(JayScrum.app.selectedFrame().data().currentSprint().Id)
+                                            .then(function(r){
+                                                JayScrum.app.selectedFrame().data().summaryList().BackLogItemCountInSprint(r.userStory);
+                                                JayScrum.app.selectedFrame().data().summaryList().SprintAllTaskCount(r.task);
+
+                                                JayScrum.app.selectedFrame().data().summaryList().SprintToDoTaskCount(r.todo);
+                                                JayScrum.app.selectedFrame().data().summaryList().SprintInProgTaskCount(r.inprogress);
+                                                JayScrum.app.selectedFrame().data().summaryList().SprintInProgTaskRemainingWork(r.inprogress_hour);
+                                                JayScrum.app.selectedFrame().data().summaryList().SprintDoneTaskCount(r.done);
+                                                loadingPromise.resolve();
+                                            });
                                     });
                             })
                     })

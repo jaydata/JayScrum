@@ -69,7 +69,7 @@ var Q = require('q');
         'RowVersion':{ type:'Edm.Binary', nullable:false, concurrencyMode:$data.ConcurrencyMode.Fixed, computed:true },
         'Title':{ type:'Edm.String', nullable:false, required:true, maxLength:255 },
         'Type':{ type:'Edm.String', nullable:false, required:true, maxLength:255 },
-        'Description':{ type:'Edm.String', maxLength:255 },
+        'Description':{ type:'Edm.String', maxLength:1024 },
         'CreatedDate':{ type:'Edm.DateTime', nullable:false, required:true },
         'CreatedBy':{ type:'Edm.String', nullable:false, required:true, maxLength:255 },
         'ChangedDate':{ type:'Edm.DateTime', nullable:false, required:true },
@@ -140,8 +140,41 @@ var Q = require('q');
                                 });
                         });
                 };
-            })
+            }),
+        getBurndownData:$data.JayService.serviceFunction()
+            .param('sprintId', $data.ObjectID)
+            .returns("$data.Object")
+            (function (sprintId) {
+                return function () {
+                    var self = this;
 
+                    var types = ["To Do", "In Progress", "Done"];
+                    var workitemQueries = types.map(function (tName) {
+                        return self.context.WorkItems
+                            .where(function (item) { return item.WorkItem_Sprint == this.sprint_id && item.State == this.typeName && (item.Type=='Task' || item.Type == 'Bug')}, {sprint_id:sprintId, typeName:tName})
+                            .toArray();
+                    });
+                    workitemQueries.push(
+                        self.context.WorkItems
+                            .where(function (item) { return item.WorkItem_Sprint == this.sprint_id && item.Type == 'UserStory' }, {sprint_id:sprintId})
+                            .length()
+                    );
+                    Q.all(workitemQueries)
+                        .then(function(){
+                            var result = {
+                                todo:workitemQueries[0].valueOf().length,
+                                inprogress:workitemQueries[1].valueOf().length,
+                                done:workitemQueries[2].valueOf().length,
+                                inprogress_hour:workitemQueries[1].valueOf().reduce(function(previousValue, currentValue, index, array){return previousValue + currentValue.RemainingWork;},0),
+                                userStory:workitemQueries[3].valueOf(),
+                                task:9999
+                            };
+                            result.task = result.todo + result.inprogress + result.done;
+                            console.log('burnDown result: '+JSON.stringify(result));
+                            self.success(result);
+                        });
+                };
+            })
     });
     $data.Class.defineEx('LightSwitchApplication.ApplicationData',[$data.EntityContext, LightSwitchApplication.ApplicationService], null, {
         WorkItems:{ type:$data.EntitySet, elementType:LightSwitchApplication.WorkItem },
