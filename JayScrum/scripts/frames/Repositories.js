@@ -10,7 +10,7 @@ $data.Class.define('JayScrum.Views.RepositorySettings', JayScrum.FrameView, null
         this.templateName = name || 'repositories-template';
         this.i_scroll = null;
     },
-    initializaView:function(){
+    initializeView:function(){
         JayScrum.app.hideLoading();
         this.i_scroll = JayScrum.app.initScrollById('settingPageScroll');
     },

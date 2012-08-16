@@ -10,7 +10,7 @@ $data.Class.define('JayScrum.Views.Users', JayScrum.FrameView, null, {
         this.templateName = name || 'usersPage-template';
         this.i_scroll = null;
     },
-    initializaView:function(){
+    initializeView:function(){
         JayScrum.app.hideLoading();
         //this.i_scroll = JayScrum.app.initScrollById("metro-tiles-scroll", null, null, true);
     },
@@ -26,7 +26,7 @@ $data.Class.define('JayScrum.Views.UserSelect', JayScrum.FrameView, null, {
         this.templateName = name || 'usersSelectView-template';
         this.i_scroll = null;
     },
-    initializaView:function(){
+    initializeView:function(){
         JayScrum.app.hideLoading();
         //this.i_scroll = JayScrum.app.initScrollById("metro-tiles-scroll", null, null, true);
     },
@@ -42,7 +42,7 @@ $data.Class.define('JayScrum.Views.UserEdit', JayScrum.FrameView, null, {
         this.templateName = name || 'userEditView-template';
         this.i_scroll = null;
     },
-    initializaView:function(){
+    initializeView:function(){
         JayScrum.app.hideLoading();
         //this.i_scroll = JayScrum.app.initScrollById("metro-tiles-scroll", null, null, true);
     },

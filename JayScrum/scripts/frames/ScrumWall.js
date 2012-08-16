@@ -15,7 +15,7 @@ $data.Class.define('JayScrum.Views.ScrumWall', JayScrum.FrameView, null, {
         this.burndown_iScroll = null;
         this.vertical_iScroll = null;
     },
-    initializaView:function(){
+    initializeView:function(){
         this.recChange_iScroll = JayScrum.app.initScrollById('transition0', JayScrum.app.selectedFrame().onRecentlyChangedListPullUp, JayScrum.app.selectedFrame().onRecentlyChangedListPullDown);
         this.todo_iScroll= JayScrum.app.initScrollById('transition1', JayScrum.app.selectedFrame().onToDoListPullUp, JayScrum.app.selectedFrame().onToDoListPullDown);
         this.inProgress_iScroll = JayScrum.app.initScrollById('transition2', JayScrum.app.selectedFrame().onInProgressListPullUp, JayScrum.app.selectedFrame().onInProgressListPullDown);
@@ -48,7 +48,7 @@ $data.Class.define('JayScrum.Views.TaskSelect', JayScrum.FrameView, null, {
         this.templateName = name || 'taskSelectView-template';
         this.swipeView = null;
     },
-    initializaView:function(){
+    initializeView:function(){
         JayScrum.app.hideLoading();
 
         $("h1.main-header").addClass("animate");
@@ -72,18 +72,14 @@ $data.Class.define('JayScrum.Views.TaskEdit', JayScrum.FrameView, null, {
         this.templateName = name || 'taskEditView-template';
         this.i_scroll = null;
     },
-    initializaView:function () {
+    initializeView:function () {
         var self = this;
-        JayScrum.app.selectedFrame()._onRefreshDropDownLists()
-            .then(function () {
-                JayScrum.app.hideLoading();
+        JayScrum.app.hideLoading();
 
-                $("h1.main-header").addClass("animate");
-                var swipeHeight = $("div.detail-edit-fix-header h1").height();
-                $("div#wrapper-detailed-edit").css('top', swipeHeight);
-                self.i_scroll = JayScrum.app.initScrollById('wrapper-detailed-edit', null, null, true);
-            }
-        );
+        $("h1.main-header").addClass("animate");
+        var swipeHeight = $("div.detail-edit-fix-header h1").height();
+        $("div#wrapper-detailed-edit").css('top', swipeHeight);
+        self.i_scroll = JayScrum.app.initScrollById('wrapper-detailed-edit', null, null, true);
     },
     tearDownView: function(){
         this.i_scroll.destroy();
@@ -207,19 +203,10 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
     },
     _onRefreshDropDownLists: function () {
         var loadingPromise = Q.defer();
-        JayScrum.app.onRefreshProjectList()
-            .then(function () {
-                JayScrum.app.onRefreshUserStoryList()
-                    .then(function () {
-                        JayScrum.app.onRefreshUserList()
-                            .then(function () {
-                                JayScrum.app.onRefreshSprintListForDropDown()
-                                    .then(function () {
-                                        loadingPromise.resolve();
-                                    });
-                            });
-                    });
-            });
+
+        var refreshLists = [JayScrum.app.onRefreshProjectList(), JayScrum.app.onRefreshUserStoryList(), JayScrum.app.onRefreshUserList(), JayScrum.app.onRefreshSprintListForDropDown()];
+        Q.all(refreshLists)
+            .then(function(){loadingPromise.resolve()});
 
         return loadingPromise.promise;
     },
@@ -237,7 +224,10 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
     },
     onEditWorkItem: function (wrkItem, isEventCall) {
         JayScrum.repository.WorkItems.attach(wrkItem);
-        JayScrum.app.selectedFrame().selectView('taskEdit')
+        JayScrum.app.selectedFrame()._onRefreshDropDownLists()
+            .then(function(){
+                JayScrum.app.selectedFrame().selectView('taskEdit')
+            });
     },
     onSaveWorkItem: function (wrkItem, isEventCall) {
         var currentLista = null;
@@ -313,7 +303,7 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
             Priority: 0,
             AssignedTo: "",
             State: "To Do",
-            WorkItem_Sprint: JayScrum.app.selectedFrame().data().currentSprint.Id,
+            WorkItem_Sprint: JayScrum.app.selectedFrame().data().currentSprint().Id,
             Effort: 0,
             BusinessValue: 0,
             RemainingWork: 0,
@@ -321,9 +311,12 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
         });
 
         item = item.asKoObservable();
-        JayScrum.app.selectedFrame().data().selectedWorkItemActive(item);
         JayScrum.repository.WorkItems.add(item);
-        JayScrum.app.selectedFrame().selectView('taskEdit')
+        JayScrum.app.selectedFrame()._onRefreshDropDownLists()
+            .then(function(){
+                JayScrum.app.selectedFrame().data().selectedWorkItemActive(item);
+                JayScrum.app.selectedFrame().selectView('taskEdit');
+            });
     },
     onUpdateWorkItem: function (workItem, isEventCall) {
        JayScrum.repository.WorkItems.where(function (item) { return item.Id == this.currentItem.Id }, { currentItem: workItem }).toArray({
@@ -419,14 +412,21 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
     onFrameChangingFrom:function (activeFrameMeta, oldFrameMeta, initData, frame) {
         JayScrum.app.showLoading();
         var loadingPromise = Q.defer();
+        var self = this;
         switch(activeFrameMeta.viewName){
             case 'taskEdit':
-                this.data().selectedWorkItemActive(initData);
+                this._onRefreshDropDownLists()
+                    .then(function(){
+                        self.data().selectedWorkItemActive(initData);
+                        loadingPromise.resolve();
+                    });
+
                 break;
             case 'taskSelect':
                 this.data().selectedWorkItem(initData.wrkItem);
                 this.data().selectedWorkItemActive(initData.wrkItem);
                 this.activeList = initData.list;
+                loadingPromise.resolve();
                 break;
             default:
                 this.pinnedQueryParam = { sprintId:initData.Id };
@@ -464,17 +464,17 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
                     .take(this.listLoadSize);
                 this.data().currentSprint(initData);
                 this.data().name = initData.Name;
+                loadingPromise.resolve();
                 break;
         }
-        loadingPromise.resolve();
         return loadingPromise.promise;
     },
     onFrameChangedFrom:function (activeFrameMeta, oldFrameMeta, frame) {
         if (activeFrameMeta.viewName === 'taskEdit' || activeFrameMeta.viewName === 'taskSelect') {
-            JayScrum.app.selectedFrame().selectedView().initializaView();
+            JayScrum.app.selectedFrame().selectedView().initializeView();
         } else {
             this._loadData()
-                .then(function(){JayScrum.app.selectedFrame().selectedView().initializaView()});
+                .then(function(){JayScrum.app.selectedFrame().selectedView().initializeView()});
         }
     }
 }, null);

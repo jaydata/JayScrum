@@ -10,7 +10,7 @@ $data.Class.define('JayScrum.Views.Sprints', JayScrum.FrameView, null, {
         this.templateName = name || 'print-template';
         this.i_scroll = null;
     },
-    initializaView:function(){
+    initializeView:function(){
         JayScrum.app.hideLoading();
         $("h1.main-header").addClass("animate");
         $("div.icon-action.back.topleft.main").show();
@@ -26,7 +26,7 @@ $data.Class.define('JayScrum.Views.SprintEdit', JayScrum.FrameView, null, {
         this.templateName = name || 'sprintEditView-template';
         this.i_scroll = null;
     },
-    initializaView:function(){
+    initializeView:function(){
         $("h1.main-header").addClass("animate");
         this.i_scroll = JayScrum.app.initScrollById("transition-iteration-edit");
         initDateFieldsById('transition-iteration-edit');

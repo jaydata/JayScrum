@@ -64,7 +64,7 @@ var debug = true,
     },
     windowHeight = $(window).height();
 
-$data.Class.define('JayScrum.Types.scrumModel', null, null, {
+/*$data.Class.define('JayScrum.Types.scrumModel', null, null, {
     constructor: function () {
         this.activePartName = ko.observable();
         this.settingPage = new JayScrum.Models.settingPage();
@@ -181,7 +181,7 @@ $data.Class.define('JayScrum.Types.scrumModel', null, null, {
 
     mainPage: {},
     settingPage: {}
-}, null);
+}, null);*/
 
 /*
 $(function () {
