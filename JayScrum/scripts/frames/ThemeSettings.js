@@ -10,7 +10,7 @@ $data.Class.define('JayScrum.Views.ThemeSetting', JayScrum.FrameView, null, {
         this.templateName = name || 'guiSettingPage-template';
         this.i_scroll = null;
     },
-    initializaView:function(){
+    initializeView:function(){
         JayScrum.app.hideLoading();
         $("h1.main-header").addClass("animate");
         $("div.field.fonts div.field").each(function () {

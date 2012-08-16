@@ -35,7 +35,7 @@ $data.Class.define('JayScrum.Frame', null, null, {
         JayScrum.app.framePath.push(frameSetting);
         JayScrum.app.selectedFrame().selectedView().tearDownView();
         JayScrum.app.selectedFrame().selectedView(newView);
-        newView.initializaView();
+        newView.initializeView();
     },
     selectView:function (name, initData) {
         if (JayScrum.app.collectFramePath()) {
@@ -44,7 +44,7 @@ $data.Class.define('JayScrum.Frame', null, null, {
         }
         this.selectedView().tearDownView();
         this.selectedView(this.views[name]);
-        this.views[name].initializaView();
+        this.views[name].initializeView();
     },
     selectMetaView:function (name) {
         if (this.selectedMetaView === undefined) {
@@ -78,7 +78,7 @@ $data.Class.define('JayScrum.Frame', null, null, {
         this._loadData()
             .then(function(){
                 JayScrum.app.hideLoading();
-               JayScrum.app.selectedFrame().selectedView().initializaView();
+               JayScrum.app.selectedFrame().selectedView().initializeView();
             });
     }
 }, null);

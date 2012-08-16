@@ -142,7 +142,6 @@
     <Content Include="Scripts\Models\SettingPage.js" />
     <Content Include="Scripts\RepositoryContext.js" />
     <Content Include="Scripts\scrum.js" />
-    <Content Include="Scripts\ScrumEntities.js" />
     <Content Include="Scripts\ScrumLsEntities.js" />
     <Content Include="Styles\fonts\segoeuil-webfont.svg" />
     <Content Include="Styles\metro.css" />

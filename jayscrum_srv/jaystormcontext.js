@@ -14,8 +14,6 @@
  * Time: 1:15 PM
  * To change this template use File | Settings | File Templates.
  */
-
-require('connect');
 require('jaydata');
 require('q');
 
@@ -151,20 +149,4 @@ $data.Class.defineEx('JayStormApplication.Context', [$data.EntityContext, $data.
         )
 });
 
-
-var c = require('connect');
-var app = c();
-
-app.use(c.query());
-//app.use(function(req, res, next) {
-//   console.log("!!!");
-//    console.dir(req);
-//   next();
-//});
-app.use("/db", $data.JayService.OData.BatchProcessor.connectBodyReader);
-app.use("/db", $data.JayService.createAdapter(JayStormApplication.Context, function() {
-    return new JayStormApplication.Context({name: "mongoDB", databaseName:"ApplicationDB"});
-}));
-app.use("/", c.static("../client"));
-app.listen(8080);
-console.log("end");
+exports.serviceType = JayStormApplication.Context;

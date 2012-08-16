@@ -3,7 +3,7 @@
 //////                             oData v2                                    /////////
 ////////////////////////////////////////////////////////////////////////////////////////
 
-(function (global, $data, undefined) {
+/*(function (global, $data, undefined) {
     function registerEdmTypes() {
 
         function Edm_Boolean() {
@@ -212,11 +212,11 @@
 
     //Microsoft.LightSwitch.Security.context = new Microsoft.LightSwitch.Security.SecurityData({ name: 'oData', oDataServiceHost: 'http://localhost/JayScrumServer_ls/Microsoft.LightSwitch.SecurityData.svc' });
 
-
-})(window, $data);
+/*
+})(window, $data);*/
 
 function testData() {
-    var ctx = new LightSwitchApplication.ApplicationData({ name:'oData', oDataServiceHost:'http://192.168.1.142:3000' });
+    var ctx = new LightSwitchApplication.ApplicationData({ name:'oData', oDataServiceHost:'http://192.168.1.142:3000/jayscrum' });
     //'hajni' = 'admin';
     ctx.Sprints.add(new LightSwitchApplication.Sprint({ Name:'Sprint 1', StartDate:moment().add('days', -30).utc().toDate(), FinishDate:moment().add('days', -23).utc().toDate() }));
     ctx.Sprints.add(new LightSwitchApplication.Sprint({ Name:'Sprint 2', StartDate:moment().add('days', -26).utc().toDate(), FinishDate:moment().add('days', -19).utc().toDate() }));

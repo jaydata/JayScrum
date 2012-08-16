@@ -10,7 +10,7 @@ $data.Class.define('JayScrum.Views.Projects', JayScrum.FrameView, null, {
         this.templateName = name || 'project-template';
         this.i_scroll = null;
     },
-    initializaView:function(){
+    initializeView:function(){
         JayScrum.app.hideLoading();
         $("h1.main-header").addClass("animate");
         this.i_scroll = JayScrum.app.initScrollById("transition-projects");
@@ -25,7 +25,7 @@ $data.Class.define('JayScrum.Views.ProjectSelect', JayScrum.FrameView, null, {
         this.templateName = name || 'projectSelectView-template';
         this.i_scroll = null;
     },
-    initializaView:function(){
+    initializeView:function(){
         JayScrum.app.hideLoading();
         $("h1.main-header").addClass("animate");
         this.i_scroll = JayScrum.app.initScrollById("transition-projects");
@@ -40,7 +40,7 @@ $data.Class.define('JayScrum.Views.ProjectEdit', JayScrum.FrameView, null, {
         this.templateName = name || 'projectEditView-template';
         this.i_scroll = null;
     },
-    initializaView:function(){
+    initializeView:function(){
         JayScrum.app.hideLoading();
         $("h1.main-header").addClass("animate");
         this.i_scroll = JayScrum.app.initScrollById("transition-projects");
@@ -148,9 +148,9 @@ $data.Class.define('JayScrum.Frames.Projects', JayScrum.Frame, null, {
             Type: "UserStory",
             Description: "",
             CreatedDate: new Date().toISOString(),
-            CreatedBy: 'Admin', //$data.Model.settingPage.loginSettings.UserName, //TODO: add user data
+            CreatedBy: JayScrum.app.globalData().user().login(),
             ChangedDate: new Date().toISOString(),
-            ChangedBy: 'Admin', //$data.Model.settingPage.loginSettings.UserName, //TODO: add user data
+            ChangedBy: JayScrum.app.globalData().user().login(),
             Priority: 0,
             AssignedTo: "",
             State: "To Do",

@@ -113,12 +113,12 @@
                                 <span class="text">Repositories</span>
                             </span>
                         </li>
-                        <!--<li class="purple">
+                        <li class="purple">
                             <span data-bind="click: $data.onUserSettingShow">
                                 <span class="middle icon icon-57 users"></span>
                                 <span class="text">Users</span>
                             </span>
-                        </li>-->
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -169,7 +169,7 @@
                                             <!-- /ko -->
 
                                             <!-- ko if: ChangedDate -->
-                                            | <span class="small" data-bind="text: ChangedDate().toDateString()"></span>
+                                            | <span class="small" data-bind="text: moment(ChangedDate()).format('MM/DD/YY')"></span>
                                             <!-- /ko -->
                                         </div>
                                     </div>
@@ -1266,6 +1266,7 @@
         <!--/ko-->
         <!--/ko-->
     </script>
+
     <script type="text/html" id="usersPage-template">
         <div id="settingPage">
             <div class="icon-action back topleft">
@@ -1279,44 +1280,103 @@
                     <div class="list detail">
                         <ul id="setting-list" class="setting-list" data-bind='foreach: $data.data().users'>
                             <li>
-                                <h2>User name</h2>
+                                <h2 data-bind="click: $parent.onSelectUser"><span data-bind="text: $data.firstName"></span> <span data-bind="text: $data.lastName"></span> (<span data-bind="text: $data.login"></span>)</h2>
                                 <div class="actions fright">
-                                    <span class="icon-action edit" data-bind="click: $parent.editSetting"><span></span>
+                                    <span class="icon-action edit" data-bind="click: $parent.onEditUser"><span></span>
                                     </span>
-                                    <span class="icon-action delete" data-bind="click: $parent.deleteSetting"><span></span>
+                                    <span class="icon-action delete" data-bind="click: $parent.onDeleteUser"><span></span>
                                     </span>
                                 </div>
                             </li>
                         </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="settingPageActionBar" class="metro-actionbar detail-view-edit opened">
+            <ul>
+                <li class="icon-action add" data-bind="click: $data.onAddUser"><span></span></li>
+            </ul>
+        </div>
+    </script>
+    <script type="text/html" id="usersSelectView-template">
+        <div id="settingPage">
+            <div class="icon-action back topleft">
+                <span data-bind="click: $root.backView"></span>
+            </div>
+            <div class="main-header">
+                <h1 class="title" data-bind="with:$data.data().selectedUser"><span data-bind="text: $data.firstName"></span> <span data-bind="text: $data.lastName"></span> (<span data-bind="text: $data.login"></span>)</h1>
+            </div>
+            <div class="scroll-list pivot-default-opacity scrollable-list animate bottom45" id="settingPageScroll">
+                <div class="scroller-list">
+                    <div class="list detail">
+                        <!--<h2 class="title">details</h2>-->
+                        <!--<ul id="setting-list" class="setting-list" data-bind='foreach: $data.data().users'>-->
+                            <!--<li>-->
+                                <!--<h2><span data-bind="text: $data.firstName"></span> <span data-bind="text: $data.lastName"></span> (<span data-bind="text: $data.login"></span>)</h2>-->
+                                <!--<div class="actions fright">-->
+                                    <!--<span class="icon-action edit" data-bind="click: $parent.editSetting"><span></span>-->
+                                    <!--</span>-->
+                                    <!--<span class="icon-action delete" data-bind="click: $parent.deleteSetting"><span></span>-->
+                                    <!--</span>-->
+                                <!--</div>-->
+                            <!--</li>-->
+                        <!--</ul>-->
 
-                        <h2 class="title">roles</h2>
-                        <ul class="setting-list" data-bind='foreach: $data.data().roles'>
+                        <h2 class="title">groups</h2>
+                        <ul class="setting-list" data-bind='foreach: $data.data().selectedUser().roles2'>
                             <li>
-                                <h2>Role 1</h2>
-                                <div class="actions fright">
+                                <h2 data-bind="text: $data">Role 1</h2>
+                                <!--<div class="actions fright">
                                     <span class="icon-action edit" data-bind="click: $parent.editSetting"><span></span>
                                     </span>
                                     <span class="icon-action delete" data-bind="click: $parent.deleteSetting"><span></span>
                                     </span>
-                                </div>
+                                </div>-->
                             </li>
                         </ul>
-
-                        <div id="settings-edit" class="detail edit reset-p" style="display: none;">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </script>
+    <script type="text/html" id="userEditView-template">
+        <div id="settingPage">
+            <div class="icon-action back topleft">
+                <span data-bind="click: $root.backView"></span>
+            </div>
+            <div class="main-header">
+                <h1 class="title">user editor</h1>
+            </div>
+            <div class="scroll-list pivot-default-opacity scrollable-list animate bottom45" data-bind="with: $data.data().selectedUser" id="settingPageScroll">
+                <div class="scroller-list">
+                    <div class="list detail">
+                        <div id="settings-edit" class="detail edit reset-p">
                             <div class="tolower item reset-m">
-                                <div class="field">
+
+
+                                <div data-bind="template:{name: 'object-property-editor', foreach: $data.getProperties() }">
+                                </div>
+
+
+                                <!--<div class="field">
                                     <div><span>Name</span></div>
-                                    <input class="medium accent-bg" type="text" />
+                                    <input class="medium accent-bg" type="text" data-bind="value: login" />
                                 </div>
 
                                 <div class="field">
-                                    <div><span>Full Name</span></div>
-                                    <input class="medium accent-bg" type="text" />
+                                    <div><span>First Name</span></div>
+                                    <input class="medium accent-bg" type="text" data-bind="value: firstName" />
+                                </div>
+
+                                <div class="field">
+                                    <div><span>Last Name</span></div>
+                                    <input class="medium accent-bg" type="text" data-bind="value: lastName" />
                                 </div>
 
                                 <div class="field">
                                     <div><span>Password</span></div>
-                                    <input class="medium accent-bg" type="password" />
+                                    <input class="medium accent-bg" type="password" data-bind="value: password" />
                                 </div>
 
                                 <div class="field">
@@ -1326,17 +1386,15 @@
 
                                 <div class="field">
                                     <div><span>Role</span></div>
-                                    <select class="medium accent-bg">
-                                        <option>Role 1</option>
-                                        <option>Role 2</option>
-                                        <option>Role 3</option>
-                                    </select>
-                                </div>
+                                    &lt;!&ndash;ko foreach: $parent.data().roles&ndash;&gt;
+                                    <input type="checkbox" value="role1" data-bind="value: $data.name, checked: $parent.roles2" /> <span data-bind="text: $data.name">Role 1</span>
+                                    &lt;!&ndash;/ko&ndash;&gt;
+                                </div>-->
 
                                 <div class="split2">
-                                    <span class="btn-metro btn-large margin10_0" data-bind="click: $parent.saveSetting">
+                                    <span class="btn-metro btn-large margin10_0" data-bind="click: $parent.onSaveUser">
                                         Save</span>
-                                    <span class="btn-metro btn-large margin10_0" data-bind="click: $parent.cancelSetting">
+                                    <span class="btn-metro btn-large margin10_0" data-bind="click: $parent.onCancelUser">
                                         Cancel</span>
                                 </div>
                             </div>
@@ -1345,13 +1403,21 @@
                 </div>
             </div>
         </div>
-        <div id="settingPageActionBar" class="metro-actionbar detail-view-edit opened">
-            <ul>
-                <li class="icon-action add"><span></span></li>
-            </ul>
-        </div>
     </script>
 
+    <script type="text/html" id="object-property-editor">
+        <div data-bind="text: name"></div>
+        <div data-bind="template: { name: type + '-editor' }"></div>
+    </script>
+    <script type="text/html" id="Edm.String-editor">
+        <input data-bind="value: value" />
+    </script>
+    <script type="text/html" id="Edm.Boolean-editor">
+        <input type="checkbox" data-bind="checked: value" />
+    </script>
+    <script type="text/html" id="Edm.DateTime-editor">
+        <input type="datetime" data-bind="value: value" />
+    </script>
     <!-- #endregion TEMPLATES -->
 
     <script type="text/javascript" src="scripts/cordova-2.0.0.js"></script>

@@ -12,7 +12,7 @@ $data.Class.define('JayScrum.Views.UserStory', JayScrum.FrameView, null, {
         this.sprint_iScrolls = null;
         this.horizontalScroll = null;
     },
-    initializaView:function(){
+    initializeView:function(){
         JayScrum.app.hideLoading();
         $("h1.main-header").addClass("animate");
 
@@ -45,7 +45,7 @@ $data.Class.define('JayScrum.Views.UserStorySelected', JayScrum.FrameView, null,
         this.templateName = name || 'userStorySelectView-template';
         this.i_scroll = null;
     },
-    initializaView:function(){
+    initializeView:function(){
         JayScrum.app.hideLoading();
         $("h1.main-header").addClass("animate");
 
@@ -71,7 +71,7 @@ $data.Class.define('JayScrum.Views.UserStoryEditor', JayScrum.FrameView, null, {
         this.templateName = name || 'userStoryEditView-template';
         this.i_scroll = null;
     },
-    initializaView:function(){
+    initializeView:function(){
         $("h1.main-header").addClass("animate");
         var swipeHeight = $("div.detail-edit-fix-header h1").height();
         $("div#wrapper-detailed-edit").css('top', swipeHeight);
@@ -164,19 +164,9 @@ $data.Class.define('JayScrum.Frames.UserStories', JayScrum.Frame, null, {
 
     _onRefreshDropDownLists: function () {
         var loadingPromise = Q.defer();
-        JayScrum.app.onRefreshProjectList()
-            .then(function () {
-                JayScrum.app.onRefreshUserStoryList()
-                    .then(function () {
-                        JayScrum.app.onRefreshUserList()
-                            .then(function () {
-                                JayScrum.app.onRefreshSprintListForDropDown()
-                                    .then(function () {
-                                        loadingPromise.resolve();
-                                    });
-                            });
-                    });
-            });
+        var refreshLists = [JayScrum.app.onRefreshProjectList(), JayScrum.app.onRefreshUserStoryList(), JayScrum.app.onRefreshUserList(), JayScrum.app.onRefreshSprintListForDropDown()];
+        Q.all(refreshLists)
+            .then(function(){loadingPromise.resolve()});
 
         return loadingPromise.promise;
     },
@@ -246,9 +236,9 @@ $data.Class.define('JayScrum.Frames.UserStories', JayScrum.Frame, null, {
             Type: "UserStory",
             Description: "",
             CreatedDate: new Date().toISOString(),
-            CreatedBy: 'Admin', //$data.Model.settingPage.loginSettings.UserName,
+            CreatedBy: JayScrum.app.globalData().user().login(),
             ChangedDate: new Date().toISOString(),
-            ChangedBy: 'Admin', //$data.Model.settingPage.loginSettings.UserName,
+            ChangedBy: JayScrum.app.globalData().user().login(),
             Priority: 0,
             AssignedTo: "",
             State: "New",
@@ -318,6 +308,7 @@ $data.Class.define('JayScrum.Frames.UserStories', JayScrum.Frame, null, {
             wrkItem.SprintName(sprint.Name());
         }
         //save workItem
+        wrkItem.ChangedBy(JayScrum.app.globalData().user().login());
         wrkItem.ChangedDate(new Date());
 
         if (wrkItem.Id() === 0) {
@@ -344,6 +335,12 @@ $data.Class.define('JayScrum.Frames.UserStories', JayScrum.Frame, null, {
             error: function (error) { console.log("Refresh error!!"); console.dir(error); }
         });
     },
+    onDeleteUserStory: function (workItem){
+        JayScrum.repository.remove(workItem.innerInstance);
+        JayScrum.repository.saveChanges(function () {
+            $data.Model.mainPage.onCancelWorkItem(workItem);
+        });
+    },
 
     onRefreshWorkItemsOfUserStory: function (userStory) {
         JayScrum.repository.WorkItems
@@ -365,9 +362,9 @@ $data.Class.define('JayScrum.Frames.UserStories', JayScrum.Frame, null, {
             Type: "Task",
             Description: "",
             CreatedDate: new Date().toISOString(),
-            CreatedBy: 'Admin', //$data.Model.settingPage.loginSettings.UserName, //TODO: add user data
+            CreatedBy: JayScrum.app.globalData().user().login(),
             ChangedDate: new Date().toISOString(),
-            ChangedBy: 'Admin', //$data.Model.settingPage.loginSettings.UserName, //TODO: add user data
+            ChangedBy: JayScrum.app.globalData().user().login(),
             Priority: 0,
             AssignedTo: "",
             State: "To Do",
@@ -407,11 +404,11 @@ $data.Class.define('JayScrum.Frames.UserStories', JayScrum.Frame, null, {
         switch(activeFrameMeta.viewName){
             case 'userStorySelected':
             case 'userStoryEditor':
-                JayScrum.app.selectedFrame().selectedView().initializaView();
+                JayScrum.app.selectedFrame().selectedView().initializeView();
                 break;
             default:
                 this._loadData()
-                    .then(function(){JayScrum.app.selectedFrame().selectedView().initializaView()});
+                    .then(function(){JayScrum.app.selectedFrame().selectedView().initializeView()});
                 break;
         }
     }

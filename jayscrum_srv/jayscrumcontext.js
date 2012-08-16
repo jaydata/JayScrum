@@ -182,52 +182,6 @@ var Q = require('q');
         Sprints:{ type:$data.EntitySet, elementType:LightSwitchApplication.Sprint }/*,
          Microsoft_LightSwitch_GetCanInformation: $data.EntityContext.generateServiceOperation({ serviceName: 'Microsoft_LightSwitch_GetCanInformation', returnType: 'Edm.String', params: [{ dataServiceMembers: 'Edm.String' }], method: 'GET' })*/
     });
-    ///Security
-    /*$data.Entity.extend('Microsoft.LightSwitch.Security.UserRegistration', {
-        'UserName': { key: true, type: 'Edm.String', nullable: false, required: true, maxLength: 256 },
-        'FullName': { type: 'Edm.String', nullable: false, required: true, maxLength: 256, concurrencyMode: $data.ConcurrencyMode.Fixed },
-        'Password': { type: 'Edm.String', maxLength: 128, concurrencyMode: $data.ConcurrencyMode.Fixed },
-        'RoleAssignments': { type: 'Array', elementType: 'Microsoft.LightSwitch.Security.RoleAssignment', inverseProperty: 'User' },
-        'DerivingRoleAssignments': { type: 'Array', elementType: 'Microsoft.LightSwitch.Security.RoleAssignment', inverseProperty: 'SourceAccount' }
-    });
-    $data.Entity.extend('Microsoft.LightSwitch.Security.Role', {
-        'Name': { key: true, type: 'Edm.String', nullable: false, required: true, maxLength: 128 },
-        'RoleAssignments': { type: 'Array', elementType: 'Microsoft.LightSwitch.Security.RoleAssignment', inverseProperty: 'Role' },
-        'RolePermissions': { type: 'Array', elementType: 'Microsoft.LightSwitch.Security.RolePermission', inverseProperty: 'Role' }
-    });
-    $data.Entity.extend('Microsoft.LightSwitch.Security.RoleAssignment', {
-        'UserName': { key: true, type: 'Edm.String', nullable: false, required: true, maxLength: 256 },
-        'RoleName': { key: true, type: 'Edm.String', nullable: false, required: true, maxLength: 128 },
-        'SourceAccountName': { key: true, type: 'Edm.String', nullable: false, required: true, maxLength: 256 },
-        'User': { type: 'Microsoft.LightSwitch.Security.UserRegistration', required: true, inverseProperty: 'RoleAssignments' },
-        'SourceAccount': { type: 'Microsoft.LightSwitch.Security.UserRegistration', required: true, inverseProperty: 'DerivingRoleAssignments' },
-        'Role': { type: 'Microsoft.LightSwitch.Security.Role', required: true, inverseProperty: 'RoleAssignments' }
-    });
-    $data.Entity.extend('Microsoft.LightSwitch.Security.Permission', {
-        'Id': { key: true, type: 'Edm.String', nullable: false, required: true, maxLength: 322 },
-        'Name': { type: 'Edm.String', nullable: false, required: true, maxLength: 64, concurrencyMode: $data.ConcurrencyMode.Fixed },
-        'RolePermissions': { type: 'Array', elementType: 'Microsoft.LightSwitch.Security.RolePermission', inverseProperty: 'Permission' }
-    });
-    $data.Entity.extend('Microsoft.LightSwitch.Security.RolePermission', {
-        'RoleName': { key: true, type: 'Edm.String', nullable: false, required: true, maxLength: 128 },
-        'PermissionId': { key: true, type: 'Edm.String', nullable: false, required: true, maxLength: 322 },
-        'Role': { type: 'Microsoft.LightSwitch.Security.Role', required: true, inverseProperty: 'RolePermissions' },
-        'Permission': { type: 'Microsoft.LightSwitch.Security.Permission', required: true, inverseProperty: 'RolePermissions' }
-    });
-    $data.EntityContext.extend('Microsoft.LightSwitch.Security.SecurityData', {
-        UserRegistrations: { type: $data.EntitySet, elementType: Microsoft.LightSwitch.Security.UserRegistration },
-        Roles: { type: $data.EntitySet, elementType: Microsoft.LightSwitch.Security.Role },
-        RoleAssignments: { type: $data.EntitySet, elementType: Microsoft.LightSwitch.Security.RoleAssignment },
-        Permissions: { type: $data.EntitySet, elementType: Microsoft.LightSwitch.Security.Permission },
-        RolePermissions: { type: $data.EntitySet, elementType: Microsoft.LightSwitch.Security.RolePermission },
-        Microsoft_LightSwitch_GetCanInformation: $data.EntityContext.generateServiceOperation({ serviceName: 'Microsoft_LightSwitch_GetCanInformation', returnType: 'Edm.String', params: [{ dataServiceMembers: 'Edm.String' }], method: 'GET' }),
-        ChangePassword: $data.EntityContext.generateServiceOperation({ serviceName: 'ChangePassword', returnType: null, params: [{ userName: 'Edm.String' }, { oldPassword: 'Edm.String' }, { newPassword: 'Edm.String' }], method: 'POST' }),
-        IsValidPassword: $data.EntityContext.generateServiceOperation({ serviceName: 'IsValidPassword', returnType: 'Edm.Boolean', params: [{ password: 'Edm.String' }], method: 'POST' }),
-        GetWindowsUserInfo: $data.EntityContext.generateServiceOperation({ serviceName: 'GetWindowsUserInfo', returnType: 'Edm.String', params: [{ userName: 'Edm.String' }], method: 'GET' })
-    });*/
-
-    //Microsoft.LightSwitch.Security.context = new Microsoft.LightSwitch.Security.SecurityData({ name: 'oData', oDataServiceHost: 'http://localhost/JayScrumServer_ls/Microsoft.LightSwitch.SecurityData.svc' });
-
 
 })(window, $data);
 

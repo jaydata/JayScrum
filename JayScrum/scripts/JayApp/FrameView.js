@@ -4,7 +4,7 @@ $data.Class.define('JayScrum.FrameView', null, null, {
         this.loadPath = path;
         this.templateSource = tplSource;
     },
-    initializaView:function(){JayScrum.app.selectedFrame().hideLoading();},
+    initializeView:function(){JayScrum.app.selectedFrame().hideLoading();},
     tearDownView:function(){ },
     templateName: { dataType: $data.String },
     loadPath: { dataType: $data.String },

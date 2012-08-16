@@ -62,7 +62,7 @@ var debug = true,
     },
     windowHeight = $(window).height();
 
-$data.Class.define('JayScrum.Types.scrumModel', null, null, {
+/*$data.Class.define('JayScrum.Types.scrumModel', null, null, {
     constructor: function () {
         this.activePartName = ko.observable();
         this.settingPage = new JayScrum.Models.settingPage();
@@ -179,7 +179,7 @@ $data.Class.define('JayScrum.Types.scrumModel', null, null, {
 
     mainPage: {},
     settingPage: {}
-}, null);
+}, null);*/
 
 /*
 $(function () {
@@ -210,7 +210,8 @@ $data.Class.define('JayScrum.ScrumApp', JayScrum.FrameApp, null,{
             projectList : ko.observableArray(),
             userStoryList: ko.observableArray(),
             userList: ko.observableArray(),
-            sprintList: ko.observableArray()
+            sprintList: ko.observableArray(),
+            user:ko.observable()
         });
     },
     onRefreshProjectList:function () {
@@ -235,8 +236,15 @@ $data.Class.define('JayScrum.ScrumApp', JayScrum.FrameApp, null,{
     },
     onRefreshUserList:function () {
         var loadPromise = Q.defer();
-        JayScrum.app.globalData().userList(['', 'hajni', 'robesz', 'zpace', 'nochtap', 'kimi', 'viktor', 'vektor']);
-        loadPromise.resolve();
+        JayScrum.app.globalData().userList(['']);
+        JayScrum.stormContext.Users.toArray(function(result){
+            result.forEach(function(item){
+                JayScrum.app.globalData().userList.push(item.login);
+            });
+            loadPromise.resolve();
+        });
+        //JayScrum.app.globalData().userList(['', 'hajni', 'robesz', 'zpace', 'nochtap', 'kimi', 'viktor', 'vektor']);
+
         return loadPromise.promise;
     },
     onRefreshSprintListForDropDown:function () {
@@ -343,6 +351,28 @@ $data.Class.define('JayScrum.ScrumApp', JayScrum.FrameApp, null,{
             }
         }
         return vScroll;
+    },
+    _initializeRepositories:function(url, userName, psw){
+        $data.MetadataLoader.xsltRepoUrl = '/scripts/JaySvcUtil/';
+        $data.MetadataLoader.load(url+"/$metadata", function(){
+            var context = LightSwitchApplication.context;
+            JayScrum.repository = context;
+            $data.MetadataLoader.load(url+"_users/$metadata", function(){
+                JayScrum.stormContext = JayStormApplication.context;
+                JayScrum.stormContext.Users
+                    .where(function(item){return item.login == this.loginName}, {loginName: userName})
+                    .toArray(function(user){
+                        if(user && user.length>0){
+                            JayScrum.app.globalData().user(user[0].asKoObservable());
+                        }else{
+                            //TODO remove
+                            JayScrum.app.globalData().user((new JayScrum.stormContext.Users.createNew({Id:'fakeUser', login:'fakeUser', firstName:'fakeUser', lastName:'!!!'})).asKoObservable());
+                        }
+                        JayScrum.app.selectFrame('MainFrame');
+                    });
+
+            });
+        });
     }
 },null);
 

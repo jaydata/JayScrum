@@ -10,7 +10,7 @@ $data.Class.define('JayScrum.Views.Main', JayScrum.FrameView, null, {
         this.templateName = name || 'dashBoard-template';
         this.i_scroll = null;
     },
-    initializaView:function(){
+    initializeView:function(){
         JayScrum.app.hideLoading();
         this.i_scroll = JayScrum.app.initScrollById("metro-tiles-scroll", null, null, true);
     },
