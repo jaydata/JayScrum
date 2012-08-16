@@ -1,5 +1,18 @@
 @import "mixins.less";
 
+/*#region VARIABLES */
+@colorRechanged: #dadc29;
+@colorTodo: Orange;
+@colorInprog: #24A0DA;
+@colorDone: Green;
+@colorBlocked: #c00000;
+@colorNotBlocked: #777;
+@colorRemoved: Gray;
+@colorApproved: Green;
+@colorNew: Goldenrod;
+@colorCommitted: #24A0DA;
+/*#endregion VARIABLES */
+
 /*#region METRO THEME */
 /* 
 accent: { orange, red, green, blue, magenta, purple, pink, teal, lime, brown }
@@ -8,27 +21,110 @@ class for accent-bg             : "accent-bg"
 class for theme-bg              : "theme-bg"
 */
 
-li 
+@metro-orange: #dd9616;
+@metro-darkorange: #e76321;
+
+@metro-lightred: #d64d34;
+@metro-red: #800000;
+
+@metro-pink: pink;
+@metro-darkpink: #b71c46;
+
+@metro-purple: #69349c;
+
+@metro-lightgreen: #65bf10;
+@metro-green: #19a053;
+@metro-done: #008000;
+
+@metro-yellow: #ccc102;
+@metro-gray: #414141;
+
+@metro-lightblue: #00b5df;
+@metro-darkblue: #293f7b;
+@metro-blue: #1774bc;
+@metro-greenblue: #00586d;
+
+@metro-brown: #833801;
+
+li
 {
-    @tile: #1774bc;
-    @wide: #19a053;
-    @pinned: green;
-    
-    &.tile  { background: @tile; border: 1px solid lighten(@tile, 10%); }
+    &.tile  { background: @metro-done; border: 1px solid lighten(@metro-done, 10%); }
     &.wide  {
-        background: @wide; border: 1px solid lighten(@wide, 5%);
+        background: @metro-lightblue; border: 1px solid lighten(@metro-lightblue, 10%);
         
-        &.pinned  { background: @pinned; border: 1px solid lighten(@pinned, 5%); }
+        &.pinned  { background: @metro-lightgreen; border: 1px solid lighten(@metro-lightgreen, 10%); }
     }
 }
 
-body[theme=black] {
-    background: black; color: white;
+body {
+    &[theme=black]{
+        background: black; color: white;
     
-    div[theme=black], .metro-loading { background: black; color: white; }
+        div[theme=black], .metro-loading { background: black; color: white; }
     
-    li.tile {
-        background: #414141; /* gray */
+        li.tile {
+            background: @metro-done; border: 1px solid lighten(@metro-done, 10%);
+        }
+    }
+    
+    &[theme=darkblue]{
+        li
+        {
+            &.tile  { background: @metro-blue; border: 1px solid lighten(@metro-blue, 10%); }
+            &.wide  {
+                background: @metro-orange; border: 1px solid lighten(@metro-orange, 10%);
+        
+                &.pinned  { background: @metro-lightblue; border: 1px solid lighten(@metro-lightblue, 10%); }
+            }
+        }
+    }
+    
+    &[theme=img_1]{
+        li
+        {
+            &.tile  { background: @metro-greenblue; border: 1px solid lighten(@metro-greenblue, 10%); }
+            &.wide  {
+                background: @metro-orange; border: 1px solid lighten(@metro-orange, 10%);
+        
+                &.pinned  { background: @metro-green; border: 1px solid lighten(@metro-green, 10%); }
+            }
+        }
+    }
+    
+    &[theme=img_2]{
+        li
+        {
+            &.tile  { background: @metro-done; border: 1px solid lighten(@metro-done, 5%); }
+            &.wide  {
+                background: @metro-lightblue; border: 1px solid lighten(@metro-lightblue, 10%);
+        
+                &.pinned  { background: @metro-lightgreen; border: 1px solid lighten(@metro-lightgreen, 5%); }
+            }
+        }
+    }
+    
+    &[theme=img_3]{
+        li
+        {
+            &.tile  { background: @metro-blue; border: 1px solid lighten(@metro-blue, 5%); }
+            &.wide  {
+                background: @metro-lightgreen; border: 1px solid lighten(@metro-lightgreen, 10%);
+        
+                &.pinned  { background: @metro-done; border: 1px solid lighten(@metro-done, 5%); }
+            }
+        }
+    }
+    
+    &[theme=img_5]{
+        li
+        {
+            &.tile  { background: @metro-darkorange; border: 1px solid lighten(@metro-darkorange, 10%); }
+            &.wide  {
+                background: @metro-orange; border: 1px solid lighten(@metro-orange, 10%);
+        
+                &.pinned  { background: @metro-lightred; border: 1px solid lighten(@metro-lightred, 10%); }
+            }
+        }
     }
     
     /*
@@ -52,7 +148,7 @@ body[theme=black] {
     */
 }
 
-body[theme=white], div[theme=white], body[theme=white] .metro-loading               { background: white; color: black; }
+body[theme=white], div[theme=white], body[theme=white] .metro-loading               { background: #F7F7F7; color: black; }
 
 body[theme=darkblue], div[theme=darkblue], body[theme=darkblue] .metro-loading      { background: #30508B; color: white; }
 body[theme=darkgray], div[theme=darkgray], body[theme=darkgray] .metro-loading      { background: #5A5A5A; color: white; }
@@ -80,6 +176,7 @@ body[theme=img_5] #metro-tiles .metro-tiles li.green { background: #db532d !impo
 body[theme=img_5] #metro-tiles .metro-tiles li.lightred  { background: #833801; }
 
 .accent-bg { color: #fff; }
+div[theme=black] { background: black; }
 
 .theme-bg { background:#000; }
 body[theme=light] .theme-bg {background:#fff;}
@@ -175,18 +272,9 @@ div[font=mixed]{
 /*#endregion METRO THEME */
 
 /*#region GENERAL */
-body * {
-    .box; .transition(); 
-    background-repeat: no-repeat;
-    
-    &:focus { outline: none; }
-}
-
 html, body { 
-	.reset-mp; height: 100%; width: 100%; /*.ohidden; .relative;*/
+	.reset-mp; .ohidden; .size(100%, 100%);
 	-webkit-font-smoothing: antialiased;
-	/*background: black;*/
-	.ohidden;
 }
 
 h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, cite, code, del, 
@@ -515,19 +603,6 @@ p {
 
 /*#endregion GENERAL */
 
-/*#region VARIABLES */
-@colorRechanged: #dadc29;
-@colorTodo: Orange;
-@colorInprog: #24A0DA;
-@colorDone: Green;
-@colorBlocked: #c00000;
-@colorNotBlocked: #777;
-@colorRemoved: Gray;
-@colorApproved: Green;
-@colorNew: Goldenrod;
-@colorCommitted: #24A0DA;
-/*#endregion VARIABLES */
-
 /*#region METRO STYLE */
 h1, h2, h3, h4, h5, h6      { font-weight: normal !important; .tolower; }
 body[theme=dark] h2 a       { color: #fff; }
@@ -535,6 +610,14 @@ body {
     -webkit-user-select: none;
     -webkit-text-size-adjust: none;
 }
+
+a, span, div, h1, h2, h3, h4, h5, h7, button, input, checkbox, textarea, p
+{
+    .box; -webkit-user-select: none;
+        
+    &:focus { outline: none; }
+}
+
 h1              { .font-size(37); }
 #wrapper3 h1    { font-size: 45px !important; }
 h2              { .clear; .font-size(19); line-height: 22px; margin-bottom: 5px; }
@@ -555,10 +638,10 @@ h2.title                { .font-size(22px); }
     color: #8B8B8B; font-size: 13px; 
     
     &.white { color: #fff; }
-}
+} 
 .inactive {
 	color: #A3A3A3;
-		    
+    
 	* { color: #A3A3A3; }
 }
 
@@ -571,6 +654,7 @@ h2.title                { .font-size(22px); }
 	.position(absolute, 0, auto, 45px, 0); width: 100%; overflow: auto; z-index:1;
 	    
 	&.bottom0   { bottom: 0 !important; }
+	&.top30     { top: 30px !important; }
 	&.top50     { top: 50px !important; }
 	    
 	.scroll-in {
@@ -664,10 +748,10 @@ h2.title                { .font-size(22px); }
 /*#region SWIPEVIEW */
 #swipeview-slider {
     > .swipeview-active {
-        opacity: 1; -webkit-transition: all 0.3s ease-in;
+        opacity: 1; .transition(.2s, opacity); /*-webkit-transition: all 0.3s ease-in;*/
     }
     
-    > div { opacity: 0; -webkit-transition: all 0.3s ease-in; }
+    > div { opacity: 0; .transition(.2s, opacity); /*-webkit-transition: all 0.3s ease-in;*/ }
     
     > div[id^="swipeview"] > div:nth-child(2) > div:first-child {
         background: white!important;
@@ -850,18 +934,17 @@ input.accent-bg, textarea.accent-bg {
 
 /*#region SCROLL */
 /*#region WRAPPER */
+@metro-column: 290px;
+
 #wrapper {
 	.size(100%, 100%); .clear; .ohidden;
-	min-width: 320px;
+	min-width: @metro-column;
 
 	.relative;	        /* On older OS versions "position" and "z-index" must be defined, */
 	z-index:1;			/* it seems that recent webkit is less picky and works anyway. */
-	.ohidden;
-
-    h1 { }
 
     #scroller {
-	    .size(1660px, 100%); .fleft; .reset-p;
+	    .size(@metro-column * 5, 100%); .fleft; .reset-p;
 	    
 	    .pivot-list {
 	        .show; .fleft; .size(100%, 100%); .reset-mp;
@@ -876,11 +959,11 @@ input.accent-bg, textarea.accent-bg {
 	        }
 	        
 	        .pivot {
-	            .size(320px, 100%); .box; .show; .fleft;
+	            .size(@metro-column, 100%); .box; .show; .fleft;
 	            padding: 0 5px 0 10px;
 	            	            
 	            .scroll-list {
-	                .position(absolute, 50px, auto, 50px); .size(315px);
+	                .position(absolute, 50px, auto, 50px); .size(@metro-column - 10);
 	                
 	                > div:nth-child(2) { right: 5px !important; }
 	                	            
@@ -1103,7 +1186,7 @@ input.accent-bg, textarea.accent-bg {
 		
 		h2.title, h4.title  
 		{
-		    .maxsize(95%, 24px); 
+		    .maxsize(95%, 26px); line-height: 24px;
 		    
 		    > span:first-child { .maxsize(60%, 35px); .iblock; line-height: 30px; }
 		}
@@ -1140,7 +1223,7 @@ input.accent-bg, textarea.accent-bg {
 		&.sprint {
 			.mini-box { .size(auto, 20px, 20px); margin: 10px 0;  padding: 0 6px; }
 			
-			p { .clear; }
+		    p { .clear; }
 		}
 	}
 	
@@ -1351,6 +1434,39 @@ body[theme=white] .icon-action {
 	    &.left { border-left: 4px solid @colorDone; }
 	}
 }
+
+#task-list {
+    .In.Progress {
+	    .accent-bg {
+		    background-color: @colorInprog !important; 
+	    }
+	    .accent-color { color: @colorInprog !important; }
+    }
+				
+    .To.Do {
+	    .accent-bg {
+		    background-color: @colorTodo !important;
+	    }
+	    .accent-color { color: @colorTodo !important; }
+    }
+
+    .Done {
+	    .accent-bg {
+		    background-color: @colorDone !important;
+	    }
+	    .accent-color { color: @colorDone !important; }
+    }
+    
+    .true {
+	    border-left: 4px solid @colorBlocked !important;
+	    color: @colorRemoved;
+	                
+	    .accent-color { color: @colorRemoved !important; }
+	    .accent-bg {
+	        background-color: @colorRemoved !important;
+	    }
+	}
+}
 /*#endregion STATES */
 
 /*#region HTML CONTROLS */
@@ -1376,7 +1492,7 @@ textarea {
     .size(100%, 100%); .ohidden; .relative;
     padding: 0 10px;
     
-    h1              { .font-size(27); z-index: 1000; pointer-events: none; margin: 0 0 10px 0; .reset-p; .position(relative, -5px, auto, auto, 40px); max-width: 85%; }
+    h1              { .reset-p; .position(relative, -4px); .font-size(27); line-height: 26px; z-index: 1000; pointer-events: none; margin: 0 0 10px 0;  max-width: 85%; }
     .item           { max-width: 768px; margin: 0 15px 0 0; padding-top: 10px; }
     
     #swipeview > .list:first-child .pivot-content > .item:first-child { .noborder_; }
@@ -1384,11 +1500,11 @@ textarea {
     .scroll-list    { .size(100%, 100%); }
     p               { margin: 5px 0; line-height: 24px !important; .ohidden; .font-size(18); .clear; }
     .scroll-out     { padding: 0 12px; }
-    .tile-mini      { margin: 0 15px 15px 5px !important; }
+    .tile-mini      { margin: 0 15px 10px 1px !important; }
     
 	.field { 
 		.size(auto, auto, 30px); .ohidden; .clear;
-		margin: 5px 0 20px;
+		margin: 5px 0 20px; padding-left: 1px;
 		
 		&:first-child           { margin-top: 20px; }
 		
@@ -1652,10 +1768,9 @@ body[theme="white"] .detail .field .field.active    { border-color: Black !impor
 
 /*#region Screen (-480) */
 @media only screen and (max-width : 480px), (max-device-width : 480px) {
-	.main-header 
-	{
+	.main-header {
 	    &.main-page {
-	        h1 { .tacenter; max-width: inherit;  width: auto; text-indent: -15px; }
+	        h1 { .tacenter; max-width: inherit;  width: auto; text-indent: -25px; line-height: 40px; }
 	    }
 	}
 	
@@ -1665,7 +1780,7 @@ body[theme="white"] .detail .field .field.active    { border-color: Black !impor
 	    .ohidden; 
 	           
 	    #scroller  {
-            .size(1920px, 100%);
+            .size(@metro-column * 6, 100%);
             
             .pivot-list {
 	            .pivot {
@@ -1677,7 +1792,7 @@ body[theme="white"] .detail .field .field.active    { border-color: Black !impor
 	
 	.icon-action {
 	    &.topleft { .fleft; }
-	    &.main-top-right    { .position(relative, -10px); }    
+	    &.main-top-right    { .position(relative, -5px); }    
 	}
 	
 	.metro-pivot {
@@ -1714,7 +1829,11 @@ body[theme="white"] .detail .field .field.active    { border-color: Black !impor
         }
     }
     
-    #metro-tiles .metro-tiles { max-width: 300px; }
+    #metro-tiles-scroll {
+        top: 55px;
+        
+	    #metro-tiles .metro-tiles { max-width:300px; }
+	}
 }
 /*#endregion Screen (-480) */
 
@@ -1724,10 +1843,8 @@ body[theme="white"] .detail .field .field.active    { border-color: Black !impor
         .transition();
         
 	    &.main-page {
-	        h1 { .tacenter; max-width: inherit;  width: auto; text-indent: -15px; }
+	        h1 { width: 490px; line-height: 40px; }
 	    }
-        
-        h1 { .font-size(40); }
     }
     
     .icon-action {
@@ -1737,14 +1854,14 @@ body[theme="white"] .detail .field .field.active    { border-color: Black !impor
 	
 	#wrapper {
         #scroller  {
-            .size(1920px, 100%);
+            .size(@metro-column * 6, 100%);
             
             .pivot-list {
 	            .pivot {
 	                h1 { margin-bottom: 5px; font-size: 30px; }
 	                
 	                .scroll-list {
-	                    .position(absolute, 50px, auto, 50px); .size(315px);
+	                    .position(absolute, 50px, auto, 50px); .size(@metro-column - 10);
 	                
 	                    > div:nth-child(2) { right: 5px !important; }
 	                	            
@@ -1779,7 +1896,12 @@ body[theme="white"] .detail .field .field.active    { border-color: Black !impor
 	    h1, h2 { font-size: 70px !important; }
 	}
 
-	#metro-tiles .metro-tiles { max-width: 300px; }
+    #metro-tiles-scroll 
+    {
+        top: 55px;
+        
+	    #metro-tiles .metro-tiles { max-width: 525px; }
+	}
 }
 /*#endregion Screen (480-768) */
 
@@ -1800,13 +1922,13 @@ body[theme="white"] .detail .field .field.active    { border-color: Black !impor
 
 /*#region Screen (768+) */
 @media only screen and (min-width: 769px) {
-	.pivot h1 { font-size: 37px !important; margin-bottom: 5px; }
+	.pivot h1 { font-size: 32px !important; margin-bottom: 5px; }
 	
 	.main-header {
         .transition();
 	    
 	    h1 {
-	        .font-size(38); line-height: 45px;
+	        line-height: 45px;
 	        
 	        &.default {
                 -webkit-transform: translate3d(200px, 0, 0);
@@ -1825,14 +1947,14 @@ body[theme="white"] .detail .field .field.active    { border-color: Black !impor
 	
 	.icon-action {
 	    &.topleft           { .fleft; }
-	    &.main-top-right    { .position(relative, -10px); }
+	    &.main-top-right    { .position(relative, -5px); }
 	}
 	
 	#wrapper {
 	    .size(100%, 92%); .ohidden;
 	    
         #scroller  {
-            .size(1660px, 100%);
+            .size(@metro-column * 5, 100%);
             
             .pivot-list {
                 .pivot {

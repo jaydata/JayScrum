@@ -402,6 +402,10 @@ hr.soften {
 		        &.number {
 			        .position(absolute, 7px, 7px); .font-size(14); line-height: 14px;
 		        }
+		        &.b-right 
+		        {
+		            .position(absolute, auto, 7px, 7px); .font-size(14); line-height: 14px;
+		        }
 		        color: #fff;
 		    }
 		}
@@ -745,12 +749,12 @@ transform: skew(@deg, @deg2); }
 -webkit-transition-duration : @duration;
 transition-duration: @duration; }
 
-.transition(@duration: .2s, @ease: ease) {
--webkit-transition : all @duration @ease;
--moz-transition : all @duration @ease;
--ms-transition: all @duration @ease;
--o-transition: all @duration @ease;
-transition : all @duration @ease; }
+.transition(@duration: .2s, @property: all, @ease: ease) {
+-webkit-transition : @property @duration @ease;
+-moz-transition : @property @duration @ease;
+-ms-transition: @property @duration @ease;
+-o-transition: @property @duration @ease;
+transition: @property @duration @ease; }
 
 .notransition(){
 -webkit-transition : none !important;

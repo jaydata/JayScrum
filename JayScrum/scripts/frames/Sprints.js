@@ -13,7 +13,6 @@ $data.Class.define('JayScrum.Views.Sprints', JayScrum.FrameView, null, {
     initializeView:function(){
         JayScrum.app.hideLoading();
         $("h1.main-header").addClass("animate");
-        $("div.icon-action.back.topleft.main").show();
         this.i_scroll = JayScrum.app.initScrollById("transition-iteration");
     },
     tearDownView:function(){

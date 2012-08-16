@@ -169,7 +169,6 @@
         this.pageTitle('ui settings');
 
         $("h1.main-header").addClass("animate");
-        $("div.icon-action.back.topleft.main").show();
         var font = $("body").attr('font');
         $("div.field.fonts div.field").each(function () {
             if ($(this).attr('font') == font)
@@ -314,7 +313,6 @@
         $data.Model.mainPage.selectedWorkItem(wrkItem);
         $data.Model.mainPage.selectedWorkItemActive(wrkItem);
         $("h1.main-header").addClass("animate");
-        $("div.icon-action.back.topleft.main").hide();
         $("div.metro-actionbar.detail-view").addClass("opened");
 
         // SWIPEVIEW FOR TASKS
@@ -807,7 +805,6 @@
         $data.Model.mainPage.activePart('selectedWorkitem');
         $data.Model.mainPage.selectedWorkItem(wrkItem);
         $("h1.main-header").addClass("animate");
-        $("div.icon-action.back.topleft.main").hide();
         $("div.metro-actionbar.detail-view").addClass("opened");
 
         initSwipeviewById("swipeview", $data.Model.mainPage.selectedWorkitemChildren(), wrkItem.Id());
@@ -828,7 +825,6 @@
                 $data.Model.mainPage.activePart('iterationList');
                 $data.Model.mainPage.pageTitle('sprints');
                 $("h1.main-header").addClass("animate");
-                $("div.icon-action.back.topleft.main").show();
                 initScrollById("transition-iteration", null, null, true);
             });
     },

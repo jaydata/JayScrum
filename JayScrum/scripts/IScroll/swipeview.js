@@ -418,8 +418,6 @@ var SwipeView = (function () {
             for (var i = 0; i < 3; i++) {
                 this.masterPages[i].className = this.masterPages[i].className.replace(/(^|\s)swipeview-loading(\s|$)/, ''); 	// Remove the loading class
                 this.masterPages[i].dataset.pageIndex = this.masterPages[i].dataset.upcomingPageIndex;
-
-                //console.log('flip', this.masterPages[i].dataset.pageIndex);
             }
             console.log("______flip_end");
         },

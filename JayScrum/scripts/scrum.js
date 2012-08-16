@@ -266,7 +266,7 @@ $data.Class.define('JayScrum.ScrumApp', JayScrum.FrameApp, null,{
             transition = $("div#" + id);
 
         i_scroll = new iScroll(id, new iScrollOptions(fn, fn2));
-        transition.addClass("animate").prev().addClass("animate");
+        transition.addClass("animate").parent().find('h1.pivot-default').addClass("animate");
 
         // pull up to load more
         if (fn) {
