@@ -611,7 +611,7 @@ body {
     -webkit-text-size-adjust: none;
 }
 
-a, span, div, h1, h2, h3, h4, h5, h7, button, input, checkbox, textarea, p
+a, span, div, h1, h2, h3, h4, h5, h7, p
 {
     .box; -webkit-user-select: none;
         
@@ -747,16 +747,16 @@ h2.title                { .font-size(22px); }
 
 /*#region SWIPEVIEW */
 #swipeview-slider {
-    > .swipeview-active {
-        opacity: 1; .transition(.2s, opacity); /*-webkit-transition: all 0.3s ease-in;*/
+    /*> .swipeview-active {
+        opacity: 1; .transition(.2s, opacity);
     }
     
-    > div { opacity: 0; .transition(.2s, opacity); /*-webkit-transition: all 0.3s ease-in;*/ }
+    > div { opacity: 0; .transition(.2s, opacity); }*/
     
     > div[id^="swipeview"] > div:nth-child(2) > div:first-child {
         background: white!important;
         border: 0!important;
-        opacity: .2;    
+        opacity: .2;
     }
 }
 
@@ -1123,7 +1123,7 @@ input.accent-bg, textarea.accent-bg {
 		    
 		    &.orange        { background: #dd9616; }
 		    &.darkorange    { background: #e76321; }
-			&.purple        { background: #69349c; }
+			&.purple        { background: #69349c; border: 1px solid lighten(#69349c, 10%);  }
 			&.pink          { background: pink; }
 			&.darkpink      { background: #b71c46; }
 			&.done          { background: @colorDone; }
@@ -1612,7 +1612,7 @@ body[theme="white"] .detail .field .field.active    { border-color: Black !impor
     }
         
     ul {
-        .iblock; .reset-m; .size(100%, 100%); padding-top: 7px; 
+        .iblock; .reset-m; .size(100%, 100%); padding: 7px 0 0 0; 
         
         li { line-height: 25px; }
     }
@@ -1746,7 +1746,7 @@ body[theme="white"] .detail .field .field.active    { border-color: Black !impor
 }
 /*#endregion SETTING PAGE */
 
-/*#region HINT SCREEN */
+/*#region HINTS */
 .hint-screen 
 {
     .position(absolute, 0, 0, 0, 0);
@@ -1754,13 +1754,25 @@ body[theme="white"] .detail .field .field.active    { border-color: Black !impor
     
     .container 
     {
-         .mauto;
+        .mauto;
         padding: 20px; max-width: 768px;
     }
     
     .btn-metro { max-width: 450px; margin-top: 25px; }
 }
-/*#endregion HINT SCREEN */
+
+.hint-text 
+{
+    font-size: 18px; line-height: 25px !important;        
+}
+
+.hint-bubble 
+{
+    @hb-width: 200px;
+    
+    .position(absolute, -35px, auto, auto, 50%); .size(@hb-width, 30px, 30px); margin-left: -@hb-width / 2;
+}
+/*#endregion HINTS */
 
 /*#endregion METRO STYLE */
 
