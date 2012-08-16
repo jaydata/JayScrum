@@ -87,6 +87,7 @@ var SwipeView = (function () {
         customEvents: [],
 
         onFlip: function (fn) {
+            console.log("orig onflip")
             this.wrapper.addEventListener('swipeview-flip', fn, false);
             this.customEvents.push(['flip', fn]);
         },
@@ -208,6 +209,7 @@ var SwipeView = (function () {
         },
 
         handleEvent: function (e) {
+            //console.log(e.type);
             switch (e.type) {
                 case startEvent:
                     this.__start(e);
@@ -324,6 +326,7 @@ var SwipeView = (function () {
         },
 
         __end: function (e) {
+            console.log("______end")
             if (!this.initiated) return;
 
             var point = hasTouch ? e.changedTouches[0] : e,
@@ -346,6 +349,7 @@ var SwipeView = (function () {
             }
 
             this.__checkPosition();
+            console.log("______end_end")
         },
 
         __checkPosition: function () {
@@ -408,6 +412,7 @@ var SwipeView = (function () {
         },
 
         __flip: function () {
+            console.log("______flip");
             this.__event('flip');
 
             for (var i = 0; i < 3; i++) {
@@ -416,6 +421,7 @@ var SwipeView = (function () {
 
                 //console.log('flip', this.masterPages[i].dataset.pageIndex);
             }
+            console.log("______flip_end");
         },
 
         __event: function (type) {
