@@ -1355,7 +1355,13 @@
                     <div class="list detail">
                         <div id="settings-edit" class="detail edit reset-p">
                             <div class="tolower item reset-m">
-                                <div class="field">
+
+
+                                <div data-bind="template:{name: 'object-property-editor', foreach: $data.getProperties() }">
+                                </div>
+
+
+                                <!--<div class="field">
                                     <div><span>Name</span></div>
                                     <input class="medium accent-bg" type="text" data-bind="value: login" />
                                 </div>
@@ -1382,10 +1388,10 @@
 
                                 <div class="field">
                                     <div><span>Role</span></div>
-                                    <!--ko foreach: $parent.data().roles-->
+                                    &lt;!&ndash;ko foreach: $parent.data().roles&ndash;&gt;
                                     <input type="checkbox" value="role1" data-bind="value: $data.name, checked: $parent.roles2" /> <span data-bind="text: $data.name">Role 1</span>
-                                    <!--/ko-->
-                                </div>
+                                    &lt;!&ndash;/ko&ndash;&gt;
+                                </div>-->
 
                                 <div class="split2">
                                     <span class="btn-metro btn-large margin10_0" data-bind="click: $parent.onSaveUser">
@@ -1401,6 +1407,19 @@
         </div>
     </script>
 
+    <script type="text/html" id="object-property-editor">
+        <div data-bind="text: name"></div>
+        <div data-bind="template: { name: type + '-editor' }"></div>
+    </script>
+    <script type="text/html" id="Edm.String-editor">
+        <input data-bind="value: value" />
+    </script>
+    <script type="text/html" id="Edm.Boolean-editor">
+        <input type="checkbox" data-bind="checked: value" />
+    </script>
+    <script type="text/html" id="Edm.DateTime-editor">
+        <input type="datetime" data-bind="value: value" />
+    </script>
     <!-- #endregion TEMPLATES -->
 
     <script type="text/javascript" src="scripts/cordova-2.0.0.js"></script>
