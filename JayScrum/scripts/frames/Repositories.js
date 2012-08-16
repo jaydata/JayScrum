@@ -70,18 +70,21 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
         return this.localContext.Repositories.toArray(callBack);
     },
     connectTo:function (repoSetting) {
-        if(repoSetting.Url.indexOf('http') !== 0){
-            repoSetting.Url = 'http://app1.storm.jaystack.com:3000/'+repoSetting.Url;
+        var url = repoSetting.Url;
+        if(url.indexOf('http') !== 0){
+            //url = 'http://app1.storm.jaystack.com:3000/'+repoSetting.Url.toLowerCase();
+            url = 'http://192.168.1.142:3000/'+repoSetting.Url.toLowerCase();
         }
 
         var urlparser = document.createElement('a');
-        urlparser.href = repoSetting.Url;
+        urlparser.href = url;
         var dbName = urlparser.pathname.slice(1);
         if(dbName[dbName.length-1] === '/'){
             dbName = dbName.slice(0,-1);
         }
 
         var createDbUrl = urlparser.protocol + '//' + urlparser.host + '/CreateDatabase?dbName=' + dbName + '&schemaName=jayscrumcontext';
+        var createUserDbUrl = urlparser.protocol + '//' + urlparser.host + '/CreateDatabase?dbName=' + dbName + '_users&schemaName=jaystormcontext';
         $.ajax({
             url:createDbUrl,
             error:function (xhr, status, error) {
@@ -89,13 +92,16 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
                 JayScrum.app.selectedFrame()._initializeRepositoriesFrame();
             },
             success:function (data, status, xhr) {
-                JayScrum.repository = new LightSwitchApplication.ApplicationData({
-                    name:'oData',
-                    oDataServiceHost:repoSetting.Url,
-                    user:repoSetting.UserName,
-                    password:repoSetting.Password });
-                JayScrum.repository.onReady(function () {
-                    JayScrum.app.selectFrame('MainFrame');
+
+                $.ajax({
+                    url: createUserDbUrl,
+                    error:function (xhr, status, error) {
+                        console.log(error);
+                        JayScrum.app.selectedFrame()._initializeRepositoriesFrame();
+                    },
+                    success:function (data, status, xhr) {
+                        JayScrum.app._initializeRepositories(url, repoSetting.UserName, repoSetting.Password);
+                    }
                 });
             }
         });

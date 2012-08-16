@@ -43,7 +43,6 @@ $data.Class.define('$data.MetadataLoaderClass', null, null, {
             xsltProcessor.setParameter(null, 'SerivceUri', metadataUri.replace('/$metadata',''));
             resultDocument = xsltProcessor.transformToFragment(metadata, document);
 
-            console.dir(resultDocument.textContent);
             return resultDocument.textContent;
         }
     },
@@ -72,7 +71,7 @@ $data.Class.define('$data.MetadataLoaderClass', null, null, {
     },
     _supportedODataVersionXSLT: {
         value: {
-            "V1": 'JayDataContextGen$my.contexterator_OData_V1.xslt',
+            "V1": 'JayDataContextGenerator_OData_V1.xslt',
             "V2": 'JayDataContextGenerator_OData_V2.xslt',
             "V3": 'JayDataContextGenerator_OData_V3.xslt',
             "V11": 'JayDataContextGenerator_OData_V11.xslt'

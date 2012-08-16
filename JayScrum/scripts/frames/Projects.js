@@ -148,9 +148,9 @@ $data.Class.define('JayScrum.Frames.Projects', JayScrum.Frame, null, {
             Type: "UserStory",
             Description: "",
             CreatedDate: new Date().toISOString(),
-            CreatedBy: 'Admin', //$data.Model.settingPage.loginSettings.UserName, //TODO: add user data
+            CreatedBy: JayScrum.app.globalData().user().login(),
             ChangedDate: new Date().toISOString(),
-            ChangedBy: 'Admin', //$data.Model.settingPage.loginSettings.UserName, //TODO: add user data
+            ChangedBy: JayScrum.app.globalData().user().login(),
             Priority: 0,
             AssignedTo: "",
             State: "To Do",

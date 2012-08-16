@@ -274,6 +274,7 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
         }
         //save workItem
         wrkItem.ChangedDate(new Date());
+        wrkItem.ChangedBy(JayScrum.app.globalData().user().login());
         wrkItem.IsBlocked(wrkItem.IsBlocked()==='true'?true:false);
 
         JayScrum.app.selectedFrame().data().todoList.remove(function(item){return item.Id() == wrkItem.Id()});
@@ -306,9 +307,9 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
             Type: "Task",
             Description: "",
             CreatedDate: new Date().toISOString(),
-            CreatedBy: 'Admin', //$data.Model.settingPage.loginSettings.UserName, //TODO: add user data
+            CreatedBy: JayScrum.app.globalData().user().login(),
             ChangedDate: new Date().toISOString(),
-            ChangedBy: 'Admin', //$data.Model.settingPage.loginSettings.UserName, //TODO: add user data
+            ChangedBy: JayScrum.app.globalData().user().login(),
             Priority: 0,
             AssignedTo: "",
             State: "To Do",
