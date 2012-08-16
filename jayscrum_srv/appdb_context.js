@@ -57,15 +57,15 @@
         $data.Container.registerType('Edm.String', Edm_String);
         $data.Container.mapType(Edm_String, $data.String);
 
-        function Edm_ObjectID() { };
+       /* function Edm_ObjectID() { };
         $data.Container.registerType('Edm.ObjectID', Edm_ObjectID);
-        $data.Container.mapType(Edm_ObjectID, $data.ObjectID);
+        $data.Container.mapType(Edm_ObjectID, $data.ObjectID);*/
 
     };
     //registerEdmTypes();
 
     $data.Entity.extend('AppDB.Database', {
-        'Id':{ key:true, type:'Edm.ObjectID', nullable:false, computed:true },
+        'Id':{ key:true, type:'id', nullable:false, computed:true },
         'RowVersion':{ type:'Edm.Binary', nullable:false, concurrencyMode:$data.ConcurrencyMode.Fixed, computed:true },
         dbName: { type: 'Edm.String'},
         dbType: { type: 'Edm.String'}

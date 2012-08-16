@@ -336,9 +336,10 @@ $data.Class.define('JayScrum.Frames.UserStories', JayScrum.Frame, null, {
         });
     },
     onDeleteUserStory: function (workItem){
-        JayScrum.repository.remove(workItem.innerInstance);
+        JayScrum.repository.remove(workItem);
+        JayScrum.app.selectedFrame().data().userStoriesInSprintList().forEach(function(sprint){sprint.list.remove(workItem)});
         JayScrum.repository.saveChanges(function () {
-            $data.Model.mainPage.onCancelWorkItem(workItem);
+            JayScrum.app.selectedFrame().onCancelUserStory(workItem);
         });
     },
 

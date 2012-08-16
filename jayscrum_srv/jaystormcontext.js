@@ -78,9 +78,9 @@ function registerEdmTypes() {
     $data.Container.registerType('Edm.String', Edm_String);
     $data.Container.mapType(Edm_String, $data.String);
 
-    function Edm_ObjectID() { };
+    /*function Edm_ObjectID() { };
     $data.Container.registerType('Edm.ObjectID', Edm_ObjectID);
-    $data.Container.mapType(Edm_ObjectID, $data.ObjectID);
+    $data.Container.mapType(Edm_ObjectID, $data.ObjectID);*/
 
 };
 registerEdmTypes();

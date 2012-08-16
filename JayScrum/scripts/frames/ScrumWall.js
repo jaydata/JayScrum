@@ -332,8 +332,12 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
     },
     onDeleteWorkItem: function (workItem) {
         JayScrum.repository.remove(workItem.innerInstance);
+        var index = JayScrum.app.selectedFrame().activeList.indexOf(workItem);
+        if(index>-1){
+            JayScrum.app.selectedFrame().activeList.splice(index,1);
+        }
         JayScrum.repository.saveChanges(function () {
-            $data.Model.mainPage.onCancelWorkItem(workItem);
+            JayScrum.app.selectedFrame().onCancelWorkItem(workItem);
         });
     },
 
