@@ -15,13 +15,11 @@ var debug = true,
         this.bounce = true;
         this.lockDirection = true;
         //this.handleClick = false;
-
         this.onScrollStart = function () {
             if ($('input:focus, select:focus, textarea:focus').length > 0) {
                 $(':focus').blur();
             }
         };
-
         this.onScrollMove = function () {
             //console.log(this.y, this.maxScrollY);
 
@@ -258,7 +256,7 @@ $data.Class.define('JayScrum.ScrumApp', JayScrum.FrameApp, null,{
             transition = $("div#" + id);
 
         i_scroll = new iScroll(id, new iScrollOptions(fn, fn2));
-        transition.addClass("animate").prev().addClass("animate");
+        transition.addClass("animate").parent().find('h1.pivot-default').addClass("animate");
 
         // pull up to load more
         if (fn) {
@@ -307,14 +305,6 @@ $data.Class.define('JayScrum.ScrumApp', JayScrum.FrameApp, null,{
                         break;
                 }
 
-                // TODO: layout is broken on first load
-                var swipeviewUs = $("#swipeview-inside-" + gallery.currentMasterPage),
-                    title = swipeviewUs.prev(),
-                    minusHeight = title.height() + 15;
-
-                //console.log(minusHeight);
-                var self = gallery;
-                swipeviewUs.css('top', minusHeight);
                 setTimeout(function () {
                     if (self.i_scroll) {
                         self.i_scroll.destroy();
@@ -323,10 +313,10 @@ $data.Class.define('JayScrum.ScrumApp', JayScrum.FrameApp, null,{
                     self.i_scroll = JayScrum.app.initScrollById('swipeview-inside-' + gallery.currentMasterPage);
                 }, 0);
             });
-            setTimeout(function(){
-                gallery.goToPage(currentIndex);
-            }, 200);
 
+            //setTimeout(function(){
+                gallery.goToPage(currentIndex);
+            //}, 0);
         }
         return gallery;
     },

@@ -64,10 +64,8 @@
 
     <script type="text/html" id="dashBoard-template">
         <div class="main-header" data-bind="attr: { 'class': 'main-header main-page' }">
-            <h1 class="pivot-default animate" data-bind="text: $root.selectedFrame().data().name">
-            </h1>
+            <h1 class="pivot-default animate" data-bind="text: $root.selectedFrame().data().name"></h1>
         </div>
-
         <div id="metro-tiles-scroll" class="scroll-out pivot-default-opacity">
             <div class="scroll-in">
                 <div id="metro-tiles">
@@ -76,8 +74,9 @@
                         <li data-bind="attr: { 'class': $parent.isPinnedSprint($data) ? 'wide pinned' : 'wide' }">
                             <span data-bind="click: $parent.onTaskListShow">
                                 <span class="day" data-bind="text: moment(FinishDate).diff(moment(), 'days') + ' days left'"></span>
-                                <span class="number" data-bind="text: Name"></span>
+                                <span class="b-right" data-bind="text: Name"></span>
                                 <span class="text" data-bind="text: tasksLeft+' task left'"></span>
+                                <!--<span class="number">scrumwall</span>-->
                                 <!--ko if: $parent.isPinnedSprint($data)-->
                                 <!--<span class="pin"></span>-->
                                 <!--/ko-->
@@ -360,17 +359,16 @@
     </script>
     <script type="text/html" id="taskSelectView-template">
         <div class="detail maxw768">
+            <div class="icon-action back topleft absolute" data-bind="with: $data.data().selectedWorkItem">
+                <span data-bind="click: $root.selectedFrame().onCancelWorkItem"></span>
+            </div>
             <div id="wrapper-detailed" class="scroll-out">
                 <div id="swipeview" class="scroller-in">
                     <div class="list maxlist">
-                        <div class="icon-action back topleft absolute" data-bind="with: $data.data().selectedWorkItem">
-                            <span data-bind="click: $root.selectedFrame().onCancelWorkItem"></span>
-                        </div>
                         <div id="swipeview-slider">
                             <div id="swipeview-masterpage-0" data-bind="with: $data.data().selectedWorkItemPrev">
                                 <div class="pivot-content">
                                     <div class="item task" data-bind="attr: { 'class': 'item task ' + State() }">
-                                        <h1 class="accent-color" data-bind="text: Title"></h1>
                                         <div id="swipeview-inside-0">
                                             <div class="tolower">
                                                 <!-- ko template: { name: 'workItemSelector-template', data: $data }-->
@@ -383,7 +381,6 @@
                             <div id="swipeview-masterpage-1" data-bind="with: $data.data().selectedWorkItem">
                                 <div class="pivot-content">
                                     <div class="item task" data-bind="attr: { 'class': 'item task ' + State() }">
-                                        <h1 class="accent-color" data-bind="text: Title"></h1>
                                         <div id="swipeview-inside-1">
                                             <div class="tolower">
                                                 <!-- ko template: { name: 'workItemSelector-template', data: $data }-->
@@ -396,7 +393,6 @@
                             <div id="swipeview-masterpage-2" data-bind="with: $data.data().selectedWorkItemNext">
                                 <div class="pivot-content">
                                     <div class="item task" data-bind="attr: { 'class': 'item task ' + State() }">
-                                        <h1 class="accent-color" data-bind="text: Title"></h1>
                                         <div id="swipeview-inside-2">
                                             <div class="tolower">
                                                 <!-- ko template: { name: 'workItemSelector-template', data: $data }-->
@@ -549,8 +545,8 @@
         <div class="fleft tile-mini accent-bg">
             <span class="icon" data-bind="attr: { 'class': 'icon ' + State() }"></span>
         </div>
-        <span class="description" data-bind="html: Description"></span>
-
+        <h1 class="accent-color" data-bind="text: Title"></h1>
+        <p class="description clear" data-bind="html: Description"></p>
         <div class="field">
             <div class="tile-small project"></div>
             <div>
@@ -654,7 +650,7 @@
 
                     <!-- ko foreach: $data.data().userStoriesInSprintList-->
                     <div class="pivot">
-                        <h1 class="pivot-default animate" data-bind="text: $data.sprintName"></h1>
+                        <h1 class="pivot-default" data-bind="text: $data.sprintName"></h1>
                         <div class="sprint-dates">
                             <span data-bind="text: moment($data.StartDate).format('YY.MM.DD')"></span>
                             -<span data-bind="text: moment($data.FinishDate).format('YY.MM.DD')"></span>
@@ -675,8 +671,7 @@
         <div class="list" data-bind="foreach: $data">
             <div class="item task list-item" data-bind="attr: { 'class': 'item task list-item ' + State() + ' ' + IsBlocked() }">
                 <!-- ko if: Title -->
-                <h2 class="title margintop tolower" data-bind="text: Title, click: $root.selectedFrame().onSelectUserStory">
-                </h2>
+                <h2 class="title margintop tolower" data-bind="text: Title, click: $root.selectedFrame().onSelectUserStory"></h2>
                 <!-- /ko -->
 
                 <!-- ko if: ProjectName -->
@@ -704,19 +699,14 @@
     </script>
     <script type="text/html" id="userStorySelectView-template">
         <div class="detail maxw768" data-bind="with: $data.data().selectedUserStory">
-            <div id="wrapper-detailed" class="scroll-out">
+            <div class="icon-action back topleft absolute">
+                <span data-bind="click: $root.selectedFrame().onCancelUserStory"></span>
+            </div>
+            <div id="wrapper-detailed" class="scroll-out top30">
                 <div id="swipeview" class="scroller-in">
                     <div class="list maxlist">
-                        <div class="icon-action back topleft absolute">
-                            <span data-bind="click: $root.selectedFrame().onCancelUserStory"></span>
-                        </div>
                         <div class="pivot-content">
                             <div class="item task" data-bind="attr: { 'class': 'item task ' + State() }">
-
-                                <!-- ko if: Title -->
-                                <h1 class="accent-color" data-bind="text: Title"></h1>
-                                <!-- /ko -->
-
                                 <div id="swipeview-inside-us">
                                     <div class="tolower">
 
@@ -746,15 +736,22 @@
                                             <!--ko if: $parent.data().selectedUserStoryTaskList().length > 0-->
                                             <div class="list">
                                                 <!--ko foreach: $parent.data().selectedUserStoryTaskList()-->
-                                                <div class="item task list-item New">
+                                                <div data-bind="attr: { 'class': IsBlocked() == true ? 'item task list-item pointer ' + IsBlocked() : 'item task list-item pointer ' + State() }, click: $root.selectedFrame().onSelectWorkItemOfUserStory">
                                                     <!-- ko if: Title -->
-                                                    <h2 class="title margintop" data-bind="text: Title, click: $root.selectedFrame().onSelectWorkItemOfUserStory">
-                                                    </h2>
+                                                    <h2 class="title margintop" data-bind="text: Title"></h2>
                                                     <!-- /ko -->
 
-                                                    <div>
+                                                    <!-- ko if: ParentName -->
+                                                    <h4 class="title accent-color" data-bind="text: ParentName"></h4>
+                                                    <!-- /ko -->
+
+                                                    <!-- ko if: ProjectName -->
+                                                    <span class="small inactive iblock" data-bind="text: 'Project: ' + ProjectName()"></span>
+                                                    <!-- /ko -->
+
+                                                    <div class="inactive">
                                                         <!-- ko if: RemainingWork -->
-                                                        <span class="small accent-bg" data-bind="text: RemainingWork()+' h'"></span>
+                                                        <span class="small accent-bg" data-bind="text: RemainingWork() + ' h'"></span>
                                                         <!-- /ko -->
 
                                                         <!-- ko if: AssignedTo -->
@@ -762,7 +759,8 @@
                                                         <!-- /ko -->
 
                                                         <!-- ko if: Priority -->
-                                                        | <span class="small inactive" data-bind="text: 'prior: '+Priority()"></span>
+                                                        | <span class="small inactive" data-bind="text: 'prior: ' + Priority()">
+                                                        </span>
                                                         <!-- /ko -->
                                                     </div>
                                                 </div>
