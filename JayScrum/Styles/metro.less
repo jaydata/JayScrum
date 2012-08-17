@@ -611,7 +611,7 @@ body {
     -webkit-text-size-adjust: none;
 }
 
-a, span, div, h1, h2, h3, h4, h5, h7, p
+a, span, div, h1, h2, h3, h4, h5, h6, p
 {
     .box; -webkit-user-select: none;
         
@@ -1092,10 +1092,9 @@ input.accent-bg, textarea.accent-bg {
 		    #metro > .tile;
 
 		    &:hover     { .pointer; }
-            &:active    { .scale(0.85); .transition(0.1s) }
+            &:active    { .scale(0.85); .transition(0.1s); }
 
-		    &.tile 
-		    {
+		    &.tile {
 		        .text { .capitalize_; }
 		        .number { .transition(); }
 		    }
@@ -1156,12 +1155,12 @@ input.accent-bg, textarea.accent-bg {
 		        height: 57px !important;
 		        &.middle { margin-top: -25px !important; }
 		        
-		        &.settings  { background-position: center 0px; }
-		        &.repos     { background-position: center -57px; }
+		        &.settings  { background-position: center /*0px;-*/ -397px; }
+		        &.repos     { background-position: center /*-57px;*/ -456px }
 		        &.sprints   { background-position: center -114px; }
 		        &.projects  { background-position: center -171px; }
 		        &.users     { background-position: center -228px; }
-		        &.us        { background-position: center -285px; }
+		        &.us        { background-position: center /*-285px;*/ -513px;}
 		    }
 	    }
     }
@@ -1476,16 +1475,21 @@ input[type=text], input[type=password], input[type=number], input[type=date], in
 	background: #fff; color: black; border: none; font-size: 17px;
 	max-height: 100px; max-width: 100%;
 	z-index: 2500; -webkit-border-radius: 0px !important; .rounded(0);
+	
+	&:-webkit-input-placeholder { color: red !important; }
 }
 
 input[type=text], input[type=password], input[type=number], input[type=date], input[type=datetime], select{
-	.show; .size(100%, 30px, 30px);
+	.show; .size(100%, 30px); vertical-align: middle;
 	padding: 0 0 0 5px;
+	
+	&::-webkit-input-placeholder { line-height: 1; position: relative; top: 3px; }
 }
 		    
 textarea {
 	.size(100%, 250px);
 }
+
 /*#endregion HTML CONTROLS */
 
 /*#region DETAIL */

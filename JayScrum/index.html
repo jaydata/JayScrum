@@ -16,7 +16,7 @@
 
     <link rel="stylesheet" href="Styles/metro.css" type="text/css" />
 
-    <style type="text/css">
+    <!--<style type="text/css">
         @-webkit-keyframes loading
         {
             0%
@@ -43,7 +43,7 @@
                 opacity: 0.2;
             }
         }
-    </style>
+    </style>-->
 </head>
 <body accent="blue" theme="black" font="segoewp" onorientationchange="setupScroll()">
     <div id="page">
@@ -1268,8 +1268,8 @@
             </ul>
         </div>
 
-        <!--ko if: $data.data().settings() != null -->
-        <!--ko if: $data.data().settings().length < 1 -->
+        <!-- ko if: $data.data().settings() != null -->
+        <!-- ko if: $data.data().settings().length < 1 -->
         <div class="hint-screen">
             <div class="container">
                 <h1>Welcome to JayScrum!</h1>
@@ -1286,8 +1286,8 @@
                 </div>
             </div>
         </div>
-        <!--/ko-->
-        <!--/ko-->
+        <!-- /ko -->
+        <!-- /ko -->
     </script>
 
     <script type="text/html" id="usersPage-template">
@@ -1455,12 +1455,10 @@
 
     <script type="text/javascript" src="scripts/cordova-2.0.0.js"></script>
     <script type="text/javascript" src="scripts/libs/moment.js"></script>
-    <!--[if IE]>
-    <script type="text/javascript" src="scripts/libs/jquery-1.7.2.min.js"></script>
-    <![endif]-->
-    <!--[if !IE]> -->
+
     <script type="text/javascript" src="scripts/libs/zeptojs.min.js"></script>
-    <!-- <![endif]-->
+    <script type="text/javascript" src="scripts/libs/jquery-1.7.2.min.js"></script>
+
     <script type="text/javascript" src="scripts/libs/q.js"></script>
     <script type="text/javascript" src="scripts/libs/knockout-2.1.0.debug.js"></script>
     <script type="text/javascript" src="scripts/libs/datajs-1.0.3.min.js"></script>
