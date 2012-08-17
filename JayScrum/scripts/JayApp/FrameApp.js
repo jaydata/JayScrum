@@ -47,10 +47,12 @@ $data.Class.define('JayScrum.FrameApp', null, null, {
         return containerNode;
     },
     showLoading:function () {
-        JayScrum.app.loading.show();
-        JayScrum.app.loading.animate({
+        JayScrum.app.loading[0].style.display = "block";
+        JayScrum.app.loading[0].style.opacity = 1;
+        /*JayScrum.app.loading.show();*/
+        /*JayScrum.app.loading.animate({
             opacity:1
-        }, 0, 'ease-out');
+        }, 0, 'ease-out');*/
     },
     hideLoading:function () {
         JayScrum.app.loading.animate({

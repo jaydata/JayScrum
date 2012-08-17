@@ -1062,7 +1062,7 @@
                                             <div class="list">
                                                 
                                                 <!--ko foreach: $parent.data().userStoriesOfProject()-->
-                                                <div data-bind="attr: { 'class': IsBlocked() == true ? 'item task list-item pointer ' + IsBlocked() : 'item task list-item pointer ' + State() }, click: $root.selectedFrame().onSelectUserStory">
+                                                <div data-bind="attr: { 'class': IsBlocked() == true ? 'item task list-item pointer ' + IsBlocked() : 'item task list-item pointer ' + State() }, click: $root.selectedFrame().onSelectUserStoryOfProject">
                                                     <!-- ko if: Title -->
                                                     <h2 class="title margintop" data-bind="text: Title"></h2>
                                                     <!-- /ko -->

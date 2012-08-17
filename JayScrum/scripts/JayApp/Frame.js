@@ -57,6 +57,7 @@ $data.Class.define('JayScrum.Frame', null, null, {
     },
     onFrameChangingTo:function (newFrameData, oldFrameData, frame, disableResetData) {
         if(newFrameData.frameName !== oldFrameData.frameName && !disableResetData){
+            JayScrum.app.showLoading();
             this._resetData();
         }
     },
