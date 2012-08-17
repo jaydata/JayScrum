@@ -316,8 +316,21 @@ $data.Class.define('JayScrum.Frames.UserStories', JayScrum.Frame, null, {
         }
 
         JayScrum.repository.saveChanges(function (result) {
+            ///remove item from lists
+            JayScrum.app.selectedFrame().data().userStoriesInSprintList().forEach(function(sprint){sprint.list.remove(wrkItem)});
+            JayScrum.app.selectedFrame().data().userStoryList.remove(wrkItem);
+            //add item to new list
+            var sprint = [];
+            if(wrkItem.WorkItem_Sprint() === null){
+                sprint.push({list: JayScrum.app.selectedFrame().data().userStoryList});
+            }else{
+                sprint = JayScrum.app.selectedFrame().data().userStoriesInSprintList().filter(function(s){return s.sprintId == wrkItem.WorkItem_Sprint()});
+            }
+            if(sprint && sprint.length>0){
+                sprint[0].list.push(wrkItem);
+            }
             JayScrum.app.selectedFrame().onCancelUserStory();
-            });
+        });
     },
     onCancelUserStory: function (wrkItem, isEventCall) {
         JayScrum.repository.WorkItems.detach(wrkItem);
@@ -338,6 +351,7 @@ $data.Class.define('JayScrum.Frames.UserStories', JayScrum.Frame, null, {
     onDeleteUserStory: function (workItem){
         JayScrum.repository.remove(workItem);
         JayScrum.app.selectedFrame().data().userStoriesInSprintList().forEach(function(sprint){sprint.list.remove(workItem)});
+        JayScrum.app.selectedFrame().data().userStoryList.remove(workItem);
         JayScrum.repository.saveChanges(function () {
             JayScrum.app.selectedFrame().onCancelUserStory(workItem);
         });

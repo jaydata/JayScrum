@@ -139,6 +139,6 @@ $data.Class.define('JayScrum.Frames.Sprints', JayScrum.Frame, null, {
         });
     },
     onSelectSprint: function(item){
-        JayScrum.app.selectFrame('ScrumWall', undefined, item);
+        JayScrum.app.selectFrame('ScrumWall', undefined, item.innerInstance);
     }
 }, null);
