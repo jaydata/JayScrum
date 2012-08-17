@@ -1,6 +1,34 @@
+//Zepto.merge = function(first, second){return first.concat(second);}
 (function($){
     function prepareBurndownChart() {
-        var rawObject = JSON.parse($data.Model.currentSprint().SprintBurndownData);
+        var rawObject = JayScrum.app.selectedFrame().data().summaryList().SprintBurndownData();
+        /*rawObject = {};
+        rawObject.m_Item1 = ["Remaining hours", "To do hours", "Ideal line"];
+        rawObject.m_Item2 = [{
+            Key: "\/Date(1332191000000+0100)\/",
+            Value: [150, 140]
+        },{
+            Key: "\/Date(1332198000000+0100)\/",
+            Value: [140, 110]
+        },{
+            Key: "\/Date(1332199000000+0100)\/",
+            Value: [132, 125]
+        },{
+            Key: "\/Date(1332199100000+0100)\/",
+            Value: [107, 85]
+        },{
+            Key: "\/Date(1332199200000+0100)\/",
+            Value: [120, 60]
+        },{
+            Key: "\/Date(1332199300000+0100)\/",
+            Value: [100, 75]
+        },{
+            Key: "\/Date(1332199400000+0100)\/",
+            Value: [-1, -1]
+        },{
+            Key: "\/Date(1332199400000+0100)\/",
+            Value: [-1, -1]
+        }];*/
         var chartNames = rawObject.m_Item1;
         var columns = rawObject.m_Item2;
 
@@ -56,7 +84,7 @@
             var kvPair = columns[cIndex];
 
             kvPair.Key = kvPair.Key.substring(1, kvPair.Key.length - 1);
-            var date = eval('new ' + kvPair.Key + ';');
+            var date = kvPair.Key;
             var values = kvPair.Value;
 
             for (var vIndex = 0; vIndex <= values.length; vIndex++) {

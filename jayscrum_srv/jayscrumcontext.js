@@ -93,7 +93,7 @@ var Q = require('q');
         'Id':{ key:true, type:'id', nullable:false, computed:true },
         'RowVersion':{ type:'Edm.Binary', nullable:false, concurrencyMode:$data.ConcurrencyMode.Fixed, computed:true },
         'Name':{ type:'Edm.String', nullable:false, required:true, maxLength:255 },
-        'Description':{ type:'Edm.String', maxLength:255 }
+        'Description':{ type:'Edm.String', maxLength:1024 }
         //'WorkItems': { type: 'Array', elementType: 'LightSwitchApplication.WorkItem', inverseProperty: 'Project' }
     });
     $data.Entity.extend('LightSwitchApplication.Sprint', {
@@ -103,6 +103,13 @@ var Q = require('q');
         'StartDate':{ type:'Edm.DateTime', nullable:false, required:true },
         'FinishDate':{ type:'Edm.DateTime', nullable:false, required:true }
         //'WorkItems': { type: 'Array', elementType: 'LightSwitchApplication.WorkItem', inverseProperty: 'Sprint' }
+    });
+    $data.Entity.extend('LightSwitchApplication.BurndownData', {
+        'Id':{ key:true, type:'id', nullable:false, computed:true },
+        'SprintId':{ type:'id'},
+        'SprintDate':{ type:'Edm.DateTime'},
+        'ToDo':{ type:'Edm.Int32'},
+        'Left':{ type:'Edm.Int32'}
     });
     $data.ServiceBase.extend('LightSwitchApplication.ApplicationService', {
         getSprintsData:$data.JayService.serviceFunction()
@@ -163,7 +170,18 @@ var Q = require('q');
                                 done:workitemQueries[2].valueOf().length,
                                 inprogress_hour:workitemQueries[1].valueOf().reduce(function(previousValue, currentValue, index, array){return previousValue + currentValue.RemainingWork;},0),
                                 userStory:workitemQueries[3].valueOf(),
-                                task:9999
+                                task:9999,
+                                burnDown:{
+                                    m_Item1: ["Remaining hours", "To do hours", "Ideal line"],
+                                    m_Item2: [{Key: new Date('2012.08.13'), Value: [150, 140]},
+                                        {Key: new Date('2012.08.14'),Value: [140, 110]},
+                                        {Key: new Date('2012.08.15'),Value: [132, 125]},
+                                        {Key: new Date('2012.08.16'),Value: [107, 85]},
+                                        {Key: new Date('2012.08.17'),Value: [120, 60]},
+                                        {Key: new Date('2012.08.18'),Value: [100, 75]},
+                                        {Key: new Date('2012.08.19'),Value: [-1, -1]},
+                                        {Key: new Date('2012.08.20'),Value: [-1, -1]}]
+                                }
                             };
                             result.task = result.todo + result.inprogress + result.done;
                             console.log('burnDown result: '+JSON.stringify(result));
