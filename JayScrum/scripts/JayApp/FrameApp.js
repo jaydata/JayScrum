@@ -33,7 +33,7 @@ $data.Class.define('JayScrum.FrameApp', null, null, {
         this.visibleLoadingScreen = ko.observable(false);
         this._frameHashTable = {};
         //TODO csinád meg
-        this.loading = $(".metro-loading");
+        this.loading = $("div.metro-loading");
     },
     _createContainer:function (elementId, parent) {
         var containerNode = null;
@@ -47,7 +47,7 @@ $data.Class.define('JayScrum.FrameApp', null, null, {
         return containerNode;
     },
     showLoading:function () {
-        JayScrum.app.loading[0].style.display = "block";
+        JayScrum.app.loading[0].style.display = "";
         JayScrum.app.loading[0].style.opacity = 1;
         /*JayScrum.app.loading.show();*/
         /*JayScrum.app.loading.animate({
