@@ -1062,7 +1062,7 @@
                                             <div class="list">
                                                 
                                                 <!--ko foreach: $parent.data().userStoriesOfProject()-->
-                                                <div data-bind="attr: { 'class': IsBlocked() == true ? 'item task list-item pointer ' + IsBlocked() : 'item task list-item pointer ' + State() }, click: $root.selectedFrame().onSelectUserStory">
+                                                <div data-bind="attr: { 'class': IsBlocked() == true ? 'item task list-item pointer ' + IsBlocked() : 'item task list-item pointer ' + State() }, click: $root.selectedFrame().onSelectUserStoryOfProject">
                                                     <!-- ko if: Title -->
                                                     <h2 class="title margintop" data-bind="text: Title"></h2>
                                                     <!-- /ko -->
@@ -1493,7 +1493,7 @@
     <script type="text/javascript" src="scripts/Models/MainPage.js"></script>
     <script type="text/javascript" src="scripts/init.js"></script>
     <script type="text/javascript" src="scripts/scrum.js"></script>
-
+    <script type="text/javascript" src="scripts/jayScrumContext_local.js"></script>
     <script type="text/javascript" src="scripts/JaySvcUtil/JaySvcUtil.js"></script>
 
     <script type="text/html" id="jayAppMenu">

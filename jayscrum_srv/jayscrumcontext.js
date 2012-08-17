@@ -58,14 +58,10 @@ var Q = require('q');
         $data.Container.registerType('Edm.String', Edm_String);
         $data.Container.mapType(Edm_String, $data.String);
 
-        function Edm_ObjectID() { };
-        $data.Container.registerType('Edm.ObjectID', Edm_ObjectID);
-        $data.Container.mapType(Edm_ObjectID, $data.ObjectID);
-
     };
     registerEdmTypes();
     $data.Entity.extend('LightSwitchApplication.WorkItem', {
-        'Id':{ key:true, type:'Edm.ObjectID', nullable:false, computed:true },
+        'Id':{ key:true, type:'id', nullable:false, computed:true },
         'RowVersion':{ type:'Edm.Binary', nullable:false, concurrencyMode:$data.ConcurrencyMode.Fixed, computed:true },
         'Title':{ type:'Edm.String', nullable:false, required:true, maxLength:255 },
         'Type':{ type:'Edm.String', nullable:false, required:true, maxLength:255 },
@@ -84,9 +80,9 @@ var Q = require('q');
         'BusinessValue':{ type:'Edm.Int32' },
         'IsBlocked':{ type:'Edm.Boolean' },
         'RemainingWork':{ type:'Edm.Int32' },
-        'WorkItem_Project':{ type:'Edm.ObjectID' },
-        'WorkItem_Sprint':{ type:'Edm.ObjectID' },
-        'WorkItem_WorkItem':{ type:'Edm.ObjectID' },
+        'WorkItem_Project':{ type:'id' },
+        'WorkItem_Sprint':{ type:'id' },
+        'WorkItem_WorkItem':{ type:'id' },
         'Reason':{ type:'Edm.String', maxLength:255 }
         //'Project': { type: 'LightSwitchApplication.Project', inverseProperty: 'WorkItems' },
         //'Sprint': { type: 'LightSwitchApplication.Sprint', inverseProperty: 'WorkItems' },
@@ -94,14 +90,14 @@ var Q = require('q');
         //'Children': { type: 'Array', elementType: 'LightSwitchApplication.WorkItem', inverseProperty: 'Parent' }
     });
     $data.Entity.extend('LightSwitchApplication.Project', {
-        'Id':{ key:true, type:'Edm.ObjectID', nullable:false, computed:true },
+        'Id':{ key:true, type:'id', nullable:false, computed:true },
         'RowVersion':{ type:'Edm.Binary', nullable:false, concurrencyMode:$data.ConcurrencyMode.Fixed, computed:true },
         'Name':{ type:'Edm.String', nullable:false, required:true, maxLength:255 },
         'Description':{ type:'Edm.String', maxLength:255 }
         //'WorkItems': { type: 'Array', elementType: 'LightSwitchApplication.WorkItem', inverseProperty: 'Project' }
     });
     $data.Entity.extend('LightSwitchApplication.Sprint', {
-        'Id':{ key:true, type:'Edm.ObjectID', nullable:false, computed:true },
+        'Id':{ key:true, type:'id', nullable:false, computed:true },
         'RowVersion':{ type:'Edm.Binary', nullable:false, concurrencyMode:$data.ConcurrencyMode.Fixed, computed:true },
         'Name':{ type:'Edm.String', nullable:false, required:true, maxLength:255 },
         'StartDate':{ type:'Edm.DateTime', nullable:false, required:true },
@@ -142,7 +138,7 @@ var Q = require('q');
                 };
             }),
         getBurndownData:$data.JayService.serviceFunction()
-            .param('sprintId', $data.ObjectID)
+            .param('sprintId', "string")
             .returns("$data.Object")
             (function (sprintId) {
                 return function () {

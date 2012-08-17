@@ -15,5 +15,5 @@ $data.Entity.extend('JayScrum.Settings.Repository', {
     IsDefault: { type: $data.Boolean, nullable: true }
 });
 $data.EntityContext.extend('JayScrum.Settings.RepositoryContext', {
-    Repositories: { type: $data.EntitySet, elementType: JayScrum.Settings.Repository },
+    Repositories: { type: $data.EntitySet, elementType: JayScrum.Settings.Repository }
 });

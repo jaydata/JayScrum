@@ -56,7 +56,10 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
     _initializeRepositoriesFrame: function () {
         var app = this;
         this.localContext.Repositories.toArray(function (result) {
-            app.data().settings(result);
+            app.data().settings([new JayScrum.Settings.Repository({Id:-1, Title:'Demo local db'})]);
+            result.forEach(function(repo){
+                app.data().settings.push(repo);
+            });
             app.data().selectedSetting(null);
             app.showActionBar();
 
@@ -70,6 +73,10 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
         return this.localContext.Repositories.toArray(callBack);
     },
     connectTo:function (repoSetting) {
+        if(repoSetting.Id === -1){
+            JayScrum.app._initializeDemoRepositories();
+            return;
+        }
         var url = repoSetting.Url;
         if(url.indexOf('http') !== 0){
             //url = 'http://app1.storm.jaystack.com:3000/'+repoSetting.Url.toLowerCase();

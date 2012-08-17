@@ -370,7 +370,8 @@ $data.Class.define('$data.dbClient.DbCommand', null, null,
                 "$data.Date": function (date) { return date ? date.valueOf() : null; },
                 "$data.String": function (text) { return text; },
                 "$data.Boolean": function (b) { return b ? 1 : 0; },
-                "$data.Blob": function (blob) { return blob; }
+                "$data.Blob": function (blob) { return blob; },
+                "$data.Object": function(value){if(value === null){return null;} throw 'Not supported exception';}
             }
         }
     },
