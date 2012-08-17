@@ -2007,26 +2007,26 @@ body[theme=white] .metro-chart .tickLabels .tickLabel {
 /*#region GENERAL */
 .uslist .New.item {
   padding-left: 10px;
-  border-left: 4px solid Goldenrod;
+  border-left: 4px solid #daa520;
 }
 .uslist .New.item .accent-color {
-  color: Goldenrod !important;
+  color: #daa520 !important;
 }
 .uslist .New.item .accent-bg {
-  background-color: Goldenrod !important;
+  background-color: #daa520 !important;
   color: #fff !important;
   padding: 2px 5px;
   margin-right: 5px;
 }
 .uslist .Approved.item {
   padding-left: 10px;
-  border-left: 4px solid Green;
+  border-left: 4px solid #008000;
 }
 .uslist .Approved.item .accent-color {
-  color: Green !important;
+  color: #008000 !important;
 }
 .uslist .Approved.item .accent-bg {
-  background-color: Green !important;
+  background-color: #008000 !important;
   color: #fff !important;
   padding: 2px 5px;
   margin-right: 5px;
@@ -2048,13 +2048,13 @@ div.pivot > span.icon-action {
   float: right;
 }
 .To.Do.item {
-  border-left: 4px solid Orange;
+  border-left: 4px solid #ffa500;
 }
 .To.Do.item .accent-color {
-  color: Orange !important;
+  color: #ffa500 !important;
 }
 .To.Do.item .accent-bg {
-  background-color: Orange !important;
+  background-color: #ffa500 !important;
   color: #fff !important;
   padding: 2px 5px;
   margin-right: 5px;
@@ -2080,13 +2080,13 @@ div.pivot > span.icon-action {
   color: Black !important;
 }
 .Done.item {
-  border-left: 4px solid Green;
+  border-left: 4px solid #008000;
 }
 .Done.item .accent-color {
-  color: Green !important;
+  color: #008000 !important;
 }
 .Done.item .accent-bg {
-  background-color: Green !important;
+  background-color: #008000 !important;
   color: #fff !important;
   padding: 2px 5px;
   margin-right: 5px;
@@ -2101,17 +2101,17 @@ textarea.accent-bg:focus {
   color: Black !important;
 }
 .Removed.item {
-  border-left: 4px solid Gray;
+  border-left: 4px solid #808080;
 }
 .Removed.item h2 {
-  color: Gray;
+  color: #808080;
   text-decoration: line-through;
 }
 .Removed.item .accent-color {
-  color: Gray !important;
+  color: #808080 !important;
 }
 .Removed.item .accent-bg {
-  background-color: Gray !important;
+  background-color: #808080 !important;
   color: #fff !important;
   padding: 2px 5px;
   margin-right: 5px;
@@ -2214,25 +2214,25 @@ textarea.accent-bg:focus {
 }
 #wrapper #scroller .pivot-list .pivot .item.true {
   border-left: 4px solid #c00000 !important;
-  color: Gray;
+  color: #808080;
 }
 #wrapper #scroller .pivot-list .pivot .item.true .accent-color {
-  color: Gray !important;
+  color: #808080 !important;
 }
 #wrapper #scroller .pivot-list .pivot .item.true .accent-bg {
-  background-color: Gray !important;
+  background-color: #808080 !important;
 }
 #wrapper #scroller .pivot-list .pivot:last-child {
   padding-right: 0;
 }
 #wrapper #scroller .pivot-list .pivot.todo .item {
-  border-left: 4px solid Orange;
+  border-left: 4px solid #ffa500;
 }
 #wrapper #scroller .pivot-list .pivot.todo .item .accent-color {
-  color: Orange;
+  color: #ffa500;
 }
 #wrapper #scroller .pivot-list .pivot.todo .item .accent-bg {
-  background-color: Orange;
+  background-color: #ffa500;
   color: #fff !important;
   padding: 2px 5px;
   margin-right: 5px;
@@ -2250,13 +2250,13 @@ textarea.accent-bg:focus {
   margin-right: 5px;
 }
 #wrapper #scroller .pivot-list .pivot.done .item {
-  border-left: 4px solid Green;
+  border-left: 4px solid #008000;
 }
 #wrapper #scroller .pivot-list .pivot.done .item .accent-color {
-  color: Green;
+  color: #008000;
 }
 #wrapper #scroller .pivot-list .pivot.done .item .accent-bg {
-  background-color: Green;
+  background-color: #008000;
   color: #fff !important;
   padding: 2px 5px;
   margin-right: 5px;
@@ -2432,15 +2432,33 @@ textarea.accent-bg:focus {
   font-size: 1.4rem;
   line-height: 14px;
 }
+#metro-tiles .metro-tiles li:hover {
+  cursor: pointer;
+}
+#metro-tiles .metro-tiles li:active {
+  -webkit-transform: scale(0.85);
+  -moz-transform: scale(0.85);
+  -ms-transform: scale(0.85);
+  transform: scale(0.85);
+  -webkit-transition: all 0.1s ease;
+  -moz-transition: all 0.1s ease;
+  -ms-transition: all 0.1s ease;
+  -o-transition: all 0.1s ease;
+  transition: all 0.1s ease;
+}
 #metro-tiles .metro-tiles li.tile .text {
   text-transform: capitalize !important;
 }
 #metro-tiles .metro-tiles li.tile .number {
-  -webkit-transition: all 1s ease;
-  -moz-transition: all 1s ease;
-  -ms-transition: all 1s ease;
-  -o-transition: all 1s ease;
-  transition: all 1s ease;
+  -webkit-transition: all 0.2s ease;
+  -moz-transition: all 0.2s ease;
+  -ms-transition: all 0.2s ease;
+  -o-transition: all 0.2s ease;
+  -webkit-transition: all 0.2s ease;
+  -moz-transition: all 0.2s ease;
+  -ms-transition: all 0.2s ease;
+  -o-transition: all 0.2s ease;
+  transition: all 0.2s ease;
 }
 #metro-tiles .metro-tiles li.wide {
   display: block;
@@ -2511,9 +2529,11 @@ textarea.accent-bg:focus {
 }
 #metro-tiles .metro-tiles li.orange {
   background: #dd9616;
+  border: 1px solid #ebac3b;
 }
 #metro-tiles .metro-tiles li.darkorange {
   background: #e76321;
+  border: 1px solid #ec834f;
 }
 #metro-tiles .metro-tiles li.purple {
   background: #69349c;
@@ -2521,45 +2541,59 @@ textarea.accent-bg:focus {
 }
 #metro-tiles .metro-tiles li.pink {
   background: pink;
+  border: 1px solid #fff3f5;
 }
 #metro-tiles .metro-tiles li.darkpink {
   background: #b71c46;
+  border: 1px solid #de2859;
 }
 #metro-tiles .metro-tiles li.done {
-  background: Green;
+  background: #008000;
+  border: 1px solid #00b300;
 }
 #metro-tiles .metro-tiles li.red {
   background: #800000;
+  border: 1px solid #b30000;
 }
 #metro-tiles .metro-tiles li.yellow {
   background: #ccc102;
+  border: 1px solid #fdef04;
 }
 #metro-tiles .metro-tiles li.gray {
   background: #414141;
+  border: 1px solid #5a5a5a;
 }
 #metro-tiles .metro-tiles li.lightblue {
   background: #00b5df;
+  border: 1px solid #13d3ff;
 }
 #metro-tiles .metro-tiles li.darkblue {
   background: #293f7b;
+  border: 1px solid #3653a1;
 }
 #metro-tiles .metro-tiles li.blue {
   background: #1774bc;
+  border: 1px solid #de2859;
 }
 #metro-tiles .metro-tiles li.lightgreen {
   background: #65bf10;
+  border: 1px solid #7eec16;
 }
 #metro-tiles .metro-tiles li.green {
   background: #19a053;
+  border: 1px solid #20cc6a;
 }
 #metro-tiles .metro-tiles li.lightred {
   background: #d64d34;
+  border: 1px solid #df725e;
 }
 #metro-tiles .metro-tiles li.greenblue {
   background: #00586d;
+  border: 1px solid #0081a0;
 }
 #metro-tiles .metro-tiles li.brown {
   background: #833801;
+  border: 1px solid #b64e01;
 }
 #metro-tiles .metro-tiles li span.middle {
   margin-top: -30px !important;
@@ -2574,9 +2608,6 @@ textarea.accent-bg:focus {
   width: 100%;
   padding-top: 5px;
   margin-top: 35px;
-  /*border-top: 9px solid #fff; border-bottom: 1px solid #fff;
-			    border-left: 1px solid #fff; border-right: 1px solid #fff;*/
-
 }
 #metro-tiles .metro-tiles li .icon {
   height: 62px !important;
@@ -3079,34 +3110,34 @@ body[theme=white] .icon-action.upload span {
   border-left: 4px solid #24a0da;
 }
 .To.Do .accent-bg {
-  background-color: Orange !important;
+  background-color: #ffa500 !important;
   color: #fff !important;
   padding: 2px 5px;
   margin-right: 5px;
 }
 .To.Do .accent-color {
-  color: Orange !important;
+  color: #ffa500 !important;
 }
 .To.Do.accent-border {
   padding-left: 10px;
 }
 .To.Do.accent-border.left {
-  border-left: 4px solid Orange;
+  border-left: 4px solid #ffa500;
 }
 .Done .accent-bg {
-  background-color: Green !important;
+  background-color: #008000 !important;
   color: #fff !important;
   padding: 2px 5px;
   margin-right: 5px;
 }
 .Done .accent-color {
-  color: Green !important;
+  color: #008000 !important;
 }
 .Done.accent-border {
   padding-left: 10px;
 }
 .Done.accent-border.left {
-  border-left: 4px solid Green;
+  border-left: 4px solid #008000;
 }
 #task-list .In.Progress .accent-bg {
   background-color: #24a0da !important;
@@ -3115,26 +3146,26 @@ body[theme=white] .icon-action.upload span {
   color: #24a0da !important;
 }
 #task-list .To.Do .accent-bg {
-  background-color: Orange !important;
+  background-color: #ffa500 !important;
 }
 #task-list .To.Do .accent-color {
-  color: Orange !important;
+  color: #ffa500 !important;
 }
 #task-list .Done .accent-bg {
-  background-color: Green !important;
+  background-color: #008000 !important;
 }
 #task-list .Done .accent-color {
-  color: Green !important;
+  color: #008000 !important;
 }
 #task-list .true {
   border-left: 4px solid #c00000 !important;
-  color: Gray;
+  color: #808080;
 }
 #task-list .true .accent-color {
-  color: Gray !important;
+  color: #808080 !important;
 }
 #task-list .true .accent-bg {
-  background-color: Gray !important;
+  background-color: #808080 !important;
 }
 /*#endregion STATES */
 /*#region HTML CONTROLS */
@@ -3312,6 +3343,13 @@ textarea {
 .detail .field .chbox-text {
   margin: 0 !important;
 }
+.detail.edit.reset {
+  width: inherit;
+  height: inherit;
+  line-height: initial;
+  overflow: visible !important;
+  position: static;
+}
 .detail.edit .field {
   width: auto;
   height: auto;
@@ -3360,7 +3398,8 @@ body[theme="white"] .detail .field .field.active {
   overflow: hidden;
 }
 #wrapper-detailed-edit {
-  top: 10px;
+  top: 50px;
+  bottom: 45px;
 }
 #wrapper-detailed-edit > div:nth-child(2) {
   right: 8px !important;

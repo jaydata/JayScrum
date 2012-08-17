@@ -2,14 +2,14 @@
 
 /*#region VARIABLES */
 @colorRechanged: #dadc29;
-@colorTodo: Orange;
+@colorTodo: #FFA500;
 @colorInprog: #24A0DA;
-@colorDone: Green;
+@colorDone: #008000;
 @colorBlocked: #c00000;
 @colorNotBlocked: #777;
-@colorRemoved: Gray;
-@colorApproved: Green;
-@colorNew: Goldenrod;
+@colorRemoved: #808080;
+@colorApproved: #008000;
+@colorNew: #daa520;
 @colorCommitted: #24A0DA;
 /*#endregion VARIABLES */
 
@@ -1088,15 +1088,18 @@ input.accent-bg, textarea.accent-bg {
 	
 	    li {
 		    .relative; .box;
-		    
+
 		    #metro > .tile;
-		
+
+		    &:hover     { .pointer; }
+            &:active    { .scale(0.85); .transition(0.1s) }
+
 		    &.tile 
 		    {
 		        .text { .capitalize_; }
-		        .number { .transition(1s, ); }
+		        .number { .transition(); }
 		    }
-		
+		    
 		    &.wide {
 			    #metro > .tilewide;
 			    
@@ -1120,32 +1123,30 @@ input.accent-bg, textarea.accent-bg {
 			        }
 			    }
 		    }
-		    
-		    &.orange        { background: #dd9616; }
-		    &.darkorange    { background: #e76321; }
+
+		    &.orange        { background: #dd9616; border: 1px solid lighten(#dd9616, 10%); }
+		    &.darkorange    { background: #e76321; border: 1px solid lighten(#e76321, 10%); }
 			&.purple        { background: #69349c; border: 1px solid lighten(#69349c, 10%);  }
-			&.pink          { background: pink; }
-			&.darkpink      { background: #b71c46; }
-			&.done          { background: @colorDone; }
-			&.red           { background: #800000; }
-			&.yellow        { background: #ccc102; }
-			&.gray          { background: #414141; }
-			&.lightblue     { background: #00b5df; }
-			&.darkblue      { background: #293f7b; }
-			&.blue          { background: #1774bc; }
-			&.lightgreen    { background: #65bf10; }
-			&.green         { background: #19a053; }
-			&.lightred      { background: #d64d34; }
-			&.greenblue     { background: #00586d; }
-			&.brown         { background: #833801; }
+			&.pink          { background: pink;    border: 1px solid lighten(pink, 10%); }
+			&.darkpink      { background: #b71c46; border: 1px solid lighten(#b71c46, 10%); }
+			&.done          { background: #008000; border: 1px solid lighten(#008000, 10%); }
+			&.red           { background: #800000; border: 1px solid lighten(#800000, 10%); }
+			&.yellow        { background: #ccc102; border: 1px solid lighten(#ccc102, 10%); }
+			&.gray          { background: #414141; border: 1px solid lighten(#414141, 10%); }
+			&.lightblue     { background: #00b5df; border: 1px solid lighten(#00b5df, 10%); }
+			&.darkblue      { background: #293f7b; border: 1px solid lighten(#293f7b, 10%); }
+			&.blue          { background: #1774bc; border: 1px solid lighten(#b71c46, 10%); }
+			&.lightgreen    { background: #65bf10; border: 1px solid lighten(#65bf10, 10%); }
+			&.green         { background: #19a053; border: 1px solid lighten(#19a053, 10%); }
+			&.lightred      { background: #d64d34; border: 1px solid lighten(#d64d34, 10%); }
+			&.greenblue     { background: #00586d; border: 1px solid lighten(#00586d, 10%); }
+			&.brown         { background: #833801; border: 1px solid lighten(#833801, 10%); }
     
             span.middle { margin-top: -30px !important; }
             	
 			.day {
 			    .size(auto, 55px, 30px); .tacenter; .show; font-size: 28px; width: 100%;
 			    padding-top: 5px; margin-top: 35px;
-			    /*border-top: 9px solid #fff; border-bottom: 1px solid #fff;
-			    border-left: 1px solid #fff; border-right: 1px solid #fff;*/
 			}
 		
 			.icon { height: 62px !important; top: 41% !important; }
@@ -1491,7 +1492,7 @@ textarea {
 .detail {
     .size(100%, 100%); .ohidden; .relative;
     padding: 0 10px;
-    
+       
     h1              { .reset-p; .position(relative, -4px); .font-size(27); line-height: 26px; z-index: 1000; pointer-events: none; margin: 0 0 10px 0;  max-width: 85%; }
     .item           { max-width: 768px; margin: 0 15px 0 0; padding-top: 10px; }
     
@@ -1544,6 +1545,8 @@ textarea {
 	}
 	
 	&.edit {
+	    &.reset { .size(inherit, inherit); .ovisible_; .static; }
+	    
 	    .field {
 	        .size(auto, auto, auto);
 	        margin-top: 0;
@@ -1578,7 +1581,7 @@ body[theme="white"] .detail .field .field.active    { border-color: Black !impor
 
 #wrapper-detailed { .ohidden; }
 #wrapper-detailed-edit {
-    top: 10px;
+    top: 50px; bottom: 45px;
     
     > div:nth-child(2) {
         right: 8px !important;

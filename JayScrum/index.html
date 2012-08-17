@@ -71,8 +71,8 @@
                 <div id="metro-tiles">
                     <ul class="metro-tiles tolower">
                         <!-- ko foreach: $data.data().activeSprintList -->
-                        <li data-bind="attr: { 'class': $parent.isPinnedSprint($data) ? 'wide pinned' : 'wide' }">
-                            <span data-bind="click: $parent.onTaskListShow">
+                        <li data-bind="attr: { 'class': $parent.isPinnedSprint($data) ? 'wide pinned' : 'wide' }, click: $parent.onTaskListShow">
+                            <span>
                                 <span class="day" data-bind="text: moment(FinishDate).diff(moment(), 'days') + ' days left'"></span>
                                 <span class="b-right" data-bind="text: Name"></span>
                                 <span class="text" data-bind="text: tasksLeft+' task left'"></span>
@@ -426,7 +426,7 @@
             <div class="main-header">
                 <h1 class="title">Edit workitem</h1>
             </div>
-            <div class="detail edit" data-bind="with: $data.data().selectedWorkItemActive">
+            <div class="detail edit reset" data-bind="with: $data.data().selectedWorkItemActive">
                 <!-- ko template: { name: 'workItemEditor-template', data: $data }-->
                 <!-- /ko-->
             </div>
@@ -440,11 +440,11 @@
     </script>
 
     <script id="workItemEditor-template" type="text/html">
-        <div id="wrapper-detailed-edit" class="scroll-out top50">
+        <div id="wrapper-detailed-edit" class="scroll-out">
             <div class="scroll-in">
                 <div class="list">
                     <div class="pivot-content">
-                        <div class="item task" data-bind="attr: { 'class': 'item task ' + State() }">
+                        <div class="item task" data-bind="attr: { 'class': 'item task' + State() }">
                             <div class="tolower">
                                 <div class="field">
                                     <div><span>Title</span></div>
