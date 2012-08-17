@@ -12,13 +12,13 @@ $data.Class.define('JayScrum.Views.Users', JayScrum.FrameView, null, {
     },
     initializeView:function(){
         JayScrum.app.hideLoading();
-        //this.i_scroll = JayScrum.app.initScrollById("metro-tiles-scroll", null, null, true);
+        this.i_scroll = JayScrum.app.initScrollById("settingPageScroll");
     },
     tearDownView:function(){
-        /*if(this.i_scroll){
+        if (this.i_scroll){
             this.i_scroll.destroy();
         }
-        this.i_scroll = null;*/
+        this.i_scroll = null;
     }
 }, null);
 $data.Class.define('JayScrum.Views.UserSelect', JayScrum.FrameView, null, {
@@ -28,13 +28,13 @@ $data.Class.define('JayScrum.Views.UserSelect', JayScrum.FrameView, null, {
     },
     initializeView:function(){
         JayScrum.app.hideLoading();
-        //this.i_scroll = JayScrum.app.initScrollById("metro-tiles-scroll", null, null, true);
+        //this.i_scroll = JayScrum.app.initScrollById("settingPageScroll");
     },
     tearDownView:function(){
-        /*if(this.i_scroll){
-         this.i_scroll.destroy();
-         }
-         this.i_scroll = null;*/
+        /*if (this.i_scroll){
+            this.i_scroll.destroy();
+        }
+        this.i_scroll = null;*/
     }
 }, null);
 $data.Class.define('JayScrum.Views.UserEdit', JayScrum.FrameView, null, {
@@ -44,13 +44,13 @@ $data.Class.define('JayScrum.Views.UserEdit', JayScrum.FrameView, null, {
     },
     initializeView:function(){
         JayScrum.app.hideLoading();
-        //this.i_scroll = JayScrum.app.initScrollById("metro-tiles-scroll", null, null, true);
+        this.i_scroll = JayScrum.app.initScrollById("settingPageScroll");
     },
     tearDownView:function(){
-        /*if(this.i_scroll){
-         this.i_scroll.destroy();
-         }
-         this.i_scroll = null;*/
+        if (this.i_scroll){
+            this.i_scroll.destroy();
+        }
+        this.i_scroll = null;
     }
 }, null);
 $data.Class.define('JayScrum.Frames.Users', JayScrum.Frame, null, {
