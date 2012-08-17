@@ -64,135 +64,7 @@ var debug = true,
     },
     windowHeight = $(window).height();
 
-/*$data.Class.define('JayScrum.Types.scrumModel', null, null, {
-    constructor: function () {
-        this.activePartName = ko.observable();
-        this.settingPage = new JayScrum.Models.settingPage();
-        this.activePartName('settingPage');
-        //this.mainPage = new JayScrum.Models.mainPage();
 
-        //this.ScrumAsync();
-    },
-    ScrumAsync: function () {
-        //Current sprints
-        $data.Model.mainPage.selectedProject(getSetting('selectedProject'));
-        $data.ScrumDb.Sprints
-            .where(function (item) { return item.StartDate <= this.currentDate && item.FinishDate >= this.currentDate; }, { currentDate: new Date().todayUTC() })
-            .orderBy(function (item) { return item.StartDate })
-            .toArray({
-                success: function (result) {
-                    if (result.length == 0) {
-                        $("div#error-msg").addClass("opened");
-                    }
-                    $data.Model.mainPage.pushObservablesToList($data.Model.mainPage.activeSprintList, result, true);
-                    //Get pinned sprints
-                    var pinnedSprints = getSetting('pinnedSprints');
-                    var additionalSprintIds = [];
-                    for (var id in pinnedSprints) {
-                        if (!result.some(function (sprint) { return sprint.Id == pinnedSprints[id] })) {
-                            additionalSprintIds.push(pinnedSprints[id]);
-                        }
-                    }
-                    if (additionalSprintIds.length > 0) {
-                        $data.ScrumDb.Sprints
-                            .where(function (item) { return item.Id in this.sprintIds }, { sprintIds: additionalSprintIds })
-                            .toArray(function (sprintList) {
-                                for (var s in sprintList) {
-                                    $data.Model.mainPage.activeSprintList.push(sprintList[s].asKoObservable());
-                                }
-
-                                var sprintIds = $data.Model.mainPage.activeSprintList().map(function (s) { return s.Id(); });
-                                $data.ScrumDb.WorkItems
-                                    .where(function (wi) { return wi.Type == 'Task' && wi.State != 'Done' && wi.WorkItem_Sprint in this.sprintIds }, { sprintIds: sprintIds })
-                                    .select(function (wi) { return { WorkItemId: wi.Id, SprintId: wi.WorkItem_Sprint } })
-                                    .orderBy(function (wi) { return wi.WorkItem_Sprint; })
-                                    .toArray(function (result) {
-                                        $data.Model.mainPage.activeSprintsTaskIds(result);
-                                        setTimeout(initUI(), 1000);
-                                    });
-                            });
-                    } else {
-                        initUI();
-                    }
-                },
-                error: function (error) {
-                    console.log(error.stack);
-                    //alert(error);
-                }
-            });
-    },
-    isActivePart: function (partName) {
-        return partName === this.activePartName();
-    },
-    findWorkItem: function (wrkItemId) {
-        var todoList = $data.Model.mainPage.todoList()
-        for (var i = 0; i < todoList.length; i++) {
-            if (todoList[i].Id() === wrkItemId)
-                return todoList[i];
-        }
-        var inProgList = $data.Model.mainPage.inProgList();
-        for (var i = 0; i < inProgList.length; i++) {
-            if (inProgList[i].Id() === wrkItemId)
-                return inProgList[i];
-        }
-        var doneList = $data.Model.mainPage.doneList();
-        for (var i = 0; i < doneList.length; i++) {
-            if (doneList[i].Id() === wrkItemId)
-                return doneList[i];
-        }
-        var userStoryList = $data.Model.mainPage.userStoryList();
-        for (var i = 0; i < userStoryList.length; i++) {
-            if (userStoryList[i].Id() === wrkItemId)
-                return userStoryList[i];
-        }
-        return null;
-    },
-    findListById: function (wrkItemId, data) {
-        var todoList = $data.Model.mainPage.todoList()
-        for (var i = 0; i < todoList.length; i++) {
-            if (todoList[i].Id() === wrkItemId) {
-                if (data) { todoList[i] = data; }
-                return [].concat(todoList);
-            }
-        }
-        var inProgList = $data.Model.mainPage.inProgList();
-        for (var i = 0; i < inProgList.length; i++) {
-            if (inProgList[i].Id() === wrkItemId) {
-                if (data) { inProgList[i] = data; }
-                return [].concat(inProgList);
-            }
-        }
-        var doneList = $data.Model.mainPage.doneList();
-        for (var i = 0; i < doneList.length; i++) {
-            if (doneList[i].Id() === wrkItemId) {
-                if (data) { doneList[i] = data; }
-                return [].concat(doneList);
-            }
-        }
-        var userStoryList = $data.Model.mainPage.userStoryList();
-        for (var i = 0; i < userStoryList.length; i++) {
-            if (userStoryList[i].Id() === wrkItemId) {
-                if (data) { userStoryList[i] = data; }
-                return [].concat(userStoryList);
-            }
-        }
-        return null;
-    },
-
-    mainPage: {},
-    settingPage: {}
-}, null);*/
-
-/*
-$(function () {
-    $data.Model = new JayScrum.Types.scrumModel();
-    ko.applyBindings($data.Model);
-
-    if (settingScroll == null) {
-        initUI();
-    }
-});
-*/
 $data.Class.define('JayScrum.ScrumApp', JayScrum.FrameApp, null,{
     constructor:function(){
         this.registerFrame(new JayScrum.Frames.Main('MainFrame'));
@@ -384,6 +256,13 @@ $data.Class.define('JayScrum.ScrumApp', JayScrum.FrameApp, null,{
 
             });
         });
+    },
+    _initializeDemoRepositories:function(){
+        initializeLocalContext();
+        JayScrum.repository = new JayScrum.SqLite.ApplicationData({ name: ['sqLite'], databaseName: 'JayScrumDemo' });
+        JayScrum.stormContext = new JayScrum.sqLite.StormContext({ name: ['sqLite'], databaseName: 'JayScrumDemo_Users' });
+        JayScrum.app.globalData().user((new JayScrum.stormContext.Users.createNew({Id:'1', login:'testUser', firstName:'test', lastName:'user'})).asKoObservable());
+        JayScrum.app.selectFrame('MainFrame');
     }
 },null);
 
