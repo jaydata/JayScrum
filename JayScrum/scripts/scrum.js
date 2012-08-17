@@ -259,10 +259,14 @@ $data.Class.define('JayScrum.ScrumApp', JayScrum.FrameApp, null,{
     },
     _initializeDemoRepositories:function(){
         initializeLocalContext();
-        JayScrum.repository = new JayScrum.SqLite.ApplicationData({ name: ['sqLite'], databaseName: 'JayScrumDemo' });
-        JayScrum.stormContext = new JayScrum.sqLite.StormContext({ name: ['sqLite'], databaseName: 'JayScrumDemo_Users' });
-        JayScrum.app.globalData().user((new JayScrum.stormContext.Users.createNew({Id:'1', login:'testUser', firstName:'test', lastName:'user'})).asKoObservable());
-        JayScrum.app.selectFrame('MainFrame');
+        JayScrum.repository = new JayScrum.SqLite.ApplicationData({ name: ['sqLite'], databaseName: 'JayScrumDemo'/*, dbCreation:$data.storageProviders.DbCreationType.DropAllExistingTables*/ });
+        JayScrum.repository.onReady(function(){
+            JayScrum.stormContext = new JayScrum.sqLite.StormContext({ name: ['sqLite'], databaseName: 'JayScrumDemo_Users'/*, dbCreation:$data.storageProviders.DbCreationType.DropAllExistingTables*/ });
+            JayScrum.stormContext.onReady(function(){
+                JayScrum.app.globalData().user((new JayScrum.stormContext.Users.createNew({Id:'1', login:'testUser', firstName:'test', lastName:'user'})).asKoObservable());
+                JayScrum.app.selectFrame('MainFrame');
+            });
+        });
     }
 },null);
 

@@ -39,14 +39,14 @@ function initializeLocalContext(){
     });
     $data.Entity.extend('JayScrum.SqLite.Project', {
         Id: { type: $data.Integer, key: true, computed: true },
-        'RowVersion':{ type:'$data.Blob', nullable:false, concurrencyMode:$data.ConcurrencyMode.Fixed, computed:true },
+        //'RowVersion':{ type:'$data.Blob', nullable:false, concurrencyMode:$data.ConcurrencyMode.Fixed, computed:true },
         'Name':{ type:'$data.String', nullable:false, required:true, maxLength:255 },
         'Description':{ type:'$data.String', maxLength:255 }
         //'WorkItems': { type: 'Array', elementType: 'LightSwitchApplication.WorkItem', inverseProperty: 'Project' }
     });
     $data.Entity.extend('JayScrum.SqLite.Sprint', {
         Id: { type: $data.Integer, key: true, computed: true },
-        'RowVersion':{ type:'$data.Blob', nullable:false, concurrencyMode:$data.ConcurrencyMode.Fixed, computed:true },
+        //'RowVersion':{ type:'$data.Blob', nullable:false, concurrencyMode:$data.ConcurrencyMode.Fixed, computed:true },
         'Name':{ type:'$data.String', nullable:false, required:true, maxLength:255 },
         'StartDate':{ type:'$data.Date', nullable:false, required:true },
         'FinishDate':{ type:'$data.Date', nullable:false, required:true }
@@ -116,7 +116,39 @@ function initializeLocalContext(){
                         });
                 };
             }),*/
-        getBurndownData:function(){}/*$data.JayService.serviceFunction()
+        getBurndownData:function(sprintId){
+            var q = Q.defer();
+
+            var types = ["To Do", "In Progress", "Done"];
+            var workitemQueries = types.map(function (tName) {
+                return JayScrum.repository.WorkItems
+                    .where(function (item) { return item.WorkItem_Sprint == this.sprint_id && item.State == this.typeName && (item.Type=='Task' || item.Type == 'Bug')}, {sprint_id:sprintId, typeName:tName})
+                    .toArray();
+            });
+            workitemQueries.push(
+                JayScrum.repository.WorkItems
+                    .where(function (item) { return item.WorkItem_Sprint == this.sprint_id && item.Type == 'UserStory' }, {sprint_id:sprintId})
+                    .length()
+            );
+            Q.all(workitemQueries)
+                .then(function(){
+                    var result = {
+                        todo:workitemQueries[0].valueOf().length,
+                        inprogress:workitemQueries[1].valueOf().length,
+                        done:workitemQueries[2].valueOf().length,
+                        inprogress_hour:workitemQueries[1].valueOf().reduce(function(previousValue, currentValue, index, array){return previousValue + currentValue.RemainingWork;},0),
+                        userStory:workitemQueries[3].valueOf(),
+                        task:9999
+                    };
+                    result.task = result.todo + result.inprogress + result.done;
+                    console.log('burnDown result: '+JSON.stringify(result));
+                    q.resolve(result);
+                });
+
+
+            return q.promise;
+
+        }/*$data.JayService.serviceFunction()
             .param('sprintId', "string")
             .returns("$data.Object")
             (function (sprintId) {
