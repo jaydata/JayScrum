@@ -298,59 +298,44 @@ $data.Class.define('JayScrum.ScrumApp', JayScrum.FrameApp, null,{
                 }
             }, this);
 
-            JayScrum.app.selectedFrame().data().selectedWorkItemPrev(list[currentIndex-1]);
-            JayScrum.app.selectedFrame().data().selectedWorkItemNext(list[currentIndex+1]);
+            JayScrum.app.selectedFrame().data().selectedWorkItemPrev(list[list.length - 1]);
+            JayScrum.app.selectedFrame().data().selectedWorkItem(list[0]);
+            JayScrum.app.selectedFrame().data().selectedWorkItemNext(list[1]);
 
             gallery = new SwipeView("#" + id, { numberOfPages:list.length });
+            gallery.refreshMethods = [];
             gallery.onFlip(function () {
-                //var p = Q.defered();
-                    console.log(gallery.masterPages[0].dataset.pageIndex+' , '+gallery.masterPages[1].dataset.pageIndex+' , '+gallery.masterPages[2].dataset.pageIndex);
-                    console.log(gallery.masterPages[0].dataset.upcomingPageIndex+' , '+gallery.masterPages[1].dataset.upcomingPageIndex+' , '+gallery.masterPages[2].dataset.upcomingPageIndex);
-                    console.log(gallery.pageIndex%3 + "=>"+gallery.currentMasterPage);
-
-
-                    switch(gallery.pageIndex % 3){
-                        case 0:
-                            JayScrum.app.selectedFrame().data().selectedWorkItemNext(list[gallery.masterPages[2].dataset.upcomingPageIndex]);
-                            break;
-                        case 1:
-                            JayScrum.app.selectedFrame().data().selectedWorkItemPrev(list[gallery.masterPages[0].dataset.upcomingPageIndex]);
-                            break;
-                        case 2:
-                            JayScrum.app.selectedFrame().data().selectedWorkItemNext(list[gallery.masterPages[1].dataset.upcomingPageIndex]);
-                            break;
+                for (i = 0; i < 3; i++) {
+                    upcoming = gallery.masterPages[i].dataset.upcomingPageIndex;
+                    if (upcoming != gallery.masterPages[i].dataset.pageIndex) {
+                        switch (i) {
+                            case 0:
+                                JayScrum.app.selectedFrame().data().selectedWorkItemPrev(list[upcoming]);
+                                break;
+                            case 1:
+                                JayScrum.app.selectedFrame().data().selectedWorkItem(list[upcoming]);
+                                break;
+                            case 2:
+                                JayScrum.app.selectedFrame().data().selectedWorkItemNext(list[upcoming]);
+                                break;
+                        }
                     }
-
-
-                    /*JayScrum.app.selectedFrame().data().selectedWorkItemPrev(list[gallery.masterPages[0].dataset.upcomingPageIndex]);
-                    JayScrum.app.selectedFrame().data().selectedWorkItem(list[gallery.masterPages[1].dataset.upcomingPageIndex]);
-                    JayScrum.app.selectedFrame().data().selectedWorkItemNext(list[gallery.masterPages[2].dataset.upcomingPageIndex]);*/
-                    switch (gallery.currentMasterPage) {
-                        case 0:
-                            JayScrum.app.selectedFrame().data().selectedWorkItemActive(JayScrum.app.selectedFrame().data().selectedWorkItemPrev());
-                            break;
-                        case 1:
-                            JayScrum.app.selectedFrame().data().selectedWorkItemActive(JayScrum.app.selectedFrame().data().selectedWorkItem());
-                            break;
-                        case 2:
-                            JayScrum.app.selectedFrame().data().selectedWorkItemActive(JayScrum.app.selectedFrame().data().selectedWorkItemNext());
-                            break;
-                    }/*
-                console.log("!!! end on flip")
-                  //  p.resolve();*/
-                //return p.promise;
-                /*setTimeout(function () {
-                 if (self.i_scroll) {
-                 self.i_scroll.destroy();
-                 self.i_scroll = null;
-                 }
-                 self.i_scroll = JayScrum.app.initScrollById('swipeview-inside-' + gallery.currentMasterPage);
-                 }, 0);*/
+                }
+                switch (gallery.currentMasterPage) {
+                    case 0:
+                        JayScrum.app.selectedFrame().data().selectedWorkItemActive(JayScrum.app.selectedFrame().data().selectedWorkItemPrev());
+                        break;
+                    case 1:
+                        JayScrum.app.selectedFrame().data().selectedWorkItemActive(JayScrum.app.selectedFrame().data().selectedWorkItem());
+                        break;
+                    case 2:
+                        JayScrum.app.selectedFrame().data().selectedWorkItemActive(JayScrum.app.selectedFrame().data().selectedWorkItemNext());
+                        break;
+                }
             });
-            /*setTimeout(function(){
-                gallery.goToPage(currentIndex);
-            }, 200);*/
-window['alma'] = gallery;
+            gallery.goToPage(currentIndex);
+
+
         }
         return gallery;
     },
