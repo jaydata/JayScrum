@@ -335,6 +335,10 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
         if(index>-1){
             JayScrum.app.selectedFrame().activeList.splice(index,1);
         }
+        JayScrum.app.selectedFrame().data().todoList.remove(function(item){return item.Id() == workItem.Id()});
+        JayScrum.app.selectedFrame().data().inProgList.remove(function(item){return item.Id() == workItem.Id()});
+        JayScrum.app.selectedFrame().data().doneList.remove(function(item){return item.Id() == workItem.Id()});
+        JayScrum.app.selectedFrame().data().recentlyChangedTasks.remove(function(item){return item.Id() == workItem.Id()});
         JayScrum.repository.saveChanges(function () {
             JayScrum.app.selectedFrame().onCancelWorkItem(workItem);
         });
