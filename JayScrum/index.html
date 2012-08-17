@@ -113,7 +113,7 @@
                                 <span class="text">Repositories</span>
                             </span>
                         </li>
-                        <li class="purple">
+                        <li class="tile">
                             <span data-bind="click: $data.onUserSettingShow">
                                 <span class="middle icon icon-57 users"></span>
                                 <span class="text">Users</span>
@@ -843,7 +843,8 @@
                 <div class="pivot-list">
                     <div class="pivot uslist">
                         <div class="scroll-list scrollable-list bottom45 pivot-default-opacity" id="transition-iteration">
-                            <div class="scroller-list">
+                            <div class="scroller-list maxlist">
+                                <!-- ko if: $data.data().sprintList().length > 0 -->
                                 <div class="list maxlist" data-bind="foreach: $data.data().sprintList">
                                     <div class="item task list-item relative reset-p clear">
                                         <h2 class="title margintop tolower accent-color">
@@ -867,6 +868,10 @@
                                         </div>
                                     </div>
                                 </div>
+                                <!-- /ko -->
+                                <!-- ko if: $data.data().sprintList().length == 0 -->
+                                <p class="hint-text clear">There is no Sprint created in your Application yet. To create a new Sprint click the button at the bottom of the screen!</p>
+                                <!-- /ko -->
                             </div>
                         </div>
                     </div>
@@ -875,8 +880,10 @@
         </div>
         <div class="metro-actionbar detail-view opened">
             <ul>
-                <li class="icon-action add"><span data-bind="click: $data.onAddSprint"></span>
-                </li>
+                <!-- ko if: $data.data().sprintList().length == 0 -->
+                <li class="hint-bubble">Click to add a Sprint</li>
+                <!-- /ko -->
+                <li class="icon-action add"><span data-bind="click: $data.onAddSprint"></span></li>
             </ul>
         </div>
     </script>
@@ -939,8 +946,10 @@
                 <div class="pivot-list">
                     <div class="pivot uslist">
                         <div class="scroll-list scrollable-list bottom45 pivot-default-opacity" id="transition-projects">
-                            <div class="scroller-list">
-                                <div class="list project-list maxlist" data-bind="foreach: $data.data().projectList">
+                            <div class="scroller-list maxlist">
+                                <!-- ko if: $data.data().projectList().length > 0 -->
+                                <div class="list project-list" data-bind="foreach: $data.data().projectList">
+                                    
                                     <div class="item task list-item clear">
                                         <h2 class="title margintop tolower accent-color">
                                             <span data-bind="text: Name, click: $parent.onSelectProject"></span>
@@ -951,13 +960,22 @@
                                         <p data-bind="text: Description"></p>
                                     </div>
                                 </div>
+                                <!-- /ko -->
+                                
+                                <!-- ko if: $data.data().projectList().length == 0 -->
+                                <p class="hint-text clear">There is no Project created in your Application yet. To create a new Project click the button at the bottom of the screen!</p>
+                                <!-- /ko -->
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="metro-actionbar detail-view opened">
                     <ul>
-                        <li class="icon-action add"><span data-bind="click: $data.onAddProject"></span>
+                        <!-- ko if: $data.data().projectList().length == 0 -->
+                        <li class="hint-bubble">Click to add a Project</li>
+                        <!-- /ko -->
+                        <li class="icon-action add">
+                            <span data-bind="click: $data.onAddProject"></span>
                         </li>
                     </ul>
                 </div>
@@ -1022,7 +1040,7 @@
                                     <div class="item task list-item clear">
                                         <p data-bind="text: Description"></p>
 
-                                        <div class="metro-pivot uslist" id="userstory-list">
+                                        <div class="metro-pivot uslist" id="task-list">
                                             <h2 class="font30 marginb20">
                                                 <span class="value">user stories</span>
 
@@ -1042,28 +1060,33 @@
 
                                             <!--ko if: $parent.data().userStoriesOfProject().length > 0-->
                                             <div class="list">
+                                                
                                                 <!--ko foreach: $parent.data().userStoriesOfProject()-->
-                                                <div class="item task list-item New">
+                                                <div data-bind="attr: { 'class': IsBlocked() == true ? 'item task list-item pointer ' + IsBlocked() : 'item task list-item pointer ' + State() }, click: $root.selectedFrame().onSelectUserStory">
                                                     <!-- ko if: Title -->
-                                                    <h2 class="title margintop" data-bind="text: Title, click: $root.selectedFrame().onSelectUserStoryOfProject">
-                                                    </h2>
+                                                    <h2 class="title margintop" data-bind="text: Title"></h2>
                                                     <!-- /ko -->
 
-                                                    <div>
-                                                        <!-- ko if: RemainingWork -->
-                                                        <span class="small accent-bg" data-bind="text: RemainingWork()+' h'"></span>
+                                                    <!-- ko if: ProjectName -->
+                                                    <h4 class="title accent-color" data-bind="text: 'Project: ' + ProjectName()"></h4>
+                                                    <!-- /ko -->
+
+                                                    <!-- ko if: Priority -->
+                                                    <h5 class="title inactive" data-bind="text: 'Priority: ' + Priority()"></h5>
+                                                    <!-- /ko -->
+
+                                                    <div class="inactive">
+                                                        <!-- ko if: Effort -->
+                                                        <span class="small" data-bind="text: 'Effort: ' + Effort()"></span>
                                                         <!-- /ko -->
 
-                                                        <!-- ko if: AssignedTo -->
-                                                        <span class="small accent-color" data-bind="text: AssignedTo"></span>
-                                                        <!-- /ko -->
-
-                                                        <!-- ko if: Priority -->
-                                                        | <span class="small inactive" data-bind="text: 'prior: '+Priority()"></span>
+                                                        <!-- ko if: BusinessValue -->
+                                                        | <span class="small" data-bind="text: 'Business Value: ' + BusinessValue()"></span>
                                                         <!-- /ko -->
                                                     </div>
                                                 </div>
                                                 <!--/ko-->
+
                                             </div>
                                             <!--/ko-->
 
@@ -1106,7 +1129,7 @@
                                 <div class="field">
                                     <div><span>Theme</span></div>
                                     <div class="themes">
-                                        <div theme="white" class="theme-box"></div>
+                                        <!--<div theme="white" class="theme-box"></div>-->
                                         <div theme="black" class="theme-box"></div>
                                         <div theme="darkgray" class="theme-box"></div>
                                         <div theme="darkblue" class="theme-box"></div>
@@ -1268,7 +1291,7 @@
     </script>
 
     <script type="text/html" id="usersPage-template">
-        <div id="settingPage">
+        <div class="maxw768" id="settingPage">
             <div class="icon-action back topleft">
                 <span data-bind="click: $root.backView"></span>
             </div>
@@ -1277,7 +1300,8 @@
             </div>
             <div class="scroll-list pivot-default-opacity scrollable-list animate bottom45" id="settingPageScroll">
                 <div class="scroller-list">
-                    <div class="list detail">
+                    <div class="list detail maxlist">
+                        <!-- ko if: $data.data().users().length > 0 -->
                         <ul id="setting-list" class="setting-list" data-bind='foreach: $data.data().users'>
                             <li>
                                 <h2 data-bind="click: $parent.onSelectUser"><span data-bind="text: $data.firstName"></span> <span data-bind="text: $data.lastName"></span> (<span data-bind="text: $data.login"></span>)</h2>
@@ -1289,12 +1313,19 @@
                                 </div>
                             </li>
                         </ul>
+                        <!-- /ko -->
+                        <!-- ko if: $data.data().users().length == 0 -->
+                        <p class="hint-text clear">There is no User created in your Application yet. To create a new User click the button at the bottom of the screen!</p>
+                        <!-- /ko -->
                     </div>
                 </div>
             </div>
         </div>
         <div id="settingPageActionBar" class="metro-actionbar detail-view-edit opened">
             <ul>
+                <!-- ko if: $data.data().users().length == 0 -->
+                <li class="hint-bubble">Click to add a User</li>
+                <!-- /ko -->
                 <li class="icon-action add" data-bind="click: $data.onAddUser"><span></span></li>
             </ul>
         </div>
@@ -1346,18 +1377,14 @@
                 <span data-bind="click: $root.backView"></span>
             </div>
             <div class="main-header">
-                <h1 class="title">user editor</h1>
+                <h1 class="title">edit user</h1>
             </div>
             <div class="scroll-list pivot-default-opacity scrollable-list animate bottom45" data-bind="with: $data.data().selectedUser" id="settingPageScroll">
                 <div class="scroller-list">
                     <div class="list detail">
                         <div id="settings-edit" class="detail edit reset-p">
                             <div class="tolower item reset-m">
-
-
-                                <div data-bind="template:{name: 'object-property-editor', foreach: $data.getProperties() }">
-                                </div>
-
+                                <div data-bind="template:{name: 'object-property-editor', foreach: $data.getProperties() }"></div>
 
                                 <!--<div class="field">
                                     <div><span>Name</span></div>
@@ -1392,10 +1419,8 @@
                                 </div>-->
 
                                 <div class="split2">
-                                    <span class="btn-metro btn-large margin10_0" data-bind="click: $parent.onSaveUser">
-                                        Save</span>
-                                    <span class="btn-metro btn-large margin10_0" data-bind="click: $parent.onCancelUser">
-                                        Cancel</span>
+                                    <span class="btn-metro btn-large margin10_0" data-bind="click: $parent.onSaveUser">Save</span>
+                                    <span class="btn-metro btn-large margin10_0" data-bind="click: $parent.onCancelUser">Cancel</span>
                                 </div>
                             </div>
                         </div>
@@ -1406,17 +1431,25 @@
     </script>
 
     <script type="text/html" id="object-property-editor">
-        <div data-bind="text: name"></div>
-        <div data-bind="template: { name: type + '-editor' }"></div>
+        <div class="field">
+            <div><span data-bind="text: name"></span></div>
+            <div data-bind="template: { name: type + '-editor' }"></div>
+        </div>
     </script>
     <script type="text/html" id="Edm.String-editor">
-        <input data-bind="value: value" />
+        <input class="medium accent-bg" type="text" data-bind="value: value" />
     </script>
     <script type="text/html" id="Edm.Boolean-editor">
-        <input type="checkbox" data-bind="checked: value" />
+        <div class="field reset-p">
+            <div class="metro-checkbox">
+                <input type="checkbox" value="None" id="Enabled" name="check" data-bind="checked: value" />
+                <label for="Enabled"></label>
+            </div>
+            <!--<span class="metro-checkbox-label">Enabled</span>-->
+        </div>
     </script>
     <script type="text/html" id="Edm.DateTime-editor">
-        <input type="datetime" data-bind="value: value" />
+        <input class="medium accent-bg" type="datetime" data-bind="value: value" />
     </script>
     <!-- #endregion TEMPLATES -->
 
@@ -1456,6 +1489,7 @@
     <script type="text/javascript" src="scripts/ScrumLsEntities.js"></script>
     <script type="text/javascript" src="scripts/IScroll/iscroll.min.js"></script>
     <script type="text/javascript" src="scripts/IScroll/swipeview.js"></script>
+
     <script type="text/javascript" src="scripts/Models/MainPage.js"></script>
     <script type="text/javascript" src="scripts/init.js"></script>
     <script type="text/javascript" src="scripts/scrum.js"></script>
