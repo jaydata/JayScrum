@@ -294,9 +294,9 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
     onAddWorkItem: function (wrkItem) {
         var item = new JayScrum.repository.WorkItems.createNew({
             Id: null,
-            Title: "",
+            //Title: "",
             Type: "Task",
-            Description: "",
+            //Description: "",
             CreatedDate: new Date().toISOString(),
             CreatedBy: JayScrum.app.globalData().user().login(),
             ChangedDate: new Date().toISOString(),

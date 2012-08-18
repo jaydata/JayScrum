@@ -1018,8 +1018,10 @@
             <ul>
                 <li class="icon-action save"><span data-bind="click: $parent.onSaveProject"></span>
                 </li>
+                <!--ko if: $data.Id-->
                 <li class="icon-action delete"><span data-bind="click: $parent.onDeleteProject"></span>
                 </li>
+                <!--/ko-->
             </ul>
         </div>
     </script>
@@ -1193,10 +1195,13 @@
                                 <div class="actions fright">
                                     <span class="icon-action connect" data-bind="click: $parent.connectTo">
                                         <span></span></span>
+
+                                    <!--ko ifnot: $data.Id == -1-->
                                     <span class="icon-action edit" data-bind="click: $parent.editSetting">
                                         <span></span></span>
                                     <span class="icon-action delete" data-bind="click: $parent.deleteSetting">
                                         <span></span></span>
+                                    <!--/ko-->
                                 </div>
                             </li>
                         </ul>
