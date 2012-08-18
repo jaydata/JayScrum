@@ -11,7 +11,7 @@ $data.Class.define('JayScrum.Views.RepositorySettings', JayScrum.FrameView, null
         this.i_scroll = null;
     },
     initializeView:function(){
-        JayScrum.app.hideLoading();
+        //JayScrum.app.hideLoading();
         this.i_scroll = JayScrum.app.initScrollById('settingPageScroll');
     },
     tearDownView:function(){
@@ -186,6 +186,13 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
             loadingPromise.resolve();
         });
         return loadingPromise.promise;
+    },
+    onFrameChangedFrom:function (newFrameData, oldFrameData, frame) {
+        this._loadData()
+            .then(function(){
+                //JayScrum.app.hideLoading();
+                JayScrum.app.selectedFrame().selectedView().initializeView();
+            });
     },
     showActionBar:function () {
         $('div#settingPageActionBar').addClass("opened");
