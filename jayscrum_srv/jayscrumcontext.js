@@ -172,6 +172,8 @@ var Q = require('q');
                                 userStory:workitemQueries[3].valueOf(),
                                 task:9999,
                                 burnDown:{
+                                    startDate: new Date(),
+                                    endDate: new Date(),
                                     m_Item1: ["Remaining hours", "To do hours", "Ideal line"],
                                     m_Item2: [{Key: new Date('2012.08.13'), Value: [150, 140]},
                                         {Key: new Date('2012.08.14'),Value: [140, 110]},

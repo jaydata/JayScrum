@@ -22,7 +22,7 @@ $data.Class.define('JayScrum.Views.ScrumWall', JayScrum.FrameView, null, {
         this.done_iScroll = JayScrum.app.initScrollById('transition3', JayScrum.app.selectedFrame().onDoneListPullUp, JayScrum.app.selectedFrame().onDoneListPullDown);
         this.burndown_iScroll = JayScrum.app.initScrollById('transition4', null, null);
         this.vertical_iScroll = JayScrum.app.initHorizontalScrollById("wrapper", 1);
-        //DisplayBurndownChart();
+        DisplayBurndownChart();
         JayScrum.app.hideLoading();
     },
     tearDownView:function(){

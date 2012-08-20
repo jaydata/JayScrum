@@ -1,8 +1,8 @@
-//Zepto.merge = function(first, second){return first.concat(second);}
+/*//Zepto.merge = function(first, second){return first.concat(second);}
 (function($){
     function prepareBurndownChart() {
         var rawObject = JayScrum.app.selectedFrame().data().summaryList().SprintBurndownData();
-        /*rawObject = {};
+        *//*rawObject = {};
         rawObject.m_Item1 = ["Remaining hours", "To do hours", "Ideal line"];
         rawObject.m_Item2 = [{
             Key: "\/Date(1332191000000+0100)\/",
@@ -28,7 +28,7 @@
         },{
             Key: "\/Date(1332199400000+0100)\/",
             Value: [-1, -1]
-        }];*/
+        }];*//*
         var chartNames = rawObject.m_Item1;
         var columns = rawObject.m_Item2;
 
@@ -53,7 +53,7 @@
             Name: chartNames[2] || 'Ideal line'
         };
 
-        /*
+        *//*
         columns = [{
             Key: "\/Date(1332111600000+0100)\/",
             Value: [150, 140]
@@ -78,7 +78,7 @@
         },{
             Key: "\/Date(1332199400000+0100)\/",
             Value: [-1, -1]
-        }];*/
+        }];*//*
 
         for (var cIndex = 0; columns.length >= 2 && cIndex < columns.length; cIndex++) {
             var kvPair = columns[cIndex];
@@ -294,15 +294,20 @@
             $.error('Method ' +  method + ' does not exist on jQuery.burndownChart');
         }
     };
-})(jQuery);
+})(jQuery);*/
 
 function DisplayBurndownChart() {
-    var $container = $('#burndownChart');
 
-    if ($container.length <= 0) {
-        setTimeout(DisplayBurndownChart, 100);
-        return;
-    }
 
-    $container.burndownChart();
+    var r = new Raphael($('#burndownChart')[0]);
+    var lines = r.linechart(5, 15, 270, 300, [[0,8],
+        [0, 1, 2, 3, 4, 5, 6, 7, 8],
+        [0, 1, 2, 3, 4, 5, 6, 7, 8]
+    ],
+        [
+            [32,0],
+            [32, 32, 28, 30, 23, 18, 22, 17, 7],
+            [32, 25, 17, 15, 15, 11, 9, 7, 3]
+        ], { nostroke: false, axis: "0 0 1 1", symbol: "circle", smooth: false, shade:true });
+
 }
