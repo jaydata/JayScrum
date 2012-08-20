@@ -5,7 +5,7 @@ var ua = navigator.userAgent.toLowerCase(),
     iphone = ~ua.indexOf('iphone') || ~ua.indexOf('ipod'),
     ipad = ~ua.indexOf('ipad'),
     ios = iphone || ipad,
-    android = ~ua.indexOf('android'),
+    android = ua.indexOf('android') >= 0,
     isIE = ua.indexOf('msie'),
     $ = Zepto,
     eventName = !(/mobile/gi).test(navigator.appVersion) ? "click" : "tap",
@@ -37,7 +37,6 @@ var initUI = function() {
             opacity: 0
         }, 500, 'ease-out', function () {
             loading.hide();
-            loading.find("h1").html("Loading");
 
             setupScroll();
             appStarted = true;

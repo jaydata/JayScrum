@@ -332,7 +332,7 @@ function DisplayBurndownChart() {
         }
     }
 
-    lines.shades[0].attr("opacity", "1");
-    lines.shades[1].attr("opacity", "1");
+    lines.shades[0].attr("opacity", "0.7");
+    lines.shades[1].attr("opacity", "0.7");
     lines.shades[2].attr("opacity", "0");
 }

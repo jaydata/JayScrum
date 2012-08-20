@@ -270,6 +270,10 @@ JayScrum.pushObservablesToList= function (list, rawData) {
     }
 };
 $(function () {
+    if (android) {
+        document.body.classList.add("android")
+    }
+
     JayScrum.app = new JayScrum.ScrumApp('#page');
     JayScrum.app.bind();
     JayScrum.app.selectFrame('Repositories', undefined, { autoConnect: true });

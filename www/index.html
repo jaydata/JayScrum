@@ -507,22 +507,31 @@
             <span class="icon" data-bind="attr: { 'class': 'icon ' + State() }"></span>
         </div>
         <h1 class="accent-color" data-bind="text: Title"></h1>
+
+        <!-- ko if: Description -->
         <p class="description clear" data-bind="html: Description"></p>
+        <!-- /ko -->
+
+        <!-- ko if: ProjectName -->
         <div class="field">
             <div class="tile-small project"></div>
             <div>
                 <span>Project</span><span class="medium accent-color" data-bind="text: ProjectName"></span>
             </div>
         </div>
+        <!-- /ko -->
 
+        <!-- ko if: SprintName -->
         <div class="field">
             <div class="tile-small sprint"></div>
             <div>
                 <span>Sprint</span><span class="medium accent-color" data-bind="text: SprintName"></span>
             </div>
         </div>
+        <!-- /ko -->
 
         <!-- ko if: Type() == 'Task' -->
+        <!-- ko if: ParentName -->
         <div class="field">
             <div class="tile-small parent"></div>
             <div>
@@ -530,36 +539,46 @@
             </div>
         </div>
         <!-- /ko -->
+        <!-- /ko -->
 
+        <!-- ko if: State -->
         <div class="field">
             <div class="tile-small state"></div>
             <div>
                 <span>State</span><span class="medium accent-color" data-bind="text: State"></span>
             </div>
         </div>
+        <!-- /ko -->
 
+        <!-- ko if: IsBlocked -->
         <div class="field">
             <div class="tile-small blocked"></div>
             <div>
                 <span>Blocked</span><span class="medium accent-color" data-bind="text: IsBlocked"></span>
             </div>
         </div>
+        <!-- /ko -->
 
+        <!-- ko if: AssignedTo -->
         <div class="field">
             <div class="tile-small user"></div>
             <div>
                 <span>Assigned To</span><span class="medium accent-color" data-bind="text: AssignedTo"></span>
             </div>
         </div>
+        <!-- /ko -->
 
+        <!-- ko if: Priority -->
         <div class="field">
             <div class="tile-small priority"></div>
             <div>
                 <span>Backlog Priority</span><span class="medium accent-color" data-bind="text: Priority"></span>
             </div>
         </div>
+        <!-- /ko -->
 
         <!-- ko if: Type() == 'Task' -->
+        <!-- ko if: RemainingWork -->
         <div class="field">
             <div class="tile-small remaining"></div>
             <div>
@@ -567,21 +586,24 @@
             </div>
         </div>
         <!-- /ko -->
-
-        <!-- ko if: Type() != 'Task' -->
+        
+        <!-- ko if: Effort -->
         <div class="field">
             <div class="tile-small effort"></div>
             <div>
                 <span>Effort</span><span class="medium accent-color" data-bind="text: Effort"></span>
             </div>
         </div>
+        <!-- /ko -->
 
+        <!-- ko if: BusinessValue -->
         <div class="field">
             <div class="tile-small value"></div>
             <div>
                 <span>Business Value</span><span class="medium accent-color" data-bind="text: BusinessValue"></span>
             </div>
         </div>
+        <!-- /ko -->
         <!-- /ko -->
     </script>
 
@@ -819,14 +841,13 @@
                                                 data-bind="click: $parent.onPinSprint"></span></span>
                                             <!-- /ko -->
                                             <!-- ko ifnot: $data.isPinned() -->
-                                            <span class="icon-action pin fright" title="Click to pin to dashboard"><span data-bind="click: $parent.onPinSprint">
-                                            </span></span>
+                                            <span class="icon-action pin fright" title="Click to pin to dashboard"><span data-bind="click: $parent.onPinSprint"></span></span>
                                             <!-- /ko -->
                                         </h2>
 
                                         <div class="sprint-dates white">
-                                            <span data-bind="text: moment(StartDate()).format('YYYY.MM.DD')"></span>-
-                                            <span data-bind="text: moment(FinishDate()).format('YYYY.MM.DD')"></span>
+                                            <span data-bind="text: moment(StartDate()).format('YY.MM.DD')"></span>-
+                                            <span data-bind="text: moment(FinishDate()).format('YY.MM.DD')"></span>
                                         </div>
                                     </div>
                                 </div>
