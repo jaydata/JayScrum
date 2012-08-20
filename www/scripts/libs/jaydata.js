@@ -8031,7 +8031,7 @@ JAYLINT = (function () {
 			switch (t){
 				case $data.Number: return 0.0;
 				case $data.Integer: return 0;
-				case $data.String: return '';
+				case $data.String: return null;
 				case $data.Boolean: return false;
 				default: return null;
 			}
@@ -11834,12 +11834,17 @@ $data.Event = Event = $data.Class.define("$data.Event", null, null, {
         };
         this.fire = function (eventData, snder) {
             var snd = snder || sender || this;
-            eventData.eventName = name;
+            //eventData.eventName = name;
             ///<value name="subscriberList type="Array" />
             if (subscriberList) {
                 subscriberList.forEach(function (subscriber) {
                     ///<param name="subscriber" type="EventSubscriber" />
-                    subscriber.handler.call(subscriber.thisArg, snd, eventData, subscriber.state);
+                    try {
+                        subscriber.handler.call(subscriber.thisArg, snd, eventData, subscriber.state);
+                    } catch(ex) {
+                        console.log("unhandled exception in event handler. exception suppressed");
+                        console.dir(ex);
+                    }
                 });
             }
         };
@@ -12256,6 +12261,32 @@ $data.Class.define('$data.EntityContext', null, null,
                 callBack.error('Provider fallback failed!');
             }
         });
+
+
+
+        this.addEventListener = function(eventName, fn) {
+            var delegateName = "on" + eventName;
+            if (!(delegateName in this)) {
+                this[delegateName] = new $data.Event(eventName, this);
+            }
+            this[delegateName].attach(fn);
+        };
+
+        this.removeEventListener = function(eventName, fn) {
+            var delegateName = "on" + eventName;
+            if (!(delegateName in this)) {
+                return;
+            }
+            this[delegateName].attach(fn);
+        };
+
+        this.raiseEvent = function(eventName, data) {
+            var delegateName = "on" + eventName;
+            if (!(delegateName in this)) {
+                return;
+            }
+            this[delegateName].fire(data);
+        };
         /*
         while (!(providerType = $data.StorageProviderBase.getProvider(storageProviderCfg.name[i])) && i < storageProviderCfg.name.length) i++;
         if (providerType){
@@ -12331,31 +12362,31 @@ $data.Class.define('$data.EntityContext', null, null,
                         if (!storageModel.EventHandlers) storageModel.EventHandlers = {};
                         storageModel.EventHandlers.beforeCreate = item.beforeCreate;
                     }
-                    if (item.beforeCreate) {
+                    if (item.beforeRead) {
                         if (!storageModel.EventHandlers) storageModel.EventHandlers = {};
                         storageModel.EventHandlers.beforeRead = item.beforeRead;
                     }
-                    if (item.beforeCreate) {
+                    if (item.beforeUpdate) {
                         if (!storageModel.EventHandlers) storageModel.EventHandlers = {};
                         storageModel.EventHandlers.beforeUpdate = item.beforeUpdate;
                     }
-                    if (item.beforeCreate) {
+                    if (item.beforeDelete) {
                         if (!storageModel.EventHandlers) storageModel.EventHandlers = {};
                         storageModel.EventHandlers.beforeDelete = item.beforeDelete;
                     }
-                    if (item.beforeCreate) {
+                    if (item.afterCreate) {
                         if (!storageModel.EventHandlers) storageModel.EventHandlers = {};
                         storageModel.EventHandlers.afterCreate = item.afterCreate;
                     }
-                    if (item.beforeCreate) {
+                    if (item.afterRead) {
                         if (!storageModel.EventHandlers) storageModel.EventHandlers = {};
                         storageModel.EventHandlers.afterRead = item.afterRead;
                     }
-                    if (item.beforeCreate) {
+                    if (item.afterUpdate) {
                         if (!storageModel.EventHandlers) storageModel.EventHandlers = {};
                         storageModel.EventHandlers.afterUpdate = item.afterUpdate;
                     }
-                    if (item.beforeCreate) {
+                    if (item.afterDelete) {
                         if (!storageModel.EventHandlers) storageModel.EventHandlers = {};
                         storageModel.EventHandlers.afterDelete = item.afterDelete;
                     }
@@ -13035,7 +13066,7 @@ $data.Class.define('$data.EntityContext', null, null,
                 }
                 //}, this);
             }
-            if ((entity.data.entityState != $data.EntityState.Added || entity.data.entityState != $data.EntityState.Modified)
+            if ((entity.data.entityState === $data.EntityState.Added || entity.data.entityState === $data.EntityState.Modified)
                 && !entity.data.isValid()) {
                 errors.push({ item: entity.data, errors: entity.data.ValidationErrors });
             }
@@ -13184,6 +13215,24 @@ $data.Class.define('$data.EntityContext', null, null,
             
             var n = entity.entitySet.elementType.name;
             var es = ctx._entitySetReferences[n];
+
+
+            var eventName = undefined;
+            switch (oes) {
+                case $data.EntityState.Added:
+                    eventName  = 'added';
+                    break;
+                case $data.EntityState.Deleted:
+                    eventName  = 'deleted';
+                    break;
+                case $data.EntityState.Modified:
+                    eventName  = 'updated';
+                    break;
+            }
+            if (eventName) {
+                this.raiseEvent(eventName, entity);
+            }
+
             if (es.afterCreate || es.afterUpdate || es.afterDelete){
                 if (!eventData[n]) eventData[n] = {};
                     
@@ -15782,18 +15831,18 @@ $C('$data.modelBinder.ModelBinderConfigCompiler', $data.Expressions.EntityExpres
             }, this);
         } else {
             /*builder._binderConfig = {
-                $selector: ['json:results'],
-                $type: $data.Array,
-                $item:{
-                    $type: elementType,
-                    $value: function (meta, data) { return data; }
-                }
-            }*/
+             $selector: ['json:results'],
+             $type: $data.Array,
+             $item:{
+             $type: elementType,
+             $value: function (meta, data) { return data; }
+             }
+             }*/
             builder._binderConfig.$item = { };
             builder.modelBinderConfig = builder._binderConfig.$item;
 
 
-            
+
         }
         if (storageModel) {
             this._addComplexTypeProperties(storageModel.ComplexTypes, builder);
@@ -15949,7 +15998,8 @@ $C('$data.modelBinder.ModelBinderConfigCompiler', $data.Expressions.EntityExpres
         }
         builder.popModelBinderProperty();
     }
-});$data.Class.define("$data.Authentication.AuthenticationBase", null, null, {
+});
+$data.Class.define("$data.Authentication.AuthenticationBase", null, null, {
     constructor: function (cfg) {
         this.configuration = cfg || {};
         this.Authenticated = false;

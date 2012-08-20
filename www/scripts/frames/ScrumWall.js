@@ -266,7 +266,7 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
         //save workItem
         wrkItem.ChangedDate(new Date());
         wrkItem.ChangedBy(JayScrum.app.globalData().user().login());
-        wrkItem.IsBlocked(wrkItem.IsBlocked()==='true'?true:false);
+        //wrkItem.IsBlocked(wrkItem.IsBlocked()==='true'?true:false);
 
         JayScrum.app.selectedFrame().data().todoList.remove(function(item){return item.Id() == wrkItem.Id()});
         JayScrum.app.selectedFrame().data().inProgList.remove(function(item){return item.Id() == wrkItem.Id()});
@@ -443,7 +443,7 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
                     .where(function (item) {
                         return  item.WorkItem_Sprint == this.sprintId && item.State == 'To Do' && (item.Type == "Task" || item.Type == 'Bug');
                     }, this.pinnedQueryParam)
-                    .orderBy(function (item) {
+                    .orderByDescending(function (item) {
                         return item.Priority;
                     })
                     .take(this.listLoadSize);
@@ -451,7 +451,7 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
                     .where(function (item) {
                         return item.WorkItem_Sprint == this.sprintId && item.State == 'In Progress' && (item.Type == "Task" || item.Type == 'Bug');
                     }, this.pinnedQueryParam)
-                    .orderBy(function (item) {
+                    .orderByDescending(function (item) {
                         return item.Priority;
                     })
                     .take(this.listLoadSize);
@@ -459,7 +459,7 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
                     .where(function (item) {
                         return item.WorkItem_Sprint == this.sprintId && item.State == 'Done' && (item.Type == "Task" || item.Type == 'Bug');
                     }, this.pinnedQueryParam)
-                    .orderBy(function (item) {
+                    .orderByDescending(function (item) {
                         return item.Priority;
                     })
                     .take(this.listLoadSize);
