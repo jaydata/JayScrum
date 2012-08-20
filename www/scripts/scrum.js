@@ -236,12 +236,11 @@ $data.Class.define('JayScrum.ScrumApp', JayScrum.FrameApp, null,{
         return vScroll;
     },
     _initializeRepositories:function(url, userName, psw){
-        $data.MetadataLoader.xsltRepoUrl = '/scripts/JaySvcUtil/';
-        $data.MetadataLoader.load(url+"/$metadata", function(){
-            var context = LightSwitchApplication.context;
-            JayScrum.repository = context;
-            $data.MetadataLoader.load(url+"_users/$metadata", function(){
-                JayScrum.stormContext = JayStormApplication.context;
+
+        $data.MetadataLoader.load({url: url+"/$metadata", AutoCreateContext:false}, function(factory, contextType){
+            JayScrum.repository = factory();
+            $data.MetadataLoader.load({url:url+"_users/$metadata", AutoCreateContext:false}, function(usrfactory, usrcontextType){
+                JayScrum.stormContext = usrfactory();
                 JayScrum.stormContext.Users
                     .where(function(item){return item.login == this.loginName}, {loginName: userName})
                     .toArray(function(user){
