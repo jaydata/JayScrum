@@ -394,16 +394,15 @@
         </div>
         <div class="metro-actionbar detail-view-edit opened" data-bind="with: $data.data().selectedWorkItemActive">
             <ul>
-                <li class="icon-action save"><span data-bind="click: $root.selectedFrame().onSaveWorkItem">
-                </span></li>
+                <li class="icon-action save"><span data-bind="click: $root.selectedFrame().onSaveWorkItem"></span></li>
             </ul>
         </div>
     </script>
 
     <script id="workItemEditor-template" type="text/html">
-        <div id="wrapper-detailed-edit" class="scroll-out">
+        <div id="wrapper-detailed-edit" class="scroll-out top50">
             <div class="scroll-in">
-                <div class="list">
+                <div class="list maxlist">
                     <div class="pivot-content">
                         <div class="item task" data-bind="attr: { 'class': 'item task' + State() }">
                             <div class="tolower">
