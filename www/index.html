@@ -15,49 +15,12 @@
     <link rel="shortcut icon" href="Images/icons/favicon.ico" type="image/x-icon" />
 
     <link rel="stylesheet" href="Styles/metro.css" type="text/css" />
-
-    <!--<style type="text/css">
-        @-webkit-keyframes loading
-        {
-            0%
-            {
-                -webkit-transform: translate3d(0,0,0);
-                opacity: 0.2;
-            }
-
-            30%
-            {
-                -webkit-transform: translate3d(190px,0,0);
-                opacity: 1;
-            }
-
-            70%
-            {
-                -webkit-transform: translate3d(200px,0,0);
-                opacity: 0.6;
-            }
-
-            100%
-            {
-                -webkit-transform: translate3d(380px,0,0);
-                opacity: 0.2;
-            }
-        }
-    </style>-->
 </head>
 <body accent="blue" theme="black" font="segoewp" onorientationchange="setupScroll()">
     <div id="page">
         <div class="metro-loading">
             <h1>JayScrum</h1>
             <span class="ui-icon spin"></span>
-
-            <!--<div class="metro-dots loading">
-                <span class="accent-bg"></span>
-                <span class="accent-bg"></span>
-                <span class="accent-bg"></span>
-                <span class="accent-bg"></span>
-                <span class="accent-bg"></span>
-            </div>-->
         </div>
     </div>
 
@@ -72,6 +35,7 @@
                 <div id="metro-tiles">
                     <div class="main-header" data-bind="attr: { 'class': 'main-header main-page' }">
                         <h1 class="pivot-default animate" data-bind="text: $root.selectedFrame().data().name"></h1>
+                        <small class="subtitle">repo: JayScrum DB</small>
                     </div>
 
                     <ul class="metro-tiles tolower">
@@ -195,8 +159,7 @@
                                 <div class="list" data-bind="foreach: $data.data().todoList">
                                     <div data-bind="attr: { 'class': 'item task list-item ' + IsBlocked() }">
                                         <!-- ko if: Title -->
-                                        <h2 class="title margintop tolower" data-bind="text: Title, click: $root.selectedFrame().onSelectWorkItem">
-                                        </h2>
+                                        <h2 class="title margintop tolower" data-bind="text: Title, click: $root.selectedFrame().onSelectWorkItem"></h2>
                                         <!-- /ko -->
 
                                         <!-- ko if: ParentName -->
@@ -204,8 +167,7 @@
                                         <!-- /ko -->
 
                                         <!-- ko if: ProjectName -->
-                                        <span class="small inactive tolower iblock" data-bind="text: 'Project: ' + ProjectName()">
-                                        </span>
+                                        <span class="small inactive tolower iblock" data-bind="text: 'Project: ' + ProjectName()"></span>
                                         <!-- /ko -->
 
                                         <div class="inactive tolower">
@@ -218,7 +180,7 @@
                                             <!-- /ko -->
 
                                             <!-- ko if: Priority -->
-                                            | <span class="small inactive tolower" data-bind="text: 'prior: ' + Priority()">
+                                            | <span class="small" data-bind="text: 'prior: ' + Priority()">
                                             </span>
                                             <!-- /ko -->
                                         </div>
@@ -239,17 +201,15 @@
                                     <div class="task-template-inprog">
                                         <div data-bind="attr: { 'class': 'item task list-item ' + IsBlocked() }">
                                             <!-- ko if: Title -->
-                                            <h2 class="title margintop tolower" data-bind="text: Title, click: $root.selectedFrame().onSelectWorkItem">
-                                            </h2>
+                                            <h2 class="title margintop tolower" data-bind="text: Title, click: $root.selectedFrame().onSelectWorkItem"></h2>
                                             <!-- /ko -->
-
-                                            <!-- ko if: ParentName -->
-                                            <h4 class="title accent-color tolower" data-bind="text: ParentName"></h4>
+                                            
+                                            <!-- ko if: AssignedTo -->
+                                            <h4 class="title accent-color" data-bind="text: AssignedTo"></h4>
                                             <!-- /ko -->
 
                                             <!-- ko if: ProjectName -->
-                                            <span class="small inactive tolower iblock" data-bind="text: 'Project: ' + ProjectName()">
-                                            </span>
+                                            <span class="small inactive tolower iblock" data-bind="text: 'Project: ' + ProjectName()"></span>
                                             <!-- /ko -->
 
                                             <div class="inactive tolower">
@@ -257,12 +217,8 @@
                                                 <span class="small accent-bg" data-bind="text: RemainingWork() + ' h'"></span>
                                                 <!-- /ko -->
 
-                                                <!-- ko if: AssignedTo -->
-                                                <span class="small accent-color" data-bind="text: AssignedTo"></span>
-                                                <!-- /ko -->
-
                                                 <!-- ko if: Priority -->
-                                                | <span class="small inactive tolower" data-bind="text: 'prior: ' + Priority()">
+                                                <span class="small" data-bind="text: 'prior: ' + Priority()">
                                                 </span>
                                                 <!-- /ko -->
                                             </div>
@@ -551,22 +507,31 @@
             <span class="icon" data-bind="attr: { 'class': 'icon ' + State() }"></span>
         </div>
         <h1 class="accent-color" data-bind="text: Title"></h1>
+
+        <!-- ko if: Description -->
         <p class="description clear" data-bind="html: Description"></p>
+        <!-- /ko -->
+
+        <!-- ko if: ProjectName -->
         <div class="field">
             <div class="tile-small project"></div>
             <div>
                 <span>Project</span><span class="medium accent-color" data-bind="text: ProjectName"></span>
             </div>
         </div>
+        <!-- /ko -->
 
+        <!-- ko if: SprintName -->
         <div class="field">
             <div class="tile-small sprint"></div>
             <div>
                 <span>Sprint</span><span class="medium accent-color" data-bind="text: SprintName"></span>
             </div>
         </div>
+        <!-- /ko -->
 
         <!-- ko if: Type() == 'Task' -->
+        <!-- ko if: ParentName -->
         <div class="field">
             <div class="tile-small parent"></div>
             <div>
@@ -574,36 +539,46 @@
             </div>
         </div>
         <!-- /ko -->
+        <!-- /ko -->
 
+        <!-- ko if: State -->
         <div class="field">
             <div class="tile-small state"></div>
             <div>
                 <span>State</span><span class="medium accent-color" data-bind="text: State"></span>
             </div>
         </div>
+        <!-- /ko -->
 
+        <!-- ko if: IsBlocked -->
         <div class="field">
             <div class="tile-small blocked"></div>
             <div>
                 <span>Blocked</span><span class="medium accent-color" data-bind="text: IsBlocked"></span>
             </div>
         </div>
+        <!-- /ko -->
 
+        <!-- ko if: AssignedTo -->
         <div class="field">
             <div class="tile-small user"></div>
             <div>
                 <span>Assigned To</span><span class="medium accent-color" data-bind="text: AssignedTo"></span>
             </div>
         </div>
+        <!-- /ko -->
 
+        <!-- ko if: Priority -->
         <div class="field">
             <div class="tile-small priority"></div>
             <div>
                 <span>Backlog Priority</span><span class="medium accent-color" data-bind="text: Priority"></span>
             </div>
         </div>
+        <!-- /ko -->
 
         <!-- ko if: Type() == 'Task' -->
+        <!-- ko if: RemainingWork -->
         <div class="field">
             <div class="tile-small remaining"></div>
             <div>
@@ -611,21 +586,24 @@
             </div>
         </div>
         <!-- /ko -->
-
-        <!-- ko if: Type() != 'Task' -->
+        
+        <!-- ko if: Effort -->
         <div class="field">
             <div class="tile-small effort"></div>
             <div>
                 <span>Effort</span><span class="medium accent-color" data-bind="text: Effort"></span>
             </div>
         </div>
+        <!-- /ko -->
 
+        <!-- ko if: BusinessValue -->
         <div class="field">
             <div class="tile-small value"></div>
             <div>
                 <span>Business Value</span><span class="medium accent-color" data-bind="text: BusinessValue"></span>
             </div>
         </div>
+        <!-- /ko -->
         <!-- /ko -->
     </script>
 
@@ -805,15 +783,14 @@
             <div class="main-header">
                 <h1 class="title">Edit userstory</h1>
             </div>
-            <div class="detail edit" data-bind="with: $data.data().selectedUserStory">
+            <div class="detail edit reset" data-bind="with: $data.data().selectedUserStory">
                 <!-- ko template: { name: 'workItemEditor-template', data: $data }-->
                 <!-- /ko-->
             </div>
         </div>
         <div class="metro-actionbar detail-view-edit opened" data-bind="with: $data.data().selectedUserStory">
             <ul>
-                <li class="icon-action save"><span data-bind="click: $root.selectedFrame().onSaveUserStory">
-                </span></li>
+                <li class="icon-action save"><span data-bind="click: $root.selectedFrame().onSaveUserStory"></span></li>
             </ul>
         </div>
     </script>
@@ -864,14 +841,13 @@
                                                 data-bind="click: $parent.onPinSprint"></span></span>
                                             <!-- /ko -->
                                             <!-- ko ifnot: $data.isPinned() -->
-                                            <span class="icon-action pin fright" title="Click to pin to dashboard"><span data-bind="click: $parent.onPinSprint">
-                                            </span></span>
+                                            <span class="icon-action pin fright" title="Click to pin to dashboard"><span data-bind="click: $parent.onPinSprint"></span></span>
                                             <!-- /ko -->
                                         </h2>
 
                                         <div class="sprint-dates white">
-                                            <span data-bind="text: moment(StartDate()).format('YYYY.MM.DD')"></span>-
-                                            <span data-bind="text: moment(FinishDate()).format('YYYY.MM.DD')"></span>
+                                            <span data-bind="text: moment(StartDate()).format('YY.MM.DD')"></span>-
+                                            <span data-bind="text: moment(FinishDate()).format('YY.MM.DD')"></span>
                                         </div>
                                     </div>
                                 </div>
@@ -1045,7 +1021,7 @@
             <div class="metro-pivot wrapper-container reset">
                 <div class="pivot-list">
                     <div class="pivot uslist">
-                        <div class="scroll-list scrollable-list bottom45 pivot-default-opacity" id="transition-projects">
+                        <div class="scroll-list scrollable-list pivot-default-opacity" id="transition-projects">
                             <div class="scroller-list">
                                 <div class="list project-list maxlist" data-bind="with: $data.data().selectedProject">
                                     <div class="item task list-item clear">
@@ -1112,12 +1088,6 @@
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="metro-actionbar detail-view opened">
-                <ul>
-                    <li class="icon-action add"><span data-bind="click: $data.onAddProject"></span>
-                    </li>
-                </ul>
             </div>
         </div>
     </script>

@@ -1,35 +1,30 @@
 $data.ajax = $.ajax;
 document.addEventListener('touchmove', function (e) { e.preventDefault(); }, false);
 
-var page = document.getElementById('page'),
-           ua = navigator.userAgent.toLowerCase(),
-           iphone = ~ua.indexOf('iphone') || ~ua.indexOf('ipod'),
-           ipad = ~ua.indexOf('ipad'),
-           ios = iphone || ipad,
-           fullscreen = window.navigator.standalone,
-           android = ~ua.indexOf('android'),
-           isIE = ua.indexOf('msie'),
-           $ = Zepto,
-           eventName = !(/mobile/gi).test(navigator.appVersion) ? "click" : "tap",
-           loading = $("div.metro-loading"),
-           settingScroll = null,
-           scrollToRefresh = null,
-           appStarted = false;
+var ua = navigator.userAgent.toLowerCase(),
+    iphone = ~ua.indexOf('iphone') || ~ua.indexOf('ipod'),
+    ipad = ~ua.indexOf('ipad'),
+    ios = iphone || ipad,
+    android = ua.indexOf('android') >= 0,
+    isIE = ua.indexOf('msie'),
+    $ = Zepto,
+    eventName = !(/mobile/gi).test(navigator.appVersion) ? "click" : "tap",
+    loading = $("div.metro-loading"),
+    scrollToRefresh = null,
+    appStarted = false;
 
 var setupScroll = function () {
+    //var page = document.getElementById('page');
     if (ios) {
         var height = document.documentElement.clientHeight;
-        if (iphone && !fullscreen) height += 60;
+        if (iphone && !window.navigator.standalone) height += 60;
         //page.style.height = height + 'px';
         document.body.style.height = height + 5 + 'px';
-    } else if (android) {
-        if (appStarted == false) {
-            //page.style.height = (window.innerHeight + 56) + 'px';
-            document.body.style.height = (window.innerHeight + 56) + 5 + 'px';
-        }
+    } else if (android && !appStarted) {
+        //page.style.height = (window.innerHeight + 56) + 'px';
+        document.body.style.height = (window.innerHeight + 56) + 5 + 'px';
     }
     setTimeout(scrollTo, 0, 0, 1);
-    console.log('setup scroll');
 };
 
 // APP START
@@ -42,7 +37,6 @@ var initUI = function() {
             opacity: 0
         }, 500, 'ease-out', function () {
             loading.hide();
-            loading.find("h1").html("Loading");
 
             setupScroll();
             appStarted = true;

@@ -4,8 +4,6 @@
 /// <reference path="JayData.js" />
 
 var debug = true,
-    dragndrop = false,
-    vScroll,
     iScrollOptions = function (fn, fn2) {
         this.useTransition = true;
         this.hScroll = false;
@@ -14,19 +12,13 @@ var debug = true,
         this.hideScrollbar = true;
         this.bounce = true;
         this.lockDirection = true;
-        //this.handleClick = false;
-
         this.onScrollStart = function () {
             if ($('input:focus, select:focus, textarea:focus').length > 0) {
                 $(':focus').blur();
             }
         };
-
         this.onScrollMove = function () {
-            //console.log(this.y, this.maxScrollY);
-
             if (this.y < 0 && this.y < this.maxScrollY - 100 && !this.addNewItem) {
-
                 $(this.scroller).find("div.scroll-up").addClass("flip");
                 $(this.scroller).find("div.scroll-up span.pullUpLabel").html("Release to refresh");
                 this.addNewItem = true;
@@ -61,8 +53,7 @@ var debug = true,
         };
         this.refreshFunction = fn;
         this.clearFunction = fn2;
-    },
-    windowHeight = $(window).height();
+    };
 
 
 $data.Class.define('JayScrum.ScrumApp', JayScrum.FrameApp, null,{
@@ -214,6 +205,7 @@ $data.Class.define('JayScrum.ScrumApp', JayScrum.FrameApp, null,{
     initHorizontalScrollById:function (id, scrollToPage) {
         var wrapper = $("div#" + id),
             vScroll = null;
+
         if (wrapper.length > 0) {
             var columns = wrapper.find("div.pivot-list div.pivot").length,
                 scrollerWidth = columns * 335;
@@ -244,9 +236,9 @@ $data.Class.define('JayScrum.ScrumApp', JayScrum.FrameApp, null,{
                 JayScrum.stormContext.Users
                     .where(function(item){return item.login == this.loginName}, {loginName: userName})
                     .toArray(function(user){
-                        if(user && user.length>0){
+                        if (user && user.length > 0) {
                             JayScrum.app.globalData().user(user[0].asKoObservable());
-                        }else{
+                        } else {
                             //TODO remove
                             JayScrum.app.globalData().user((new JayScrum.stormContext.Users.createNew({Id:'fakeUser', login:'fakeUser', firstName:'fakeUser', lastName:'!!!'})).asKoObservable());
                         }
@@ -276,12 +268,15 @@ JayScrum.pushObservablesToList= function (list, rawData) {
         list.push(obs);
     }
 };
-$(function(){
+$(function () {
+    if (android) {
+        document.body.classList.add("android")
+    }
+
     JayScrum.app = new JayScrum.ScrumApp('#page');
     JayScrum.app.bind();
     JayScrum.app.selectFrame('Repositories', undefined, { autoConnect: true });
-})
-
+});
 
 Date.prototype.todayUTC = function () {
     var d = Date.UTC(this.getFullYear(), this.getMonth(), this.getDate());
