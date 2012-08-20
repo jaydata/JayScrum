@@ -159,8 +159,7 @@
                                 <div class="list" data-bind="foreach: $data.data().todoList">
                                     <div data-bind="attr: { 'class': 'item task list-item ' + IsBlocked() }">
                                         <!-- ko if: Title -->
-                                        <h2 class="title margintop tolower" data-bind="text: Title, click: $root.selectedFrame().onSelectWorkItem">
-                                        </h2>
+                                        <h2 class="title margintop tolower" data-bind="text: Title, click: $root.selectedFrame().onSelectWorkItem"></h2>
                                         <!-- /ko -->
 
                                         <!-- ko if: ParentName -->
@@ -168,8 +167,7 @@
                                         <!-- /ko -->
 
                                         <!-- ko if: ProjectName -->
-                                        <span class="small inactive tolower iblock" data-bind="text: 'Project: ' + ProjectName()">
-                                        </span>
+                                        <span class="small inactive tolower iblock" data-bind="text: 'Project: ' + ProjectName()"></span>
                                         <!-- /ko -->
 
                                         <div class="inactive tolower">
@@ -182,7 +180,7 @@
                                             <!-- /ko -->
 
                                             <!-- ko if: Priority -->
-                                            | <span class="small inactive tolower" data-bind="text: 'prior: ' + Priority()">
+                                            | <span class="small" data-bind="text: 'prior: ' + Priority()">
                                             </span>
                                             <!-- /ko -->
                                         </div>
@@ -203,17 +201,15 @@
                                     <div class="task-template-inprog">
                                         <div data-bind="attr: { 'class': 'item task list-item ' + IsBlocked() }">
                                             <!-- ko if: Title -->
-                                            <h2 class="title margintop tolower" data-bind="text: Title, click: $root.selectedFrame().onSelectWorkItem">
-                                            </h2>
+                                            <h2 class="title margintop tolower" data-bind="text: Title, click: $root.selectedFrame().onSelectWorkItem"></h2>
                                             <!-- /ko -->
-
-                                            <!-- ko if: ParentName -->
-                                            <h4 class="title accent-color tolower" data-bind="text: ParentName"></h4>
+                                            
+                                            <!-- ko if: AssignedTo -->
+                                            <h4 class="title accent-color" data-bind="text: AssignedTo"></h4>
                                             <!-- /ko -->
 
                                             <!-- ko if: ProjectName -->
-                                            <span class="small inactive tolower iblock" data-bind="text: 'Project: ' + ProjectName()">
-                                            </span>
+                                            <span class="small inactive tolower iblock" data-bind="text: 'Project: ' + ProjectName()"></span>
                                             <!-- /ko -->
 
                                             <div class="inactive tolower">
@@ -221,12 +217,8 @@
                                                 <span class="small accent-bg" data-bind="text: RemainingWork() + ' h'"></span>
                                                 <!-- /ko -->
 
-                                                <!-- ko if: AssignedTo -->
-                                                <span class="small accent-color" data-bind="text: AssignedTo"></span>
-                                                <!-- /ko -->
-
                                                 <!-- ko if: Priority -->
-                                                | <span class="small inactive tolower" data-bind="text: 'prior: ' + Priority()">
+                                                <span class="small" data-bind="text: 'prior: ' + Priority()">
                                                 </span>
                                                 <!-- /ko -->
                                             </div>

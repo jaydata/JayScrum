@@ -335,8 +335,6 @@
 
             swipeviewUs.css('top', minusHeight);
             initScrollById('swipeview-inside-us');
-
-            console.log(scrollToRefresh);
         }
     },
     onEditWorkItem: function (wrkItem, isEventCall) {

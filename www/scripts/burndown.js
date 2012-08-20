@@ -298,16 +298,41 @@
 
 function DisplayBurndownChart() {
 
-
     var r = new Raphael($('#burndownChart')[0]);
-    var lines = r.linechart(5, 15, 270, 300, [[0,8],
-        [0, 1, 2, 3, 4, 5, 6, 7, 8],
-        [0, 1, 2, 3, 4, 5, 6, 7, 8]
-    ],
+    var lines = r.linechart(5, 15, 270, 300,
         [
-            [32,0],
+            [0, 1, 2, 3, 4, 5, 6, 7, 8],
+            [0, 1, 2, 3, 4, 5, 6, 7, 8],
+            [0, 8]
+        ],
+        [
             [32, 32, 28, 30, 23, 18, 22, 17, 7],
-            [32, 25, 17, 15, 15, 11, 9, 7, 3]
-        ], { nostroke: false, axis: "0 0 1 1", symbol: "circle", smooth: false, shade:true });
+            [32, 25, 17, 15, 15, 11, 9, 7, 3],
+            [32, 0]
+        ],
+        {
+            nostroke: false,
+            axis: "0 0 1 1",
+            colors: ["#24A0DA", "#ffa500", "#fff"],
+            smooth: false,
+            shade: true
+        });
 
+    for (var i = 0, l = lines.axis.length; i < l; i++) {
+        var chart = lines;
+
+        // change the axis and tick-marks 
+        chart.axis[i].attr("stroke", "#fff");
+        chart.axis[i].attr("opacity", "0.5");
+
+        // change the axis labels 
+        var axisItems = chart.axis[i].text.items
+        for (var ii = 0, ll = axisItems.length; ii < ll; ii++) {
+            axisItems[ii].attr("fill", "#fff");
+        }
+    }
+
+    lines.shades[0].attr("opacity", "1");
+    lines.shades[1].attr("opacity", "1");
+    lines.shades[2].attr("opacity", "0");
 }
