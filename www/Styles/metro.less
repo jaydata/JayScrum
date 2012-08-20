@@ -783,6 +783,8 @@ div[id^="swipeview-inside"]{
 	    .show; .maxsize(inherit, inherit); .ovisible_; .mauto; .reset-p; .tacenter;
 	        
 	    h1 { .ohidden; }
+	    
+	    .subtitle { .relative; }
 	}
     
     h1 { .position(relative, -5px); line-height: 50px; }
@@ -1807,9 +1809,11 @@ body[theme="white"] .detail .field .field.active    { border-color: Black !impor
 @media only screen and (max-width : 480px), (max-device-width : 480px) {
 	.main-header {
 	    &.main-page {
-	        .maxsize(@wide-tile-width, 55px);
+	        .maxsize(@wide-tile-width, 65px);
 	    
 	        h1 { .tacenter; max-width: inherit; width: auto; height: auto; line-height: 35px; }
+	        
+	        .subtitle { top: -15px; }
 	    }
 	}
 	
@@ -1879,11 +1883,12 @@ body[theme="white"] .detail .field .field.active    { border-color: Black !impor
 /*#region Screen (480-768) */
 @media only screen and (min-width: 481px) and (max-width : 768px), (min-device-width : 480px) and (max-device-width : 768px) {
 	.main-header {
-	    &.main-page 
-	    {
-	        .maxsize(@wide-tile-width, 55px);
+	    &.main-page {
+	        .maxsize(@wide-tile-width, 80px);
 	    
 	        h1 { line-height: 55px; .tacenter; }
+	        
+	        .subtitle { top: -45px; }
 	    }
     }
     
@@ -1968,9 +1973,11 @@ body[theme="white"] .detail .field .field.active    { border-color: Black !impor
 	{
 	    &.main-page 
 	    {
-	        .maxsize(@wide-tile-width, 55px);
+	        .maxsize(@wide-tile-width, 95px);
 	    
 	        h1 { line-height: 55px; .tacenter; }
+	        
+	        .subtitle { top: -45px; }
 	    }
 	    
 	    h1 {

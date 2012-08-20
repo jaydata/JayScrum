@@ -15,49 +15,12 @@
     <link rel="shortcut icon" href="Images/icons/favicon.ico" type="image/x-icon" />
 
     <link rel="stylesheet" href="Styles/metro.css" type="text/css" />
-
-    <!--<style type="text/css">
-        @-webkit-keyframes loading
-        {
-            0%
-            {
-                -webkit-transform: translate3d(0,0,0);
-                opacity: 0.2;
-            }
-
-            30%
-            {
-                -webkit-transform: translate3d(190px,0,0);
-                opacity: 1;
-            }
-
-            70%
-            {
-                -webkit-transform: translate3d(200px,0,0);
-                opacity: 0.6;
-            }
-
-            100%
-            {
-                -webkit-transform: translate3d(380px,0,0);
-                opacity: 0.2;
-            }
-        }
-    </style>-->
 </head>
 <body accent="blue" theme="black" font="segoewp" onorientationchange="setupScroll()">
     <div id="page">
         <div class="metro-loading">
             <h1>JayScrum</h1>
             <span class="ui-icon spin"></span>
-
-            <!--<div class="metro-dots loading">
-                <span class="accent-bg"></span>
-                <span class="accent-bg"></span>
-                <span class="accent-bg"></span>
-                <span class="accent-bg"></span>
-                <span class="accent-bg"></span>
-            </div>-->
         </div>
     </div>
 
@@ -72,6 +35,7 @@
                 <div id="metro-tiles">
                     <div class="main-header" data-bind="attr: { 'class': 'main-header main-page' }">
                         <h1 class="pivot-default animate" data-bind="text: $root.selectedFrame().data().name"></h1>
+                        <small class="subtitle">repo: JayScrum DB</small>
                     </div>
 
                     <ul class="metro-tiles tolower">
@@ -805,15 +769,14 @@
             <div class="main-header">
                 <h1 class="title">Edit userstory</h1>
             </div>
-            <div class="detail edit" data-bind="with: $data.data().selectedUserStory">
+            <div class="detail edit reset" data-bind="with: $data.data().selectedUserStory">
                 <!-- ko template: { name: 'workItemEditor-template', data: $data }-->
                 <!-- /ko-->
             </div>
         </div>
         <div class="metro-actionbar detail-view-edit opened" data-bind="with: $data.data().selectedUserStory">
             <ul>
-                <li class="icon-action save"><span data-bind="click: $root.selectedFrame().onSaveUserStory">
-                </span></li>
+                <li class="icon-action save"><span data-bind="click: $root.selectedFrame().onSaveUserStory"></span></li>
             </ul>
         </div>
     </script>
@@ -1045,7 +1008,7 @@
             <div class="metro-pivot wrapper-container reset">
                 <div class="pivot-list">
                     <div class="pivot uslist">
-                        <div class="scroll-list scrollable-list bottom45 pivot-default-opacity" id="transition-projects">
+                        <div class="scroll-list scrollable-list pivot-default-opacity" id="transition-projects">
                             <div class="scroller-list">
                                 <div class="list project-list maxlist" data-bind="with: $data.data().selectedProject">
                                     <div class="item task list-item clear">
@@ -1112,12 +1075,6 @@
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="metro-actionbar detail-view opened">
-                <ul>
-                    <li class="icon-action add"><span data-bind="click: $data.onAddProject"></span>
-                    </li>
-                </ul>
             </div>
         </div>
     </script>
