@@ -12117,7 +12117,7 @@ $data.Entity = Entity = $data.Class.define("$data.Entity", null, null, {
         dataType: Array,
         elementType: $data.Validation.ValidationError,
         storeOnObject: true,
-        monitorChanges: false,
+        monitorChanges: true,
         notMapped: true,
         enumerable: false
     },
@@ -14378,6 +14378,19 @@ $data.Class.define('$data.Queryable', null, null,
         var constExp = Container.createConstantExpression(amount, "number");
         var takeExp = Container.createPagingExpression(this.expression, constExp, $data.Expressions.ExpressionType.Skip);
         return Container.createQueryable(this, takeExp);
+    },
+
+    order: function(selector) {
+       if (selector === '' || selector === undefined || selector === null) {
+           return this;
+       }
+       if(selector[0] === "-") {
+           var orderString = "it." + selector.replace("-","");
+           return this.orderByDescending(orderString);
+       } else {
+           return this.orderBy("it." + selector);
+       }
+
     },
 
     orderBy: function (selector, thisArg) {

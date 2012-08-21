@@ -7,6 +7,74 @@
  */
 
 function initializeLocalContext(){
+
+    function afterCreateSprint(sprintList){
+
+        sprintList.forEach(function(item){
+            var mStartDate = moment(new Date(item.StartDate.getFullYear(), item.StartDate.getMonth(), item.StartDate.getDate()));
+            console.log(mStartDate.toDate());
+            console.log('_'+mStartDate.toDate());
+            var mFinishDate = moment(item.FinishDate);
+            var diff = mFinishDate.diff(mStartDate, 'days')+1;
+            for(var i= 0;i<diff; i++){
+                var date = mStartDate.clone().add('days', i).toDate();
+                console.log(item.Id+'__'+date+'__'+i+'__'+mStartDate.toDate());
+                this.SprintBurndown.add(new JayScrum.SqLite.BurndownData({
+                    SprintId:item.Id,
+                    SprintDate:date,
+                    ToDo:-1,
+                    Left:-1
+                }));
+            }
+        }, this);
+        this.saveChanges();
+    };
+    function afterCreateWorkItem(){
+        return function (calbackHandler, workItemList) {
+            var d = new Date();
+            var toDay = moment(new Date(d.getFullYear(), d.getMonth(), d.getDate()));
+            var self = this;
+            var sprintIds = workItemList.map(function (item) {
+                return item.WorkItem_Sprint
+            });
+
+            if (sprintIds.length > 0) {
+                self.SprintBurndown
+                    .where(function (item) {
+                        item.SprintId in this.sprintList && item.SprintDate == this.now
+                    }, {sprintList:sprintIds, now:toDay.toDate()})
+                    .toArray(function (burndownData) {
+
+                        var queries = burndownData.map(function (bdown) {
+                            return self.WorkItems
+                                .where(function (wrk) {
+                                    wrk.WorkItem_Sprint == this.sprintId && (wrk.Type == "Task" || wrk.Type == "Bug") && (wrk.State == "To Do" || wrk.State == "In Progress")
+                                }, {sprintId:bdown.SprintId})
+                                .toArray()
+                        });
+                        Q.all(queries)
+                            .then(function () {
+                                var queryResult = null;
+                                var bdEntity = null;
+                                for (var i = 0; i < queries.length; i++) {
+                                    queryResult = queries[i].valueOf();
+                                    bdEntity = burndownData[i];
+                                    self.attach(bdEntity);
+
+                                    bdEntity.Left = queryResult.reduce(function (previousValue, currentValue) {return previousValue + currentValue.RemainingWork;}, 0);
+                                    var toDoList = queryResult.filter(function (item) {return item.State == "To Do";});
+                                    bdEntity.ToDo = toDoList.reduce(function (previousValue, currentValue) {return previousValue + currentValue.RemainingWork;}, 0);
+                                }
+                                self.saveChanges();
+                                calbackHandler();
+                            });
+                    });
+            }
+        };
+    };
+
+
+
     $data.Class.define('$data.ServiceBase', null, null, null, null);
     $data.Entity.extend('JayScrum.SqLite.WorkItem', {
         Id: { type: $data.Integer, key: true, computed: true },
@@ -51,6 +119,13 @@ function initializeLocalContext(){
         'StartDate':{ type:'$data.Date', nullable:false, required:true },
         'FinishDate':{ type:'$data.Date', nullable:false, required:true }
         //'WorkItems': { type: 'Array', elementType: 'LightSwitchApplication.WorkItem', inverseProperty: 'Sprint' }
+    });
+    $data.Entity.extend('JayScrum.SqLite.BurndownData', {
+        'Id':{ key:true, type: $data.Integer, nullable:false, computed:true },
+        'SprintId':{ type: $data.Integer},
+        'SprintDate':{ type:'$data.Date'},
+        'ToDo':{ type:'$data.Integer'},
+        'Left':{ type:'$data.Integer'}
     });
     $data.ServiceBase.extend('JayScrum.SqLite.ApplicationService', {
         getSprintsData:function(sprintIdList){
@@ -130,63 +205,54 @@ function initializeLocalContext(){
                     .where(function (item) { return item.WorkItem_Sprint == this.sprint_id && item.Type == 'UserStory' }, {sprint_id:sprintId})
                     .length()
             );
+            workitemQueries.push(
+                JayScrum.repository.SprintBurndown
+                    .where(function(item){return item.SprintId == this.sprint_id},{sprint_id:sprintId})
+                    .orderBy(function(item){return item.SprintDate})
+                    .toArray()
+            );
             Q.all(workitemQueries)
                 .then(function(){
+                    var burndownData = workitemQueries[4].valueOf();
                     var result = {
                         todo:workitemQueries[0].valueOf().length,
                         inprogress:workitemQueries[1].valueOf().length,
                         done:workitemQueries[2].valueOf().length,
                         inprogress_hour:workitemQueries[1].valueOf().reduce(function(previousValue, currentValue, index, array){return previousValue + currentValue.RemainingWork;},0),
                         userStory:workitemQueries[3].valueOf(),
-                        task:9999
+                        task:9999,
+                        burnDown:{
+                            startDate: burndownData[0].SprintDate,
+                            endDate: burndownData[burndownData.length-1].SprintDate,
+                            length: burndownData.length
+                        }
                     };
                     result.task = result.todo + result.inprogress + result.done;
-                    console.log('burnDown result: '+JSON.stringify(result));
+                    result.burnDown.remainingLine = [];
+                    result.burnDown.todoLine = [];
+                    result.burnDown.idealLine = [burndownData[0].Left<0?0:burndownData[0].Left, 0];
+                    for(var i = 0;i<burndownData.length;i++){
+                        if(burndownData[i].Left>=0){
+                            result.burnDown.remainingLine.push(burndownData[i].Left);
+                        }
+                        if(burndownData[i].ToDo>=0){
+                            result.burnDown.todoLine.push(burndownData[i].ToDo);
+                        }
+                    }
+
                     q.resolve(result);
                 });
 
 
             return q.promise;
 
-        }/*$data.JayService.serviceFunction()
-            .param('sprintId', "string")
-            .returns("$data.Object")
-            (function (sprintId) {
-                return function () {
-                    var self = this;
-
-                    var types = ["To Do", "In Progress", "Done"];
-                    var workitemQueries = types.map(function (tName) {
-                        return self.context.WorkItems
-                            .where(function (item) { return item.WorkItem_Sprint == this.sprint_id && item.State == this.typeName && (item.Type=='Task' || item.Type == 'Bug')}, {sprint_id:sprintId, typeName:tName})
-                            .toArray();
-                    });
-                    workitemQueries.push(
-                        self.context.WorkItems
-                            .where(function (item) { return item.WorkItem_Sprint == this.sprint_id && item.Type == 'UserStory' }, {sprint_id:sprintId})
-                            .length()
-                    );
-                    Q.all(workitemQueries)
-                        .then(function(){
-                            var result = {
-                                todo:workitemQueries[0].valueOf().length,
-                                inprogress:workitemQueries[1].valueOf().length,
-                                done:workitemQueries[2].valueOf().length,
-                                inprogress_hour:workitemQueries[1].valueOf().reduce(function(previousValue, currentValue, index, array){return previousValue + currentValue.RemainingWork;},0),
-                                userStory:workitemQueries[3].valueOf(),
-                                task:9999
-                            };
-                            result.task = result.todo + result.inprogress + result.done;
-                            console.log('burnDown result: '+JSON.stringify(result));
-                            self.success(result);
-                        });
-                };
-            })*/
+        }
     });
     $data.Class.defineEx('JayScrum.SqLite.ApplicationData',[$data.EntityContext, JayScrum.SqLite.ApplicationService], null, {
-        WorkItems:{ type:$data.EntitySet, elementType:JayScrum.SqLite.WorkItem },
+        WorkItems:{ type:$data.EntitySet, elementType:JayScrum.SqLite.WorkItem , 'afterCreate':afterCreateWorkItem, 'afterUpdate':afterCreateWorkItem },
         Projects:{ type:$data.EntitySet, elementType:JayScrum.SqLite.Project },
-        Sprints:{ type:$data.EntitySet, elementType:JayScrum.SqLite.Sprint }
+        Sprints:{ type:$data.EntitySet, elementType:JayScrum.SqLite.Sprint,  'afterCreate':afterCreateSprint},
+        SprintBurndown:{ type:$data.EntitySet, elementType:JayScrum.SqLite.BurndownData }
     });
 
     $data.Entity.extend('JayScrum.SqLite.Storm.Base', {
@@ -248,4 +314,34 @@ function initializeLocalContext(){
                 }
             )*/
     });
+
+
+}
+function hajni(){
+    var ctx = JayScrum.repository;
+    ctx.Projects.add(new JayScrum.SqLite.Project({Id:1, Name:"Learn using JayScrum locally", Description:"Step by step instructions: using JayScrum like a todo list" }));
+    ctx.Projects.add(new JayScrum.SqLite.Project({Id:2, Name:"Use JayScrum in a team - repo in the cloud", Description:"Step by step instructions: using JayScrum in a team" }));
+    ctx.Sprints.add(new JayScrum.SqLite.Sprint({Id:1, Name:"Learn JayScrum", StartDate:moment().add('days', -1).utc().toDate(), FinishDate:moment().add('days', 7).utc().toDate() }));
+    ctx.Sprints.add(new JayScrum.SqLite.Sprint({Id:2, Name:"Use JayScrum in a team", StartDate:moment().add('days', -5).utc().toDate(), FinishDate:moment().add('days', 14).utc().toDate() }));
+    ctx.WorkItems.add(new JayScrum.SqLite.WorkItem({Id:1, Title:"Create local repository", Description:"You will need a local repository in order to store your work items on your device. This repo is stored only on your current device. Team-work scenarion with a cloud-based repository will be covered in Sprint 2 - Using JayScrum in a team" , Priority:Math.floor(Math.random() * 10), Effort:Math.floor(Math.random() * 30), Effort:Math.floor(Math.random() * 50), BusinessValue:Math.floor(Math.random() * 100), Type:"UserStory" , WorkItem_Sprint:1, WorkItem_Project:1, CreatedDate:new Date().toISOString(), CreatedBy:'administrator', RemainingWork:1, ChangedDate:new Date().toISOString(), ChangedBy:'administrator', AssignedTo:"administrator", State:"New" }));
+    ctx.WorkItems.add(new JayScrum.SqLite.WorkItem({Id:2, Title:"Customizing JayScrum to your needs", Description:"After performing the tasks below you will have a customized JayScrum application" , Priority:Math.floor(Math.random() * 10), Effort:Math.floor(Math.random() * 30), Effort:Math.floor(Math.random() * 50), BusinessValue:Math.floor(Math.random() * 100), Type:"UserStory" , WorkItem_Sprint:1, WorkItem_Project:1, CreatedDate:new Date().toISOString(), CreatedBy:'administrator', RemainingWork:1, ChangedDate:new Date().toISOString(), ChangedBy:'administrator', AssignedTo:"administrator", State:"New" }));
+    ctx.WorkItems.add(new JayScrum.SqLite.WorkItem({Id:3, Title:"Using JayScrum from sprint to sprint", Description:"Learn how to build a project backlog and keep work item up-to-date" , Priority:Math.floor(Math.random() * 20), Effort:Math.floor(Math.random() * 30), Effort:Math.floor(Math.random() * 50), BusinessValue:Math.floor(Math.random() * 100), Type:"UserStory" , WorkItem_Sprint:1, WorkItem_Project:1, CreatedDate:new Date().toISOString(), CreatedBy:'administrator', RemainingWork:1, ChangedDate:new Date().toISOString(), ChangedBy:'administrator', AssignedTo:"administrator", State:"New" }));
+    ctx.WorkItems.add(new JayScrum.SqLite.WorkItem({Id:4, Title:"Working with more sprints at the same time", Description:"Do you work in  or want to keep track of more sprints?" , Priority:Math.floor(Math.random() * 30), Effort:Math.floor(Math.random() * 30), Effort:Math.floor(Math.random() * 50), BusinessValue:Math.floor(Math.random() * 100), Type:"UserStory" , WorkItem_Sprint:1, WorkItem_Project:1, CreatedDate:new Date().toISOString(), CreatedBy:'administrator', RemainingWork:1, ChangedDate:new Date().toISOString(), ChangedBy:'administrator', AssignedTo:"administrator", State:"New" }));
+    ctx.WorkItems.add(new JayScrum.SqLite.WorkItem({Id:5, Title:"Collaborate! Buy new cloud repo!", Description:"Create a cloud-repo and work together with your teammates." , Priority:Math.floor(Math.random() * 40), Effort:Math.floor(Math.random() * 30), Effort:Math.floor(Math.random() * 50), BusinessValue:Math.floor(Math.random() * 100), Type:"UserStory" , WorkItem_Sprint:2, WorkItem_Project:2, CreatedDate:new Date().toISOString(), CreatedBy:'administrator', RemainingWork:1, ChangedDate:new Date().toISOString(), ChangedBy:'administrator', AssignedTo:"administrator", State:"New" }));
+    ctx.WorkItems.add(new JayScrum.SqLite.WorkItem({Id:6, Title:"Create local repository", Description:"JayScrum starts with the repository list for the first time. You can open this screen by clicking the Repositories tile of the Main screen.Press the plus (+) sign.- Fill the repository creation form- Add the display name of your repo- Add the unique database name- Add the username and password- Check the default checkbox if you want to start your app with this repo- Click Save" , Priority:Math.floor(Math.random() * 11), Effort:Math.floor(Math.random() * 20), Effort:Math.floor(Math.random() * 50), BusinessValue:Math.floor(Math.random() * 100), Type:"Task" , WorkItem_Sprint:1, WorkItem_Project:1, WorkItem_WorkItem:1, CreatedDate:new Date().toISOString(), CreatedBy:'administrator', RemainingWork:1, ChangedDate:new Date().toISOString(), ChangedBy:'administrator', AssignedTo:"administrator", State:"Done" }));
+    ctx.WorkItems.add(new JayScrum.SqLite.WorkItem({Id:7, Title:"Setup your front-end", Description:"Click UI setting on the main screen- Choose a theme according to your visual preferences- Select your favourite font and navigate back to main screen" , Priority:Math.floor(Math.random() * 21), Effort:Math.floor(Math.random() * 20), Effort:Math.floor(Math.random() * 50), BusinessValue:Math.floor(Math.random() * 100), Type:"Task" , WorkItem_Sprint:1, WorkItem_Project:1, WorkItem_WorkItem:2, CreatedDate:new Date().toISOString(), CreatedBy:'administrator', RemainingWork:1, ChangedDate:new Date().toISOString(), ChangedBy:'administrator', AssignedTo:"administrator", State:"InProgress" }));
+    ctx.WorkItems.add(new JayScrum.SqLite.WorkItem({Id:8, Title:"Create a new sprint", Description:"Choose Sprints on the Main screen- Click the plus sign (+) on the bottom of the screen- Fill the name and time interval of the sprint-Click the save new sprint with the save pictogram on the bottom of the screen" , Priority:Math.floor(Math.random() * 22), Effort:Math.floor(Math.random() * 20), Effort:Math.floor(Math.random() * 50), BusinessValue:Math.floor(Math.random() * 100), Type:"Task" , WorkItem_Sprint:1, WorkItem_Project:1, WorkItem_WorkItem:2, CreatedDate:new Date().toISOString(), CreatedBy:'administrator', RemainingWork:1, ChangedDate:new Date().toISOString(), ChangedBy:'administrator', AssignedTo:"administrator", State:"To Do" }));
+    ctx.WorkItems.add(new JayScrum.SqLite.WorkItem({Id:9, Title:"Pin the sprint to the main screen", Description:"In the sprint list, click the pin pictogram to have a dedicated tile for your sprint on the main screen" , Priority:Math.floor(Math.random() * 23), Effort:Math.floor(Math.random() * 20), Effort:Math.floor(Math.random() * 50), BusinessValue:Math.floor(Math.random() * 100), Type:"Task" , WorkItem_Sprint:1, WorkItem_Project:1, WorkItem_WorkItem:2, CreatedDate:new Date().toISOString(), CreatedBy:'administrator', RemainingWork:1, ChangedDate:new Date().toISOString(), ChangedBy:'administrator', AssignedTo:"administrator", State:"To Do" }));
+    ctx.WorkItems.add(new JayScrum.SqLite.WorkItem({Id:10, Title:"Review the Scrum Wall by swiping", Description:"Select a  sprint from the sprint list. The Scrum Wall shows your tasks in Todo, In progress and Done states- Swipe to left and right - Swipe to left and rightin order to review the userstories and tasks in different states- Sprint overview and burndown chart- Swipe to the right of the screen to check the sprint summary" , Priority:Math.floor(Math.random() * 24), Effort:Math.floor(Math.random() * 20), Effort:Math.floor(Math.random() * 50), BusinessValue:Math.floor(Math.random() * 100), Type:"Task" , WorkItem_Sprint:1, WorkItem_Project:1, WorkItem_WorkItem:2, CreatedDate:new Date().toISOString(), CreatedBy:'administrator', RemainingWork:1, ChangedDate:new Date().toISOString(), ChangedBy:'administrator', AssignedTo:"administrator", State:"To Do" }));
+    ctx.WorkItems.add(new JayScrum.SqLite.WorkItem({Id:11, Title:"Create a new project", Description:"Creating multiple projects makes you able to work on more product of for more clients in one sprint. - navigate to the Projects tile of your Main screen- click the plus sign on the bottom of the sceen- fill the name of your project- click save" , Priority:Math.floor(Math.random() * 25), Effort:Math.floor(Math.random() * 20), Effort:Math.floor(Math.random() * 50), BusinessValue:Math.floor(Math.random() * 100), Type:"Task" , WorkItem_Sprint:1, WorkItem_Project:1, WorkItem_WorkItem:2, CreatedDate:new Date().toISOString(), CreatedBy:'administrator', RemainingWork:1, ChangedDate:new Date().toISOString(), ChangedBy:'administrator', AssignedTo:"administrator", State:"To Do" }));
+    ctx.WorkItems.add(new JayScrum.SqLite.WorkItem({Id:12, Title:"Create your sprint backlog: User Story", Description:"Be your own Product Owner!- Click the User Stories tile of the Main screen- Add new User story by clicking the plus sign (+) on the top of the screen- Define the fields of the UserStory- Add a title and description and choose the User Story type- Don't forget to assign a backlog priority and click the Save pictogram" , Priority:Math.floor(Math.random() * 31), Effort:Math.floor(Math.random() * 20), Effort:Math.floor(Math.random() * 50), BusinessValue:Math.floor(Math.random() * 100), Type:"Task" , WorkItem_Sprint:1, WorkItem_Project:1, WorkItem_WorkItem:3, CreatedDate:new Date().toISOString(), CreatedBy:'administrator', RemainingWork:1, ChangedDate:new Date().toISOString(), ChangedBy:'administrator', AssignedTo:"administrator", State:"To Do" }));
+    ctx.WorkItems.add(new JayScrum.SqLite.WorkItem({Id:13, Title:"Create your sprint backlog: Tasks", Description:"Add tasks to the user story you created before- Choose on item from the User Story list- Scroll down to the bottom of the screen- Click the plus sign in the Tasks section- Fill task data - Leave the value of the user story field- Click the save pictogram" , Priority:Math.floor(Math.random() * 32), Effort:Math.floor(Math.random() * 20), Effort:Math.floor(Math.random() * 50), BusinessValue:Math.floor(Math.random() * 100), Type:"Task" , WorkItem_Sprint:1, WorkItem_Project:1, WorkItem_WorkItem:3, CreatedDate:new Date().toISOString(), CreatedBy:'administrator', RemainingWork:1, ChangedDate:new Date().toISOString(), ChangedBy:'administrator', AssignedTo:"administrator", State:"To Do" }));
+    ctx.WorkItems.add(new JayScrum.SqLite.WorkItem({Id:14, Title:"Begin to work on a task", Description:"Open the Scrum wall of your sprint- Update State field to In progress- Set the Assigned to field to your name- Click the save buttonAfter saving the task, it will be moved to the In progress column of the Scrum Wall" , Priority:Math.floor(Math.random() * 33), Effort:Math.floor(Math.random() * 20), Effort:Math.floor(Math.random() * 50), BusinessValue:Math.floor(Math.random() * 100), Type:"Task" , WorkItem_Sprint:1, WorkItem_Project:1, WorkItem_WorkItem:3, CreatedDate:new Date().toISOString(), CreatedBy:'administrator', RemainingWork:1, ChangedDate:new Date().toISOString(), ChangedBy:'administrator', AssignedTo:"administrator", State:"To Do" }));
+    ctx.WorkItems.add(new JayScrum.SqLite.WorkItem({Id:15, Title:"Update the remaining hours", Description:"Open the task you are working on- Click the pencil pictogram to edit- Set the Remaining work field of your task and click the Save pictogram" , Priority:Math.floor(Math.random() * 34), Effort:Math.floor(Math.random() * 20), Effort:Math.floor(Math.random() * 50), BusinessValue:Math.floor(Math.random() * 100), Type:"Task" , WorkItem_Sprint:1, WorkItem_Project:1, WorkItem_WorkItem:3, CreatedDate:new Date().toISOString(), CreatedBy:'administrator', RemainingWork:1, ChangedDate:new Date().toISOString(), ChangedBy:'administrator', AssignedTo:"administrator", State:"ToDo" }));
+    ctx.WorkItems.add(new JayScrum.SqLite.WorkItem({Id:16, Title:"Take a look at Sprint overview", Description:"Swipe to the right side of the screen to check out the updated burndown chart- the chart shows the remaining work on the current day of the sprint- try to eliminate the remaining hours till the next day of the sprint" , Priority:Math.floor(Math.random() * 35), Effort:Math.floor(Math.random() * 20), Effort:Math.floor(Math.random() * 50), BusinessValue:Math.floor(Math.random() * 100), Type:"Task" , WorkItem_Sprint:1, WorkItem_Project:1, WorkItem_WorkItem:3, CreatedDate:new Date().toISOString(), CreatedBy:'administrator', RemainingWork:1, ChangedDate:new Date().toISOString(), ChangedBy:'administrator', AssignedTo:"administrator", State:"To Do" }));
+    ctx.WorkItems.add(new JayScrum.SqLite.WorkItem({Id:17, Title:"Navigating between tasks of a selected User Story by swiping", Description:"JayScrum supports the user-friendly navigation between tasks of a selected user story- Select a user story from the user story list- Scroll down to the bottom of the user story detail screen- Click the refresh button of the Tasks section- Select a task from the list- Swipe to left and right in order to review the tasks assigned to the selected user story" , Priority:Math.floor(Math.random() * 36), Effort:Math.floor(Math.random() * 20), Effort:Math.floor(Math.random() * 50), BusinessValue:Math.floor(Math.random() * 100), Type:"Task" , WorkItem_Sprint:1, WorkItem_Project:1, WorkItem_WorkItem:3, CreatedDate:new Date().toISOString(), CreatedBy:'administrator', RemainingWork:1, ChangedDate:new Date().toISOString(), ChangedBy:'administrator', AssignedTo:"administrator", State:"To Do" }));
+    ctx.WorkItems.add(new JayScrum.SqLite.WorkItem({Id:18, Title:"Navigating between tasks with the same status", Description:"You can easily navigate between the in-progress tasks based to review the unfinished work items.- Navigate to the Scrum Wall- Select one task with In-progress state- After the task description appears, swipe left and right to navigate between tasks" , Priority:Math.floor(Math.random() * 37), Effort:Math.floor(Math.random() * 20), Effort:Math.floor(Math.random() * 50), BusinessValue:Math.floor(Math.random() * 100), Type:"Task" , WorkItem_Sprint:1, WorkItem_Project:1, WorkItem_WorkItem:3, CreatedDate:new Date().toISOString(), CreatedBy:'administrator', RemainingWork:1, ChangedDate:new Date().toISOString(), ChangedBy:'administrator', AssignedTo:"administrator", State:"To Do" }));
+    ctx.WorkItems.add(new JayScrum.SqLite.WorkItem({Id:19, Title:"Working with more sprints at the same time", Description:"You can manage more sprint at the same time. To do this easily, navigate to the Sprints tile of the Main Screen and pin the second sprint to the Main Screen. " , Priority:Math.floor(Math.random() * 41), Effort:Math.floor(Math.random() * 20), Effort:Math.floor(Math.random() * 50), BusinessValue:Math.floor(Math.random() * 100), Type:"Task" , WorkItem_Sprint:1, WorkItem_Project:1, WorkItem_WorkItem:4, CreatedDate:new Date().toISOString(), CreatedBy:'administrator', RemainingWork:1, ChangedDate:new Date().toISOString(), ChangedBy:'administrator', AssignedTo:"administrator", State:"To Do" }));
+    ctx.WorkItems.add(new JayScrum.SqLite.WorkItem({Id:20, Title:"Buy cloud repo", Description:"Navigate to NochtaP feature" , Priority:Math.floor(Math.random() * 111), Effort:Math.floor(Math.random() * 20), Effort:Math.floor(Math.random() * 50), BusinessValue:Math.floor(Math.random() * 100), Type:"Task" , WorkItem_Sprint:2, WorkItem_Project:2, WorkItem_WorkItem:5, CreatedDate:new Date().toISOString(), CreatedBy:'administrator', RemainingWork:1, ChangedDate:new Date().toISOString(), ChangedBy:'administrator', AssignedTo:"administrator", State:"ToDo" }));
+    ctx.saveChanges();
 }

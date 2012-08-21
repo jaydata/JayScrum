@@ -76,7 +76,8 @@ $data.Class.define('JayScrum.ScrumApp', JayScrum.FrameApp, null,{
             userStoryList: ko.observableArray(),
             userList: ko.observableArray(),
             sprintList: ko.observableArray(),
-            user:ko.observable()
+            user:ko.observable(),
+            repositoryName: ko.observable()
         });
     },
     onRefreshProjectList:function () {
@@ -240,7 +241,7 @@ $data.Class.define('JayScrum.ScrumApp', JayScrum.FrameApp, null,{
                             JayScrum.app.globalData().user(user[0].asKoObservable());
                         } else {
                             //TODO remove
-                            JayScrum.app.globalData().user((new JayScrum.stormContext.Users.createNew({Id:'fakeUser', login:'fakeUser', firstName:'fakeUser', lastName:'!!!'})).asKoObservable());
+                            JayScrum.app.globalData().user((new JayScrum.stormContext.Users.createNew({Id:'administrator', login:'administrator', firstName:'Administrator', lastName:'!!!'})).asKoObservable());
                         }
                         JayScrum.app.selectFrame('MainFrame');
                     });

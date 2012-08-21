@@ -22,8 +22,11 @@ $data.Class.define('JayScrum.Views.ScrumWall', JayScrum.FrameView, null, {
         this.done_iScroll = JayScrum.app.initScrollById('transition3', JayScrum.app.selectedFrame().onDoneListPullUp, JayScrum.app.selectedFrame().onDoneListPullDown);
         this.burndown_iScroll = JayScrum.app.initScrollById('transition4', null, null);
         this.vertical_iScroll = JayScrum.app.initHorizontalScrollById("wrapper", 1);
-        DisplayBurndownChart();
-        JayScrum.app.hideLoading();
+        JayScrum.app.selectedFrame()._loadBurndownData()
+            .then(function(){
+                DisplayBurndownChart();
+                JayScrum.app.hideLoading();
+            });
     },
     tearDownView:function(){
         if(this.vertical_iScroll){
@@ -139,25 +142,30 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
                             .then(function(){
                                 JayScrum.app.selectedFrame()._loadTaskList(JayScrum.app.selectedFrame().doneListQuery, JayScrum.app.selectedFrame().data().doneList, 'transition3', null, null)
                                     .then(function(){
-                                        console.log('sprintID: '+JayScrum.app.selectedFrame().data().currentSprint().Id);
-                                        JayScrum.repository.getBurndownData(JayScrum.app.selectedFrame().data().currentSprint().Id)
-                                            .then(function(r){
-                                                JayScrum.app.selectedFrame().data().summaryList().BackLogItemCountInSprint(r.userStory);
-                                                JayScrum.app.selectedFrame().data().summaryList().SprintAllTaskCount(r.task);
-
-                                                JayScrum.app.selectedFrame().data().summaryList().SprintToDoTaskCount(r.todo);
-                                                JayScrum.app.selectedFrame().data().summaryList().SprintInProgTaskCount(r.inprogress);
-                                                JayScrum.app.selectedFrame().data().summaryList().SprintInProgTaskRemainingWork(r.inprogress_hour);
-                                                JayScrum.app.selectedFrame().data().summaryList().SprintDoneTaskCount(r.done);
-                                                JayScrum.app.selectedFrame().data().summaryList().SprintBurndownData(r.burnDown);
-                                                loadingPromise.resolve();
-                                            });
+                                        loadingPromise.resolve();
                                     });
                             })
                     })
             })
 
         return loadingPromise.promise;
+    },
+    _loadBurndownData:function(){
+        var p = Q.defer();
+        JayScrum.repository.getBurndownData(JayScrum.app.selectedFrame().data().currentSprint().Id)
+            .then(function(r){
+                console.log(r);
+                JayScrum.app.selectedFrame().data().summaryList().BackLogItemCountInSprint(r.userStory);
+                JayScrum.app.selectedFrame().data().summaryList().SprintAllTaskCount(r.task);
+
+                JayScrum.app.selectedFrame().data().summaryList().SprintToDoTaskCount(r.todo);
+                JayScrum.app.selectedFrame().data().summaryList().SprintInProgTaskCount(r.inprogress);
+                JayScrum.app.selectedFrame().data().summaryList().SprintInProgTaskRemainingWork(r.inprogress_hour);
+                JayScrum.app.selectedFrame().data().summaryList().SprintDoneTaskCount(r.done);
+                JayScrum.app.selectedFrame().data().summaryList().SprintBurndownData(r.burnDown);
+                p.resolve();
+            });
+        return p.promise;
     },
     _resetData: function(){
         this.data().currentSprint(null);
@@ -242,7 +250,7 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
             currentLista = JayScrum.app.selectedFrame().data().inProgList()
         } else if (wrkItem.State() == "Done") {
             wrkItem.Reason('Work finished');
-            wrkItem.RemainingWork(null);
+            wrkItem.RemainingWork(0);
             currentLista = JayScrum.app.selectedFrame().data().doneList();
         } else if (wrkItem.State() == 'To Do') {
             wrkItem.Reason(wrkItem.Id() == 0 ? 'New task' : 'Work stopped');
@@ -264,6 +272,7 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
             wrkItem.SprintName(sprint.Name());
         }
         //save workItem
+        wrkItem.RemainingWork(parseInt(wrkItem.RemainingWork()));
         wrkItem.ChangedDate(new Date());
         wrkItem.ChangedBy(JayScrum.app.globalData().user().login());
         //wrkItem.IsBlocked(wrkItem.IsBlocked()==='true'?true:false);

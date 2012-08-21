@@ -73,6 +73,7 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
         return this.localContext.Repositories.toArray(callBack);
     },
     connectTo:function (repoSetting) {
+        JayScrum.app.globalData().repositoryName(repoSetting.Title);
         if(repoSetting.Id === -1){
             JayScrum.app._initializeDemoRepositories();
             return;
@@ -92,6 +93,7 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
 
         var createDbUrl = urlparser.protocol + '//' + urlparser.host + '/CreateDatabase?dbName=' + dbName + '&schemaName=jayscrumcontext';
         var createUserDbUrl = urlparser.protocol + '//' + urlparser.host + '/CreateDatabase?dbName=' + dbName + '_users&schemaName=jaystormcontext';
+
         $.ajax({
             url:createDbUrl,
             error:function (xhr, status, error) {
