@@ -177,24 +177,35 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
     onFrameChangingFrom: function(newFrameMeta, oldFrameMeta, initData, frame){
         var loadingPromise = Q.defer();
         JayScrum.app.showLoading();
+        this.data().initData = initData;
         var self = this;
-        this.localContext.onReady(function(){
+        /*this.localContext.onReady(function(){
             if(initData && initData.autoConnect){
                 self._getDefaultRepository(self._handleDefaultRepo);
             } else {
                 if(initData && initData.error){self.data().errorMsg(initData.error);}
                 self._initializeRepositoriesFrame();
-            }
+            }*/
             loadingPromise.resolve();
-        });
+        /*});*/
         return loadingPromise.promise;
     },
     onFrameChangedFrom:function (newFrameData, oldFrameData, frame) {
-        this._loadData()
+        var self = this;
+        this.localContext.onReady(function(){
+                if(self.data().initData && self.data().initData.autoConnect){
+                    self._getDefaultRepository(self._handleDefaultRepo);
+                } else {
+                    if(self.data().initData && self.data().initData.error){self.data().errorMsg(self.data().initData.error);}
+                    self._initializeRepositoriesFrame();
+                }
+                JayScrum.app.selectedFrame().selectedView().initializeView();
+        });
+       /* this._loadData()
             .then(function(){
                 //JayScrum.app.hideLoading();
                 JayScrum.app.selectedFrame().selectedView().initializeView();
-            });
+            });*/
     },
     showActionBar:function () {
         $('div#settingPageActionBar').addClass("opened");
