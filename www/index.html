@@ -15,6 +15,8 @@
     <link rel="shortcut icon" href="Images/icons/favicon.ico" type="image/x-icon" />
 
     <link rel="stylesheet" href="Styles/metro.css" type="text/css" />
+
+    <style>table tr td { max-width: 50px; }</style>
 </head>
 <body accent="blue" theme="black" font="segoewp" onorientationchange="setupScroll()">
     <div id="page">
@@ -1287,38 +1289,26 @@
             </div>
             <div class="scroll-list pivot-default-opacity scrollable-list animate bottom45" id="settingPageScroll">
                 <div class="scroller-list">
-                    <div class="list detail maxlist">
-                        <!-- ko if: $data.data().users().length > 0 -->
-                        <ul id="setting-list" class="setting-list" data-bind='foreach: $data.data().users'>
-                            <li>
-                                <h2 data-bind="click: $parent.onSelectUser"><span data-bind="text: $data.firstName">
-                                </span><span data-bind="text: $data.lastName"></span>(<span data-bind="text: $data.login"></span>)
-                                </h2>
-                                <div class="actions fright">
-                                    <span class="icon-action edit" data-bind="click: $parent.onEditUser"><span></span>
-                                    </span>
-                                    <span class="icon-action delete" data-bind="click: $parent.onDeleteUser"><span></span>
-                                    </span>
-                                </div>
-                            </li>
-                        </ul>
-                        <!-- /ko -->
-                        <!-- ko if: $data.data().users().length == 0 -->
-                        <p class="hint-text clear">There is no User created in your Application yet. To create
-                            a new User click the button at the bottom of the screen!</p>
-                        <!-- /ko -->
+                    <div class="list detail maxlist" >
+
+
+
+                        <div id="x567" data-bind="jayGrid: {source: $data.data().collection}"></div>
+
+
+
+
                     </div>
                 </div>
             </div>
         </div>
-        <div id="settingPageActionBar" class="metro-actionbar detail-view-edit opened">
+        <!--<div id="settingPageActionBar" class="metro-actionbar detail-view-edit opened">
             <ul>
-                <!-- ko if: $data.data().users().length == 0 -->
+                &lt;!&ndash; ko if: $data.data().users().length == 0 &ndash;&gt;
                 <li class="hint-bubble">Click to add a User</li>
-                <!-- /ko -->
-                <li class="icon-action add" data-bind="click: $data.onAddUser"><span></span></li>
+                &lt;!&ndash; /ko &ndash;&gt;
             </ul>
-        </div>
+        </div>-->
     </script>
     <script type="text/html" id="usersSelectView-template">
         <div id="settingPage">
@@ -1425,7 +1415,7 @@
         </div>
     </script>
 
-    <script type="text/html" id="object-property-editor">
+    <!--<script type="text/html" id="object-property-editor">
         <div class="field">
             <div><span data-bind="text: name"></span></div>
             <div data-bind="template: { name: type + '-editor' }"></div>
@@ -1440,12 +1430,12 @@
                 <input type="checkbox" value="None" id="Enabled" name="check" data-bind="checked: value" />
                 <label for="Enabled"></label>
             </div>
-            <!--<span class="metro-checkbox-label">Enabled</span>-->
+            &lt;!&ndash;<span class="metro-checkbox-label">Enabled</span>&ndash;&gt;
         </div>
     </script>
     <script type="text/html" id="Edm.DateTime-editor">
         <input class="medium accent-bg" type="datetime" data-bind="value: value" />
-    </script>
+    </script>-->
     <!-- #endregion TEMPLATES -->
 
     <script type="text/javascript" src="scripts/cordova-2.0.0.js"></script>
@@ -1494,6 +1484,8 @@
     <script type="text/javascript" src="scripts/raphael/g.line-min.js"></script>
     <!--<script type="text/javascript" src="scripts/libs/highcharts.js"></script>-->
     <script type="text/javascript" src="scripts/burndown.js"></script>
+    <script type="text/javascript" src="scripts/userEditor/jaygrid-table-template.js"></script>
+    <script type="text/javascript" src="scripts/userEditor/jaygrid.js"></script>
 
     <script type="text/html" id="jayAppMenu">
         <div>

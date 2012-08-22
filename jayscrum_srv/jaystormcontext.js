@@ -85,38 +85,35 @@ function registerEdmTypes() {
 };
 registerEdmTypes();
 
-$data.Entity.extend('JayStormApplication.Base', {
+$data.Class.define('$data.JayStormAPI.User', $data.Entity, null, {
+    UserID: { type: 'id', key: true, computed: true },
+    Login: { type: 'Edm.String' },
+    Age: { type: 'Edm.Int32', required: true },
+    FirstName: { type: 'Edm.String' },
+    LastName:  { type: 'Edm.String' },
+    Enabled: { type: 'Edm.Boolean' },
+    Password: { type: 'Edm.String' },
+    Roles: { type: 'Array', elementType: 'string', $source: 'Groups', $field: 'GroupID' },
+    CreationDate: { type: 'date'}
+});
 
+$data.Class.define('$data.JayStormAPI.Group', $data.Entity, null , {
+    GroupID: { type: 'id', key: true, computed: true },
+    Name: { type: 'Edm.String' },
+    Database: { type : 'string', require: true},
+    CreationDate: { type: 'date', computed: true },
     constructor: function() {
-        this.creationDate = new Date();
-    },
-    'Id':{ key:true, type:'id', nullable:false, computed:true },
-    'creationDate': { type: 'date' }
-});
-
-$data.Class.define('JayStormApplication.User', JayStormApplication.Base, null, {
-    login: { type: 'Edm.String' },
-    firstName: { type: 'Edm.String' },
-    lastName:  { type: 'Edm.String' },
-    enabled: { type: 'Edm.Boolean' },
-    password: { type: 'Edm.String' },
-    roles: { type: 'Edm.String' }
-});
-
-$data.Class.define('JayStormApplication.Group', JayStormApplication.Base, null , {
-    name: { type: 'Edm.String' }
-});
-
-$data.Class.define('JayStormApplication.Entity', JayStormApplication.Base, null , {
-    tableName: { type: 'Edm.String' }
+        this.CreationDate = new Date();
+    }
 });
 
 
-$data.Class.defineEx('JayStormApplication.Context', [$data.EntityContext, $data.ServiceBase], null, {
+$data.Class.defineEx('$data.JayStormAPI.Context', [$data.EntityContext, $data.ServiceBase], null, {
 
-    Users: {type: $data.EntitySet, elementType: JayStormApplication.User},
+    constructor: function() {},
 
-    Groups: { type: $data.EntitySet, elementType: JayStormApplication.Group},
+    Users: {type: $data.EntitySet, elementType: $data.JayStormAPI.User},
+    Groups: { type: $data.EntitySet, elementType: $data.JayStormAPI.Group},
 
 
     getGroups: $data.JayService.serviceFunction()
@@ -147,6 +144,7 @@ $data.Class.defineEx('JayStormApplication.Context', [$data.EntityContext, $data.
 
             }
         )
+
 });
 
-exports.serviceType = JayStormApplication.Context;
+exports.serviceType = $data.JayStormAPI.Context;

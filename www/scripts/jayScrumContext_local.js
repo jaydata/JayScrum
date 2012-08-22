@@ -255,27 +255,25 @@ function initializeLocalContext(){
         SprintBurndown:{ type:$data.EntitySet, elementType:JayScrum.SqLite.BurndownData }
     });
 
-    $data.Entity.extend('JayScrum.SqLite.Storm.Base', {
-
+    $data.Class.define('JayScrum.SqLite.Storm.User', $data.Entity, null, {
+        UserID: { key:true, type:'$data.Integer', nullable:false, computed:true },
+        Login: { type: '$data.String' },
+        Age: { type: '$data.Integer', required: true },
+        FirstName: { type: '$data.String' },
+        LastName:  { type: '$data.String' },
+        Enabled: { type: '$data.Boolean' },
+        Password: { type: '$data.String' },
+        //Roles: { type: 'Array', elementType: 'string', $source: 'Groups', $field: 'GroupID' },
+        CreationDate: { type: 'date'}
+    });
+    $data.Class.define('JayScrum.SqLite.Storm.Group', $data.Entity, null , {
+        GroupID: { key:true, type:'$data.Integer', nullable:false, computed:true },
+        Name: { type: '$data.String' },
+        Database: { type : 'string', require: true},
+        CreationDate: { type: 'date', computed: true },
         constructor: function() {
-            this.creationDate = new Date();
-        },
-        'Id':{ key:true, type:'$data.Integer', nullable:false, computed:true },
-        'creationDate': { type: 'date' }
-    });
-    $data.Class.define('JayScrum.SqLite.Storm.User', JayScrum.SqLite.Storm.Base, null, {
-        login: { type: '$data.String' },
-        firstName: { type: '$data.String' },
-        lastName:  { type: '$data.String' },
-        enabled: { type: '$data.Boolean' },
-        password: { type: '$data.String' },
-        roles: { type: '$data.String' }
-    });
-    $data.Class.define('JayScrum.SqLite.Storm.Group', JayScrum.SqLite.Storm.Base, null , {
-        name: { type: '$data.String' }
-    });
-    $data.Class.define('JayScrum.SqLite.Storm.Entity', JayScrum.SqLite.Storm.Base, null , {
-        tableName: { type: '$data.String' }
+            this.CreationDate = new Date();
+        }
     });
 
     $data.Class.defineEx('JayScrum.sqLite.StormContext', [$data.EntityContext, $data.ServiceBase], null, {

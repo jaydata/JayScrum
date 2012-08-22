@@ -235,13 +235,13 @@ $data.Class.define('JayScrum.ScrumApp', JayScrum.FrameApp, null,{
             $data.MetadataLoader.load({url:url+"_users/$metadata", AutoCreateContext:false}, function(usrfactory, usrcontextType){
                 JayScrum.stormContext = usrfactory();
                 JayScrum.stormContext.Users
-                    .where(function(item){return item.login == this.loginName}, {loginName: userName})
+                    .where(function(item){return item.Login == this.loginName}, {loginName: userName})
                     .toArray(function(user){
                         if (user && user.length > 0) {
                             JayScrum.app.globalData().user(user[0].asKoObservable());
                         } else {
                             //TODO remove
-                            JayScrum.app.globalData().user((new JayScrum.stormContext.Users.createNew({Id:'administrator', login:'administrator', firstName:'Administrator', lastName:'!!!'})).asKoObservable());
+                            JayScrum.app.globalData().user((new JayScrum.stormContext.Users.createNew({Id:'administrator', Login:'administrator', FirstName:'Administrator', LastName:'!!!'})).asKoObservable());
                         }
                         JayScrum.app.selectFrame('MainFrame');
                     });
@@ -255,7 +255,7 @@ $data.Class.define('JayScrum.ScrumApp', JayScrum.FrameApp, null,{
         JayScrum.repository.onReady(function(){
             JayScrum.stormContext = new JayScrum.sqLite.StormContext({ name: ['sqLite'], databaseName: 'JayScrumDemo_Users'/*, dbCreation:$data.storageProviders.DbCreationType.DropAllExistingTables*/ });
             JayScrum.stormContext.onReady(function(){
-                JayScrum.app.globalData().user((new JayScrum.stormContext.Users.createNew({Id:'1', login:'testUser', firstName:'test', lastName:'user'})).asKoObservable());
+                JayScrum.app.globalData().user((new JayScrum.stormContext.Users.createNew({Id:'1', Login:'testUser', FirstName:'test', LastName:'user'})).asKoObservable());
                 JayScrum.app.selectFrame('MainFrame');
             });
         });
