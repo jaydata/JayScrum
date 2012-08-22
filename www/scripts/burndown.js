@@ -29,6 +29,8 @@ function DisplayBurndownChart() {
         {
             nostroke: false,
             axis: "0 0 1 1",
+            axisxstep: 1,
+            axisystep: 1,
             colors: ["#24A0DA", "#ffa500", "#fff"],
             smooth: false,
             shade: true

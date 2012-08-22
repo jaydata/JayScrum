@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{ECD6D718-D1CF-4119-97F3-97C25A0DFBF9}") = "JayScrumServer_ls", "JayScrumServer_ls\JayScrumServer_ls.lsproj", "{A17C7621-7F69-4A16-AA0B-47CD49EF6B2F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JayScrum", "JayScrum\JayScrum.csproj", "{1D6CB6B9-1A62-420C-84E5-54CB2EFC3C72}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JayScrum", "www\JayScrum.csproj", "{1D6CB6B9-1A62-420C-84E5-54CB2EFC3C72}"
 EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
