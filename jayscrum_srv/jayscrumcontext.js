@@ -230,13 +230,13 @@ var moment = require('moment');
                     );
 
 
-                    workitemQueries.push(
+                    /* workitemQueries.push(
                         self.context.SprintBurndown
                             .where(function(item){return item.SprintId == this.sprint_id},{sprint_id:sprintId})
                             .orderBy(function(item){return item.SprintDate})
                             .toArray()
                     );
-                   /* workitemQueries.push(
+                   workitemQueries.push(
                         self.context.Sprints
                             .where(function(item){return item.Id == this.sprint_id},{sprint_id: sprintId})
                             .toArray(function(a){ console.log('v'+5);console.log(a); })
@@ -244,47 +244,45 @@ var moment = require('moment');
 
                     Q.all(workitemQueries)
                         .then(function(){
-//                            console.log(1);
-                            /*var sprint = workitemQueries[4].valueOf()[0];
-                            console.log(sprint)*/
-//                            console.log(11);
-                            var burndownData = workitemQueries[4].valueOf();
-//                            console.log(burndownData)
-//                            console.log(12);
                             var result = {
                                 todo:workitemQueries[0].valueOf().length,
                                 inprogress:workitemQueries[1].valueOf().length,
                                 done:workitemQueries[2].valueOf().length,
                                 inprogress_hour:workitemQueries[1].valueOf().reduce(function(previousValue, currentValue, index, array){return previousValue + currentValue.RemainingWork;},0),
                                 userStory:workitemQueries[3].valueOf(),
-                                task:9999,
+                                task:9999/*,
                                 burnDown:{
                                     startDate: burndownData[0].SprintDate,
                                     endDate: burndownData[burndownData.length-1].SprintDate,
                                     length: burndownData.length
-                                }
+                                }*/
                             };
-//                            console.log(13);
-//                            var mStartDate = moment(sprint.StartDate);
-//                            var mFinishDate = moment(sprint.FinishDate);
-//                            console.log(131);
-//                            var diff = mFinishDate.diff(mStartDate, 'days');
-                            result.burnDown.remainingLine = [];
-                            result.burnDown.todoLine = [];
-                            result.burnDown.idealLine = [burndownData[0].Left<0?0:burndownData[0].Left, 0];
-//                            console.log(2);
-                            for(var i = 0;i<burndownData.length;i++){
-                                if(burndownData[i].Left>=0){
-                                    result.burnDown.remainingLine.push(burndownData[i].Left);
-                                }
-                                if(burndownData[i].ToDo>=0){
-                                    result.burnDown.todoLine.push(burndownData[i].ToDo);
-                                }
-                            }
-//                            console.log(3);
                             result.task = result.todo + result.inprogress + result.done;
-//                            console.log('burnDown result: '+JSON.stringify(result));
-                            self.success(result);
+
+                            self.context.SprintBurndown
+                                .where(function(item){return item.SprintId == this.sprint_id},{sprint_id:sprintId})
+                                .orderBy(function(item){return item.SprintDate})
+                                .toArray(function(burndownData){
+                                    //                            var burndownData = workitemQueries[4].valueOf();
+                                    result.burnDown = {
+                                        startDate: burndownData[0].SprintDate,
+                                        endDate: burndownData[burndownData.length-1].SprintDate,
+                                        length: burndownData.length
+                                    }
+                                    result.burnDown.remainingLine = [];
+                                    result.burnDown.todoLine = [];
+                                    result.burnDown.idealLine = [burndownData[0].Left<0?0:burndownData[0].Left, 0];
+                                    for(var i = 0;i<burndownData.length;i++){
+                                        if(burndownData[i].Left>=0){
+                                            result.burnDown.remainingLine.push(burndownData[i].Left);
+                                        }
+                                        if(burndownData[i].ToDo>=0){
+                                            result.burnDown.todoLine.push(burndownData[i].ToDo);
+                                        }
+                                    }
+                                    self.success(result);
+                                })
+
                         }, function(error){console.log(error)});
                 };
             })

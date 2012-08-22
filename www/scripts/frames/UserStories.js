@@ -237,9 +237,9 @@ $data.Class.define('JayScrum.Frames.UserStories', JayScrum.Frame, null, {
             Type: "UserStory",
             Description: "",
             CreatedDate: new Date().toISOString(),
-            CreatedBy: JayScrum.app.globalData().user().login(),
+            CreatedBy: JayScrum.app.globalData().user().Login(),
             ChangedDate: new Date().toISOString(),
-            ChangedBy: JayScrum.app.globalData().user().login(),
+            ChangedBy: JayScrum.app.globalData().user().Login(),
             Priority: 0,
             AssignedTo: "",
             State: "New",
@@ -309,7 +309,7 @@ $data.Class.define('JayScrum.Frames.UserStories', JayScrum.Frame, null, {
             wrkItem.SprintName(sprint.Name());
         }
         //save workItem
-        wrkItem.ChangedBy(JayScrum.app.globalData().user().login());
+        wrkItem.ChangedBy(JayScrum.app.globalData().user().Login());
         wrkItem.ChangedDate(new Date());
 
         if (wrkItem.Id() === 0) {
@@ -378,9 +378,9 @@ $data.Class.define('JayScrum.Frames.UserStories', JayScrum.Frame, null, {
             Type: "Task",
             Description: "",
             CreatedDate: new Date().toISOString(),
-            CreatedBy: JayScrum.app.globalData().user().login(),
+            CreatedBy: JayScrum.app.globalData().user().Login(),
             ChangedDate: new Date().toISOString(),
-            ChangedBy: JayScrum.app.globalData().user().login(),
+            ChangedBy: JayScrum.app.globalData().user().Login(),
             Priority: 0,
             AssignedTo: "",
             State: "To Do",

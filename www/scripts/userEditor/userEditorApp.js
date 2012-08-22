@@ -264,7 +264,7 @@ function ManageUsersModel(context, spModel, groupsModel, editor) {
 
 
     self.changePassword = function(user) {
-        console.dir(user.login());
+        console.dir(user.Login());
         spModel.user(user);
     }
 
