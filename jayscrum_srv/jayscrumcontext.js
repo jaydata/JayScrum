@@ -291,7 +291,6 @@ var moment = require('moment');
             .returns("$data.Object")
             (function (sprintId) {
                 return function () {
-                    console.log(sprintId)
                     var self = this;
 
                     var types = ["To Do", "In Progress", "Done"];
