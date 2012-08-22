@@ -93,7 +93,7 @@ $data.Class.define('$data.JayStormAPI.User', $data.Entity, null, {
     LastName:  { type: 'Edm.String' },
     Enabled: { type: 'Edm.Boolean' },
     Password: { type: 'Edm.String' },
-    Roles: { type: 'Array', elementType: 'string', $source: 'Groups', $field: 'GroupID' },
+    //Roles: { type: 'Array', elementType: 'string', $source: 'Groups', $field: 'GroupID' },
     CreationDate: { type: 'date'}
 });
 

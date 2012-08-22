@@ -44,12 +44,22 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
         this.data().settings.removeAll();
         this.data().errorMsg(null);
     },
-    _handleDefaultRepo:function(result){
+    _handleDefaultRepo:function (result) {
         if (result && result.length > 0) {
             JayScrum.app.selectedFrame().connectTo(result[0]);
         }
         else {
-            JayScrum.app.selectedFrame()._initializeRepositoriesFrame();
+            JayScrum.app.selectedFrame().localContext.Sprints.length(function (sprintCount) {
+                if (sprintCount) {
+                    JayScrum.app.selectedFrame()._initializeRepositoriesFrame();
+                } else {
+                    InstallLocalDemoDb(JayScrum.app.selectedFrame().localContext)
+                        .then(function () {
+                            JayScrum.app._initializeDemoRepositories(JayScrum.app.selectedFrame().localContext);
+                        });
+                }
+            });
+
         }
     },
 
@@ -75,7 +85,7 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
     connectTo:function (repoSetting) {
         JayScrum.app.globalData().repositoryName(repoSetting.Title);
         if(repoSetting.Id === -1){
-            JayScrum.app._initializeDemoRepositories();
+            JayScrum.app._initializeDemoRepositories(JayScrum.app.selectedFrame().localContext);
             return;
         }
         var url = repoSetting.Url;
@@ -201,11 +211,6 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
                 }
                 JayScrum.app.selectedFrame().selectedView().initializeView();
         });
-       /* this._loadData()
-            .then(function(){
-                //JayScrum.app.hideLoading();
-                JayScrum.app.selectedFrame().selectedView().initializeView();
-            });*/
     },
     showActionBar:function () {
         $('div#settingPageActionBar').addClass("opened");
