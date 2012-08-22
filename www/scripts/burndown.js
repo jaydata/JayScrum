@@ -15,7 +15,7 @@ function DisplayBurndownChart() {
     }
     var iDataPoint = [0, rawObject.length];
 //    for(var i=0;i<rawObject.length;i++){dataPoint.push(i)};
-    var lines = r.linechart(5, 15, 270, 300,
+    var lines = r.linechart(15, 15, 270, 300,
         [
             rDataPoint,
             tDataPoint,
@@ -29,8 +29,9 @@ function DisplayBurndownChart() {
         {
             nostroke: false,
             axis: "0 0 1 1",
-            axisxstep: 1,
-            axisystep: 1,
+            // TODO: sprint length need @ axisxstep
+            axisxstep: 8,
+            axisystep: 10,
             colors: ["#24A0DA", "#ffa500", "#fff"],
             smooth: false,
             shade: true
