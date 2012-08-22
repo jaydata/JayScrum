@@ -60,70 +60,147 @@ var moment = require('moment');
         $data.Container.mapType(Edm_String, $data.String);
 
     };
-    function afterCreateSprint(sprintList){
 
-        sprintList.forEach(function(item){
-            var mStartDate = moment(new Date(item.StartDate.getFullYear(), item.StartDate.getMonth(), item.StartDate.getDate()));
-            console.log(mStartDate.toDate());
-            console.log('_'+mStartDate.toDate());
-            var mFinishDate = moment(item.FinishDate);
-            var diff = mFinishDate.diff(mStartDate, 'days')+1;
-            for(var i= 0;i<diff; i++){
-                var date = mStartDate.clone().add('days', i).toDate();
-                console.log(item.Id+'__'+date+'__'+i+'__'+mStartDate.toDate());
-                this.SprintBurndown.add(new LightSwitchApplication.BurndownData({
-                    SprintId:item.Id,
-                    SprintDate:date,
-                    ToDo:-1,
-                    Left:-1
-                }));
-            }
-        }, this);
-        this.saveChanges();
-    };
-    function afterCreateWorkItem(){
-        return function (calbackHandler, workItemList) {
-            var d = new Date();
-            var toDay = moment(new Date(d.getFullYear(), d.getMonth(), d.getDate()));
-            var self = this;
-            var sprintIds = workItemList.map(function (item) {
-                return item.WorkItem_Sprint
+    function updateBurndownDataList(sprint, context){
+        var p = Q.defer();
+        var self = context;
+
+        var sprintDays = moment(sprint.FinishDate).diff(sprint.StartDate, 'days');
+        self.SprintBurndown
+            .where(function(item){return item.SprintId == this.sprintId && item.SprintDay> this.maxDay},{sprintId:sprint.Id, maxDay:sprintDays})
+            .toArray(function(sprintBurndownData){
+                if(sprintBurndownData.length>0){
+                    /// remove unused days
+                    sprintBurndownData.forEach(function(data){self.remove(data)});
+                    p.resolve();
+                }
+                else{
+                    /// add extra days if needed
+                    self.SprintBurndown
+                        .where(function(item){return item.SprintId == this.sprintId && item.SprintDay<= this.maxDay},{sprintId:sprint.Id, maxDay:sprintDays})
+                        .orderByDescending(function(item){return item.SprintDay})
+                        .take(1)
+                        .toArray(function(lastSprintDayData){
+                            var lastSprintDay = 0;
+                            var todoValue = -1;
+                            var leftValue = -1;
+                            if(lastSprintDayData.length>0){
+                                lastSprintDay = lastSprintDayData[0].SprintDay+1;
+                                todoValue = lastSprintDayData[0].ToDo;
+                                leftValue = lastSprintDayData[0].Left;
+                            }
+                            for(var i= lastSprintDay;i<=sprintDays; i++){
+                                self.SprintBurndown.add(new LightSwitchApplication.BurndownData({
+                                    SprintId:sprint.Id,
+                                    SprintDay:i,
+                                    ToDo:todoValue,
+                                    Left:leftValue
+                                }));
+                            }
+                            p.resolve();
+                        });
+                }
             });
 
-            if (sprintIds.length > 0) {
-                self.SprintBurndown
-                    .where(function (item) {
-                        item.SprintId in this.sprintList && item.SprintDate == this.now
-                    }, {sprintList:sprintIds, now:toDay.toDate()})
-                    .toArray(function (burndownData) {
-
-                        var queries = burndownData.map(function (bdown) {
-                            return self.WorkItems
-                                .where(function (wrk) {
-                                    wrk.WorkItem_Sprint == this.sprintId && (wrk.Type == "Task" || wrk.Type == "Bug") && (wrk.State == "To Do" || wrk.State == "In Progress")
-                                }, {sprintId:bdown.SprintId})
-                                .toArray()
-                        });
-                        Q.all(queries)
-                            .then(function () {
-                                var queryResult = null;
-                                var bdEntity = null;
-                                for (var i = 0; i < queries.length; i++) {
-                                    queryResult = queries[i].valueOf();
-                                    bdEntity = burndownData[i];
-                                    self.attach(bdEntity);
-
-                                    bdEntity.Left = queryResult.reduce(function (previousValue, currentValue) {return previousValue + currentValue.RemainingWork;}, 0);
-                                    var toDoList = queryResult.filter(function (item) {return item.State == "To Do";});
-                                    bdEntity.ToDo = toDoList.reduce(function (previousValue, currentValue) {return previousValue + currentValue.RemainingWork;}, 0);
-                                }
-                                self.saveChanges();
-                                calbackHandler();
-                            });
-                    });
-            }
+        return p.promise;
+    }
+    function afterUpdateCreateSprint(){
+        return function(callbackHandler, sprintList){
+            var self = this;
+            var fns = sprintList.map(function(s){return updateBurndownDataList(s, self);});
+            Q.all(fns)
+                .then(function(){
+                    self.saveChanges(function(){
+                        callbackHandler();})});
         };
     };
+
+    function updateSprintBurndownData(sprint, context){
+        var p= Q.defer();
+        var self = context;
+
+        var sprintDay = moment().diff(sprint.StartDate, 'days');
+        self.WorkItems
+            .where(function (wrk) {wrk.WorkItem_Sprint == this.sprintId && (wrk.Type == "Task" || wrk.Type == "Bug") && (wrk.State == "To Do" || wrk.State == "In Progress")}, {sprintId:sprint.Id})
+            .toArray( function(wrkItems){
+
+                var leftHour = wrkItems.reduce(function (previousValue, currentValue) {return previousValue + currentValue.RemainingWork;}, 0);
+                var todoHour = wrkItems.filter(function (item) {return item.State == "To Do";})
+                    .reduce(function (previousValue, currentValue) {return previousValue + currentValue.RemainingWork;}, 0);
+
+                self.SprintBurndown
+                    .where(function(item){return item.SprintId == this.sprint_id && ((item.SprintDay == this.sprintDay) || (item.SprintDay < this.sprintDay && (item.Left<0 || item.ToDo<0)))}, {sprint_id:sprint.Id, sprintDay:sprintDay})
+                    .toArray(function(bdData){
+                        bdData.forEach(function(bdEntity) {
+                            self.attach(bdEntity);
+                            if(bdEntity.SprintDay == sprintDay){
+                                bdEntity.Left = leftHour;
+                                bdEntity.ToDo = todoHour;
+                            }
+                            else{
+                                if(bdEntity.Left < 0){bdEntity.Left = leftHour;}
+                                if(bdEntity.ToDo < 0){bdEntity.ToDo = todoHour;}
+                            }
+                        });
+                        p.resolve();
+                    });
+            });
+
+
+        return p.promise;
+    }
+    function updateBurndownData(){
+        return function (callbackHandler, workItemList) {
+
+            var sprintIdList = workItemList.map(function(wrkItem){return wrkItem.WorkItem_Sprint;});
+            var self = this;
+
+            self.Sprints
+                .where(function(item){return item.Id in this.sprint_ids},{sprint_ids:sprintIdList})
+                .toArray(function(sprintList){
+
+                    var fns = sprintList.map(function(s){return updateSprintBurndownData(s, self)});
+                    Q.all(fns)
+                        .then(function(){
+                            self.saveChanges(function(){
+                                callbackHandler();
+                            });
+                        });
+
+                });
+        };
+    };
+
+    function updateConnectedData(){
+        return function(callBackHandler, workItemList){
+            var self = this;
+            var projectIds = workItemList.map(function(wrkItem){return wrkItem.WorkItem_Project === undefined?null:wrkItem.WorkItem_Project; });
+            var sprintIds = workItemList.map(function(wrkItem){return wrkItem.WorkItem_Sprint === undefined?null:wrkItem.WorkItem_Sprint; });
+            var parentIds = workItemList.map(function(wrkItem){return wrkItem.WorkItem_WorkItem === undefined?null:wrkItem.WorkItem_WorkItem; });
+            var fns = [];
+            fns.push(self.Projects.where(function(item){return item.Id in this.ids}, {ids:projectIds}).toArray());
+            fns.push(self.Sprints.where(function(item){return item.Id in this.ids1}, {ids1:sprintIds}).toArray());
+            fns.push(self.WorkItems.where(function(item){return item.Id in this.ids2}, {ids2:parentIds}).toArray());
+
+            self.Projects.where(function(item){return item.Id in this.ids}, {ids:projectIds}).toArray(function(projectList){
+                self.Sprints.where(function(item){return item.Id in this.ids1}, {ids1:sprintIds}).toArray(function(sprintList){
+                    self.WorkItems.where(function(item){return item.Id in this.ids2}, {ids2:parentIds}).toArray(function(parentList){
+                        for(var i = 0;i<workItemList.length;i++){
+                            wrkItem = workItemList[i];
+                            var project = projectList.filter(function(item){return item.Id == wrkItem.WorkItem_Project})[0];
+                            var sprint = sprintList.filter(function(item){return item.Id == wrkItem.WorkItem_Sprint})[0];
+                            var parent = parentList.filter(function(item){return item.Id == wrkItem.WorkItem_WorkItem})[0];
+                            if(project){ wrkItem.ProjectName = project.Name;}
+                            if(sprint){ wrkItem.SprintName = sprint.Name;}
+                            if(parent){ wrkItem.ParentName = parent.Title;}
+                        }
+                        callBackHandler();
+                    });
+                });
+            });
+        };
+    }
+
     registerEdmTypes();
     $data.Entity.extend('LightSwitchApplication.WorkItem', {
         'Id':{ key:true, type:'id', nullable:false, computed:true },
@@ -172,7 +249,7 @@ var moment = require('moment');
     $data.Entity.extend('LightSwitchApplication.BurndownData', {
         'Id':{ key:true, type:'id', nullable:false, computed:true },
         'SprintId':{ type:'id'},
-        'SprintDate':{ type:'Edm.DateTime'},
+        'SprintDay':{ type:'Edm.Int32'},
         'ToDo':{ type:'Edm.Int32'},
         'Left':{ type:'Edm.Int32'}
     });
@@ -229,19 +306,6 @@ var moment = require('moment');
                             .length(function(){ console.log('v'+4)})
                     );
 
-
-                    /* workitemQueries.push(
-                        self.context.SprintBurndown
-                            .where(function(item){return item.SprintId == this.sprint_id},{sprint_id:sprintId})
-                            .orderBy(function(item){return item.SprintDate})
-                            .toArray()
-                    );
-                   workitemQueries.push(
-                        self.context.Sprints
-                            .where(function(item){return item.Id == this.sprint_id},{sprint_id: sprintId})
-                            .toArray(function(a){ console.log('v'+5);console.log(a); })
-                    );*/
-
                     Q.all(workitemQueries)
                         .then(function(){
                             var result = {
@@ -250,47 +314,66 @@ var moment = require('moment');
                                 done:workitemQueries[2].valueOf().length,
                                 inprogress_hour:workitemQueries[1].valueOf().reduce(function(previousValue, currentValue, index, array){return previousValue + currentValue.RemainingWork;},0),
                                 userStory:workitemQueries[3].valueOf(),
-                                task:9999/*,
-                                burnDown:{
-                                    startDate: burndownData[0].SprintDate,
-                                    endDate: burndownData[burndownData.length-1].SprintDate,
-                                    length: burndownData.length
-                                }*/
+                                task:9999
                             };
                             result.task = result.todo + result.inprogress + result.done;
 
-                            self.context.SprintBurndown
-                                .where(function(item){return item.SprintId == this.sprint_id},{sprint_id:sprintId})
-                                .orderBy(function(item){return item.SprintDate})
-                                .toArray(function(burndownData){
-                                    //                            var burndownData = workitemQueries[4].valueOf();
-                                    result.burnDown = {
-                                        startDate: burndownData[0].SprintDate,
-                                        endDate: burndownData[burndownData.length-1].SprintDate,
-                                        length: burndownData.length
-                                    }
-                                    result.burnDown.remainingLine = [];
-                                    result.burnDown.todoLine = [];
-                                    result.burnDown.idealLine = [burndownData[0].Left<0?0:burndownData[0].Left, 0];
-                                    for(var i = 0;i<burndownData.length;i++){
-                                        if(burndownData[i].Left>=0){
-                                            result.burnDown.remainingLine.push(burndownData[i].Left);
-                                        }
-                                        if(burndownData[i].ToDo>=0){
-                                            result.burnDown.todoLine.push(burndownData[i].ToDo);
-                                        }
-                                    }
-                                    self.success(result);
-                                })
+                            self.context.Sprints
+                                .single(function(item){return item.Id == this.sprint_id},
+                                    {sprint_id:sprintId},
+                                    function(sprint){
+
+                                        self.context.SprintBurndown
+                                            .where(function(item){return item.SprintId == this.sprint_id},{sprint_id:sprintId})
+                                            .orderBy(function(item){return item.SprintDay})
+                                            .toArray(function(burndownData){
+
+                                                var collectBurndownData = function (bdData) {
+                                                    result.burnDown = {
+                                                        startDate:sprint.StartDate,
+                                                        endDate:sprint.FinishDate,
+                                                        length:bdData.length
+                                                    };
+                                                    result.burnDown.remainingLine = [];
+                                                    result.burnDown.todoLine = [];
+                                                    result.burnDown.idealLine = [bdData[0].Left < 0 ? 0 : bdData[0].Left, 0];
+                                                    for (var i = 0; i < bdData.length; i++) {
+                                                        if (bdData[i].Left >= 0) {
+                                                            result.burnDown.remainingLine.push(bdData[i].Left);
+                                                        }
+                                                        if (bdData[i].ToDo >= 0) {
+                                                            result.burnDown.todoLine.push(bdData[i].ToDo);
+                                                        }
+                                                    }
+                                                    self.success(result);
+                                                };
+
+                                                if(burndownData.length == 0){
+                                                    updateBurndownDataList(sprint, self.context)
+                                                        .then(function(){
+                                                            self.context.saveChanges(function(){
+                                                                self.context.SprintBurndown
+                                                                    .where(function(item){return item.SprintId == this.sprint_id},{sprint_id:sprintId})
+                                                                    .orderBy(function(item){return item.SprintDay})
+                                                                    .toArray(function(newBurndownData){
+                                                                        collectBurndownData(newBurndownData);
+                                                                    });
+                                                            });
+                                                        });
+                                                }else{
+                                                    collectBurndownData(burndownData);
+                                                }
+                                            })
+                                    });
 
                         }, function(error){console.log(error)});
                 };
             })
     });
     $data.Class.defineEx('LightSwitchApplication.ApplicationData',[$data.EntityContext, LightSwitchApplication.ApplicationService], null, {
-        WorkItems:{ type:$data.EntitySet, elementType:LightSwitchApplication.WorkItem , 'afterCreate':afterCreateWorkItem, 'afterUpdate':afterCreateWorkItem },
+        WorkItems:{ type:$data.EntitySet, elementType:LightSwitchApplication.WorkItem , 'afterCreate':updateBurndownData, 'afterUpdate':updateBurndownData, 'beforeCreate':updateConnectedData, 'beforeUpdate':updateConnectedData },
         Projects:{ type:$data.EntitySet, elementType:LightSwitchApplication.Project },
-        Sprints:{ type:$data.EntitySet, elementType:LightSwitchApplication.Sprint,  'afterCreate':afterCreateSprint},
+        Sprints:{ type:$data.EntitySet, elementType:LightSwitchApplication.Sprint,  'afterCreate':afterUpdateCreateSprint, 'afterUpdate':afterUpdateCreateSprint},
         SprintBurndown:{ type:$data.EntitySet, elementType:LightSwitchApplication.BurndownData }/*,
          Microsoft_LightSwitch_GetCanInformation: $data.EntityContext.generateServiceOperation({ serviceName: 'Microsoft_LightSwitch_GetCanInformation', returnType: 'Edm.String', params: [{ dataServiceMembers: 'Edm.String' }], method: 'GET' })*/
     });
