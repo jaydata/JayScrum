@@ -134,7 +134,7 @@ $data.Class.define('JayScrum.Frames.Projects', JayScrum.Frame, null, {
     onRefreshUserStoriesOfProject: function (project) {
         JayScrum.repository.WorkItems
             .where(function (item) { return ( item.Type == "UserStory") && item.WorkItem_Project == this.projectId;}, { projectId: project.Id() })
-            .orderBy(function (item) { return item.Priority; })
+            .orderByDescending(function (item) { return item.Priority; })
             .toArray(function (userStories) {
                 JayScrum.pushObservablesToList(JayScrum.app.selectedFrame().data().userStoriesOfProject, userStories);
 

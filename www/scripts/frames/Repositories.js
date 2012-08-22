@@ -55,6 +55,7 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
                 } else {
                     InstallLocalDemoDb(JayScrum.app.selectedFrame().localContext)
                         .then(function () {
+                            JayScrum.app.globalData().repositoryName('Demo local db');
                             JayScrum.app._initializeDemoRepositories(JayScrum.app.selectedFrame().localContext);
                         });
                 }
