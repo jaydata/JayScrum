@@ -642,8 +642,8 @@
                     <div class="pivot">
                         <h1 class="pivot-default" data-bind="text: $data.sprintName"></h1>
                         <div class="sprint-dates">
-                            <span data-bind="text: moment($data.StartDate).format('YY.MM.DD')"></span>
-                            -<span data-bind="text: moment($data.FinishDate).format('YY.MM.DD')"></span>
+                            <span data-bind="text: moment($data.StartDate).format('MM.DD.YYYY')"></span>
+                            -<span data-bind="text: moment($data.FinishDate).format('MM.DD.YYYY')"></span>
                         </div>
                         <div class="uslist scroll-list pivot-default-opacity scrollable-list" data-bind="attr:{'id': 'transition-us-' + $index()}">
                             <div class="scroller-list" data-bind="attr:{'data-sprintIndex': $index()}">
@@ -853,8 +853,8 @@
                                         </h2>
 
                                         <div class="sprint-dates white">
-                                            <span data-bind="text: moment(StartDate()).format('YY.MM.DD')"></span>-
-                                            <span data-bind="text: moment(FinishDate()).format('YY.MM.DD')"></span>
+                                            <span data-bind="text: moment(StartDate()).format('MM.DD.YYYY')"></span>-
+                                            <span data-bind="text: moment(FinishDate()).format('MM.DD.YYYY')"></span>
                                         </div>
                                     </div>
                                 </div>
