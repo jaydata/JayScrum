@@ -147,6 +147,18 @@
     <Content Include="Styles\metro.css" />
     <Content Include="Web.config" />
     <Content Include="Scripts\libs\q.js~" />
+    <Content Include="Styles\less\detailedview.less" />
+    <Content Include="Styles\less\font.less" />
+    <Content Include="Styles\less\htmlcontrols.less" />
+    <Content Include="Styles\less\icons.less" />
+    <Content Include="Styles\less\iscroll.less" />
+    <Content Include="Styles\less\loading.less" />
+    <Content Include="Styles\less\mediaqueries.less" />
+    <Content Include="Styles\less\metroui.less" />
+    <Content Include="Styles\less\mixins.less" />
+    <Content Include="Styles\less\reset.less" />
+    <Content Include="Styles\less\theme.less" />
+    <Content Include="Styles\less\variables.less" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -174,7 +186,6 @@
     <Content Include="Styles\fonts\segoewp.ttf" />
     <Content Include="Styles\fonts\segoewp.woff" />
     <Content Include="Styles\metro.less" />
-    <Content Include="Styles\mixins.less" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

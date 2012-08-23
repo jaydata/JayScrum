@@ -282,14 +282,14 @@
                                     <div class="review-item">
                                         <div id="burndownChart" class="metro-chart"></div>
                                         <div class="info" data-bind="with: $data.data().summaryList">
-                                            <ul class="tolower">
-                                                <li>
+                                            <ul class="tolower first">
+                                                <li class="first">
                                                     <h2>All user stories</h2>
                                                     <p data-bind="text: BackLogItemCountInSprint"></p>
                                                 </li>
                                             </ul>
                                             <ul class="tolower">
-                                                <li>
+                                                <li class="first">
                                                     <h2>All tasks</h2>
                                                     <p data-bind="text: SprintAllTaskCount"></p>
                                                 </li>
@@ -832,7 +832,7 @@
                                 <div class="list maxlist" data-bind="foreach: $data.data().sprintList">
                                     <div class="item task list-item relative reset-p clear">
                                         <h2 class="title margintop tolower accent-color">
-                                            <span data-bind="text: Name, click: $parent.onSelectSprint"></span>
+                                            <span class="value" data-bind="text: Name, click: $parent.onSelectSprint"></span>
                                             <span class="icon-action edit fright" data-bind="click: $parent.onEditSprint"><span>
                                             </span></span>
 

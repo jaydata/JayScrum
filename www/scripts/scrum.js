@@ -10,6 +10,7 @@ var debug = true,
         this.vScroll = true;
         this.fixedScrollbar = false;
         this.hideScrollbar = true;
+        this.scrollbarClass = "iscrollbar";
         this.bounce = true;
         this.lockDirection = true;
         this.onScrollStart = function () {
