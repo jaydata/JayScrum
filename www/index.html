@@ -495,6 +495,13 @@
                                     <input class="medium accent-bg" type="number" min="0" step="1" pattern="[0-9]" data-bind="value: BusinessValue" />
                                 </div>
                                 <!-- /ko -->
+                                <div class="metro-actionbar opened" >
+                                    <ul data-bind="foreach: $data.ValidationErrors">
+                                        <li data-bind="text:$data.PropertyDefinition.name+':'+$data.Message"></li>
+                                    </ul>
+                                </div>
+
+
                             </div>
                         </div>
                     </div>
@@ -1342,7 +1349,6 @@
     <script type="text/javascript" src="scripts/frames/Sprints.js"></script>
 
     <script type="text/javascript" src="scripts/RepositoryContext.js"></script>
-    <script type="text/javascript" src="scripts/ScrumLsEntities.js"></script>
     <script type="text/javascript" src="scripts/IScroll/iscroll.min.js"></script>
     <script type="text/javascript" src="scripts/IScroll/swipeview.js"></script>
 
