@@ -2,7 +2,7 @@
 
 function DisplayBurndownChart() {
     var rawObject = JayScrum.app.selectedFrame().data().summaryList().SprintBurndownData();
-    var r = new Raphael($('#burndownChart')[0]);
+
     var rDataPoint = rawObject.remainingLine.map(function(item, index){return index;});
     if(rDataPoint.length == 1){
         rDataPoint.push(rDataPoint[0]+1);
@@ -14,28 +14,31 @@ function DisplayBurndownChart() {
         rawObject.todoLine.push(0);
     }
     var iDataPoint = [0, rawObject.length];
-//    for(var i=0;i<rawObject.length;i++){dataPoint.push(i)};
-    var lines = r.linechart(15, 15, 270, 300,
-        [
-            rDataPoint,
-            tDataPoint,
-            iDataPoint
-        ],
-        [
-            rawObject.remainingLine,
-            rawObject.todoLine,
-            rawObject.idealLine
-        ],
+
+    var linesAxisX = [];
+    var linesAxisY = [];
+    if( rDataPoint.length>1){
+        linesAxisY.push(rDataPoint);
+        linesAxisX.push(rawObject.remainingLine);
+    }
+    if( tDataPoint.length>1){
+        linesAxisY.push(tDataPoint);
+        linesAxisX.push(rawObject.todoLine);
+    }
+    linesAxisY.push(iDataPoint);
+    linesAxisX.push(rawObject.idealLine);
+
+    var r = new Raphael($('#burndownChart')[0]);
+    var lines = r.linechart(15, 15, 270, 300, linesAxisY, linesAxisX,
         {
             nostroke: false,
             axis: "0 0 1 1",
-            // TODO: sprint length need @ axisxstep
-            axisxstep: 8,
+            axisxstep: rawObject.length,
             axisystep: 10,
             colors: ["#24A0DA", "#ffa500", "#fff"],
             smooth: false,
             shade: true
-        });
+        }, Math.max.apply(Math, rawObject.remainingLine));
 
     for (var i = 0, l = lines.axis.length; i < l; i++) {
         var chart = lines;
@@ -52,6 +55,6 @@ function DisplayBurndownChart() {
     }
 
     lines.shades[0].attr("opacity", "0.7");
-    lines.shades[1].attr("opacity", "0.7");
-    lines.shades[2].attr("opacity", "0");
+    if(lines.shades[1]){lines.shades[1].attr("opacity", "0.7");}
+    if(lines.shades[2]){lines.shades[2].attr("opacity", "0");}
 }

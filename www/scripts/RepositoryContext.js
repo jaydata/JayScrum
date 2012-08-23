@@ -37,7 +37,144 @@ function InstallLocalDemoDb(ctx){
     });
     return p.promise;
 }
+function testData() {
+    //var ctx = new LightSwitchApplication.ApplicationData({ name:'oData', oDataServiceHost:'http://192.168.1.142:3000/jayscrum' });
+    var ctx = JayScrum.repository;
+    //'hajni' = 'admin';
+    ctx.Sprints.add(new LightSwitchApplication.Sprint({ Name:'Sprint 1', StartDate:moment().add('days', -30).utc().toDate(), FinishDate:moment().add('days', -23).utc().toDate() }));
+    ctx.Sprints.add(new LightSwitchApplication.Sprint({ Name:'Sprint 2', StartDate:moment().add('days', -26).utc().toDate(), FinishDate:moment().add('days', -19).utc().toDate() }));
+    ctx.Sprints.add(new LightSwitchApplication.Sprint({ Name:'Sprint 3', StartDate:moment().add('days', -22).utc().toDate(), FinishDate:moment().add('days', -15).utc().toDate() }));
+    ctx.Sprints.add(new LightSwitchApplication.Sprint({ Name:'Sprint 4', StartDate:moment().add('days', -18).utc().toDate(), FinishDate:moment().add('days', -11).utc().toDate() }));
+    ctx.Sprints.add(new LightSwitchApplication.Sprint({ Name:'Sprint 5', StartDate:moment().add('days', -14).utc().toDate(), FinishDate:moment().add('days', -7).utc().toDate() }));
+    ctx.Sprints.add(new LightSwitchApplication.Sprint({ Name:'Sprint 6', StartDate:moment().add('days', -10).utc().toDate(), FinishDate:moment().add('days', -3).utc().toDate() }));
+    ctx.Sprints.add(new LightSwitchApplication.Sprint({ Name:'Sprint 7', StartDate:moment().add('days', -6).utc().toDate(), FinishDate:moment().add('days', 1).utc().toDate() }));
+    ctx.Sprints.add(new LightSwitchApplication.Sprint({ Name:'Sprint 8', StartDate:moment().add('days', -2).utc().toDate(), FinishDate:moment().add('days', 5).utc().toDate() }));
+    ctx.Sprints.add(new LightSwitchApplication.Sprint({ Name:'Sprint 9', StartDate:moment().add('days', 2).utc().toDate(), FinishDate:moment().add('days', 9).utc().toDate() }));
+    ctx.Sprints.add(new LightSwitchApplication.Sprint({ Name:'Sprint 10', StartDate:moment().add('days', -1).utc().toDate(), FinishDate:moment().add('days', 6).utc().toDate() }));
 
+    ctx.Projects.add(new LightSwitchApplication.Project({ Name:'Project 1', Description:'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam tincidunt neque eget dolor rhoncus in vehicula dolor imperdiet. In hac habitasse platea dictumst. ' }));
+    ctx.Projects.add(new LightSwitchApplication.Project({ Name:'Project 2', Description:'Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Aenean mattis egestas lectus a sodales. ' }));
+    ctx.Projects.add(new LightSwitchApplication.Project({ Name:'Project 3', Description:'ed lorem mauris, pellentesque et aliquet eget, dapibus quis erat. In dignissim orci nec est fermentum sed dignissim ipsum sodales. ' }));
+    ctx.Projects.add(new LightSwitchApplication.Project({ Name:'Project 4', Description:'Donec est orci, molestie ac pellentesque in, lacinia et dui. Morbi vitae facilisis enim. Aliquam eu ullamcorper odio. ' }));
+    ctx.Projects.add(new LightSwitchApplication.Project({ Name:'Project 5', Description:'Fusce varius cursus libero, quis rhoncus ligula facilisis ac. Duis adipiscing congue justo eu bibendum. ' }));
+    ctx.Projects.add(new LightSwitchApplication.Project({ Name:'Project 6', Description:'Phasellus vitae purus lorem. Duis lobortis, velit et dignissim congue, nibh ante gravida ipsum, quis luctus enim sapien vitae turpis. ' }));
+    ctx.Projects.add(new LightSwitchApplication.Project({ Name:'Project 7', Description:'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam tincidunt neque eget dolor rhoncus in vehicula dolor imperdiet. In hac habitasse platea dictumst. ' }));
+    ctx.Projects.add(new LightSwitchApplication.Project({ Name:'Project 8', Description:'Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Aenean mattis egestas lectus a sodales. ' }));
+    ctx.Projects.add(new LightSwitchApplication.Project({ Name:'Project 9', Description:'ed lorem mauris, pellentesque et aliquet eget, dapibus quis erat. In dignissim orci nec est fermentum sed dignissim ipsum sodales. ' }));
+    ctx.Projects.add(new LightSwitchApplication.Project({ Name:'Project 10', Description:'Donec est orci, molestie ac pellentesque in, lacinia et dui. Morbi vitae facilisis enim. Aliquam eu ullamcorper odio. ' }));
+    ctx.Projects.add(new LightSwitchApplication.Project({ Name:'Project 11', Description:'Fusce varius cursus libero, quis rhoncus ligula facilisis ac. Duis adipiscing congue justo eu bibendum. ' }));
+    ctx.Projects.add(new LightSwitchApplication.Project({ Name:'Project 12', Description:'Phasellus vitae purus lorem. Duis lobortis, velit et dignissim congue, nibh ante gravida ipsum, quis luctus enim sapien vitae turpis. ' }));
+
+    //'hajni' = '';
+
+    var allSprints = null;
+    var allProjects = null;
+
+
+    ctx.saveChanges(function () {
+        console.log('Sprint and projects save OK');
+        ctx.Sprints.toArray(function (sprintResult) {
+            console.log('Get Sprints OK');
+            ctx.Projects.toArray(function (projectResult) {
+                console.log('Get Projects OK');
+
+                console.log(sprintResult[5].Id);
+
+                var ustoSprint = function (sprintId, projectId, index, context) {
+                    for (var i = 0; i < 15; i++) {
+                        context.WorkItems.add(new LightSwitchApplication.WorkItem({
+                            Title:"User Story 1" + index++, Description:"Donec est orci, molestie ac pellentesque in, lacinia et dui. Morbi vitae facilisis enim. Aliquam eu ullamcorper odio.Donec est orci, molestie ac pellentesque in, lacinia et dui. Morbi vitae facilisis enim. Aliquam eu ullamcorper odio. ",
+                            Priority:Math.floor(Math.random() * 30), Effort:Math.floor(Math.random() * 100), BusinessValue:Math.floor(Math.random() * 1000), Type:"UserStory",
+                            WorkItem_Sprint:sprintId,
+                            WorkItem_Project:projectId,
+                            CreatedDate:new Date().toISOString(), CreatedBy:'hajni', ChangedDate:new Date().toISOString(), ChangedBy:'hajni', AssignedTo:"", State:"New"
+                        }));
+                    }
+                };
+
+                var taskToSprint = function (sprintId, userStoryId, index, context) {
+                    for (var i = 0; i < 15; i++) {
+                        context.WorkItems.add(new LightSwitchApplication.WorkItem({
+                            Title:"Task 1" + index++, Description:"Donec est orci, molestie ac pellentesque in, lacinia et dui. Morbi vitae facilisis enim. Aliquam eu ullamcorper odio.Donec est orci, molestie ac pellentesque in, lacinia et dui. Morbi vitae facilisis enim. Aliquam eu ullamcorper odio. ",
+                            Priority:Math.floor(Math.random() * 30), Effort:Math.floor(Math.random() * 100), BusinessValue:Math.floor(Math.random() * 1000), Type:"Task",
+                            State:'To Do', RemainingWork:Math.floor(Math.random() * 11),
+                            WorkItem_Sprint:sprintId,
+                            WorkItem_WorkItem:userStoryId,
+                            CreatedDate:new Date().toISOString(), CreatedBy:'hajni', ChangedDate:new Date().toISOString(), ChangedBy:'hajni', AssignedTo:""
+                        }));
+                        context.WorkItems.add(new LightSwitchApplication.WorkItem({
+                            Title:"Task 1" + index++, Description:"Donec est orci, molestie ac pellentesque in, lacinia et dui. Morbi vitae facilisis enim. Aliquam eu ullamcorper odio.Donec est orci, molestie ac pellentesque in, lacinia et dui. Morbi vitae facilisis enim. Aliquam eu ullamcorper odio. ",
+                            Priority:Math.floor(Math.random() * 30), Effort:Math.floor(Math.random() * 100), BusinessValue:Math.floor(Math.random() * 1000), Type:"Task",
+                            State:'To Do', RemainingWork:Math.floor(Math.random() * 11),
+                            WorkItem_Sprint:sprintId,
+                            WorkItem_WorkItem:userStoryId,
+                            CreatedDate:new Date().toISOString(), CreatedBy:'hajni', ChangedDate:new Date().toISOString(), ChangedBy:'hajni', AssignedTo:""
+                        }));
+                        context.WorkItems.add(new LightSwitchApplication.WorkItem({
+                            Title:"Task 1" + index++, Description:"Donec est orci, molestie ac pellentesque in, lacinia et dui. Morbi vitae facilisis enim. Aliquam eu ullamcorper odio.Donec est orci, molestie ac pellentesque in, lacinia et dui. Morbi vitae facilisis enim. Aliquam eu ullamcorper odio. ",
+                            Priority:Math.floor(Math.random() * 30), Effort:Math.floor(Math.random() * 100), BusinessValue:Math.floor(Math.random() * 1000), Type:"Task",
+                            State:'To Do', RemainingWork:Math.floor(Math.random() * 11),
+                            WorkItem_Sprint:sprintId,
+                            WorkItem_WorkItem:userStoryId,
+                            CreatedDate:new Date().toISOString(), CreatedBy:'hajni', ChangedDate:new Date().toISOString(), ChangedBy:'hajni', AssignedTo:""
+                        }));
+
+                        context.WorkItems.add(new LightSwitchApplication.WorkItem({
+                            Title:"Task 1" + index++, Description:"Donec est orci, molestie ac pellentesque in, lacinia et dui. Morbi vitae facilisis enim. Aliquam eu ullamcorper odio.Donec est orci, molestie ac pellentesque in, lacinia et dui. Morbi vitae facilisis enim. Aliquam eu ullamcorper odio. ",
+                            Priority:Math.floor(Math.random() * 30), Effort:Math.floor(Math.random() * 100), BusinessValue:Math.floor(Math.random() * 1000), Type:"Task",
+                            State:'In Progress', RemainingWork:Math.floor(Math.random() * 11),
+                            WorkItem_Sprint:sprintId,
+                            WorkItem_WorkItem:userStoryId,
+                            CreatedDate:new Date().toISOString(), CreatedBy:'hajni', ChangedDate:new Date().toISOString(), ChangedBy:'hajni', AssignedTo:""
+                        }));
+                        context.WorkItems.add(new LightSwitchApplication.WorkItem({
+                            Title:"Task 1" + index++, Description:"Donec est orci, molestie ac pellentesque in, lacinia et dui. Morbi vitae facilisis enim. Aliquam eu ullamcorper odio.Donec est orci, molestie ac pellentesque in, lacinia et dui. Morbi vitae facilisis enim. Aliquam eu ullamcorper odio. ",
+                            Priority:Math.floor(Math.random() * 30), Effort:Math.floor(Math.random() * 100), BusinessValue:Math.floor(Math.random() * 1000), Type:"Task",
+                            State:'In Progress', RemainingWork:Math.floor(Math.random() * 11),
+                            WorkItem_Sprint:sprintId,
+                            WorkItem_WorkItem:userStoryId,
+                            CreatedDate:new Date().toISOString(), CreatedBy:'hajni', ChangedDate:new Date().toISOString(), ChangedBy:'hajni', AssignedTo:""
+                        }));
+
+                        context.WorkItems.add(new LightSwitchApplication.WorkItem({
+                            Title:"Task 1" + index++, Description:"Donec est orci, molestie ac pellentesque in, lacinia et dui. Morbi vitae facilisis enim. Aliquam eu ullamcorper odio.Donec est orci, molestie ac pellentesque in, lacinia et dui. Morbi vitae facilisis enim. Aliquam eu ullamcorper odio. ",
+                            Priority:Math.floor(Math.random() * 30), Effort:Math.floor(Math.random() * 100), BusinessValue:Math.floor(Math.random() * 1000), Type:"Task",
+                            State:'Done', RemainingWork:Math.floor(Math.random() * 11),
+                            WorkItem_Sprint:sprintId,
+                            WorkItem_WorkItem:userStoryId,
+                            CreatedDate:new Date().toISOString(), CreatedBy:'hajni', ChangedDate:new Date().toISOString(), ChangedBy:'hajni', AssignedTo:""
+                        }));
+                    }
+                }
+
+                ustoSprint(null, null, 0, ctx);
+                ustoSprint(sprintResult[5].Id, projectResult[0].Id, 15, ctx);
+                ustoSprint(sprintResult[6].Id, projectResult[1].Id, 30, ctx);
+                ustoSprint(sprintResult[7].Id, projectResult[0].Id, 45, ctx);
+                ustoSprint(sprintResult[8].Id, projectResult[1].Id, 60, ctx);
+
+                ctx.saveChanges(function(){
+                    console.log('UserStories save OK');
+                    ctx.WorkItems.toArray(function(userStoryResult){
+                        console.log('Get userStories OK');
+                        taskToSprint(null, null, 0, ctx);
+                        console.log(sprintResult[5].Name + userStoryResult[35].Title);
+                        taskToSprint(sprintResult[5].Id, userStoryResult[35].Id, 15, ctx);
+                        console.log(sprintResult[6].Name + userStoryResult[36].Title);
+                        taskToSprint(sprintResult[6].Id, userStoryResult[36].Id, 30, ctx);
+                        console.log(sprintResult[7].Name + userStoryResult[50].Title);
+                        taskToSprint(sprintResult[7].Id, userStoryResult[50].Id, 45, ctx);
+                        console.log(sprintResult[8].Name + userStoryResult[51].Title);
+                        taskToSprint(sprintResult[8].Id, userStoryResult[51].Id, 60, ctx);
+                        ctx.saveChanges(function () {
+                            console.log('ALL OK');
+                        });
+                    });
+                });
+            });
+        });
+    });
+}
 function updateBurndownDataList(sprint, context){
     var p = Q.defer();
     var self = context;
@@ -191,9 +328,9 @@ $data.Class.define('$data.ServiceBase', null, null, null, null);
 $data.Entity.extend('JayScrum.SqLite.WorkItem', {
     Id: { type: $data.Integer, key: true, computed: true },
     //'RowVersion':{ type:'$data.Blob', nullable:false, concurrencyMode:$data.ConcurrencyMode.Fixed, computed:true },
-    'Title':{ type:'$data.String', nullable:false, required:true, maxLength:255 },
+    'Title':{ type:'$data.String', nullable:false, required:{value:true, message:'Required field!'}, maxLength:{value:255, message:'Maximumn length of Title field is 255 char'} },
     'Type':{ type:'$data.String', nullable:false, required:true, maxLength:255 },
-    'Description':{ type:'$data.String', maxLength:1024 },
+    'Description':{ type:'$data.String',  maxLength:{value:1024, message:'Maximumn length of Description field is 255 char'} },
     'CreatedDate':{ type:'$data.Date', nullable:false, required:true },
     'CreatedBy':{ type:'$data.String', nullable:false, required:true, maxLength:255 },
     'ChangedDate':{ type:'$data.Date', nullable:false, required:true },
@@ -208,7 +345,7 @@ $data.Entity.extend('JayScrum.SqLite.WorkItem', {
     'BusinessValue':{ type:'$data.Integer' },
     'IsBlocked':{ type:'$data.Boolean' },
     'RemainingWork':{ type:'$data.Integer' },
-    'WorkItem_Project':{ type:'$data.Integer' },
+    'WorkItem_Project':{ type:'$data.Integer'/*, customValidator:function(v) {console.log(v); return false;}, errorMessage:"alma" */},
     'WorkItem_Sprint':{ type:'$data.Integer' },
     'WorkItem_WorkItem':{ type:'$data.Integer' },
     'Reason':{ type:'$data.String', maxLength:255 }

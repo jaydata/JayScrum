@@ -239,6 +239,7 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
             });
     },
     onSaveWorkItem: function (wrkItem, isEventCall) {
+        if(!wrkItem.innerInstance.isValid()){return;}
         var currentLista = null;
         if (wrkItem.State() == 'In Progress') {
             if (wrkItem.Reason() == 'Work finished')

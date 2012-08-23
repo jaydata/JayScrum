@@ -51,7 +51,7 @@
         };
     }
 
-    function Linechart(paper, x, y, width, height, valuesx, valuesy, opts) {
+    function Linechart(paper, x, y, width, height, valuesx, valuesy, opts, cust_maxy) {
 
         var chartinst = this;
 
@@ -105,6 +105,11 @@
             maxy = ydim.to,
             kx = (width - gutter * 2) / ((maxx - minx) || 1),
             ky = (height - gutter * 2) / ((maxy - miny) || 1);
+
+        if(cust_maxy){
+            maxy = cust_maxy;
+            ky = (height - gutter * 2) / ((maxy - miny) || 1);
+        }
 
         var axis = paper.set();
 
@@ -322,8 +327,8 @@
     Linechart.prototype = new F;
 
     //public
-    Raphael.fn.linechart = function(x, y, width, height, valuesx, valuesy, opts) {
-        return new Linechart(this, x, y, width, height, valuesx, valuesy, opts);
+    Raphael.fn.linechart = function(x, y, width, height, valuesx, valuesy, opts, maxy) {
+        return new Linechart(this, x, y, width, height, valuesx, valuesy, opts, maxy);
     }
 
 })();
