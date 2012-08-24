@@ -1,8 +1,8 @@
 #!/bin/bash
-cp -R JayScrum/Images/ JayScrum_Apple/JayScrum/www/Images
-cp -R JayScrum/Properties/ JayScrum_Apple/JayScrum/www/Properties
-cp -R JayScrum/Scripts/ JayScrum_Apple/JayScrum/www/Scripts
-cp -R JayScrum/Styles/ JayScrum_Apple/JayScrum/www/Styles
-cp JayScrum/index.html JayScrum_Apple/JayScrum/www
-cp JayScrum/Scripts/cordova-1.9.0ios.js JayScrum_Apple/JayScrum/www/Scripts/cordova-1.9.0.js
-rm JayScrum_Apple/JayScrum/www/Scripts/cordova-1.9.0ios.js
+cp -R www/Images/ JayScrum_Apple/JayScrum/www/Images
+cp -R www/Properties/ JayScrum_Apple/JayScrum/www/Properties
+cp -R www/scripts/ JayScrum_Apple/JayScrum/www/scripts
+cp -R www/Styles/ JayScrum_Apple/JayScrum/www/Styles
+cp www/index.html JayScrum_Apple/JayScrum/www
+cp www/scripts/cordova-2.0.0ios.js JayScrum_Apple/JayScrum/www/scripts/cordova-2.0.0.js
+rm JayScrum_Apple/JayScrum/www/scripts/cordova-2.0.0ios.js
