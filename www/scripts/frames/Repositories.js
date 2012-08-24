@@ -154,6 +154,11 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
     },
     buyDatabase: function(){
         console.log('buy db');
+		cordova.exec(function(){alert('OK: '+JSON.stringify(arguments));}, 
+			 function (){alert('ERROR: '+JSON.stringify(arguments))}, 
+			 "InAppBilling",
+			 "buy",
+			 [1,"2",3]);
     },
     createDatabase: function(){
         this.data().isRegistration(true);
