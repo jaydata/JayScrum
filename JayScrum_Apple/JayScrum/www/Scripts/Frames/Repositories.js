@@ -5,10 +5,26 @@
  * Time: 9:28 AM
  * To change this template use File | Settings | File Templates.
  */
-$data.Class.define('JayScrum.frames.Repositories', JayScrum.Frame, null, {
+$data.Class.define('JayScrum.Views.RepositorySettings', JayScrum.FrameView, null, {
+    constructor:function(name, path, tplSource){
+        this.templateName = name || 'repositories-template';
+        this.i_scroll = null;
+    },
+    initializeView:function(){
+        //JayScrum.app.hideLoading();
+        this.i_scroll = JayScrum.app.initScrollById('settingPageScroll');
+    },
+    tearDownView:function(){
+        if(this.i_scroll){
+            this.i_scroll.destroy();
+            this.i_scroll = null;
+        }
+    }
+}, null);
+$data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
     constructor:function () {
         //register frameViews
-        this.registerView('settings', new JayScrum.FrameView('repositories-template'));
+        this.registerView('settings', new JayScrum.Views.RepositorySettings('repositories-template'));
         this.registerMetaView('defaultMeta', new JayScrum.FrameView('jayAppMetaDefault'));
         this.defaultViewName = 'settings';
         this.selectMetaView('defaultMeta');
@@ -18,26 +34,47 @@ $data.Class.define('JayScrum.frames.Repositories', JayScrum.Frame, null, {
         this.data = ko.observable({
             name:'settings',
             selectedSetting: ko.observable(),
-            settings: ko.observableArray()
+            settings: ko.observableArray(),
+            errorMsg: ko.observable(),
+            isRegistration: ko.observable(false)
         });
 
     },
-    _handleDefaultRepo:function(result){
+    _resetData: function(){
+        this.data().settings.removeAll();
+        this.data().errorMsg(null);
+    },
+    _handleDefaultRepo:function (result) {
         if (result && result.length > 0) {
             JayScrum.app.selectedFrame().connectTo(result[0]);
         }
         else {
-            JayScrum.app.selectedFrame()._initializeRepositoriesFrame();
+            JayScrum.app.selectedFrame().localContext.Sprints.length(function (sprintCount) {
+                if (sprintCount) {
+                    JayScrum.app.selectedFrame()._initializeRepositoriesFrame();
+                } else {
+                    InstallLocalDemoDb(JayScrum.app.selectedFrame().localContext)
+                        .then(function () {
+                            JayScrum.app.globalData().repositoryName('Demo local db');
+                            JayScrum.app._initializeDemoRepositories(JayScrum.app.selectedFrame().localContext);
+                        });
+                }
+            });
+
         }
     },
 
     _initializeRepositoriesFrame: function () {
         var app = this;
         this.localContext.Repositories.toArray(function (result) {
-            app.data().settings(result);
+            app.data().settings([new JayScrum.Settings.Repository({Id:-1, Title:'Demo local db'})]);
+            result.forEach(function(repo){
+                app.data().settings.push(repo);
+            });
             app.data().selectedSetting(null);
             app.showActionBar();
-            app.frameApp.visibleLoadingScreen(false);
+
+            JayScrum.app.hideLoading();
         });
     },
     _getDefaultRepository: function (callBack) {
@@ -46,18 +83,58 @@ $data.Class.define('JayScrum.frames.Repositories', JayScrum.Frame, null, {
     _getAllRepositorySettings: function (callBack) {
         return this.localContext.Repositories.toArray(callBack);
     },
-    connectTo:function(repoSetting){
-        console.log(repoSetting);
-        JayScrum.repository = new LightSwitchApplication.ApplicationData({ name: 'storm', url: repoSetting.Url, user: repoSetting.UserName, password: repoSetting.Password });
-        JayScrum.repository.onReady(function(){
-            JayScrum.app.selectFrame('MainFrame');
+    connectTo:function (repoSetting) {
+        JayScrum.app.globalData().repositoryName(repoSetting.Title);
+        if(repoSetting.Id === -1){
+            JayScrum.app._initializeDemoRepositories(JayScrum.app.selectedFrame().localContext);
+            return;
+        }
+        var url = repoSetting.Url;
+        if(url.indexOf('http') !== 0){
+            //url = 'http://app1.storm.jaystack.com:3000/'+repoSetting.Url.toLowerCase();
+            url = 'http://192.168.1.142:3000/'+repoSetting.Url.toLowerCase();
+        }
+
+        var urlparser = document.createElement('a');
+        urlparser.href = url;
+        var dbName = urlparser.pathname.slice(1);
+        if(dbName[dbName.length-1] === '/'){
+            dbName = dbName.slice(0,-1);
+        }
+
+        var createDbUrl = urlparser.protocol + '//' + urlparser.host + '/CreateDatabase?dbName=' + dbName + '&schemaName=jayscrumcontext';
+        var createUserDbUrl = urlparser.protocol + '//' + urlparser.host + '/CreateDatabase?dbName=' + dbName + '_users&schemaName=jaystormcontext';
+
+        $.ajax({
+            url:createDbUrl,
+            error:function (xhr, status, error) {
+                console.log(error);
+                JayScrum.app.selectedFrame()._initializeRepositoriesFrame();
+            },
+            success:function (data, status, xhr) {
+
+                $.ajax({
+                    url: createUserDbUrl,
+                    error:function (xhr, status, error) {
+                        console.log(error);
+                        JayScrum.app.selectedFrame()._initializeRepositoriesFrame();
+                    },
+                    success:function (data, status, xhr) {
+                        JayScrum.app._initializeRepositories(url, repoSetting.UserName, repoSetting.Password);
+                    }
+                });
+            }
         });
+
     },
     editSetting:function(item){
         var entity = JayScrum.app.selectedFrame().localContext.Repositories.attachOrGet(item);
         JayScrum.app.selectedFrame().data().selectedSetting(entity.asKoObservable());
         JayScrum.app.selectedFrame().data().settings(null);
+
         JayScrum.app.selectedFrame().hideActionBar();
+        JayScrum.app.selectedFrame().selectedView().i_scroll.destroy();
+        JayScrum.app.selectedFrame().selectedView().i_scroll = JayScrum.app.initScrollById('settingPageScroll');
     },
     deleteSetting:function(item){
         JayScrum.app.selectedFrame().localContext.Repositories.remove(item);
@@ -66,13 +143,28 @@ $data.Class.define('JayScrum.frames.Repositories', JayScrum.Frame, null, {
         });
     },
     addSetting:function(item){
-        var newItem = new JayScrum.Settings.Repository({Title:'Repository', Url:'http://192.168.1.142:3000'});
+        var newItem = new JayScrum.Settings.Repository({Title:'Repository'});
         this.localContext.Repositories.add(newItem);
         this.data().settings(null);
         this.data().selectedSetting(newItem.asKoObservable());
 
-        this.hideActionBar();
-        initScrollById('settingPageScroll');
+        JayScrum.app.selectedFrame().hideActionBar();
+        JayScrum.app.selectedFrame().selectedView().i_scroll.destroy();
+        JayScrum.app.selectedFrame().selectedView().i_scroll = JayScrum.app.initScrollById('settingPageScroll');
+    },
+    buyDatabase: function(){
+        console.log('buy db');
+    },
+    createDatabase: function(){
+        this.data().isRegistration(true);
+        var newItem = new JayScrum.Settings.Repository({Title:'Repository'});
+        this.localContext.Repositories.add(newItem);
+        this.data().settings(null);
+        this.data().selectedSetting(newItem.asKoObservable());
+
+        JayScrum.app.selectedFrame().hideActionBar();
+        JayScrum.app.selectedFrame().selectedView().i_scroll.destroy();
+        JayScrum.app.selectedFrame().selectedView().i_scroll = JayScrum.app.initScrollById('settingPageScroll');
     },
     saveSetting:function(item){
         $("div#settingPage input:focus").trigger('blur');
@@ -80,34 +172,52 @@ $data.Class.define('JayScrum.frames.Repositories', JayScrum.Frame, null, {
             JayScrum.app.selectedFrame()._initializeRepositoriesFrame();
         });
 
-
-        initScrollById("settingPageScroll");
+        JayScrum.app.selectedFrame().selectedView().i_scroll.destroy();
+        JayScrum.app.selectedFrame().selectedView().i_scroll = JayScrum.app.initScrollById("settingPageScroll");
     },
     cancelSetting:function(item){
-        console.log(item);
         JayScrum.app.selectedFrame().localContext.Repositories.detach(arguments[0]);
         JayScrum.app.selectedFrame().data().selectedSetting(null);
-
+        JayScrum.app.selectedFrame().data().isRegistration(false);
         JayScrum.app.selectedFrame()._initializeRepositoriesFrame();
+
+        JayScrum.app.selectedFrame().hideActionBar();
+        JayScrum.app.selectedFrame().selectedView().i_scroll.destroy();
+        JayScrum.app.selectedFrame().selectedView().i_scroll = JayScrum.app.initScrollById("settingPageScroll");
     },
     onFrameChangingFrom: function(newFrameMeta, oldFrameMeta, initData, frame){
+        var loadingPromise = Q.defer();
         JayScrum.app.showLoading();
+        this.data().initData = initData;
+        var self = this;
+        /*this.localContext.onReady(function(){
+            if(initData && initData.autoConnect){
+                self._getDefaultRepository(self._handleDefaultRepo);
+            } else {
+                if(initData && initData.error){self.data().errorMsg(initData.error);}
+                self._initializeRepositoriesFrame();
+            }*/
+            loadingPromise.resolve();
+        /*});*/
+        return loadingPromise.promise;
+    },
+    onFrameChangedFrom:function (newFrameData, oldFrameData, frame) {
         var self = this;
         this.localContext.onReady(function(){
-            if(initData){
-                self._getDefaultRepository(self._handleDefaultRepo);
-            }else{
-                self._initializeRepositoriesFrame();
-            }
+                if(self.data().initData && self.data().initData.autoConnect){
+                    self._getDefaultRepository(self._handleDefaultRepo);
+                } else {
+                    if(self.data().initData && self.data().initData.error){self.data().errorMsg(self.data().initData.error);}
+                    self._initializeRepositoriesFrame();
+                }
+                JayScrum.app.selectedFrame().selectedView().initializeView();
         });
-    },
-    onFrameChangedFrom:function (newFrameMeta, oldFrameMeta, frame) {
-        JayScrum.app.hideLoading();
     },
     showActionBar:function () {
         $('div#settingPageActionBar').addClass("opened");
     },
     hideActionBar:function () {
         $('div#settingPageActionBar').removeClass("opened");
+        $('div#error-msg').removeClass('opened');
     }
 }, null);

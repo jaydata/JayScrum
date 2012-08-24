@@ -33,7 +33,7 @@ $data.Class.define('JayScrum.FrameApp', null, null, {
         this.visibleLoadingScreen = ko.observable(false);
         this._frameHashTable = {};
         //TODO csinád meg
-        this.loading = $(".metro-loading");
+        this.loading = $("div.metro-loading");
     },
     _createContainer:function (elementId, parent) {
         var containerNode = null;
@@ -47,19 +47,22 @@ $data.Class.define('JayScrum.FrameApp', null, null, {
         return containerNode;
     },
     showLoading:function () {
-        console.log('show loading screen');
-        JayScrum.app.loading.show();
-        JayScrum.app.loading.animate({
+        JayScrum.app.loading[0].style.display = "";
+        JayScrum.app.loading[0].style.opacity = 1;
+        /*JayScrum.app.loading.show();*/
+        /*JayScrum.app.loading.animate({
             opacity:1
-        }, 0, 'ease-out');
+        }, 0, 'ease-out');*/
     },
     hideLoading:function () {
-        console.log('hide loading screen');
         JayScrum.app.loading.animate({
-            opacity:0
+            opacity: 0
         }, 500, 'ease-out', function () {
             JayScrum.app.loading.hide();
-        })
+        });
+
+        //TODO: az animate callback-je nem mindig hívódik meg, ezért 2x rejtjük el
+        JayScrum.app.loading.hide();
     },
     registerFrame:function (frame) {
         if (frame instanceof JayScrum.Frame) {
@@ -79,15 +82,15 @@ $data.Class.define('JayScrum.FrameApp', null, null, {
         if(actualFrameSetting.frameName === prevFrameSetting.frameName){
             JayScrum.app.selectedFrame().backView(prevFrameSetting);
         }else{
-            JayScrum.app.selectFrame(prevFrameSetting.frameName, prevFrameSetting.viewName, prevFrameSetting.data);
+            JayScrum.app.selectFrame(prevFrameSetting.frameName, prevFrameSetting.viewName, prevFrameSetting.data, null, actualFrameSetting);
         }
     },
-    selectFrame:function (name, viewName, initData) {
+    selectFrame:function (name, viewName, initData, disableResetData, oldFrame) {
 
         var frameIndex = this._frameHashTable[name];
         var newActiveFrame = {frameName:name, viewName:viewName, data:initData};
-        var oldActiveFrame = {frameName:null, viewName:null, data: null};
-        if (this.collectFramePath()) {
+        var oldActiveFrame = oldFrame || {frameName:null, viewName:null, data: null};
+        if (!oldFrame && this.collectFramePath()) {
             oldActiveFrame = this.framePath.slice(-1)[0];
         }
         var newFrame = this.frameContainer()[frameIndex];
@@ -95,26 +98,24 @@ $data.Class.define('JayScrum.FrameApp', null, null, {
         if(viewName === undefined){
             newActiveFrame.viewName = newFrame.defaultViewName;
         }
-        console.log('change frame from:'+JSON.stringify(oldActiveFrame)+' to '+JSON.stringify(newActiveFrame));
-
 
         if (oldFrame) {
-            oldFrame.onFrameChangingTo(newActiveFrame, oldActiveFrame, newFrame);
+            oldFrame.onFrameChangingTo(newActiveFrame, oldActiveFrame, newFrame, disableResetData);
         }
-        newFrame.onFrameChangingFrom(newActiveFrame, oldActiveFrame, initData, oldFrame);
+        var self = this;
+        newFrame.onFrameChangingFrom(newActiveFrame, oldActiveFrame, initData, oldFrame)
+            .then(function() {
+                if (self.collectFramePath()) {
+                    self.framePath.push(newActiveFrame);
+                }
+                newFrame.selectedView(newFrame.views[newActiveFrame.viewName]);
+                self.selectedFrame(newFrame);
 
-        if (this.collectFramePath()) {
-            this.framePath.push(newActiveFrame);
-        }
-        newFrame.selectedView(newFrame.views[newActiveFrame.viewName]);
-        this.selectedFrame(newFrame);
-
-        if (oldFrame) {
-            oldFrame.onFrameChangedTo(newActiveFrame, oldActiveFrame, newFrame);
-        }
-        newFrame.onFrameChangedFrom(newActiveFrame, oldActiveFrame, oldFrame);
-
-        console.log('app path: '+JSON.stringify(this.framePath()));
+                if (oldFrame) {
+                    oldFrame.onFrameChangedTo(newActiveFrame, oldActiveFrame, newFrame);
+                }
+                newFrame.onFrameChangedFrom(newActiveFrame, oldActiveFrame, oldFrame);
+            });
     },
     bind:function () {
         ko.applyBindings(this, this.mainElement);
