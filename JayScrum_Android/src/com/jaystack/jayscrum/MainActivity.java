@@ -10,6 +10,7 @@ import net.robotmedia.billing.model.Transaction.PurchaseState;
 
 import org.apache.cordova.DroidGap;
 import org.apache.cordova.api.PluginResult;
+import org.json.JSONArray;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -41,6 +42,7 @@ public class MainActivity extends DroidGap implements BillingController.IConfigu
 				MainActivity.this.onRequestPurchaseResponse(itemId, response);
 			}
 		};
+		BillingController.setDebug(true);
 		BillingController.registerObserver(mBillingObserver);
 		BillingController.setConfiguration(this); // This activity will provide
 		// the public key and salt
@@ -52,19 +54,25 @@ public class MainActivity extends DroidGap implements BillingController.IConfigu
         super.loadUrl("file:///android_asset/www/index.html");
     }
 	
-	public void onBillingChecked(boolean supported){};
+	public void onBillingChecked(boolean supported){
+		Log.d("InApp", "onBlillingChecked supported: "+supported);
+	};
 	
-	public void onSubscriptionChecked(boolean supported){};
+	public void onSubscriptionChecked(boolean supported){
+		Log.d("InApp", "onSubscriptionChecked supported: "+supported);
+	};
 	
-	public void onPurchaseStateChanged(String itemId, PurchaseState state){};
+	public void onPurchaseStateChanged(String itemId, PurchaseState state){
+		Log.d("InApp", "onPurchaseStateChanged itemId: "+itemId+" state: "+state.toString());
+	};
 
 	public void onRequestPurchaseResponse(String itemId, ResponseCode response){
 		Log.d("InApp", "!!!! purchase response: "+response.toString());
 		try{
-		Log.d("InApp", "callback string: "+this._plugin._callbackId);
-		PluginResult result = new PluginResult(PluginResult.Status.OK, response.toString());
-		result.setKeepCallback(true);
-		this._plugin.success(result, this._plugin._callbackId);
+			Log.d("InApp", "callback string: "+this._plugin._callbackId);
+			PluginResult result = new PluginResult(PluginResult.Status.OK, response.toString());
+			result.setKeepCallback(true);
+			this._plugin.success(result, this._plugin._callbackId);
 		}catch(NullPointerException ex){
 			Log.e("InApp", "ex.getMessage()");
 		}
@@ -78,9 +86,10 @@ public class MainActivity extends DroidGap implements BillingController.IConfigu
 		return BillingController.checkSubscriptionSupported(this);
 	}
 	
-	public void BuySomething(InAppBillingPlugin plugin){
+	public void MonthlySubscription(InAppBillingPlugin plugin, String data){
 		this._plugin = plugin;
-		BillingController.requestSubscription(this, "subscription_monthly", true, "{alma:'hkhkhk', korte:'lkjjljklj'}");
+		BillingController.requestSubscription(this, "test.jaystack.subscription_monthly", true, data);
+		//BillingController.requestPurchase(this, "android.test.purchased", true, data);
 	}
 	
 	public byte[] getObfuscationSalt() {

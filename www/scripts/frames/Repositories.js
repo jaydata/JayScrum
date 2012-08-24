@@ -152,14 +152,31 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
         JayScrum.app.selectedFrame().selectedView().i_scroll.destroy();
         JayScrum.app.selectedFrame().selectedView().i_scroll = JayScrum.app.initScrollById('settingPageScroll');
     },
-    buyDatabase: function(){
-        console.log('buy db');
-		cordova.exec(function(){alert('OK: '+JSON.stringify(arguments));}, 
-			 function (){alert('ERROR: '+JSON.stringify(arguments))}, 
+    buyDatabase: function(item){
+        console.log('buy db: '+JSON.stringify(item));
+		cordova.exec(function(result){
+				if(result === "RESULT_OK"){alert('all ok');}
+				else{alert('requiestOK, result_error');}
+			}, 
+			 function (){
+				alert('ERROR: '+JSON.stringify(arguments));
+			 }, 
 			 "InAppBilling",
-			 "buy",
-			 [1,"2",3]);
+			 "subscribe",
+			 [{usr:item.UserName(), psw:item.Password(), dbName: item.Url(), title:item.Title()}]);
     },
+	testClick: function(item){
+		console.log('buy db: '+JSON.stringify(item));
+		cordova.exec(function(result){
+				alert('requiestOK, '+JSON.stringify(result));
+			}, 
+			 function (){
+				alert('ERROR: '+JSON.stringify(arguments));
+			 }, 
+			 "InAppBilling",
+			 "transactions",
+			 [{usr:item.UserName(), psw:item.Password(), dbName: item.Url(), title:item.Title()}]);
+	},
     createDatabase: function(){
         this.data().isRegistration(true);
         var newItem = new JayScrum.Settings.Repository({Title:'Repository'});
