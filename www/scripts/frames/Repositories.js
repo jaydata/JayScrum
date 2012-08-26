@@ -221,36 +221,44 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
     _cordovaFailCallback:function(){
         alert('ERROR: '+JSON.stringify(arguments));
     },
-    _cordovaSuccessCallback:function(){
+    _cordovaSuccessCallback:function(result){
         if(result !== "RESULT_OK"){
-            alert('requiestOK, result_error');
+            alert('requiestOK, result_error'+JSON.stringify(arguments));
             return;
         }
 
-        alert('All ok');
+        alert('All ok!!! '+JSON.stringify(arguments));
     },
     subscriptionDatabase: function(item){
         console.log('subscribe db: '+JSON.stringify(item));
-        cordova.exec(this._cordovaSuccessCallback,
-            this._cordovaFailCallback,
+        cordova.exec(JayScrum.app.selectedFrame()._cordovaSuccessCallback,
+            JayScrum.app.selectedFrame()._cordovaFailCallback,
             "InAppBilling",
             "subscribe",
             [{usr:item.UserName(), psw:item.Password(), dbName: item.Url(), title:item.Title()}]);
     },
     buyManagendClick: function(item){
-        console.log('subscribe db: '+JSON.stringify(item));
-        cordova.exec(this._cordovaSuccessCallback,
-            this._cordovaFailCallback,
+        console.log('buyManagend db: '+JSON.stringify(item));
+        cordova.exec(JayScrum.app.selectedFrame()._cordovaSuccessCallback,
+            JayScrum.app.selectedFrame()._cordovaFailCallback,
             "InAppBilling",
             "buyManaged",
             [{usr:item.UserName(), psw:item.Password(), dbName: item.Url(), title:item.Title()}]);
     },
     buyUnManagendClick: function(item){
-        console.log('subscribe db: '+JSON.stringify(item));
-        cordova.exec(this._cordovaSuccessCallback,
-            this._cordovaFailCallback,
+        console.log('buyUnManagend db: '+JSON.stringify(item));
+        cordova.exec(JayScrum.app.selectedFrame()._cordovaSuccessCallback,
+            JayScrum.app.selectedFrame()._cordovaFailCallback,
             "InAppBilling",
             "buyUnManaged",
             [{usr:item.UserName(), psw:item.Password(), dbName: item.Url(), title:item.Title()}]);
     },
+	getTransactionsClick:function(item){
+		console.log('getTransactions: '+JSON.stringify(item));
+        cordova.exec(JayScrum.app.selectedFrame()._cordovaSuccessCallback,
+            JayScrum.app.selectedFrame()._cordovaFailCallback,
+            "InAppBilling",
+            "transactions",
+            [{usr:item.UserName(), psw:item.Password(), dbName: item.Url(), title:item.Title()}]);
+	}
 }, null);

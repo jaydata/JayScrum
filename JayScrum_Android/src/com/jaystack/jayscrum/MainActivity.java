@@ -47,7 +47,9 @@ public class MainActivity extends DroidGap implements BillingController.IConfigu
 		BillingController.setConfiguration(this); // This activity will provide
 		// the public key and salt
 		this.checkBillingSupported();
+		this.checkBillingSupported();
 		if (!mBillingObserver.isTransactionsRestored()) {
+			Log.d("InApp", "Restoring transactions");
 			BillingController.restoreTransactions(this);
 		}
         
@@ -63,11 +65,11 @@ public class MainActivity extends DroidGap implements BillingController.IConfigu
 	};
 	
 	public void onPurchaseStateChanged(String itemId, PurchaseState state){
-		Log.d("InApp", "onPurchaseStateChanged itemId: "+itemId+" state: "+state.toString());
+		Log.d("InApp", "!!!! onPurchaseStateChanged, itemId: "+itemId+", purchaseState: "+state.toString());
 	};
 
 	public void onRequestPurchaseResponse(String itemId, ResponseCode response){
-		Log.d("InApp", "!!!! purchase response: "+response.toString());
+		Log.d("InApp", "!!!! onRequestPurchaseResponse, itemId: "+itemId+", responseCode: "+response.toString());
 		try{
 			Log.d("InApp", "callback string: "+this._plugin._callbackId);
 			PluginResult result = new PluginResult(PluginResult.Status.OK, response.toString());
@@ -88,8 +90,18 @@ public class MainActivity extends DroidGap implements BillingController.IConfigu
 	
 	public void MonthlySubscription(InAppBillingPlugin plugin, String data){
 		this._plugin = plugin;
-		BillingController.requestSubscription(this, "test.jaystack.subscription_monthly", true, data);
+		BillingController.requestSubscription(this, "test.jaystack.subscription_monthly", false, data);
 		//BillingController.requestPurchase(this, "android.test.purchased", true, data);
+	}
+	
+	public void BuyManagedItem(InAppBillingPlugin plugin, String data){
+		this._plugin = plugin;
+		BillingController.requestPurchase(this, "android.test.purchased", false, data);
+	}
+	
+	public void BuyUnManagedItem(InAppBillingPlugin plugin, String data){
+		this._plugin = plugin;
+		BillingController.requestPurchase(this, "sword", false, data);
 	}
 	
 	public byte[] getObfuscationSalt() {
@@ -99,7 +111,7 @@ public class MainActivity extends DroidGap implements BillingController.IConfigu
 
 	public String getPublicKey() {
 		// TODO Auto-generated method stub
-		return null;
+		return "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAh9y6WAOvAUKK4wPCF9Ak6Dn82bZOLFdOwT3iPJ9mfRBGdGPDubT0YWqoExOEqM6LYAT6ZMJHKcnN8tV/K3IfMCNzJCHfFGFoUfOY+FeSv7m6SrOcP5xMOJ7U8WeDdPn8Rar77trnuSR9VnTkDhKUUg3fkH0x8wGHXxrqgIEofIxUJdCEnfLPiL0A+yVwgmwXaYq7YkikLoZKgiy08UdP+Rcw/jYtaYlVB5L3MdFG65n9KyIwnIkbg4ktxgZUYlhCAPa4ACYMkPp7V2/b47gyL39XXuxKq+6xCy8zSXHA67bbPftgf89KtFGly/8G1IEacqPgzU607eqUprUNCNK2DwIDAQAB";
 	}
 	
 	@Override
