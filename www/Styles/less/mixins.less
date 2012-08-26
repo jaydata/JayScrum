@@ -1,0 +1,744 @@
+@basecol : rgb(123,172,200);	    // Base colour
+@compcol : spin(@basecol, 180);  	// Complementary colour
+
+// Links
+@linkcol : rgb(1,53,104);
+@linkcolhover : darken(@linkcol, 10);
+@linkcolvisited : @linkcolhover;
+@linkcolfocus : @linkcolhover;
+
+// greyscale
+@black : rgb(0,0,0);
+@darkgrey : lighten(@black, 25%);
+@grey : lighten(@black, 50%);
+@lightgrey : lighten(@black, 75%);
+@lightergrey : lighten(@black, 90%);
+@white : rgb(255,255,255);
+
+// colour palettes
+@col_l1 : lighten(@basecol, 5%);
+@col_l2 : lighten(@basecol, 10%);
+@col_l3 : lighten(@basecol, 15%);
+@col_l4 : lighten(@basecol, 20%);
+
+@col_d1 : darken(@basecol, 5%);
+@col_d2 : darken(@basecol, 10%);
+@col_d3 : darken(@basecol, 15%);
+@col_d4 : darken(@basecol, 20%);
+
+@comp_l1 : lighten(@compcol, 5%);
+@comp_l2 : lighten(@compcol, 10%);
+@comp_l3 : lighten(@compcol, 15%);
+@comp_l4 : lighten(@compcol, 20%);
+
+@comp_d1 : darken(@compcol, 5%);
+@comp_d2 : darken(@compcol, 10%);
+@comp_d3 : darken(@compcol, 15%);
+@comp_d4 : darken(@compcol, 20%);
+
+@avanOrange: #e26740;
+@avanBlack: #1a171b;
+@inactive: #989898;
+
+/*#region FONT */
+
+/*#region FONT-FACE*/
+@font-face {
+	font-family: 'DINProBold';
+	src: url('fonts/dinpro/dinpro-bold-webfont.eot');
+	src: url('fonts/dinpro/dinpro-bold-webfont.eot?#iefix') format('embedded-opentype'),
+		 url('fonts/dinpro/dinpro-bold-webfont.woff') format('woff'),
+		 url('fonts/dinpro/dinpro-bold-webfont.ttf') format('font/truetype'),
+		 url('fonts/dinpro/dinpro-bold-webfont.svg#DINProBold') format('svg');
+	font-weight: normal;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'DINProRegular';
+	src: url('fonts/dinpro/dinpro-regular-webfont.eot');
+	src: url('fonts/dinpro/dinpro-regular-webfont.eot?#iefix') format('embedded-opentype'),
+		 url('fonts/dinpro/dinpro-regular-webfont.ttf') format('font/truetype'),
+		 url('fonts/dinpro/dinpro-regular-webfont.svg#DINProRegular') format('svg');
+	font-weight: normal;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'DINProMedium';
+	src: url('fonts/dinpro/dinpro-medium-webfont.eot');
+	src: url('fonts/dinpro/dinpro-medium-webfont.eot?#iefix') format('embedded-opentype'),
+		 url('fonts/dinpro/dinpro-medium-webfont.ttf') format('font/truetype'),
+		 url('fonts/dinpro/dinpro-medium-webfont.svg#DINProMedium') format('svg');
+	font-weight: normal;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'FamiliarProBold';
+	src: url('fonts/familiar_pro/familiar_pro_bold-webfont.eot');
+	src: url('fonts/familiar_pro/familiar_pro_bold-webfont.eot?#iefix') format('embedded-opentype'),
+		 url('fonts/familiar_pro/familiar_pro_bold-webfont.woff') format('woff'),
+		 url('fonts/familiar_pro/familiar_pro_bold-webfont.ttf') format('font/truetype'),
+		 url('fonts/familiar_pro/familiar_pro_bold-webfont.svg#FamiliarProBold') format('svg');
+	font-weight: normal;
+	font-style: normal;
+}
+@font-face {
+    font-family: 'SegoeWPLight';
+    src: url('fonts/segoewp-semilight.eot');
+    src: url('fonts/segoewp-semilight.eot?#iefix') format('embedded-opentype'),
+         /*url('fonts/segoewp-semilight.woff') format('woff'),*/
+         url('fonts/segoewp-semilight.ttf') format('font/truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+/* USED IN JAYSCRUM */
+@font-face {
+	font-family: 'SegoeUILight';
+	src: url('"@{font-folder}/segoeuil-webfont.eot');
+	src: url('"@{font-folder}/segoeuil-webfont.eot?#iefix') format('embedded-opentype'),
+		 url('"@{font-folder}/segoeuil-webfont.ttf') format('truetype'),
+		 url('"@{font-folder}/segoeuil-webfont.woff') format('woff'),
+		 url('"@{font-folder}/segoeuil-webfont.svg') format('svg');
+	font-weight: normal;
+	font-style: normal;
+}
+@font-face {
+    font-family: 'SegoeWP';
+    src: url('"@{font-folder}/segoewp.eot');
+    src: url('"@{font-folder}/segoewp.eot?#iefix') format('embedded-opentype'),
+         url('"@{font-folder}/segoewp.ttf') format('truetype'),
+         url('"@{font-folder}/segoewp.woff') format('woff'),
+         url('"@{font-folder}/segoewp.svg') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+/*#endregion FONT-FACE*/
+
+.font-size(@font-size: 16){
+font-size: @font-size * 1px; }
+
+.sans-serif {
+font-family : 'Helvetica Neue', Helvetica, Arial, sans-serif; }
+
+.serif {
+font-family : Cambria, Georgia, Times, 'Times New Roman'; }
+
+.monospace {
+font-family : 'Monaco', Courier New, monospace; }
+
+.century {
+font-family : 'Century Gothic', Verdana, Arial; }
+
+.arial {
+font-family : Arial, Helvetica, sans-serif; }
+
+.dinpro {
+font-family: 'DINProMedium', Verdana, Arial; }
+
+.dinproreg {
+font-family: 'DINProRegular', Verdana, Arial; }
+
+.segoewp {
+font-family: 'SegoeWP', 'Century Gothic', Arial !important; }
+
+.segoewplight {
+font-family: 'SegoeWPLight', 'Century Gothic', Arial !important; }
+
+.segoeuilight { 
+font-family: 'SegoeUILight', 'Century Gothic', Arial !important; }
+
+.font16 { font-size: 16px; }
+.font20 { font-size: 20px; }
+.font28 { font-size: 28px; }
+.font30 { font-size: 30px; }
+
+.font100    { font-size: 100%; }
+.font95     { font-size: 90%; }
+.font90     { font-size: 90%; }
+.font80     { font-size: 80%; }
+.font70     { font-size: 70%; }
+.font60     { font-size: 60%; }
+/*#endregion FONT */
+
+/*#region LAYOUT */
+@baseline : 1.5em;
+
+.tdnone     { text-decoration: none; }
+.tdnone_    { text-decoration: none !important; }
+.tdunder    { text-decoration: underline; }
+.tdunder_   { text-decoration: underline !important; }
+.tdthrough  { text-decoration: line-through; }
+.tdthrough_  { text-decoration: line-through !important; }
+
+.taleft     { text-align: left; }
+.taleft_     { text-align: left !important; }
+.tacenter   { text-align: center; }
+.tacenter_  { text-align: center !important; }
+.taright    { text-align: right; }
+.taright_    { text-align: right !important; }
+.tajustify  { text-align: justify; }
+.tajustify_  { text-align: justify !important; }
+
+.fwbold     { font-weight: bold; }
+.fwbold_    { font-weight: bold !important; }
+.fwnormal   { font-weight: normal; }
+.fwnormal_  { font-weight: normal !important; }
+
+.italic     { font-style: italic; }
+
+.fleft      { float: left; }
+.fleft_     { float: left !important; }
+.fright     { float: right; }
+.fright_    { float: right !important; }
+.fnone      { float: none; }
+.fnone_     { float: none !important; }
+
+.clear      { clear: both; }
+.clear_     { clear: both !important; }
+.cnone      { clear: none; }
+.cnone_     { clear: none !important; }
+
+.toupper    { text-transform: uppercase; }
+.tolower    { text-transform: lowercase; }
+.ttnone     { text-transform: none; }
+.capitalize { text-transform: capitalize; }
+.capitalize_ { text-transform: capitalize !important; }
+
+.show       { display: block; }
+.show_      { display: block !important; }
+.hide       { display: none; }
+.hide_      { display: none !important; }
+.iblock     { display: inline-block; }
+.iblock_    { display: inline-block !important; }
+.inline     { display: inline; }
+.table      { display: table; }
+.tcell      { display: table-cell; }
+
+.noborder   { border: none; }
+.noborder_  { border: none !important; }
+
+.vamiddle   { vertical-align: middle; }
+
+ul.listreset {
+    list-style-type: none; 
+    
+    li { list-style-type: none;  }
+}
+.nobg 		{ background: none; }
+.nobg_ 		{ background: none !important; }
+
+.box {
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box; }
+	
+.nobox {
+	-webkit-box-sizing: initial;
+	-moz-box-sizing: initial;
+	box-sizing: initial; }
+	
+.dbox {
+    display: -webkit-box;
+    display: -moz-box;    
+    display: box; }
+    
+.dbox-center {
+    -webkit-box-pack: center;
+    -webkit-box-align: center;  
+    -moz-box-pack: center;
+    -moz-box-align: center;  
+    box-pack: center;
+    box-align: center; }
+
+.relative   { position: relative; }
+.absolute   { position: absolute; }
+.fixed      { position: fixed; }
+.static     { position: static; }
+.static_    { position: static !important; }
+
+.ohidden    { overflow: hidden; }
+.ovisible   { overflow: visible; }
+.ovisible_  { overflow: visible !important; }
+
+.reset-mp                   { margin: 0 !important; padding: 0 !important; }
+.reset-m                    { margin: 0 !important; }
+.reset-p                    { padding: 0 !important; }
+.mauto                      { margin: 0 auto !important; }
+
+.padding5                   { padding: 5px;  }
+.padding10                  { padding: 10px; }
+.padding20                  { padding: 20px; }
+.padding30                  { padding: 30px; }
+
+.padding0_10                { padding: 0 10px; }
+.padding5_0                 { padding: 5px 0; }
+.padding5_0_0_0             { padding: 5px 0 0 0; }
+.padding5_0_5_5             { padding: 5px 0 5px 5px; }
+.padding10_0                { padding: 10px 0; }
+.padding18_0                { padding: 18px 0; }
+.padding25_30               { padding: 25px 30px; }
+.padding15_25               { padding: 15px 25px; }
+.padding0_20                { padding: 0 20px; }
+.padding20_20_0_20          { padding: 20px 20px 0 20px; }
+.padding0_20_20_20          { padding: 0 20px 20px 20px; }
+
+.paddingr15                 { padding-right: 15px; }
+
+.margin5                    { margin: 5px;  }
+.margin10                   { margin: 10px; }
+.margin20                   { margin: 20px; }
+.margin30                   { margin: 30px; }
+
+.marginr5                   { margin-right: 5px; }
+.marginr5_                  { margin-right: 5px !important; }
+.marginr10                  { margin-right: 10px; }
+.marginr15                  { margin-right: 15px; }
+.marginr20                  { margin-right: 20px; }
+.margin0_0_20               { margin: 0 0 20px; }
+.margin10_0                 { margin: 10px 0; }
+.marginb0                   { margin-bottom: 0px; }
+.marginb0_                  { margin-bottom: 0px !important; }
+.marginb5                   { margin-bottom: 5px; }
+.marginb5_                  { margin-bottom: 5px !important; }
+.marginb10                  { margin-bottom: 10px; }
+.marginb10_                 { margin-bottom: 10px !important; }
+.marginb15                  { margin-bottom: 15px; }
+.marginb20                  { margin-bottom: 20px; }
+.marginb25                  { margin-bottom: 25px; }
+.margin20_0_10              { margin: 20px 0 10px; }
+.margin5_0_10_0             { margin: 5px 0 10px; }
+
+.margint-89                 { margin-top: -89px; }
+.margint-100                { margin-top: -100px; }
+.margint-120                { margin-top: -120px; }
+.margint9                   { margin-top: 9px; }
+.margint10                  { margin-top: 10px; }
+.margint15                  { margin-top: 15px; }
+.marginl35_                 { margin-left: 35px !important; }
+
+.maxwidth75                 { max-width: 75%; }
+
+.hover-pointer {
+    &:hover { cursor: pointer; }
+}
+
+.pointer { cursor: pointer; }
+
+.code-snippet {
+    min-height: 20px;
+    margin: 10px 0; padding: 15px 25px;
+    background: white;
+    border: 1px solid #DDD;
+    .rounded(0px);
+}
+
+hr.soften {
+    height: 1px;
+    margin: 10px 0;
+    border: 0;
+    background-image: -webkit-linear-gradient(left, transparent, rgba(0, 0, 0, .1), transparent);
+    background-image: -moz-linear-gradient(left, transparent, rgba(0, 0, 0, .1), transparent);
+    background-image: -ms-linear-gradient(left, transparent, rgba(0, 0, 0, .1), transparent);
+    background-image: -o-linear-gradient(left, transparent, rgba(0, 0, 0, .1), transparent);
+}
+
+.bg-white { background: white; }
+
+.split2 {
+    div, span {
+        float: left; width: 49% !important;
+        
+        &:first-child {  margin-right: 5px; }
+        &:nth-child(2){ margin-right: 0px; }
+    }
+}
+
+.top5   { position: relative; top: 5px; }
+.top10  { position: relative; top: 10px; }
+/*#endregion LAYOUT */
+
+/*#region METRO */
+#metro {
+	.tile {
+		display: block;
+		width: 106px; height: 107px;
+		margin: 4px;
+		border: none !important;
+		float: left;
+		clear: none;
+		color: #fff;
+		
+		> span { 
+			.show; .size(100%, 100%);
+			
+			&:hover { cursor: pointer; }
+			
+		    span {
+		        &.middle {
+			        .show; .size(100%, 50px, 50px); .position(absolute, 50%); margin-top: -25px; .font-size(37); .tacenter;
+		        }
+		        &.text {
+			        .position(absolute, auto, auto, 7px, 7px); .font-size(13); line-height: 13px;
+		        }
+		        &.number {
+			        .position(absolute, 7px, 7px); .font-size(14); line-height: 14px;
+		        }
+		        &.b-right {
+		            .position(absolute, auto, 7px, 7px); .font-size(14); line-height: 14px;
+		        }
+		        color: #fff;
+		    }
+		}
+	}
+	
+	.tilewide {
+		display: block;
+		width: 220px; height: 107px;
+		margin: 4px;
+		border: none !important;
+		float: left;
+		
+		span {
+		    color: #fff;
+		}
+	}
+}
+
+.btn-metro {
+    .iblock; .tacenter; .font-size(16px);
+    border: 2px solid #fff; padding: 2px 5px;
+    background: #fff; color: #000;
+    
+    &:hover         { cursor: pointer; }
+    &:active        { opacity: 0.7; }
+    
+    &.btn-small     { .size(75px, 35px, 27px); }
+    &.btn-medium    { .size(150px, 35px, 27px); }
+    &.btn-large     { .size(100%, 35px, 27px); }
+}
+
+div.metro-checkbox {
+    .relative; .iblock; .fleft;
+    height: 28px !important; width: 28px !important;
+	background: #fff; margin: 0 auto;
+
+    input[type=checkbox] {
+        visibility: hidden;
+        
+        &:checked + label:after { opacity: 1; }
+    }
+    
+    label {
+	    .position(absolute, 4px, auto, auto, 4px); .size(20px, 20px);
+	    background: white; cursor: pointer;
+	    
+	    &::after {
+	        .position(absolute, 4px, auto, auto, 4px); .size(9px, 5px); .rotate(-45deg);
+	        background: transparent;
+	        content: '';
+	        opacity: 0;
+	        
+	        border: 3px solid black;
+	        border-top: none;
+	        border-right: none;
+        }
+        
+        &:hover::after { opacity: 0.3; }
+    }
+}
+span.metro-checkbox-label { .size(auto, 28px, 28px); margin-left: 10px; }
+/*#endregion METRO */
+
+/*#region FUNCTIONS */
+.vheight(@height: auto, @line-height: inherit) {
+height: @height;
+line-height: @line-height; }
+
+.size(@width: auto, @height: auto, @line-height: initial){
+width: @width;
+height: @height;
+line-height: @line-height; }
+
+.maxsize(@maxwidth: auto, @maxheight: auto){
+max-width: @maxwidth;
+max-height: @maxheight;
+overflow: hidden; }
+
+.opacity(@opacity: 1){
+-webkit-opacity : @opacity;
+-moz-opacity: @opacity;
+opacity: @opacity; }
+
+.opacity_(@opacity: 1){
+-webkit-opacity : @opacity !important;
+-moz-opacity: @opacity !important;
+opacity: @opacity !important; }
+
+.position(@position: static, @top: auto, @right: auto, @bottom: auto, @left: auto){
+position: @position;
+top: @top;
+right: @right;
+bottom: @bottom;
+left: @left; }
+
+.m(@top: auto, @right: auto, @bottom: auto, @left: auto){
+margin: @top @right @bottom @left; }
+
+.p(@top: auto, @right: auto, @bottom: auto, @left: auto){
+padding: @top @right @bottom @left; }
+/*#endregion FUNCTIONS */
+
+/*#region MIXINS */
+.clearfix {
+	zoom : 1;
+
+	&:before, &:after {
+		content : "\0020"; 
+		display : block; 
+		height : 0; 
+		overflow : hidden; }
+
+	&:after {
+		clear: both; }
+}
+
+.tap {
+-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+-moz-tap-highlight-color: rgba(0, 0, 0, 0);
+tap-highlight-color: rgba(0, 0, 0, 0); }
+/*#endregion MIXINS */
+
+/*#region BORDERRADIUS */
+
+.rounded(@radius:3px) {
+-webkit-border-radius : @radius;
+-moz-border-radius : @radius;
+border-radius : @radius; }
+
+.border(@top-color: #eee, @top-radius: 1px, @right-color: #eee, @right-radius: 1px, @bottom-color: #eee, @bottom-radius: 1px, @left-color: #eee,  @left-radius: 1px) {
+border-top : solid @top-radius @top-color;
+border-left : solid @left-radius @left-color;
+border-right : solid @right-radius @right-color;
+border-bottom : solid @bottom-radius @bottom-color; }
+
+.border-radius(@topright: 0, @bottomright: 0, @bottomleft: 0, @topleft: 0) {
+-webkit-border-top-right-radius : @topright;
+-webkit-border-bottom-right-radius : @bottomright;
+-webkit-border-bottom-left-radius : @bottomleft;
+-webkit-border-top-left-radius : @topleft;
+-moz-border-radius-topright : @topright;
+-moz-border-radius-bottomright : @bottomright;
+-moz-border-radius-bottomleft : @bottomleft;
+-moz-border-radius-topleft : @topleft;
+border-top-right-radius : @topright;
+border-bottom-right-radius : @bottomright;
+border-bottom-left-radius : @bottomleft;
+border-top-left-radius : @topleft; }
+
+/*#endregion BORDERRADIUS */
+
+/*#region BOXSHADOW */
+
+.drop-shadow(@x-axis: 0, @y-axis: 1px, @blur: 2px, @alpha: 0.1) {
+-webkit-box-shadow : @x-axis @y-axis @blur rgba(0, 0, 0, @alpha);
+-moz-box-shadow : @x-axis @y-axis @blur rgba(0, 0, 0, @alpha);
+box-shadow : @x-axis @y-axis @blur rgba(0, 0, 0, @alpha); }
+
+.colored-shadow(@x-axis: 0, @y-axis: 0px, @blur: 15px, @color: White) {
+-webkit-box-shadow : @x-axis @y-axis @blur @color;
+-moz-box-shadow : @x-axis @y-axis @blur @color;
+-ms-box-shadow: @x-axis @y-axis @blur @color;
+box-shadow : @x-axis @y-axis @blur @color; }
+
+.inset-shadow(@horizontal:0, @vertical:1px, @blur:2px, @alpha: 0.4) {
+-webkit-box-shadow : inset @horizontal @vertical @blur rgba(0, 0, 0, @alpha);
+-moz-box-shadow : inset @horizontal @vertical @blur rgba(0, 0, 0, @alpha);
+box-shadow : inset @horizontal @vertical @blur rgba(0, 0, 0, @alpha); }
+
+.box-shadow(@arguments) {
+-webkit-box-shadow : @arguments;
+-moz-box-shadow : @arguments;
+box-shadow : @arguments; }
+
+.no-box-shadow() {
+-webkit-box-shadow : none !important;
+-moz-box-shadow : none !important;
+box-shadow : none !important; }
+
+.box-shadow-multiple(@argument1, @argument2) {
+-webkit-box-shadow : @argument1, @argument2;
+-moz-box-shadow : @argument1, @argument2;
+box-shadow : @argument1, @argument2; }
+
+/*#endregion BOXSHADOW */
+
+/*#region CSS COLUMNS */
+
+.columns(@colwidth: 250px, @colcount: 0, @colgap: 50px, @columnRuleColor: #eee, @columnRuleStyle: solid, @columnRuleWidth: 1px) {
+-webkit-column-width : @colwidth;
+-webkit-column-count : @colcount;
+-webkit-column-gap : @colgap;
+-webkit-column-rule-color : @columnRuleColor;
+-webkit-column-rule-style : @columnRuleStyle;
+-webkit-column-rule-width : @columnRuleWidth;
+-moz-column-width : @colwidth;
+-moz-column-count : @colcount;
+-moz-column-gap : @colgap;
+-moz-column-rule-color : @columnRuleColor;
+-moz-column-rule-style : @columnRuleStyle;
+-moz-column-rule-width : @columnRuleWidth;
+column-width : @colwidth;
+column-count : @colcount;
+column-gap : @colgap;
+column-rule-color : @columnRuleColor;
+column-rule-style : @columnRuleStyle;
+column-rule-width : @columnRuleWidth; }
+
+/*#endregion CSS COLUMNS */
+
+/*#region CSS GRADIENTS */
+
+.grad-bw(@color: #f5f5f5, @start: 0, @stop: 255) {
+background : @color;
+background : -webkit-gradient(linear,
+left bottom,
+left top,
+color-stop(0, rgb(@start,@start,@start)),
+color-stop(1, rgb(@stop,@stop,@stop)));
+background : -moz-linear-gradient(center bottom,
+rgb(@start,@start,@start) 0%,
+rgb(@stop,@stop,@stop) 100%); }
+
+.grad-col(@color: #f5f5f5, @start: #eee, @stop: #fff) {
+background : @color;
+background : -webkit-gradient(linear,
+left bottom,
+left top,
+@start,
+@stop);
+background : -moz-linear-gradient(center bottom,
+@start 0%,
+@stop 100%); }
+
+.horizontal-gradient (@startColor: #555, @endColor: #333) {
+	background-image: -webkit-gradient(linear, left top, right top, from(@startColor), to(@endColor));
+	background-image: -webkit-linear-gradient(right center, @startColor, @endColor);
+	background-image: -moz-linear-gradient(right center, @startColor, @endColor); }
+
+.horizontal-three-color-gradient (@firstStop: 0, @startColor: #00b3ee, @midStop: 0.5, @midColor: #7a43b6, @lastStop: 1, @endColor: #c3325f) {
+	background-repeat: no-repeat;
+	background-image: -webkit-gradient(linear, left top, right top, 
+		color-stop(@firstStop, @startColor), 
+		color-stop(@midStop, @midColor), 
+		color-stop(@lastStop, @endColor));
+	background-image: -webkit-linear-gradient(
+		@startColor @firstStop, 
+		@midColor @midStop, 
+		@endColor @lastStop);
+	background-image: -moz-linear-gradient(
+		@startColor @firstStop, 
+		@midColor @midStop, 
+		@endColor @lastStop); }
+
+.horizontal-four-color-gradient (@firstStop: 0, @startColor: #00b3ee, @secondStop: 0, @secondColor: #00b3ee, @midStop: 0.5, @midColor: #7a43b6, @lastStop: 1, @endColor: #c3325f) {
+	background-repeat: no-repeat;
+	background-image: -webkit-gradient(linear, left top, right top, 
+		color-stop(@firstStop, @startColor), 
+		color-stop(@secondStop, @secondColor), 
+		color-stop(@midStop, @midColor), 
+		color-stop(@lastStop, @endColor));
+	background-image: -webkit-linear-gradient(
+		@startColor @firstStop,
+		@secondColor @secondStop, 
+		@midColor @midStop, 
+		@endColor @lastStop);
+	background-image: -moz-linear-gradient(
+		@startColor @firstStop, 
+		@secondColor @secondStop,
+		@midColor @midStop, 
+		@endColor @lastStop); }
+
+.vertical-gradient (@startColor: #555, @endColor: #333) {
+	background-image: -webkit-gradient(linear, left top, left bottom, from(@startColor), to(@endColor)) !important;
+	background-image: -webkit-linear-gradient(@startColor, @endColor) !important;
+	background-image: -moz-linear-gradient(@startColor, @endColor) !important; }
+
+.vertical-three-color-gradient (@startColor: #00b3ee, @colorStop: 0.5, @midColor: #7a43b6, @endColor: #c3325f) {
+	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(@startColor), color-stop(@colorStop, @midColor), to(@endColor));
+	background-image: -webkit-linear-gradient(@startColor, color-stop(@colorStop, @midColor), @endColor);
+	background-image: -moz-linear-gradient(@startColor, color-stop(@midColor, @colorStop), @endColor); }
+	
+/*#endregion CSS GRADIENTS */
+
+/*#region CSS TRANSFORMS */
+
+.rotate(@deg : 5deg){ 
+-webkit-transform : rotate(@deg);
+-moz-transform : rotate(@deg);
+-ms-transform : rotate(@deg);
+transform : rotate(@deg); }
+
+.scale(@ratio : 1.5){
+-webkit-transform : scale(@ratio);
+-moz-transform : scale(@ratio);
+-ms-transform: scale(@ratio);
+transform : scale(@ratio); }
+
+.translate(@transformX : 20px, @transformY : 20px) {
+-webkit-transform : translate(@transformX, @transformY);
+-moz-transform : translate(@transformX, @transformY);
+transform : translate(@transformX, @transformY); }
+
+.translate3d (@x, @y:0, @z:0) {
+-webkit-transform: translate3d(@x, @y, @z);
+-moz-transform: translate3d(@x, @y, @z);
+transform: translate3d(@x, @y, @z);	}
+
+.skew (@deg, @deg2){
+-webkit-transform: skew(@deg, @deg2);
+-moz-transform: skew(@deg, @deg2);
+transform: skew(@deg, @deg2); }
+
+.perspective (@value:1000) {
+ -webkit-perspective: @value;
+	-moz-perspective: @value;
+		 perspective: @value; }
+
+.transform-origin (@x:center, @y:center) {
+	-webkit-transform-origin: @x @y;
+	   -moz-transform-origin: @x @y;
+		-ms-transform-origin: @x @y;
+			transform-origin: @x @y; }
+
+/*#endregion CSS TRANSFORMS */
+
+/*#region CSS TRANSITIONS */
+.transition(){
+-webkit-transition: all 0.2s ease;
+-moz-transition:    all 0.2s ease;
+-ms-transition:     all 0.2s ease;
+-o-transition:      all 0.2s ease; }
+
+.transition-duration(@duration : .2s) {
+-moz-transition-duration : @duration;
+-webkit-transition-duration : @duration;
+transition-duration: @duration; }
+
+.transition(@duration: .2s, @property: all, @ease: ease) {
+-webkit-transition : @property @duration @ease;
+-moz-transition : @property @duration @ease;
+-ms-transition: @property @duration @ease;
+-o-transition: @property @duration @ease;
+transition: @property @duration @ease; }
+
+.notransition(){
+-webkit-transition : none !important;
+-moz-transition : none !important;
+-ms-transition: none !important;
+-o-transition: none !important;
+transition : none !important; }
+
+/*#endregion CSS TRANSITIONS */
