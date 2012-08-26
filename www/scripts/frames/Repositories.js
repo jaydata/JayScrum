@@ -152,31 +152,6 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
         JayScrum.app.selectedFrame().selectedView().i_scroll.destroy();
         JayScrum.app.selectedFrame().selectedView().i_scroll = JayScrum.app.initScrollById('settingPageScroll');
     },
-    buyDatabase: function(item){
-        console.log('buy db: '+JSON.stringify(item));
-		cordova.exec(function(result){
-				if(result === "RESULT_OK"){alert('all ok');}
-				else{alert('requiestOK, result_error');}
-			}, 
-			 function (){
-				alert('ERROR: '+JSON.stringify(arguments));
-			 }, 
-			 "InAppBilling",
-			 "subscribe",
-			 [{usr:item.UserName(), psw:item.Password(), dbName: item.Url(), title:item.Title()}]);
-    },
-	testClick: function(item){
-		console.log('buy db: '+JSON.stringify(item));
-		cordova.exec(function(result){
-				alert('requiestOK, '+JSON.stringify(result));
-			}, 
-			 function (){
-				alert('ERROR: '+JSON.stringify(arguments));
-			 }, 
-			 "InAppBilling",
-			 "transactions",
-			 [{usr:item.UserName(), psw:item.Password(), dbName: item.Url(), title:item.Title()}]);
-	},
     createDatabase: function(){
         this.data().isRegistration(true);
         var newItem = new JayScrum.Settings.Repository({Title:'Repository'});
@@ -241,5 +216,41 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
     hideActionBar:function () {
         $('div#settingPageActionBar').removeClass("opened");
         $('div#error-msg').removeClass('opened');
-    }
+    },
+    //InApp purchase
+    _cordovaFailCallback:function(){
+        alert('ERROR: '+JSON.stringify(arguments));
+    },
+    _cordovaSuccessCallback:function(){
+        if(result !== "RESULT_OK"){
+            alert('requiestOK, result_error');
+            return;
+        }
+
+        alert('All ok');
+    },
+    subscriptionDatabase: function(item){
+        console.log('subscribe db: '+JSON.stringify(item));
+        cordova.exec(this._cordovaSuccessCallback,
+            this._cordovaFailCallback,
+            "InAppBilling",
+            "subscribe",
+            [{usr:item.UserName(), psw:item.Password(), dbName: item.Url(), title:item.Title()}]);
+    },
+    buyManagendClick: function(item){
+        console.log('subscribe db: '+JSON.stringify(item));
+        cordova.exec(this._cordovaSuccessCallback,
+            this._cordovaFailCallback,
+            "InAppBilling",
+            "buyManaged",
+            [{usr:item.UserName(), psw:item.Password(), dbName: item.Url(), title:item.Title()}]);
+    },
+    buyUnManagendClick: function(item){
+        console.log('subscribe db: '+JSON.stringify(item));
+        cordova.exec(this._cordovaSuccessCallback,
+            this._cordovaFailCallback,
+            "InAppBilling",
+            "buyUnManaged",
+            [{usr:item.UserName(), psw:item.Password(), dbName: item.Url(), title:item.Title()}]);
+    },
 }, null);
