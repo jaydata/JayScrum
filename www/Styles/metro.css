@@ -707,8 +707,8 @@ hr.soften {
   float: left;
   width: 49% !important;
 }
-.split2 div:first-child,
-.split2 span:first-child {
+.split2 div:nth-child(odd),
+.split2 span:nth-child(odd) {
   margin-right: 5px;
 }
 .split2 div:nth-child(2),
@@ -1752,6 +1752,17 @@ div#swipeview-inside-0 .tolower {
   line-height: initial;
   padding: 0 20px 0 5px;
 }
+div#swipeview-masterpage-0,
+div#swipeview-masterpage-1,
+div#swipeview-masterpage-2 {
+  margin-left: -45px;
+}
+div#swipeview-masterpage-0.swipeview-active,
+div#swipeview-masterpage-1.swipeview-active,
+div#swipeview-masterpage-2.swipeview-active {
+  width: 92% !important;
+  margin-left: 0 !important;
+}
 /*#endregion SWIPEVIEW */
 /*#region SCROLLBAR */
 .iscrollbarV {
@@ -1899,6 +1910,9 @@ div#swipeview-inside-0 .tolower {
 }
 .icon-action.server span {
   background-position: 0 -900px;
+}
+.icon-action.money span {
+  background-position: 0 -930px;
 }
 .icon-action.settings span {
   background-position: 0 -390px;
@@ -2798,6 +2812,9 @@ body[theme="white"] .detail .field .field.active {
 }
 /*#region Screen (-480) */
 @media only screen and (max-width: 480px), (max-device-width: 480px) {
+  .main-header {
+    max-width: 70% !important;
+  }
   .main-header.main-page {
     max-width: 228px;
     max-height: 65px;
