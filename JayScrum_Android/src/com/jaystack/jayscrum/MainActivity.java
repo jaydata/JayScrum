@@ -1,230 +1,114 @@
 package com.jaystack.jayscrum;
 
+import java.util.concurrent.ExecutionException;
+
+import net.robotmedia.billing.BillingController;
+import net.robotmedia.billing.BillingController.BillingStatus;
+import net.robotmedia.billing.BillingRequest.ResponseCode;
+import net.robotmedia.billing.helper.AbstractBillingObserver;
+import net.robotmedia.billing.model.Transaction.PurchaseState;
+
+import org.apache.cordova.DroidGap;
+import org.apache.cordova.api.PluginResult;
+import org.json.JSONArray;
+
 import android.os.Bundle;
-import android.os.Handler;
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.text.Html;
-import android.text.SpannableStringBuilder;
 import android.util.Log;
 
-
-import org.apache.cordova.*;
-import org.apache.cordova.api.PluginResult;
-import org.json.JSONObject;
-
-import com.phonegap.plugin.billing.plugin.BillingService;
-import com.phonegap.plugin.billing.plugin.BillingService.RequestPurchase;
-import com.phonegap.plugin.billing.plugin.BillingService.RestoreTransactions;
-import com.phonegap.plugin.billing.plugin.CallbackBillingPlugin;
-import com.phonegap.plugin.billing.plugin.Consts;
-import com.phonegap.plugin.billing.plugin.Consts.PurchaseState;
-import com.phonegap.plugin.billing.plugin.Consts.ResponseCode;
-import com.phonegap.plugin.billing.plugin.PurchaseObserver;
-import com.phonegap.plugin.billing.plugin.ResponseHandler;
-
-
-
-
-public class MainActivity extends DroidGap {
-	public static final String TAG = "CallbackBillingActivity";
+public class MainActivity extends DroidGap implements BillingController.IConfiguration {
+	protected AbstractBillingObserver mBillingObserver;
 	public static MainActivity eInstance = null;
-	// Variable for Billing
-    private CallbackBillingPlugin _pluginReference = null;
-    private Handler mHandler;
-    private CallbackPurchaseObserver mCallbackPurchaseObserver;
-    private BillingService mBillingService;
-    private static final int DIALOG_CANNOT_CONNECT_ID = 1;
-    private static final int DIALOG_BILLING_NOT_SUPPORTED_ID = 2;
-    private boolean isBillingSupported = false;
-    private String mSku;
-    private String mPayloadContents = null;
-    		
-	private class CallbackPurchaseObserver extends PurchaseObserver {
-        public CallbackPurchaseObserver(Handler handler) {
-            super(MainActivity.this, handler);
-        }
-
-        @Override
-        public void onBillingSupported(boolean supported) {
-            if (Consts.DEBUG) {
-                Log.i(TAG, "supported: " + supported);
-            }
-            if (supported) {
-            	// save a flag here to indicate that this app support in app billing
-            	isBillingSupported = true;
-            	//restoreDatabase();
-            } else {
-            	Log.d(TAG, "In App Billing not supported");
-                //showDialog(DIALOG_BILLING_NOT_SUPPORTED_ID);
-            }
-        }
-
-        @Override
-        public void onPurchaseStateChange(PurchaseState purchaseState, String itemId, int quantity, long purchaseTime, String developerPayload) {
-        	//fireJavaScriptEvent("onPurchaseStateChange", "");
-
-        	try {
-        		JSONObject oResult = new JSONObject();
-                oResult.put("event", "onPurchaseStateChange");
-                
-                if (Consts.DEBUG) {
-                    Log.i(TAG, "onPurchaseStateChange() itemId: " + itemId + " " + purchaseState);
-                }
-
-               if (developerPayload == null) {
-                    logProductActivity(itemId, purchaseState.toString());
-                } else {
-                    logProductActivity(itemId, purchaseState + "\n\t" + developerPayload);
-                }
-
-                if (purchaseState == PurchaseState.PURCHASED) {
-                    //mOwnedItems.add(itemId);
-                    oResult.put("purchaseState", "PURCHASED");
-                } else if (purchaseState == PurchaseState.CANCELED) {
-                    oResult.put("purchaseState", "CANCELED");
-                } else if (purchaseState == PurchaseState.REFUNDED) {
-                    oResult.put("purchaseState", "REFUNDED");
-                }
-                //mCatalogAdapter.setOwnedItems(mOwnedItems);
-                //mOwnedItemsCursor.requery();
-                
-                // TODO: Send back the event to javascript
-                if (_pluginReference != null) {
-                    PluginResult result = new PluginResult(PluginResult.Status.OK, oResult.toString());
-                    result.setKeepCallback(false);
-                    _pluginReference.success(result, _pluginReference.getCallbackId());
-                    _pluginReference.resetCallbackId();
-                    _pluginReference = null;
-                }
-        	} catch (Exception e) {
-				// TODO: handle exception
-			}
-        }
-
-        @Override
-        public void onRequestPurchaseResponse(RequestPurchase request, ResponseCode responseCode) {
-        	//fireJavaScriptEvent("onRequestPurchaseResponse", "");
-        	Log.d(TAG, "!!! onRequestPurchaseResponse call");
-        	try {
-	            JSONObject oResult = new JSONObject();
-                oResult.put("event", "onRequestPurchaseResponse");
-                
-	            if (Consts.DEBUG) {
-	                Log.d(TAG, request.mProductId + ": " + responseCode);
-	            }
-	            if (responseCode == ResponseCode.RESULT_OK) {
-	                oResult.put("responseCode", "RESULT_OK");
-	                if (Consts.DEBUG) {
-	                    Log.i(TAG, "purchase was successfully sent to server");
-	                }
-	                logProductActivity(request.mProductId, "sending purchase request");
-	            } else if (responseCode == ResponseCode.RESULT_USER_CANCELED) {
-	                oResult.put("responseCode", "RESULT_USER_CANCELED");
-	                if (Consts.DEBUG) {
-	                    Log.i(TAG, "user canceled purchase");
-	                }
-	                logProductActivity(request.mProductId, "dismissed purchase dialog");
-	            } else {
-	                oResult.put("responseCode", "RESULT_FAILED");
-	                if (Consts.DEBUG) {
-	                    Log.i(TAG, "purchase failed");
-	                }
-	                logProductActivity(request.mProductId, "request purchase returned " + responseCode);
-	            }
-	            // TODO: Send back the vent to javascript
-	            oResult.put("productId", request.mProductId);
-	            if (_pluginReference != null) {
-	                PluginResult result = new PluginResult(PluginResult.Status.OK, oResult.toString());
-	                result.setKeepCallback(true);
-	                _pluginReference.success(result, _pluginReference.getCallbackId());    	
-	            }
-        	} catch (Exception e) {
-				// TODO: handle exception
-        		Log.d(TAG, "!!!! exception !!!!");
-			}
-        }
-
-        @Override
-        public void onRestoreTransactionsResponse(RestoreTransactions request, ResponseCode responseCode) {
-        	//fireJavaScriptEvent("onRestoreTransactionsResponse", "");
-        	
-            if (responseCode == ResponseCode.RESULT_OK) {
-                if (Consts.DEBUG) {
-                    Log.d(TAG, "completed RestoreTransactions request");
-                }
-                // Update the shared preferences so that we don't perform
-                // a RestoreTransactions again.
-                SharedPreferences prefs = getPreferences(Context.MODE_PRIVATE);
-                SharedPreferences.Editor edit = prefs.edit();
-                //edit.putBoolean(DB_INITIALIZED, true);
-                edit.commit();
-            } else {
-                if (Consts.DEBUG) {
-                    Log.d(TAG, "RestoreTransactions error: " + responseCode);
-                }
-            }
-        }
-    }
-    
+	protected InAppBillingPlugin _plugin;
+	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-    
-        
         eInstance = this;
-        
-        mHandler = new Handler();
-        mCallbackPurchaseObserver = new CallbackPurchaseObserver(mHandler);
-        mBillingService = new BillingService();
-        mBillingService.setContext(this);
+        mBillingObserver = new AbstractBillingObserver(this) {
 
-        // Check if billing is supported.
-        ResponseHandler.register(mCallbackPurchaseObserver);
-        if (!mBillingService.checkBillingSupported()) {
-            showDialog(DIALOG_CANNOT_CONNECT_ID);
-        }
-        
+			public void onBillingChecked(boolean supported) {
+				MainActivity.this.onBillingChecked(supported);
+			}
+			
+			public void onSubscriptionChecked(boolean supported) {
+				MainActivity.this.onSubscriptionChecked(supported);
+			}
+
+			public void onPurchaseStateChanged(String itemId, PurchaseState state) {
+				MainActivity.this.onPurchaseStateChanged(itemId, state);
+			}
+
+			public void onRequestPurchaseResponse(String itemId, ResponseCode response) {
+				MainActivity.this.onRequestPurchaseResponse(itemId, response);
+			}
+		};
+		BillingController.setDebug(true);
+		BillingController.registerObserver(mBillingObserver);
+		BillingController.setConfiguration(this); // This activity will provide
+		// the public key and salt
+		this.checkBillingSupported();
+		if (!mBillingObserver.isTransactionsRestored()) {
+			BillingController.restoreTransactions(this);
+		}
         
         super.loadUrl("file:///android_asset/www/index.html");
     }
 	
-	/**
-     * Called when this activity becomes visible.
-     */
-    @Override
-    protected void onStart() {
-        super.onStart();
-        ResponseHandler.register(mCallbackPurchaseObserver);
-    }
+	public void onBillingChecked(boolean supported){
+		Log.d("InApp", "onBlillingChecked supported: "+supported);
+	};
+	
+	public void onSubscriptionChecked(boolean supported){
+		Log.d("InApp", "onSubscriptionChecked supported: "+supported);
+	};
+	
+	public void onPurchaseStateChanged(String itemId, PurchaseState state){
+		Log.d("InApp", "onPurchaseStateChanged itemId: "+itemId+" state: "+state.toString());
+	};
 
-    /**
-     * Called when this activity is no longer visible.
-     */
-    @Override
-    protected void onStop() {
-        super.onStop();
-        ResponseHandler.unregister(mCallbackPurchaseObserver);
-    }
+	public void onRequestPurchaseResponse(String itemId, ResponseCode response){
+		Log.d("InApp", "!!!! purchase response: "+response.toString());
+		try{
+			Log.d("InApp", "callback string: "+this._plugin._callbackId);
+			PluginResult result = new PluginResult(PluginResult.Status.OK, response.toString());
+			result.setKeepCallback(true);
+			this._plugin.success(result, this._plugin._callbackId);
+		}catch(NullPointerException ex){
+			Log.e("InApp", "ex.getMessage()");
+		}
+	};
+	
+	public BillingStatus checkBillingSupported() {
+		return BillingController.checkBillingSupported(this);
+	}
+	
+	public BillingStatus checkSubscriptionSupported() {
+		return BillingController.checkSubscriptionSupported(this);
+	}
+	
+	public void MonthlySubscription(InAppBillingPlugin plugin, String data){
+		this._plugin = plugin;
+		BillingController.requestSubscription(this, "test.jaystack.subscription_monthly", true, data);
+		//BillingController.requestPurchase(this, "android.test.purchased", true, data);
+	}
+	
+	public byte[] getObfuscationSalt() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        mBillingService.unbind();
-    }
-
-    private void logProductActivity(String product, String activity) {
-        SpannableStringBuilder contents = new SpannableStringBuilder();
-        contents.append(Html.fromHtml("<b>" + product + "</b>: "));
-        contents.append(activity);
-    }
-    
-    public void startRequestingPurchase(String productId, CallbackBillingPlugin plugin) {
-    	_pluginReference = plugin;
-    	
-    	mSku = productId;
-	    if (!mBillingService.requestPurchase(mSku, mPayloadContents)) {
-	    	showDialog(DIALOG_BILLING_NOT_SUPPORTED_ID);
-	    }
-    }
+	public String getPublicKey() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		BillingController.unregisterObserver(mBillingObserver); // Avoid
+																// receiving
+		// notifications after
+		// destroy
+		BillingController.setConfiguration(null);
+	}
 }

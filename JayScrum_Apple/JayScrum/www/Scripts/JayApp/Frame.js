@@ -33,17 +33,18 @@ $data.Class.define('JayScrum.Frame', null, null, {
     backView:function(frameSetting){
         var newView = JayScrum.app.selectedFrame().views[frameSetting.viewName];
         JayScrum.app.framePath.push(frameSetting);
+        JayScrum.app.selectedFrame().selectedView().tearDownView();
         JayScrum.app.selectedFrame().selectedView(newView);
-        newView.initializaView();
+        newView.initializeView();
     },
-    selectView:function (name) {
+    selectView:function (name, initData) {
         if (JayScrum.app.collectFramePath()) {
             var currentView = JayScrum.app.framePath.slice(-1)[0];
-            JayScrum.app.framePath.push({frameName:currentView.frameName, viewName:name, data:currentView.data});
+            JayScrum.app.framePath.push({frameName:currentView.frameName, viewName:name, data:initData || currentView.data});
         }
-
+        this.selectedView().tearDownView();
         this.selectedView(this.views[name]);
-        this.views[name].initializaView();
+        this.views[name].initializeView();
     },
     selectMetaView:function (name) {
         if (this.selectedMetaView === undefined) {
@@ -54,19 +55,33 @@ $data.Class.define('JayScrum.Frame', null, null, {
     frameRegistredApp:function (app) {
         this.frameApp = app;
     },
-    onFrameChangingTo:function (newFrameData, oldFrameData, frame) {
-
+    onFrameChangingTo:function (newFrameData, oldFrameData, frame, disableResetData) {
+        if(newFrameData.frameName !== oldFrameData.frameName && !disableResetData){
+            JayScrum.app.showLoading();
+            this._resetData();
+        }
     },
     onFrameChangingFrom:function (newFrameData, oldFrameData, frame) {
-        this.frameApp.showLoading();
+        return Q.fcall(JayScrum.app.showLoading);
     },
     onFrameChangedTo:function (newFrameData, oldFrameData, frame) {
+        this.selectedView().tearDownView();
+    },
+    _loadData: function(){
+        var q = Q.defer();
+        q.resolve();
+        return q.promise;
+    },
+    _resetData: function(){
 
     },
     onFrameChangedFrom:function (newFrameData, oldFrameData, frame) {
-        this.frameApp.hideLoading();
+        this._loadData()
+            .then(function(){
+                JayScrum.app.hideLoading();
+               JayScrum.app.selectedFrame().selectedView().initializeView();
+            });
     }
-
 }, null);
 
 $data.Class.define('JayScrum.FrameMetadata', null, null, {

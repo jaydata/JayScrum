@@ -273,15 +273,33 @@ JayScrum.pushObservablesToList= function (list, rawData) {
         list.push(obs);
     }
 };
-$(function () {
-    if (android) {
-        document.body.classList.add("android")
-    }
+if(android){
+	document.addEventListener("deviceready", function(){
+		initApplication();	
+		document.addEventListener("backbutton", function(e){
+			if(JayScrum.app.framePath().length > 1){
+				JayScrum.app.backView();
+			} else {
+				e.preventDefault();
+				navigator.app.exitApp();
+			}
+		}, false);
+	}, false);
+}else{
+	initApplication();
+}
+function initApplication(){
+	$(function () {
+		if (android) {
+			document.body.classList.add("android")
+		}
 
-    JayScrum.app = new JayScrum.ScrumApp('#page');
-    JayScrum.app.bind();
-    JayScrum.app.selectFrame('Repositories', undefined, { autoConnect: true });
-});
+		JayScrum.app = new JayScrum.ScrumApp('#page');
+		JayScrum.app.bind();
+		JayScrum.app.selectFrame('Repositories', undefined, { autoConnect: true });
+	});
+}
+
 
 Date.prototype.todayUTC = function () {
     var d = Date.UTC(this.getFullYear(), this.getMonth(), this.getDate());
