@@ -1245,8 +1245,7 @@
 									<span class="btn-metro btn-large margin10_0" data-bind="click: $parent.getTransactionsClick">
                                         transactions</span>
                                     <!--/ko-->
-                                    <span class="btn-metro btn-large margin10_0" data-bind="click: $parent.cancelSetting">
-                                        Cancel</span>
+                                    <span class="btn-metro btn-large margin10_0" data-bind="click: $parent.cancelSetting">Cancel</span>
                                 </div>
                             </div>
                         </div>
@@ -1264,7 +1263,7 @@
         <div id="settingPageActionBar" class="metro-actionbar detail-view-edit opened">
             <ul>
                 <li class="icon-action add"><span data-bind="click: $data.addSetting"></span></li>
-                <li class="icon-action add"><span data-bind="click: $data.createDatabase"></span>
+                <li class="icon-action money"><span data-bind="click: $data.createDatabase"></span>
                 </li>
             </ul>
         </div>
@@ -1302,14 +1301,7 @@
             <div class="scroll-list pivot-default-opacity scrollable-list animate bottom45" id="settingPageScroll">
                 <div class="scroller-list">
                     <div class="list detail maxlist" >
-
-
-
                         <div id="x567" data-bind="jayGrid: {source: $data.data().collection}"></div>
-
-
-
-
                     </div>
                 </div>
             </div>

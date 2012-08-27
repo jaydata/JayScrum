@@ -1,0 +1,85 @@
+.metro-loading {
+    .position(absolute, 0, auto, auto, 0); .size(100%, 100%);
+    z-index: 7000;
+    
+    display: -moz-box;
+    display: -webkit-box;
+    display: box;
+    
+    -moz-box-orient: vertical;
+    -moz-box-pack: center;
+    -moz-box-align: center;
+    
+    -webkit-box-orient: vertical;
+    -webkit-box-pack: center;
+    -webkit-box-align: center;
+    
+    box-orient: vertical;
+    box-pack: center;
+    box-align: center;
+    
+    h1, h2 { .show; .font-size(50); margin-bottom: 30px; /*text-transform: none !important;*/ }
+}
+.scroll-down {
+    margin: -70px 0 20px;    
+}
+.scroll-down, .scroll-up {
+	height: 50px;
+	line-height: 50px;
+	padding:5px 10px 5px 0;
+	font-size:14px;
+	color:#fff;
+}
+.scroll-down .pullDownIcon, .scroll-up .pullUpIcon  {
+	display:block; float:left; margin: 7px 7px 0 0;
+	width:32px; height:32px;
+	background:url("@{img-folder}/icon_pull_arrow.png") center center no-repeat;
+	
+	-webkit-transition-property: -webkit-transform;
+	-webkit-transition-duration: 300ms;	
+}
+.scroll-down .pullDownIcon {
+	-webkit-transform:rotate(0deg) translateZ(0);
+}
+.scroll-up .pullUpIcon  {
+	-webkit-transform:rotate(-180deg) translateZ(0);
+}
+.scroll-down.flip .pullDownIcon {
+	-webkit-transform:rotate(-180deg) translateZ(0);
+}
+.scroll-up.flip .pullUpIcon {
+	-webkit-transform:rotate(0deg) translateZ(0);
+}
+.scroll-down.loading .pullDownIcon, .scroll-up.loading .pullUpIcon {
+	background-position:0 100%;
+	-webkit-transform:rotate(0deg) translateZ(0);
+	-webkit-transition-duration:0ms;
+
+	-webkit-animation-name: loadingList;
+	-webkit-animation-duration:2s;
+	-webkit-animation-iteration-count:infinite;
+	-webkit-animation-timing-function:linear;
+}
+
+@-webkit-keyframes loadingList {
+	from    { -webkit-transform:rotate(0deg) translateZ(0); }
+	to      { -webkit-transform:rotate(360deg) translateZ(0); }
+}
+
+.ui-icon {
+    .show; .size(35px, 35px); .mauto; .opacity(0.9);
+    background: url("@{img-folder}/icon_ajaxloader.png") transparent top left no-repeat;
+    
+    &.spin {
+        -webkit-transform: rotate(360deg);
+        -webkit-animation-name: spin;
+        -webkit-animation-duration: 0.85s;
+        -webkit-animation-iteration-count: infinite;
+        -webkit-animation-timing-function: linear;
+    }
+}
+@-webkit-keyframes spin 
+{
+    from { -webkit-transform: rotate(0deg); }
+    to   { -webkit-transform: rotate(360deg); }
+}

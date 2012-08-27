@@ -1,0 +1,352 @@
+/*
+accent: { orange, red, green, blue, magenta, purple, pink, teal, lime, brown }
+class for accent-text color     : "accent-color"
+class for accent-bg             : "accent-bg"
+class for theme-bg              : "theme-bg"
+*/
+
+/*#region TILE THEME */
+li
+{
+    &.tile  { background: @metro-done; border: 1px solid lighten(@metro-done, 10%); }
+    &.wide  {
+        background: @metro-lightblue; border: 1px solid lighten(@metro-lightblue, 10%);
+        
+        &.pinned  { background: @metro-lightgreen; border: 1px solid lighten(@metro-lightgreen, 10%); }
+    }
+}
+
+body {
+    &[theme=black]{
+        background: black; color: white;
+    
+        div[theme=black], .metro-loading { background: black; color: white; }
+    
+        li.tile {
+            background: @metro-done; border: 1px solid lighten(@metro-done, 10%);
+        }
+    }
+    
+    &[theme=darkblue]{
+        li
+        {
+            &.tile  { background: @metro-blue; border: 1px solid lighten(@metro-blue, 10%); }
+            &.wide  {
+                background: @metro-orange; border: 1px solid lighten(@metro-orange, 10%);
+        
+                &.pinned  { background: @metro-lightblue; border: 1px solid lighten(@metro-lightblue, 10%); }
+            }
+        }
+    }
+    
+    &[theme=img_1]{
+        li
+        {
+            &.tile  { background: @metro-greenblue; border: 1px solid lighten(@metro-greenblue, 10%); }
+            &.wide  {
+                background: @metro-orange; border: 1px solid lighten(@metro-orange, 10%);
+        
+                &.pinned  { background: @metro-green; border: 1px solid lighten(@metro-green, 10%); }
+            }
+        }
+    }
+    
+    &[theme=img_2]{
+        li
+        {
+            &.tile  { background: @metro-done; border: 1px solid lighten(@metro-done, 5%); }
+            &.wide  {
+                background: @metro-lightblue; border: 1px solid lighten(@metro-lightblue, 10%);
+        
+                &.pinned  { background: @metro-lightgreen; border: 1px solid lighten(@metro-lightgreen, 5%); }
+            }
+        }
+    }
+    
+    &[theme=img_3]{
+        li
+        {
+            &.tile  { background: @metro-blue; border: 1px solid lighten(@metro-blue, 5%); }
+            &.wide  {
+                background: @metro-lightgreen; border: 1px solid lighten(@metro-lightgreen, 10%);
+        
+                &.pinned  { background: @metro-done; border: 1px solid lighten(@metro-done, 5%); }
+            }
+        }
+    }
+    
+    &[theme=img_5]{
+        li
+        {
+            &.tile  { background: @metro-darkorange; border: 1px solid lighten(@metro-darkorange, 10%); }
+            &.wide  {
+                background: @metro-orange; border: 1px solid lighten(@metro-orange, 10%);
+        
+                &.pinned  { background: @metro-lightred; border: 1px solid lighten(@metro-lightred, 10%); }
+            }
+        }
+    }
+    
+    /*
+    &.orange        { background: #dd9616; }
+	&.darkorange    { background: #e76321; }
+	&.purple        { background: #69349c; }
+	&.pink          { background: pink; }
+	&.darkpink      { background: #b71c46; }
+	&.done          { background: @colorDone; }
+	&.red           { background: #800000; }
+	&.yellow        { background: #ccc102; }
+	&.gray          { background: #414141; }
+	&.lightblue     { background: #00b5df; }
+	&.darkblue      { background: #293f7b; }
+	&.blue          { background: #1774bc; }
+	&.lightgreen    { background: #65bf10; }
+	&.green         { background: #19a053; }
+	&.lightred      { background: #d64d34; }
+	&.greenblue     { background: #00586d; }
+	&.brown         { background: #833801; }
+    */
+}
+/*#endregion TILE THEME */
+
+/*#region BODY THEME */
+
+body[theme=white], div[theme=white], body[theme=white] .metro-loading               { background: #F7F7F7; color: black; }
+
+body[theme=dark] h2 a       { color: #fff; }
+body[theme=darkblue], div[theme=darkblue], body[theme=darkblue] .metro-loading      { background: #30508B; color: white; }
+body[theme=darkgray], div[theme=darkgray], body[theme=darkgray] .metro-loading      { background: #5A5A5A; color: white; }
+body[theme=img_1], body[theme=img_1] .metro-loading                                 { background: url("@{img-folder}/bg/bg_1.jpg"); color: white; }
+body[theme=img_2], body[theme=img_2] .metro-loading                                 { background: url("@{img-folder}/bg/bg_2.jpg"); color: white; }
+body[theme=img_3], body[theme=img_3] .metro-loading                                 { background: url("@{img-folder}/bg/bg_3.jpg"); color: white; }
+body[theme=img_4], body[theme=img_4] .metro-loading                                 { background: url("@{img-folder}/bg/bg_4.jpg"); color: white; }
+body[theme=img_5], body[theme=img_5] .metro-loading                                 { background: url("@{img-folder}/bg/bg_5.jpg"); color: white; }
+body[theme=img_6], body[theme=img_6] .metro-loading                                 { background: url("@{img-folder}/bg/bg_6.jpg"); color: white; }
+
+div[theme^=img_] { background: url("@{img-folder}/bg/bg_thumb.jpg") no-repeat; }
+div[theme=img_1] { background-position: 0 0; }  
+div[theme=img_2] { background-position: 0 -30px; }
+div[theme=img_3] { background-position: 0 -60px; }
+div[theme=img_4] { background-position: 0 -90px; }
+div[theme=img_5] { background-position: 0 -120px; }
+div[theme=img_6] { background-position: 0 -150px; }
+
+body[theme=white] div[theme=white] { border: 1px solid black; }
+body[theme=black] div[theme=black] { border: 1px solid white; }
+body[theme=darkblue] div[theme=darkblue] { border: 1px solid white; }
+body[theme=darkgray] div[theme=darkgray] { border: 1px solid white; }
+
+body[theme=img_5] #metro-tiles .metro-tiles li.green { background: #db532d !important; }
+body[theme=img_5] #metro-tiles .metro-tiles li.lightred  { background: #833801; }
+
+.accent-bg { color: #fff; }
+div[theme=black] { background: black; }
+
+.theme-bg { background:#000; }
+body[theme=light] .theme-bg {background:#fff;}
+
+body[accent=orange] .accent-color, body[accent=orange] a { color:#F09720; }
+body[accent=orange] .accent-bg { background-color:#F09720; }
+
+body[accent=red] .accent-color, body[accent=red] a { color:#E61E26; }
+body[accent=red] .accent-bg { background-color:#E61E26; }
+
+body[accent=green] .accent-color, body[accent=green] a { color:#309B46; }
+body[accent=green] .accent-bg { background-color:#309B46; }
+
+body[accent=blue] .accent-color, body[accent=blue] a { color:#24A0DA; }
+body[accent=blue] .accent-bg { background-color:#24A0DA; }
+
+body[accent=brown] .accent-color, body[accent=brown] a { color:#986829; }
+body[accent=brown] .accent-bg { background-color:#986829; }
+
+body[accent=magenta] .accent-color, body[accent=magenta] a { color:#EB1691; }
+body[accent=magenta] .accent-bg { background-color:#EB1691; }
+
+body[accent=purple] .accent-color, body[accent=purple] a { color:#7D50A0; }
+body[accent=purple] .accent-bg { background-color:#7D50A0; }
+
+body[accent=teal] .accent-color, body[accent=teal] a { color:#16ABA9; }
+body[accent=teal] .accent-bg { background-color:#16ABA9; }
+
+body[accent=lime] .accent-color, body[accent=lime] a { color:#8BC140; }
+body[accent=lime] .accent-bg { background-color:#8BC140; }
+
+body[accent=pink] .accent-color, body[accent=pink] a { color:#DD72AC; }
+body[accent=pink] .accent-bg { background-color:#DD72AC; }
+
+/*#endregion BODY THEME */
+
+/*#region STATES */
+.uslist {
+    .New.item {
+        padding-left: 10px;
+	    border-left: 4px solid @colorNew;
+	                    
+	    .accent-color { color: @colorNew !important; }
+	    .accent-bg {
+	        background-color: @colorNew !important;
+	        color: #fff !important;
+	        padding: 2px 5px; margin-right: 5px;
+	    }
+    }
+    .Approved.item {
+	    padding-left: 10px;
+	    border-left: 4px solid @colorApproved;
+	                    
+	    .accent-color { color: @colorApproved !important; }
+	    .accent-bg {
+	        background-color: @colorApproved !important;
+	        color: #fff !important;
+	        padding: 2px 5px; margin-right: 5px;
+	    }
+    }
+    .Committed.item {
+	    padding-left: 10px;
+	    border-left: 4px solid @colorCommitted;
+	                    
+	    .accent-color { color: @colorCommitted !important; }
+	    .accent-bg {
+	        background-color: @colorCommitted !important;
+	        color: #fff !important;
+	        padding: 2px 5px; margin-right: 5px;
+	    }
+    }
+}
+div.pivot {
+    > span.icon-action {
+        .fright;    
+    }
+}
+.To.Do.item {
+	border-left: 4px solid @colorTodo;
+	                
+	.accent-color { color: @colorTodo !important; }
+	.accent-bg {
+	    background-color: @colorTodo !important;
+	    color: #fff !important;
+	    padding: 2px 5px; margin-right: 5px;
+	    
+	    &:focus { background: white !important; color: Black !important; }
+	}
+}
+.In.Progress.item {
+	border-left: 4px solid @colorInprog; 	                
+	                
+	.accent-color { color: @colorInprog !important; }
+	.accent-bg {
+	    background-color: @colorInprog !important;
+	    color: #fff !important;
+	    padding: 2px 5px; margin-right: 5px;
+	    
+	    &:focus { background: white !important; color: Black !important; }
+	}
+}
+.Done.item {
+	border-left: 4px solid @colorDone;
+	                
+	.accent-color { color: @colorDone !important; }
+	.accent-bg {
+	    background-color: @colorDone !important;
+	    color: #fff !important;
+	    padding: 2px 5px; margin-right: 5px;
+	    
+	    &:focus { background: white !important; color: Black !important; }
+	}
+}
+
+.Removed.item {
+	border-left: 4px solid @colorRemoved;
+	                    
+	h2 { color: @colorRemoved; .tdthrough; }
+	                
+	.accent-color { color: @colorRemoved !important; }
+	.accent-bg {
+	    background-color: @colorRemoved !important;
+	    color: #fff !important;
+	    padding: 2px 5px; margin-right: 5px;
+	    
+	    &:focus { background: white !important; color: Black !important; }
+	}
+}
+/*#endregion STATES */
+
+/*#region STATES 2 */
+.In.Progress {
+	.accent-bg {
+		background-color: @colorInprog !important; 
+		color: #fff !important;
+	    padding: 2px 5px; margin-right: 5px;
+	}
+	.accent-color { color: @colorInprog !important; }
+	
+	&.accent-border {
+	    padding-left: 10px;
+	    
+	    &.left { border-left: 4px solid @colorInprog; }
+	}
+}
+				
+.To.Do {
+	.accent-bg {
+		background-color: @colorTodo !important;
+		color: #fff !important;
+	    padding: 2px 5px; margin-right: 5px;   
+	}
+	.accent-color { color: @colorTodo !important; }
+	
+	&.accent-border {
+	    padding-left: 10px;
+	    
+	    &.left { border-left: 4px solid @colorTodo; }
+	}
+}
+
+.Done {
+	.accent-bg {
+		background-color: @colorDone !important;
+		color: #fff !important;
+	    padding: 2px 5px; margin-right: 5px;
+	}
+	.accent-color { color: @colorDone !important; }
+	
+	&.accent-border {
+	    padding-left: 10px;
+	    
+	    &.left { border-left: 4px solid @colorDone; }
+	}
+}
+
+#task-list {
+    .In.Progress {
+	    .accent-bg {
+		    background-color: @colorInprog !important; 
+	    }
+	    .accent-color { color: @colorInprog !important; }
+    }
+				
+    .To.Do {
+	    .accent-bg {
+		    background-color: @colorTodo !important;
+	    }
+	    .accent-color { color: @colorTodo !important; }
+    }
+
+    .Done {
+	    .accent-bg {
+		    background-color: @colorDone !important;
+	    }
+	    .accent-color { color: @colorDone !important; }
+    }
+    
+    .true {
+	    border-left: 4px solid @colorBlocked !important;
+	    color: @colorRemoved;
+	                
+	    .accent-color { color: @colorRemoved !important; }
+	    .accent-bg {
+	        background-color: @colorRemoved !important;
+	    }
+	}
+}
+/*#endregion STATES 2 */
