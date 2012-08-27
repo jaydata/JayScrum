@@ -398,6 +398,11 @@
                 <li class="icon-action save"><span data-bind="click: $root.selectedFrame().onSaveWorkItem"></span></li>
             </ul>
         </div>
+        <div id="error-msg" class="metro-actionbar"  style="height: 88px; z-index: 50; color: Red;" data-bind="with: $data.data().selectedWorkItemActive">
+            <ul data-bind="foreach: $data.ValidationErrors">
+                <li data-bind="text:$data.PropertyDefinition.name + ':' + $data.Message"></li>
+            </ul>
+        </div>
     </script>
 
     <script id="workItemEditor-template" type="text/html">
@@ -457,11 +462,11 @@
                                 </div>
 
                                 <div class="field">
-                                    <div class="metro-checkbox">
+                                    <div><span class="metro-checkbox-label">Blocked</span></div>
+                                    <div class="metro-checkbox accent-bg">
                                         <input type="checkbox" id="Blocked" value="None" name="check" class="medium accent-bg" data-bind="checked: IsBlocked" />
                                         <label for="Blocked"></label>
                                     </div>
-                                    <span class="metro-checkbox-label">Blocked</span>
                                 </div>
 
                                 <div class="field">
@@ -495,13 +500,6 @@
                                     <input class="medium accent-bg" type="number" min="0" step="1" pattern="[0-9]" data-bind="value: BusinessValue" />
                                 </div>
                                 <!-- /ko -->
-                                <div class="metro-actionbar opened" >
-                                    <ul data-bind="foreach: $data.ValidationErrors">
-                                        <li data-bind="text:$data.PropertyDefinition.name+':'+$data.Message"></li>
-                                    </ul>
-                                </div>
-
-
                             </div>
                         </div>
                     </div>
@@ -1223,11 +1221,11 @@
                                 </div>
 
                                 <div class="field">
-                                    <div class="metro-checkbox">
+                                    <div><span class="metro-checkbox-label">Default repository</span></div>
+                                    <div class="metro-checkbox accent-bg">
                                         <input type="checkbox" value="None" id="isDefault" name="check" data-bind="checked: IsDefault" />
                                         <label for="isDefault"></label>
                                     </div>
-                                    <span class="metro-checkbox-label">Default</span>
                                 </div>
 
                                 <div class="split2">

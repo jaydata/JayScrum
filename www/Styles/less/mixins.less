@@ -423,7 +423,7 @@ hr.soften {
 div.metro-checkbox {
     .relative; .iblock; .fleft;
     height: 28px !important; width: 28px !important;
-	background: #fff; margin: 0 auto;
+	margin: 0 auto;
 
     input[type=checkbox] {
         visibility: hidden;
@@ -433,7 +433,7 @@ div.metro-checkbox {
     
     label {
 	    .position(absolute, 4px, auto, auto, 4px); .size(20px, 20px);
-	    background: white; cursor: pointer;
+	    cursor: pointer;
 	    
 	    &::after {
 	        .position(absolute, 4px, auto, auto, 4px); .size(9px, 5px); .rotate(-45deg);
@@ -449,7 +449,7 @@ div.metro-checkbox {
         &:hover::after { opacity: 0.3; }
     }
 }
-span.metro-checkbox-label { .size(auto, 28px, 28px); margin-left: 10px; }
+span.metro-checkbox-label { .size(auto, 28px, 28px); }
 /*#endregion METRO */
 
 /*#region FUNCTIONS */

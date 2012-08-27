@@ -239,7 +239,15 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
             });
     },
     onSaveWorkItem: function (wrkItem, isEventCall) {
-        if(!wrkItem.innerInstance.isValid()){return;}
+        if (!wrkItem.innerInstance.isValid()) {
+            $("div#error-msg").addClass("opened");
+            $("div#wrapper-detailed-edit").css("bottom", "90px");
+            setTimeout(function () {
+                JayScrum.app.selectedFrame().selectedView().i_scroll.refresh();
+            }, 0);
+            return;
+        }
+
         var currentLista = null;
         if (wrkItem.State() == 'In Progress') {
             if (wrkItem.Reason() == 'Work finished')
