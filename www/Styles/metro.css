@@ -2819,6 +2819,7 @@ body[theme="white"] .detail .field .field.active {
     max-width: 228px;
     max-height: 65px;
     overflow: hidden;
+    max-width: 228px !important;
   }
   .main-header.main-page h1 {
     text-align: center;
@@ -2828,7 +2829,7 @@ body[theme="white"] .detail .field .field.active {
     line-height: 35px;
   }
   .main-header.main-page .subtitle {
-    top: -15px;
+    top: -10px;
   }
   h1 {
     margin: 0 0 5px;
