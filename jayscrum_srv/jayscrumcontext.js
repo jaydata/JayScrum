@@ -253,15 +253,23 @@ var moment = require('moment');
         'ToDo':{ type:'Edm.Int32'},
         'Left':{ type:'Edm.Int32'}
     });
+    $data.Entity.extend('LightSwitchApplication.SprintData', {
+        'Id':{ key:true, type:'id', nullable:false, computed:true },
+        'Name':{ type:'Edm.String', nullable:false, required:true, maxLength:255 },
+        'StartDate':{ type:'Edm.DateTime', nullable:false, required:true },
+        'FinishDate':{ type:'Edm.DateTime', nullable:false, required:true },
+        'tasksLeft': {type:'Edm.Int32'}
+    });
     $data.ServiceBase.extend('LightSwitchApplication.ApplicationService', {
         getSprintsData:$data.JayService.serviceFunction()
             .param("sprintIds", "Array")
             .returnsArrayOf("$data.Object")
             (function (sprintIdList) {
                 return function () {
+
                     var self = this;
                     var sprints = this.context.Sprints
-                        .where(function (item) { return ((item.Id in this.sprintIds) || (item.StartDate<=this.now && item.FinishDate>=this.now)) }, { sprintIds:JSON.parse(sprintIdList), now:new Date() })
+                        .where(function (item) { return ((item.Id in this.sprintIds) || (item.StartDate<=this.now && item.FinishDate>=this.now)) }, { sprintIds:sprintIdList, now:new Date() })
                         .orderBy(function(item){return item.FinishDate;})
                         .toArray();
 

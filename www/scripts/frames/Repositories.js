@@ -67,7 +67,7 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
     _initializeRepositoriesFrame: function () {
         var app = this;
         this.localContext.Repositories.toArray(function (result) {
-            app.data().settings([new JayScrum.Settings.Repository({Id:-1, Title:'Demo local db'})]);
+            app.data().settings([new JayScrum.Settings.Repository({Id:-1, Title:'Demo local db', Status: "ready"})]);
             result.forEach(function(repo){
                 app.data().settings.push(repo);
             });
@@ -143,7 +143,7 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
         });
     },
     addSetting:function(item){
-        var newItem = new JayScrum.Settings.Repository({Title:'Repository'});
+        var newItem = new JayScrum.Settings.Repository({Title:'Repository', Status:"static"});
         this.localContext.Repositories.add(newItem);
         this.data().settings(null);
         this.data().selectedSetting(newItem.asKoObservable());
@@ -154,7 +154,7 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
     },
     createDatabase: function(){
         this.data().isRegistration(true);
-        var newItem = new JayScrum.Settings.Repository({Title:'Repository'});
+        var newItem = new JayScrum.Settings.Repository({Title:'Repository', Status:"initializing"});
         this.localContext.Repositories.add(newItem);
         this.data().settings(null);
         this.data().selectedSetting(newItem.asKoObservable());
@@ -218,26 +218,40 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
         $('div#error-msg').removeClass('opened');
     },
     //InApp purchase
+    _successSubscriptionRequest:function(result){
+        if(result.res !== "RESULT_OK"){
+            JayScrum.app.selectedFrame()._cordovaFailCallback();
+            return;
+        }
+        cordova.exec(JayScrum.app.selectedFrame()._sendTransactionToSrv,
+            JayScrum.app.selectedFrame()._cordovaFailCallback,
+            "InAppBilling",
+            "transactions",
+            [result.subscriptionId]);
+    },
+    _sendTransactionToSrv: function(transactions){
+        console.log(transactions);
+    },
     _cordovaFailCallback:function(){
         alert('ERROR: '+JSON.stringify(arguments));
     },
-    _cordovaSuccessCallback:function(result){
+    /*_cordovaSuccessCallback:function(result){
         if(result !== "RESULT_OK"){
             alert('requiestOK, result_error'+JSON.stringify(arguments));
             return;
         }
 
         alert('All ok!!! '+JSON.stringify(arguments));
-    },
+    },*/
     subscriptionDatabase: function(item){
-        console.log('subscribe db: '+JSON.stringify(item));
+        console.log('subscribe db: '+JSON.stringify(item.innerInstance));
         cordova.exec(JayScrum.app.selectedFrame()._cordovaSuccessCallback,
             JayScrum.app.selectedFrame()._cordovaFailCallback,
             "InAppBilling",
             "subscribe",
-            [{usr:item.UserName(), psw:item.Password(), dbName: item.Url(), title:item.Title()}]);
+            [item.innerInstance]);
     },
-    buyManagendClick: function(item){
+    /*buyManagendClick: function(item){
         console.log('buyManagend db: '+JSON.stringify(item));
         cordova.exec(JayScrum.app.selectedFrame()._cordovaSuccessCallback,
             JayScrum.app.selectedFrame()._cordovaFailCallback,
@@ -252,7 +266,7 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
             "InAppBilling",
             "buyUnManaged",
             [{usr:item.UserName(), psw:item.Password(), dbName: item.Url(), title:item.Title()}]);
-    },
+    },*/
 	getTransactionsClick:function(item){
 		console.log('getTransactions: '+JSON.stringify(item));
         cordova.exec(JayScrum.app.selectedFrame()._cordovaSuccessCallback,
@@ -262,3 +276,9 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
             [{usr:item.UserName(), psw:item.Password(), dbName: item.Url(), title:item.Title()}]);
 	}
 }, null);
+
+cordova = {};
+cordova.exec = function(success, error, name, functionname, params){
+    success(params[0]);
+
+}

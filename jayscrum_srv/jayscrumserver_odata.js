@@ -4,7 +4,6 @@ var appContextType = require('./appdb_context').serviceType;
 var connect = require('connect');
 var app = connect();
 
-console.log('VEKTOR');
 console.log("JayStorm oData publisher starting\n");
 
 var dbAddress = '127.0.0.1';
@@ -42,6 +41,8 @@ app.use($data.JayService.OData.BatchProcessor.connectBodyReader);
 
 
 app.use("/CreateDatabase", function(req, res){
+    console.log("CreateDB");
+    console.log(req.query);
     var dbName = req.query.dbName, dbType = req.query.schemaName;
 
     var result = {
