@@ -111,7 +111,7 @@ public class MainActivity extends DroidGap implements BillingController.IConfigu
 
 	public String getPublicKey() {
 		// TODO Auto-generated method stub
-		return "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAh9y6WAOvAUKK4wPCF9Ak6Dn82bZOLFdOwT3iPJ9mfRBGdGPDubT0YWqoExOEqM6LYAT6ZMJHKcnN8tV/K3IfMCNzJCHfFGFoUfOY+FeSv7m6SrOcP5xMOJ7U8WeDdPn8Rar77trnuSR9VnTkDhKUUg3fkH0x8wGHXxrqgIEofIxUJdCEnfLPiL0A+yVwgmwXaYq7YkikLoZKgiy08UdP+Rcw/jYtaYlVB5L3MdFG65n9KyIwnIkbg4ktxgZUYlhCAPa4ACYMkPp7V2/b47gyL39XXuxKq+6xCy8zSXHA67bbPftgf89KtFGly/8G1IEacqPgzU607eqUprUNCNK2DwIDAQAB";
+		return "";
 	}
 	
 	@Override
