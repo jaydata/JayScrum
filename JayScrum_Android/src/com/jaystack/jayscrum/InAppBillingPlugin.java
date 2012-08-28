@@ -25,10 +25,15 @@ public class InAppBillingPlugin extends Plugin {
 		for(Transaction t : transactions){
 			JSONObject o = new JSONObject();
 			try{
-				o.put("orderid", t.orderId);
-				o.put("productid", t.productId);
-				o.put("purchaseToken", t.purchaseToken);
-				o.put("devPayload", t.developerPayload);
+				o.put("OrderId", t.orderId);
+				o.put("ProductId", t.productId);
+				o.put("PurchaseToken", t.purchaseToken);
+				if(t.developerPayload.startsWith("[")){
+					o.put("DevPayLoad", new JSONArray(t.developerPayload).getJSONObject(0));
+				}
+				else{
+					o.put("DevPayLoad", new JSONObject(t.developerPayload));
+				}
 			}catch(JSONException ex){
 				Log.d("InApp", ex.toString());
 			}
@@ -51,18 +56,8 @@ public class InAppBillingPlugin extends Plugin {
 			Log.d("InApp", "Start read db");
 			List<Transaction> transactions = BillingController.getTransactions(MainActivity.eInstance);
 			JSONArray jsonTransactions = toJSON(transactions);
-			Log.d("InApp", "End read db");
-			
-			/*for(Transaction t : transactions){
-				builder.append("notificationId: ").append(t.notificationId);
-				builder.append(", orderId:").append(t.orderId);
-				builder.append(", productId: ").append(t.productId);
-				builder.append(", purchaseState: ").append(t.purchaseState.toString());
-				builder.append(", purchaseToken: ").append(t.purchaseToken);
-				builder.append(", devPayLoad: ").append(t.developerPayload);
-				builder.append(" ||  ");
-			}*/
-			
+			Log.d("InApp", "End read db: "+transactions.size());
+			Log.d("InApp", "transactions: "+jsonTransactions.toString());
 			PluginResult result = new PluginResult(PluginResult.Status.OK,jsonTransactions);
 			return result;
 		}else if(action.equals("subscribe")){
@@ -70,27 +65,13 @@ public class InAppBillingPlugin extends Plugin {
 			PluginResult result = new PluginResult(PluginResult.Status.NO_RESULT);
 			result.setKeepCallback(true);
 			
-			Log.d("InApp", "Starting subscription with following data: "+arg1.toString());
-			MainActivity.eInstance.MonthlySubscription(this, arg1.toString());
-			
-			return result;
-		}else if(action.equals("buyManaged")){
-			this._callbackId = callback;
-			PluginResult result = new PluginResult(PluginResult.Status.NO_RESULT);
-			result.setKeepCallback(true);
-			
-			Log.d("InApp", "buyManaged with following data: "+arg1.toString());
-			MainActivity.eInstance.BuyManagedItem(this, arg1.toString());
-			
-			return result;
-		}
-		else if(action.equals("buyUnManaged")){
-			this._callbackId = callback;
-			PluginResult result = new PluginResult(PluginResult.Status.NO_RESULT);
-			result.setKeepCallback(true);
-			
-			Log.d("InApp", "buyUnManaged with following data: "+arg1.toString());
-			MainActivity.eInstance.BuyUnManagedItem(this, arg1.toString());
+			try {
+				Log.d("InApp", "Starting subscription with following data: "+arg1.getString(0));
+				MainActivity.eInstance.MonthlySubscription(this, arg1.getString(0));
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			
 			return result;
 		}

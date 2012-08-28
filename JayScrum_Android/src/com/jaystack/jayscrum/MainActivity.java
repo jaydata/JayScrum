@@ -6,6 +6,9 @@ import net.robotmedia.billing.BillingController;
 import net.robotmedia.billing.BillingController.BillingStatus;
 import net.robotmedia.billing.BillingRequest.ResponseCode;
 import net.robotmedia.billing.helper.AbstractBillingObserver;
+import net.robotmedia.billing.model.BillingDB;
+import net.robotmedia.billing.model.Transaction;
+import net.robotmedia.billing.model.TransactionManager;
 import net.robotmedia.billing.model.Transaction.PurchaseState;
 
 import org.apache.cordova.DroidGap;
@@ -90,19 +93,18 @@ public class MainActivity extends DroidGap implements BillingController.IConfigu
 	
 	public void MonthlySubscription(InAppBillingPlugin plugin, String data){
 		this._plugin = plugin;
-		BillingController.requestSubscription(this, "test.jaystack.subscription_monthly", false, data);
-		//BillingController.requestPurchase(this, "android.test.purchased", true, data);
+		//BillingController.requestSubscription(this, "test.jaystack.subscription_monthly", true, data);
+		Log.d("InApp", "Fake subscription");
+		
+		Transaction t = new Transaction("orderid"+System.currentTimeMillis(), "productId","com.jaystack.jayscrum", PurchaseState.PURCHASED, "notificationId", 1243124, data, "purchasetoken");
+		BillingDB db = new BillingDB(this);
+		db.insert(t);
+		
+		PluginResult result = new PluginResult(PluginResult.Status.OK, "RESULT_OK");
+		result.setKeepCallback(true);
+		this._plugin.success(result, this._plugin._callbackId);
 	}
 	
-	public void BuyManagedItem(InAppBillingPlugin plugin, String data){
-		this._plugin = plugin;
-		BillingController.requestPurchase(this, "android.test.purchased", false, data);
-	}
-	
-	public void BuyUnManagedItem(InAppBillingPlugin plugin, String data){
-		this._plugin = plugin;
-		BillingController.requestPurchase(this, "sword", false, data);
-	}
 	
 	public byte[] getObfuscationSalt() {
 		// TODO Auto-generated method stub

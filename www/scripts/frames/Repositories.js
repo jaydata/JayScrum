@@ -66,8 +66,10 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
     },
 
     _initializeRepositoriesFrame: function () {
-        var app = this;
+    	console.log('-== 1. initialize repository frame');
+    	var app = this;
         this.localContext.Repositories.toArray(function (result) {
+        	console.log("-== 2. Load repo settings: "+JSON.stringify(result));
             app.data().settings([(new JayScrum.Settings.Repository({Id:-1, Title:'Demo local db', Status: "static", OrderId:''})).asKoObservable()]);
             result.forEach(function(repo){
                 app.data().settings.push(repo.asKoObservable());
@@ -78,14 +80,15 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
             JayScrum.app.hideLoading();
 
             if(JayScrum.app.selectedFrame().data().isSupportedPurchase()){
+            	console.log('-== 3. Call cordova transactions');
                 cordova.exec(function(transactions){
-                        console.log('Call cordova transactions');
+                		console.log('-== 4. Load transactions: '+JSON.stringify(transactions));
                         var newTransactions = [];
                         for(var i=0;i<transactions.length;i++){
                             var repoItem = JayScrum.app.selectedFrame().data().settings().filter(function(item){return item.OrderId() == transactions[i].OrderId})[0];
                             if(repoItem === null || repoItem === undefined || (repoItem && repoItem.Status() !== 'ready')){
                                 if(repoItem){
-                                    transactions[i].devPayLoad = repoItem.innerInstance.initData;
+                                    transactions[i].DevPayLoad = repoItem.innerInstance.initData;
                                 }
                                 newTransactions.push(transactions[i]);
                             }
@@ -97,14 +100,14 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
                     JayScrum.app.selectedFrame()._cordovaFailCallback,
                     "InAppBilling",
                     "transactions",
-                    null);
+                    []);
             }
 
         });
     },
     _createNewRepoOrUpdateStatus:function(transactions){
-      console.log("create or update tran");
-        console.log(transactions);
+      console.log("-== 5. create or update tran");
+        console.log(JSON.stringify(transactions));
         $.ajax({
             url:'http://192.168.1.142:3000/CreateDatabase2',
             data:JSON.stringify(transactions),
@@ -115,14 +118,16 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
                 //JayScrum.app.selectedFrame()._initializeRepositoriesFrame();
             },
             success:function (data, status, xhr) {
-                console.log("create database ok");
-                console.log(JSON.parse(data));
+                console.log("-== 6. create database ok");
+                console.log(data);
                 var result = JSON.parse(data);
                 var redirect = false;
                 for(var i=0;i<result.length;i++){
+                	console.log("-== 7/0 i count: "+i+", tracked entities: "+JayScrum.app.selectedFrame().localContext.stateManager.trackedEntities.length)
                     var repoItem = JayScrum.app.selectedFrame().data().settings().filter(function(item){return item.OrderId() == result[i].OrderId})[0];
                     if(repoItem){
                         if(repoItem.Status() != result[i].Status){
+                        	console.log("-== 7/1. update status")
                             repoItem.Status(result[i].Status);
                             var updatItem = new JayScrum.Settings.Repository({Id:repoItem.Id(), Status:''});
                             JayScrum.app.selectedFrame().localContext.Repositories.attach(updatItem);
@@ -130,21 +135,34 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
                             redirect = true;
                         }
                     }else{
+                    	console.log("-== 7/2. Add new repo: "+JSON.stringify(result[i]));
                         //add new repo
-                        var repo = new JayScrum.Settings.Repository({
-                            Title: result[i].Title,
-                            Status: result[i].Status,
-                            OrderId:result[i].OrderId,
-                            Url:result[i].Url,
-                            UserName:result[i].UserName,
-                            Password:result[i].Password});
-                        JayScrum.app.selectedFrame().localContext.add(repo);
-                        redirect = true;
+                    	if(result[i].Title){
+	                        var repo = new JayScrum.Settings.Repository({
+	                            Title: result[i].Title,
+	                            Status: result[i].Status,
+	                            OrderId:result[i].OrderId,
+	                            Url:result[i].Url,
+	                            UserName:result[i].UserName,
+	                            Password:result[i].Password});
+	                        console.log("###!!! new repo orderid: "+repo.OrderId);
+	                        JayScrum.app.selectedFrame().localContext.add(repo);
+	                        redirect = true;
+                    	}
                     }
                 }
+                console.log("-== 8. redirect: "+redirect+" tracked entities: "+JayScrum.app.selectedFrame().localContext.stateManager.trackedEntities.length);
                 if(redirect){
-                    JayScrum.app.selectedFrame().localContext.saveChanges(function () {
-                        JayScrum.app.selectedFrame()._initializeRepositoriesFrame();
+                	
+                    JayScrum.app.selectedFrame().localContext.saveChanges({
+                    	success:function () {
+                    		console.log("-== 9/1. save new repos");
+                    		JayScrum.app.selectedFrame()._initializeRepositoriesFrame();
+                    	}, 
+                    	error:function(error){
+                    		console.log("-== 9/2. error in save");
+                    		alert(JSON.stringify(error));
+                    	}
                     });
                 }
             }
@@ -230,7 +248,7 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
     buyDatabase: function(){
         this.data().isRegistration(true);
         var newItem = new JayScrum.Settings.Repository({Title:'Repository', Status:"initializing"});
-        this.localContext.Repositories.add(newItem);
+        //this.localContext.Repositories.add(newItem);
         this.data().settings(null);
         this.data().selectedSetting(newItem.asKoObservable());
 
@@ -286,10 +304,12 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
     },
     //InApp purchase
     _successSubscriptionRequest:function(result){
-        if(result.res !== "RESULT_OK"){
+    	if(result !== "RESULT_OK"){
+        	console.log('-== 92/1. error subscribe');
             JayScrum.app.selectedFrame()._cordovaFailCallback();
             return;
         }
+        console.log('-== 92/2. success subscribe');
         JayScrum.app.selectedFrame().data().selectedSetting(null);
         JayScrum.app.selectedFrame()._initializeRepositoriesFrame();
         JayScrum.app.selectedFrame().hideActionBar();
@@ -308,11 +328,12 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
         console.log(transactions);
     },*/
     _cordovaFailCallback:function(){
+    	console.log("!!!!!!!ERROR!!!!!!!");
         alert('ERROR: '+JSON.stringify(arguments));
     },
 
     subscriptionDatabase: function(item){
-        console.log('subscribe db: '+JSON.stringify(item.innerInstance));
+        console.log('-== 91. subscribe db: '+JSON.stringify(item.innerInstance));
         cordova.exec(JayScrum.app.selectedFrame()._successSubscriptionRequest,
             JayScrum.app.selectedFrame()._cordovaFailCallback,
             "InAppBilling",
