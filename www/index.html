@@ -1183,12 +1183,21 @@
                                     <span class="icon-action connect" data-bind="click: $parent.connectTo">
                                         <span></span></span>
 
-                                    <!--ko ifnot: $data.Id == -1-->
+                                    <!--ko ifnot: $data.Id() == -1-->
                                     <span class="icon-action edit" data-bind="click: $parent.editSetting">
                                         <span></span></span>
+                                    <!--ko if: $data.Status() == 'static'-->
                                     <span class="icon-action delete" data-bind="click: $parent.deleteSetting">
                                         <span></span></span>
+                                    <!--/ko-->
+                                    <!--ko ifnot: $data.Status() == 'static'-->
+                                    <!--ko if: $data.Status() == 'ready'-->
+                                    <span class="icon-action money" data-bind="click: $parent.updateStatus"><span></span></span>
+                                    <!--/ko-->
+                                    <!--ko ifnot: $data.Status() == 'ready'-->
                                     <span class="icon-action update" data-bind="click: $parent.updateStatus"><span></span></span>
+                                    <!--/ko-->
+                                    <!--/ko-->
                                     <!--/ko-->
 
                                 </div>
@@ -1239,12 +1248,12 @@
                                     <!--ko if: $parent.data().isRegistration-->
                                     <span class="btn-metro btn-large margin10_0" data-bind="click: $parent.subscriptionDatabase">
                                         Subscription</span>
-									<span class="btn-metro btn-large margin10_0" data-bind="click: $parent.buyManagendClick">
+									<!--<span class="btn-metro btn-large margin10_0" data-bind="click: $parent.buyManagendClick">
                                         Buy (unmanaged)</span>
                                     <span class="btn-metro btn-large margin10_0" data-bind="click: $parent.buyUnManagendClick">
                                         Buy (managed)</span>
 									<span class="btn-metro btn-large margin10_0" data-bind="click: $parent.getTransactionsClick">
-                                        transactions</span>
+                                        transactions</span>-->
                                     <!--/ko-->
                                     <span class="btn-metro btn-large margin10_0" data-bind="click: $parent.cancelSetting">Cancel</span>
                                 </div>
@@ -1264,8 +1273,10 @@
         <div id="settingPageActionBar" class="metro-actionbar detail-view-edit opened">
             <ul>
                 <li class="icon-action add"><span data-bind="click: $data.addSetting"></span></li>
-                <li class="icon-action money"><span data-bind="click: $data.createDatabase"></span></li>
+                <!--ko if: $data.data().isSupportedPurchase-->
+                <li class="icon-action money"><span data-bind="click: $data.buyDatabase"></span></li>
                 <li class="icon-action update"><span data-bind="click: $data.refreshSettings"></span></li>
+                <!--/ko-->
             </ul>
         </div>
 

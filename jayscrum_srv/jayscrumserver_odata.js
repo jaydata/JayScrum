@@ -36,8 +36,12 @@ app.use(function (req, res, next) {
     }
 });
 
+app.use(connect.urlencoded());
+app.use(connect.json());
+app.use(connect.bodyParser());
 app.use(connect.query());
 app.use($data.JayService.OData.BatchProcessor.connectBodyReader);
+
 
 
 app.use("/CreateDatabase", function(req, res){
@@ -85,7 +89,46 @@ app.use("/CreateDatabase", function(req, res){
     });
 });
 
+app.use("/CreateDatabase2", function(req, res){
 
+    var result = [];
+
+    for(var i=0;i<req.body.length;i++){
+        console.log("Check purchase token!");
+        console.log(req.body[i].purchaseToken);
+
+        var repo = req.body[i].devPayLoad;
+        repo.Status = repo.Status == 'initialize'?"ready":'initialize';
+        repo.OrderId = req.body[i].OrderId;
+
+        if(repo.Status == "ready"){
+            (function(){
+                var appdb = new appContextType({ name:'mongoDB', databaseName: appDBName, address: dbAddress});
+                appdb.onReady( function() {
+
+                    appdb.Databases.filter("it.dbName == this.dbName", {dbName: repo.Url}).toArray( function(items) {
+                        if (items.length > 0) {
+                            return;
+                        };
+
+                        appdb.Databases.add({dbName: repo.Url, dbType: 'jayscrumcontext'});
+                        appdb.Databases.add({dbName: repo.Url+'_users', dbType: 'jaystormcontext'});
+                        appdb.saveChanges(function() {
+                            publishDatabaseInstance(repo.Url, repo.Url, 'jayscrumcontext');
+                            publishDatabaseInstance(repo.Url+'_users', repo.Url+'_users', 'jaystormcontext');
+                        })
+                    })
+                });
+            })();
+        }
+
+        result.push(repo);
+    }
+console.log(req.body);
+console.log("==========");
+console.log(result);
+    res.end(JSON.stringify(result));
+});
 
 var appdb = new appContextType({ name:'mongoDB', databaseName:appDBName, address: dbAddress });
 
