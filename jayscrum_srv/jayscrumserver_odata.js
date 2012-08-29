@@ -94,11 +94,18 @@ app.use("/CreateDatabase2", function(req, res){
     var result = [];
 
     for(var i=0;i<req.body.length;i++){
-        console.log("Check purchase token!");
-        console.log(req.body[i].purchaseToken);
+        console.log("--==== Check purchase token! ====--");
+        console.log(req.body[i]);
 
-        var repo = req.body[i].devPayLoad;
-        repo.Status = repo.Status == 'initialize'?"ready":'initialize';
+        var repo = req.body[i].DevPayLoad;
+        console.log("  orderid(devPayload): "+repo.OrderId);
+        console.log("  orderid(body): "+req.body[i].OrderId);
+
+        if(repo.Status){
+            repo.Status = (repo.Status && repo.Status == 'initialize')?"ready":'initialize';
+        }else{
+            repo.Status = "initialize";
+        }
         repo.OrderId = req.body[i].OrderId;
 
         if(repo.Status == "ready"){
@@ -114,6 +121,7 @@ app.use("/CreateDatabase2", function(req, res){
                         appdb.Databases.add({dbName: repo.Url, dbType: 'jayscrumcontext'});
                         appdb.Databases.add({dbName: repo.Url+'_users', dbType: 'jaystormcontext'});
                         appdb.saveChanges(function() {
+                            console.log("Create database: "+repo.Url);
                             publishDatabaseInstance(repo.Url, repo.Url, 'jayscrumcontext');
                             publishDatabaseInstance(repo.Url+'_users', repo.Url+'_users', 'jaystormcontext');
                         })
@@ -124,7 +132,7 @@ app.use("/CreateDatabase2", function(req, res){
 
         result.push(repo);
     }
-console.log(req.body);
+
 console.log("==========");
 console.log(result);
     res.end(JSON.stringify(result));

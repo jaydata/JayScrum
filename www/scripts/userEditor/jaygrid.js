@@ -20,6 +20,7 @@
         }
     }
 
+
     regiserTemplates($data.jayGridTemplates.tableTemplate);
 
     function getColumnsMetadata(source, fields, itemCommands) {
@@ -73,15 +74,37 @@
         return props;
     };
 
+    ko.bindingHandlers['readValue'] = {
+        'update': function (element, valueAccessor) {
+            var v = valueAccessor();
+            var eset = ko.utils.unwrapObservable(v.source);
+            var key = ko.utils.unwrapObservable(v.key);
+            if (!key) {
+                return;
+            }
+
+            var field = ko.utils.unwrapObservable(v.field);
+            var keyField = eset.createNew.memberDefinitions.getKeyProperties()[0].name;
+
+
+            eset.filter("it." + keyField.toString() + " == this.value", { value: key})
+                .map("it." + field)
+                .forEach(function(item) {
+                    ko.utils.setTextContent(element, item);
+                }
+            );
+
+        }
+    };
+
     ko.bindingHandlers.jayGrid = {
 
         init: function() {
-            this.finishInit = false;
             return { 'controlsDescendantBindings': true };
-
         },
 
-        update: function(element, viewModelAccessor, allBindingsAccessor) {
+        update: function(element, viewModelAccessor, allBindingsAccessor, vModel) {
+            //console.dir(vModel);
             var viewModel = viewModelAccessor(), allBindings = allBindingsAccessor();
 
             var source = null, fields = [];
@@ -92,6 +115,8 @@
             } else {
                 source = viewModel.source;
             };
+
+            source = ko.isObservable(source) ? source: ko.observable(source);
 
             var fieldTemplates = {};
 
@@ -116,14 +141,36 @@
             }
 
 
+            if (! element.nameTemplates) {
+                element.nameTemplates = {};
+                var children = element.childNodes;
+                for(var i = 0; i < children.length; i++) {
+                    var child = children[i];
+                    var tmpName = undefined;
+                    if (child.nodeType == 1) {
+                        tmpName = child.getAttribute("data-name-template");
+                        if (tmpName) {
+                            var rndId = Math.random().toString().replace(".","").replace(",","");
+                            child.setAttribute("id", rndId);
+                            element.nameTemplates[tmpName] = rndId;
+                            document.body.appendChild(child);
+                            console.log("template registered:" + tmpName );
+                        }
+                    }
+                }
+            }
             fields = viewModel.fields || [];
 
 
-            function getItemCommands() {
-
-            }
-
             function _model() {
+                for (var j in vModel) {
+                    this[j] = vModel[j];
+                };
+
+                for(var j in viewModel) {
+                    this[j] = viewModel[j];
+                };
+
                 console.log("Grid model created");
                 var self = this;
 
@@ -141,28 +188,56 @@
                     self.sortColumn('');
                 }, 'beforeChange');
 
-                self.items =  ko.observableArray([]);
+                self.items =  viewModel.items || ko.observableArray([]);
+
+                if (self.monitorItems) {
+                    self.monitorItems(self.items);
+                }
+
                 self.objectsToDelete = ko.observableArray([]);
                 self.objectsInEditMode = ko.observableArray([]);
 
 
 
                 self.save =  function() {
-                    console.dir(arguments);
+
+                    console.dir("Saving changes: " + arguments);
+
                     var source = ko.utils.unwrapObservable(self.source);
+                    console.log("Items in tracker:" + source.entityContext.stateManager.trackedEntities.length);
+                    ccc = source.entityContext;
                     for(var i = 0; i < self.objectsToDelete().length; i++) {
                         console.log("items found");
                         var item = self.objectsToDelete()[i];
                         source.remove(item);
                     }
-                    source.entityContext.saveChanges( function() {
-                      //console.log("saved");
-                        for(var i = 0; i < self.objectsToDelete().length; i++) {
-                            var item = self.objectsToDelete()[i];
-                            self.items.remove(item);
+                    function doSave() {
+                        source.entityContext.saveChanges( function() {
+                            console.log("Items in tracker #2:" + source.entityContext.stateManager.trackedEntities.length);
+                            self.refresh(Math.random());
+                            self.objectsToDelete.removeAll();
+                            self.objectsInEditMode.removeAll()
+                        })
+                    }
+
+                    if (self.beforeSave) {
+                        var r = self.beforeSave(source);
+                        if (typeof r === 'function') {
+                            r(
+                                function() {
+                                    doSave();
+                                },
+                                function() {
+                                    console.log("aborted by client code");
+                                }
+                            )
+                        } else {
+                            doSave();
                         }
-                      self.objectsInEditMode.removeAll()
-                    })
+
+                    } else {
+                        doSave();
+                    }
                 };
 
 
@@ -178,10 +253,52 @@
                     return "Number of tracked changes: " + es.entityContext.stateManager.trackedEntities.length;
                 }
 
+                self.removeAll = function() {
+                    var entitySet = ko.utils.unwrapObservable(self.source);
+//                    es.removeAll( function() {
+//                        alert("removed!");
+//                    })
+
+                    var keyname = entitySet.defaultType.memberDefinitions.getKeyProperties()[0].name;
+                    entitySet.map("it." + keyname).toArray(function(ids) {
+                        ids.forEach( function(id) {
+                            var obj = { };
+                            obj[keyname] = id;
+                            entitySet.remove(obj);
+                        });
+                        entitySet.entityContext.saveChanges( function() {
+                            self.refresh(Math.random());
+                        })
+                    });
+                    //alert("it." + );
+                };
+
                 self.addNew = function() {
                     var es = ko.utils.unwrapObservable(self.source);
                     var o = new es.createNew();
                     o = o.asKoObservable();
+                    var idx = self.items().length;
+
+
+
+                    o.getColumns = function() {
+                        var result = [];
+                        for (var i = 0; i < self.columns().length; i++) {
+                            var col = {
+                                rowIndex: idx,
+                                columnIndex: i,
+                                value: this[self.columns()[i].name],
+                                name: self.columns()[i].name,
+                                metadata: self.columns()[i],
+                                owner: this,
+                                itemCommands: itemCommands
+                            }
+                            result.push(col);
+                        }
+                        return result;
+                    }
+
+
                     var v = ko.utils.unwrapObservable(self.discriminatorValue),
                         f = ko.utils.unwrapObservable(self.discriminatorColumn);
                     if (v && f) {
@@ -195,7 +312,22 @@
                     }
                     self.objectsInEditMode.push(o);
                     ko.utils.unwrapObservable(source).add(o);
-                    self.items.push(o);
+
+                    if (self.afterAddNew) {
+                        var r = self.afterAddNew( o, self );
+                        if (typeof r === 'function') {
+                            r(function(ok) {
+                                ok(self.items.push(o));
+                            });
+                        } else {
+                            self.items.push(o);
+                        }
+                    } else {
+                        self.items.push(o);
+
+                    }
+
+
                 };
 
 
@@ -271,6 +403,31 @@
                 };
 
                 self.columns = ko.observableArray(cols);
+
+                function getKoItemColumns(rowIndex) {
+                    var result = [];
+                    for (var i = 0; i < self.columns().length; i++) {
+                        var col = {
+                            rowIndex: rowIndex,
+                            columnIndex: i,
+                            value: this[self.columns()[i].name],
+                            name: self.columns()[i].name,
+                            metadata: self.columns()[i],
+                            owner: this,
+                            itemCommands: itemCommands
+                        }
+                        result.push(col);
+                    }
+                    return result;
+                }
+
+                self.extendItem = function(koItem) {
+                    koItem.getColumns = getKoItemColumns;
+                    if( self.itemExtender ) {
+                        self.itemExtender( koItem );
+                    }
+                }
+
                 self.sortColumn = ko.observable(sortColName);
                 self.sortDirection = ko.observable(true);
 
@@ -283,20 +440,6 @@
 
                 self.selectedItem = ko.observable();
 
-//            if (source instanceof $data.EntitySet && receiveEvents) {
-//                source.entityContext.addEventListener("added", function(sender, itemInfo) {
-//                    if (itemInfo.data instanceof source.createNew) {
-//                        model.items.push( itemInfo.data.asKoObservable());
-//                    }
-//                });
-//                source.entityContext.addEventListener("deleted", function(sender, itemInfo) {
-//                    if (itemInfo.data instanceof source.createNew) {
-//                        model.items.remove( function(item) {
-//                            return item.innerInstance.equals(itemInfo.data);
-//                        });
-//                    }
-//                })
-//            }
                 self.pages = ko.computed( function() {
                     return ko.utils.range(0, this.itemCount() / this.pageSize());
                 }, this);
@@ -313,14 +456,19 @@
                 self.discriminatorColumn = viewModel.discriminatorColumn; // || ko.observable();
                 self.discriminatorValue = viewModel.discriminatorValue; //|| ko.observable();
 
+                self.refresh = ko.observable();
+
                 self.itemsTrigger = ko.computed( function(){
                     if (ko.utils.unwrapObservable(this.source) == null) {
                         return;
                     }
                     var q = this.source();
 
+                    var ref = this.refresh();
+
                     var column = ko.utils.unwrapObservable(this.discriminatorColumn);
                     var value = ko.utils.unwrapObservable(this.discriminatorValue);
+
                     if (column && !(value) ) {
                         return;
                     }
@@ -329,34 +477,68 @@
                         q = q.filter("it." + column + " == '" + value + "'");
                     }
 
+                    var sortColumn = this.sortColumn();
+
+                    if (!q.defaultType.memberDefinitions["$" + sortColumn]) {
+                        sortColumn = '';
+                    }
+
                     return q
-                        .order(this.sortColumn())
+                        .order(sortColumn)
                         .skip(this.pageSize() * this.currentPage())
                         .take(this.pageSize())
-                        .toArray(self.items);
+                        .toArray(
+                        function (entities) {
+                            self.items.removeAll();
+                            for(var i = 0; i < entities.length; i++) {
+                                var item = entities[i];
+                                var koItem = item.asKoObservable();
+                                self.extendItem(koItem);
+                                self.items.push( koItem );
+                            }
+
+                        }
+                    );
                 }, this);
 
 
 
                 self.getTemplate =  function(propertyOwner, metadata) {
                     var nameSuffix = '';
-                    if (self.objectsInEditMode.indexOf(propertyOwner) > -1) {
-                        return 'jay-data-grid-Edm.String-editor';
-                        //nameSuffix = '-editor';
-                    } else {
-
-                    };
 
                     if (! (metadata.resolvedName && metadata.stringName)) {
                         metadata.stringName = Container.getName(metadata.type);
                         metadata.resolvedName = Container.resolveName(metadata.type);
                     };
 
-                    if (metadata.stringName in element.typeTemplates) {
-                        return element.typeTemplates[metadata.stringName];
-                    }
-                    //console.dir(arguments);
-                    return 'jay-data-text-cell';
+                    if (self.objectsInEditMode.indexOf(propertyOwner) > -1) {
+                        var templateId;
+                        return element.nameTemplates[metadata.name + "-editor"] ||
+                            element.typeTemplates[metadata.stringName + "-editor"] ||
+                            element.typeTemplates[metadata.resolvedName + "-editor"] ||
+                            (document.getElementById('jay-data-grid-' + metadata.resolvedName + '-editor') ?
+                                'jay-data-grid-' + metadata.resolvedName + '-editor' :
+                                'jay-data-grid-generic-editor');
+                        //nameSuffix = '-editor';
+                    } else {
+
+                    };
+
+
+
+                    var named = metadata.name + '-display';
+                    var f = element.nameTemplates[named] || 'xxx';
+
+                    var result = element.nameTemplates[metadata.name + '-display'] ||
+                        element.typeTemplates[metadata.stringName + '-display'] ||
+                        element.typeTemplates[metadata.resolvedName + '-display'] ||
+                        (document.getElementById('jay-data-grid-' + metadata.resolvedName + '-display') ?
+                            'jay-data-grid-' + metadata.resolvedName + '-display' :
+                            'jay-data-grid-generic-display');
+
+
+                    return result;
+
                 }
 
 
@@ -376,10 +558,10 @@
             var container = element.appendChild( document.createElement("div"));
 
             ko.renderTemplate(  gridTemplateName,
-                                new _model(),
-                                {templateEngine: templateEngine},
-                                container,
-                                "replaceNode");
+                new _model(),
+                {templateEngine: templateEngine},
+                container,
+                "replaceNode");
 
 
 
