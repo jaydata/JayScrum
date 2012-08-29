@@ -417,13 +417,13 @@ var moment = require('moment');
                                                     };
                                                     result.burnDown.remainingLine = [];
                                                     result.burnDown.todoLine = [];
-                                                    result.burnDown.idealLine = [bdData[0].Left < 0 ? 0 : bdData[0].Left, 0];
+                                                    result.burnDown.idealLine = [[0, bdData[0].Left < 0 ? 0 : bdData[0].Left], [bdData.length-1, 0]];
                                                     for (var i = 0; i < bdData.length; i++) {
                                                         if (bdData[i].Left >= 0) {
-                                                            result.burnDown.remainingLine.push(bdData[i].Left);
+                                                            result.burnDown.remainingLine.push([i, bdData[i].Left]);
                                                         }
                                                         if (bdData[i].ToDo >= 0) {
-                                                            result.burnDown.todoLine.push(bdData[i].ToDo);
+                                                            result.burnDown.todoLine.push([i, bdData[i].ToDo]);
                                                         }
                                                     }
                                                     self.success(result);

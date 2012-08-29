@@ -2,8 +2,50 @@
 
 function DisplayBurndownChart() {
     var rawObject = JayScrum.app.selectedFrame().data().summaryList().SprintBurndownData();
+    console.log(rawObject);
 
-    var rDataPoint = rawObject.remainingLine.map(function(item, index){return index;});
+//    var rDataPoint = rawObject.remainingLine.map(function(item, index){return [index, item];});
+//    if(rDataPoint.length == 1){
+//        rDataPoint.push([rDataPoint[0][0]+1,rDataPoint[0][1]]);
+//    }
+//    var tDataPoint = rawObject.todoLine.map(function(item, index){return [index, item];});
+//    if(tDataPoint.length == 1){
+//        tDataPoint.push([rDataPoint[0][0]+1,rDataPoint[0][1]]);
+//    }
+
+
+    // A couple flotr configuration options:
+    var options = {
+            xaxis:{
+                min:0,
+                max:8
+            },
+            yaxis:{
+                min:0,
+                max:rawObject.remainingLine[rawObject.remainingLine.length-1][1]
+            },
+            grid:{
+                minorVerticalLines:false
+            }
+        },
+        i, graph;
+
+
+
+    // Draw the graph:
+    graph = Flotr.draw(
+        $('#burndownChart')[0], // Container element
+        [
+            {data:rawObject.remainingLine, lines:{fill:true}},
+            {data:rawObject.todoLine, lines:{fill:true}},
+            rawObject.idealLine
+        ], // Array of data series
+        options     // Configuration options
+    );
+
+    return;
+
+    /*var rDataPoint = rawObject.remainingLine.map(function(item, index){return index;});
     if(rDataPoint.length == 1){
         rDataPoint.push(rDataPoint[0]+1);
         rawObject.remainingLine.push(0);
@@ -56,5 +98,5 @@ function DisplayBurndownChart() {
 
     lines.shades[0].attr("opacity", "0.7");
     if(lines.shades[1]){lines.shades[1].attr("opacity", "0.7");}
-    if(lines.shades[2]){lines.shades[2].attr("opacity", "0");}
+    if(lines.shades[2]){lines.shades[2].attr("opacity", "0");}*/
 }
