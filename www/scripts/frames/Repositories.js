@@ -37,7 +37,7 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
             settings: ko.observableArray(),
             errorMsg: ko.observable(),
             isRegistration: ko.observable(false),
-            isSupportedPurchase: ko.observable(true)
+            isSupportedPurchase: ko.observable(android)
         });
 
     },
@@ -346,6 +346,7 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
 	}
 }, null);
 
+/*
 cordova = {};
 cordova.exec = function(success, error, name, functionname, params){
     if(functionname == "transactions" && params.length == 0){
@@ -360,4 +361,4 @@ cordova.exec = function(success, error, name, functionname, params){
     }
     //success(params[0]);
 
-}
+}*/

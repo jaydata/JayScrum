@@ -71,11 +71,11 @@ Guard.requireType = function (name, value, typeOrTypes) {
 
 Guard.raise = function(exception){
 	if (typeof intellisense === 'undefined') {
-		if (exception instanceof Exception){
+		/*if (exception instanceof Exception){
 			console.error(exception.name + ':', exception.message + '\n', exception);
 		}else{
 			console.error(exception);
-		}
+		}*/
 		throw exception;
 	}
 };
@@ -7129,6 +7129,7 @@ JAYLINT = (function () {
         }
     }
 
+
     function MemberDefinition(memberDefinitionData, definedClass) {
         
         ///<field name="name" type="String">*</field>
@@ -7368,6 +7369,18 @@ JAYLINT = (function () {
     MemberTypes.field = "field";
 
     $data.MemberTypes = MemberTypes;
+    
+    function classToJSON(){
+        var ret = {};
+        for (var i in this){
+            if (this.hasOwnProperty(i)){
+                ret[i] = this[i];
+            }
+        }
+        return ret;
+    }
+    
+    $data.Base.toJSON = classToJSON;
 
     function TypeCreator() {
 
@@ -7586,6 +7599,7 @@ JAYLINT = (function () {
         }
 
         root[shortClassName] = this.classNames[className] = classFunction;
+        //classFunction.toJSON = classToJSON;
 
         //classFunction.prototype.constructor = instanceDefinition.constructor;
         //classFunction.constructor = instanceDefinition.constructor;
@@ -8206,8 +8220,8 @@ $data.defaultErrorCallback = function () {
         console.log(arguments);*/
     Guard.raise(new Exception("DEFAULT ERROR CALLBACK!", "DefaultError", arguments));
 };
-$data.defaultSuccessCallback = function () { console.log('DEFAULT SUCCES CALLBACK'); };
-$data.defaultNotifyCallback = function () { console.log('DEFAULT NOTIFY CALLBACK'); };
+$data.defaultSuccessCallback = function () { /*console.log('DEFAULT SUCCES CALLBACK');*/ };
+$data.defaultNotifyCallback = function () { /*console.log('DEFAULT NOTIFY CALLBACK');*/ };
 
 $data.typeSystem = {
     __namespace: true,
@@ -8441,6 +8455,7 @@ $data.Class.define("$data.Expressions.ExpressionType", null, null, {}, {
     Some: "Some",
     Every: "Every",
     ToArray: "ToArray",
+    BatchDelete: "BatchDelete",
     ForEach: "ForEach",
     Projection: "Projection",
     EntityMember: "EntityMember",
@@ -10882,6 +10897,14 @@ $C('$data.Expressions.EntityExpression', $data.Expressions.ExpressionNode, null,
         return expression;
     },
 
+    VisitBatchDeleteExpression: function (expression, context) {
+        var source = this.Visit(expression.source, context);
+        if (source !== expression.source) {
+            return Container.createBatchDeleteExpression(source);
+        }
+        return expression;
+    },
+
     VisitObjectLiteralExpression: function (expression, context) {
         var newValues = expression.members.map(function (ofe) {
             return this.Visit(ofe, context);
@@ -11243,6 +11266,17 @@ $C('$data.Expressions.EveryExpression', $data.Expressions.FrameOperator, null, {
         this.resultType = $data.Object;
     },
     nodeType: { value: $data.Expressions.ExpressionType.Every, enumerable: true }
+});
+
+$C('$data.Expressions.BatchDeleteExpression', $data.Expressions.FrameOperator, null, {
+    constructor: function (source) {
+        ///<signature>
+        ///<param name="source" type="$data.Expressions.EntitySetExpression" />
+        ///</signature>
+        this.source = source;
+        this.resultType = $data.Integer;
+    },
+    nodeType: { value: $data.Expressions.ExpressionType.BatchDelete, enumerable: true }
 });$C('$data.Expressions.IncludeExpression', $data.Expressions.EntitySetExpression, null, {
     constructor: function (source, selector) {
     },
@@ -11646,8 +11680,16 @@ $data.Class.define('$data.Notifications.ChangeCollector', $data.Notifications.Ch
         return result;
     }
 }, null);$data.Class.define('$data.Access', null, null, {}, {
-    isAuthorized: function(access, user, roles, callback){
-        console.log('isAuthorized', arguments);
+    isAuthorized: function(access, user, sets, callback){
+        var pHandler = new $data.PromiseHandler();
+        var clbWrapper = pHandler.createCallback(callback);
+        var pHandlerResult = pHandler.getPromise();
+        
+        //clbWrapper.error('Authorization failed', 'Access authorization');
+        clbWrapper.success(true);
+        
+        return pHandlerResult;
+        
         var error;
         
         if (!access) error = 'Access undefined';
@@ -11729,12 +11771,13 @@ $data.Class.define('$data.Notifications.ChangeCollector', $data.Notifications.Ch
         
         return pHandlerResult;
     },
-    None: 0,
-    Create: 1,
-    Read: 2,
-    Update: 4,
-    Delete: 8,
-    Execute: 16
+    None: { value: 0 },
+    Create: { value: 1 },
+    Read: { value: 2 },
+    Update: { value: 4 },
+    Delete: { value: 8 },
+    DeleteBatch: { value: 16 },
+    Execute: { value: 32 }
 });
 $data.Class.define('$data.Promise', null, null, {
     always: function () { Guard.raise(new Exception('$data.Promise.always', 'Not implemented!')); },
@@ -12174,7 +12217,6 @@ $data.Class.define('$data.StorageModel', null, null, {
     PhysicalType: {},
     PhysicalTypeName: {},
     EventHandlers: {},
-    Roles: {},
     TableName: {},
     ComplexTypes: {},
     Associations: {},
@@ -12329,7 +12371,7 @@ $data.Class.define('$data.EntityContext', null, null,
         //this._storageModel.forEach(function (storageModel) {
         for (var i = 0, l = this._storageModel.length; i < l; i++){
             var storageModel = this._storageModel[i];
-            this[storageModel.ItemName] = new $data.EntitySet(storageModel.LogicalType, this, storageModel.ItemName, storageModel.EventHandlers, storageModel.Roles);
+            this[storageModel.ItemName] = new $data.EntitySet(storageModel.LogicalType, this, storageModel.ItemName, storageModel.EventHandlers);
             var sm = this[storageModel.ItemName];
             sm.name = storageModel.ItemName;
             sm.tableName = storageModel.TableName;
@@ -12390,14 +12432,6 @@ $data.Class.define('$data.EntityContext', null, null,
                         if (!storageModel.EventHandlers) storageModel.EventHandlers = {};
                         storageModel.EventHandlers.afterDelete = item.afterDelete;
                     }
-                    var roles = item.roles;
-                    var r = {};
-                    if (roles instanceof Array) {
-                        for (var i = 0; i < roles.length; i++) {
-                            if (typeof roles[i] === 'string') r[roles[i]] = true;
-                        }
-                    } else r = roles;
-                    storageModel.Roles = r;
                     this._storageModel.push(storageModel);
                 }
             }
@@ -12770,6 +12804,7 @@ $data.Class.define('$data.EntityContext', null, null,
             
             if (query.expression.nodeType === $data.Expressions.ExpressionType.Single ||
                 query.expression.nodeType === $data.Expressions.ExpressionType.Count ||
+                query.expression.nodeType === $data.Expressions.ExpressionType.BatchDelete ||
                 query.expression.nodeType === $data.Expressions.ExpressionType.Some ||
                 query.expression.nodeType === $data.Expressions.ExpressionType.Every) {
                 if (query.result.length !== 1) {
@@ -12818,43 +12853,50 @@ $data.Class.define('$data.EntityContext', null, null,
         clbWrapper.error = callBack.error;
         var sets = query.getEntitySets();
         
-        var ex = true;
-        var wait = false;
-        var ctx = this;
-        
-        var readyFn = function(cancel){
-            if (cancel === false) ex = false;
+        var authorizedFn = function(){
+            var ex = true;
+            var wait = false;
+            var ctx = that;
             
-            if (ex) ctx.storageProvider.executeQuery(query, clbWrapper);
-            else{
-                query.rawDataList = [];
-                query.result = [];
-                clbWrapper.success(query);
-            }
-        };
-        
-        var i = 0;
-        var callbackFn = function(cancel){
-            if (cancel === false) ex = false;
-            
-            var es = sets[i];
-            if (es.beforeRead){
-                i++;
-                var r = es.beforeRead.call(this, sets, query);
-                if (typeof r === 'function'){
-                    r.call(this, (i < sets.length && ex) ? callbackFn : readyFn, sets, query);
-                }else{
-                    if (r === false) ex = false;
-                    
-                    if (i < sets.length && ex){
-                        callbackFn();
-                    }else readyFn();
+            var readyFn = function(cancel){
+                if (cancel === false) ex = false;
+                
+                if (ex) ctx.storageProvider.executeQuery(query, clbWrapper);
+                else{
+                    query.rawDataList = [];
+                    query.result = [];
+                    clbWrapper.success(query);
                 }
-            }else readyFn();
+            };
+            
+            var i = 0;
+            var callbackFn = function(cancel){
+                if (cancel === false) ex = false;
+                
+                var es = sets[i];
+                if (es.beforeRead){
+                    i++;
+                    var r = es.beforeRead.call(this, sets, query);
+                    if (typeof r === 'function'){
+                        r.call(this, (i < sets.length && ex) ? callbackFn : readyFn, sets, query);
+                    }else{
+                        if (r === false) ex = false;
+                        
+                        if (i < sets.length && ex){
+                            callbackFn();
+                        }else readyFn();
+                    }
+                }else readyFn();
+            };
+            
+            if (sets.length) callbackFn();
+            else readyFn();
         };
         
-        if (sets.length) callbackFn();
-        else readyFn();
+        $data.Access.isAuthorized(query.expression.nodeType === $data.Expressions.ExpressionType.BatchDelete ? $data.Access.DeleteBatch : $data.Access.Read, this._user, sets, {
+            success: authorizedFn,
+            error: clbWrapper.error
+        });
     },
     saveChanges: function (callback) {
         /// <signature>
@@ -13077,28 +13119,33 @@ $data.Class.define('$data.EntityContext', null, null,
             return pHandlerResult;
         }
         
+        var access = $data.Access.None;
+        
         var eventData = {};
         for (var i = 0; i < changedEntities.length; i++){
             var it = changedEntities[i];
             var n = it.entitySet.elementType.name;
             var es = this._entitySetReferences[n];
-            if (es.beforeCreate || es.beforeUpdate || es.beforeDelete){
+            if (es.beforeCreate || es.beforeUpdate || es.beforeDelete || this._user){
                 if (!eventData[n]) eventData[n] = {};
                 
                 switch (it.data.entityState){
                     case $data.EntityState.Added:
+                        access |= $data.Access.Create;
                         if (es.beforeCreate){
                             if (!eventData[n].createAll) eventData[n].createAll = [];
                             eventData[n].createAll.push(it);
                         }
                         break;
                     case $data.EntityState.Modified:
+                        access |= $data.Access.Update;
                         if (es.beforeUpdate){
                             if (!eventData[n].modifyAll) eventData[n].modifyAll = [];
                             eventData[n].modifyAll.push(it);
                         }
                         break;
                     case $data.EntityState.Deleted:
+                        access |= $data.Access.Delete;
                         if (es.beforeDelete){
                             if (!eventData[n].deleteAll) eventData[n].deleteAll = [];
                             eventData[n].deleteAll.push(it);
@@ -13122,7 +13169,7 @@ $data.Class.define('$data.EntityContext', null, null,
                     },
                     error: clbWrapper.error
                 }, changedEntities);
-            }else clbWrapper.success(0);
+            }else clbWrapper.error(new Exception('Cancelled event in ' + cancelEvent, 'CancelEvent'));
             
             /*else if (cancelEvent) clbWrapper.error(new $data.Exception('saveChanges cancelled from event [' + cancelEvent + ']'));
             else Guard.raise('No changed entities');*/
@@ -13142,6 +13189,9 @@ $data.Class.define('$data.EntityContext', null, null,
             if (cancel){
                 cancelEvent = 'async';
                 changedEntities.length = 0;
+                
+                readyFn(cancel);
+                return;
             }
         
             var es = ctx._entitySetReferences[ies[i]];
@@ -13190,8 +13240,13 @@ $data.Class.define('$data.EntityContext', null, null,
             }
         };
         
-        if (i < ies.length) callbackFn();
-        else readyFn();
+        $data.Access.isAuthorized(access, this._user, ies, {
+            success: function(){
+                if (i < ies.length) callbackFn();
+                else readyFn();
+            },
+            error: clbWrapper.error
+        });
         
         return pHandlerResult;
     },
@@ -14539,6 +14594,25 @@ $data.Class.define('$data.Queryable', null, null,
         var takeExp = Container.createIncludeExpression(this.expression, constExp);
         return Container.createQueryable(this, takeExp);
     },
+    removeAll: function (onResult) {
+        this._checkOperation('batchDelete');
+        var pHandler = new $data.PromiseHandler();
+        var cbWrapper = pHandler.createCallback(onResult);
+
+        var batchDeleteExpression = Container.createBatchDeleteExpression(this.expression);
+        var preparator = Container.createQueryExpressionCreator(this.entityContext);
+        try {
+            var expression = preparator.Visit(batchDeleteExpression);
+            this.entityContext.log({ event: "EntityExpression", data: expression });
+
+            this.entityContext.executeQuery(Container.createQueryable(this, expression), cbWrapper);
+        } catch (e) {
+            cbWrapper.error(e);
+        }
+
+        return pHandler.getPromise();
+    },
+
 
     _runQuery: function (onResult_items) {
         var pHandler = new $data.PromiseHandler();
@@ -14631,6 +14705,22 @@ $data.Class.defineEx('$data.EntitySet',
             this[i] = eventHandlers[i];
         }
     },
+
+
+    find: function(keyValue, cb) {
+        //var callback = $data.typeSystem.createCallbackSetting(cb);
+        //todo multifield key support
+        var key = this.defaultType.memberDefinitions.getKeyProperties()[0];
+        return this.single("it." + key.name + " == this.value", { value: keyValue }, cb);
+    },
+
+    addNew: function(item, ncb) {
+        var callback = $data.typeSystem.createCallbackSetting(cb);
+        var _item = new this.createNew(item);
+        this.entityContext.saveChanges(cb);
+        return _item;
+    },
+
     executeQuery: function (expression, on_ready) {
         //var compiledQuery = this.entityContext
         var callBack = $data.typeSystem.createCallbackSetting(on_ready);
@@ -15176,10 +15266,10 @@ $data.FunctionImport.prototype = {
         });
     },
     webGet: function(){
-        return this.method('GET');
+        return this.httpMethod('GET');
     },
     webInvoke: function(){
-        return this.method('POST');
+        return this.httpMethod('POST');
     },
     authorize: function(roles, callback){
         var r = {};
@@ -15784,6 +15874,16 @@ $C('$data.modelBinder.ModelBinderConfigCompiler', $data.Expressions.EntityExpres
         builder.resetModelBinderProperty();
         this._query.modelBinderConfig = builder.modelBinderConfig;
     },
+    VisitBatchDeleteExpression: function (expression) {
+        var builder = Container.createqueryBuilder();
+
+        builder.modelBinderConfig['$type'] = $data.Array;
+        builder.selectModelBinderProperty('$item');
+        builder.modelBinderConfig['$type'] = $data.Integer;
+        builder.modelBinderConfig['$source'] = 'cnt';
+        builder.resetModelBinderProperty();
+        this._query.modelBinderConfig = builder.modelBinderConfig;
+    },
     VisitConstantExpression: function (expression, builder) {
         builder.modelBinderConfig['$type'] = expression.type;
         builder.modelBinderConfig['$value'] = expression.value;
@@ -15844,18 +15944,18 @@ $C('$data.modelBinder.ModelBinderConfigCompiler', $data.Expressions.EntityExpres
             }, this);
         } else {
             /*builder._binderConfig = {
-             $selector: ['json:results'],
-             $type: $data.Array,
-             $item:{
-             $type: elementType,
-             $value: function (meta, data) { return data; }
-             }
-             }*/
-            builder._binderConfig.$item = { };
+                $selector: ['json:results'],
+                $type: $data.Array,
+                $item:{
+                    $type: elementType,
+                    $value: function (meta, data) { return data; }
+                }
+            }*/
+            builder._binderConfig.$item = builder._binderConfig.$item || {};
             builder.modelBinderConfig = builder._binderConfig.$item;
 
 
-
+            
         }
         if (storageModel) {
             this._addComplexTypeProperties(storageModel.ComplexTypes, builder);
@@ -15863,17 +15963,40 @@ $C('$data.modelBinder.ModelBinderConfigCompiler', $data.Expressions.EntityExpres
     },
     _addComplexTypeProperties: function (complexTypes, builder) {
         complexTypes.forEach(function (ct) {
+            if (ct.ToType !== $data.Array){
+                builder.selectModelBinderProperty(ct.FromPropertyName);
+                builder.modelBinderConfig['$type'] = ct.ToType;
+                if (this._isoDataProvider) {
+                    builder.modelBinderConfig['$selector'] = ['json:' + ct.FromPropertyName + '.results', 'json:' + ct.FromPropertyName];
+                } else {
+                    builder.modelBinderConfig['$selector'] = 'json:' + ct.FromPropertyName;
+                }
+                this._addPropertyToModelBinderConfig(ct.ToType, builder);
 
-            builder.selectModelBinderProperty(ct.FromPropertyName);
-            builder.modelBinderConfig['$type'] = ct.ToType;
-            if (this._isoDataProvider) {
-                builder.modelBinderConfig['$selector'] = ['json:' + ct.FromPropertyName + '.results', 'json:' + ct.FromPropertyName];
-            } else {
-                builder.modelBinderConfig['$selector'] = 'json:' + ct.FromPropertyName;
+                builder.popModelBinderProperty();
+            }else{
+                var dt = ct.ToType;
+                var et = Container.resolveType(ct.FromType.memberDefinitions.getMember(ct.FromPropertyName).elementType);
+                if (dt === $data.Array && et && et.isAssignableTo && et.isAssignableTo($data.Entity)){
+                    config = {
+                        $type: $data.Array,
+                        $selector: 'json:' + ct.FromPropertyName,
+                        $item: {
+                            $type: et
+                        }
+                    };
+                    var md = et.memberDefinitions.getPublicMappedProperties();
+                    for (var i = 0; i < md.length; i++){
+                        config.$item[md[i].name] = { $type: md[i].type, $source: md[i].name };
+                    }
+                    builder.modelBinderConfig[ct.FromPropertyName] = config;
+                }else{
+                    builder.modelBinderConfig[ct.FromPropertyName] = {
+                        $type: ct.ToType,
+                        $source: ct.FromPropertyName
+                    };
+                }
             }
-            this._addPropertyToModelBinderConfig(ct.ToType, builder);
-
-            builder.popModelBinderProperty();
         }, this);
     },
     DefaultSelection: function (builder) {
@@ -15942,8 +16065,8 @@ $C('$data.modelBinder.ModelBinderConfigCompiler', $data.Expressions.EntityExpres
         if (expression.memberDefinition.storageModel && expression.memberName in expression.memberDefinition.storageModel.ComplexTypes) {
             this._addPropertyToModelBinderConfig(Container.resolveType(expression.memberDefinition.type), builder);
         } else {
-
-            builder.modelBinderConfig['$source'] = expression.memberName;
+            if (!(builder.modelBinderConfig.$type && Container.resolveType(builder.modelBinderConfig.$type).isAssignableTo && Container.resolveType(builder.modelBinderConfig.$type).isAssignableTo($data.Entity)))
+                builder.modelBinderConfig['$source'] = expression.memberName;
         }
     },
     VisitEntitySetExpression: function (expression, builder) {

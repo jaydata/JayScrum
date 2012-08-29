@@ -53,10 +53,11 @@ $C('$data.storageProviders.oData.oDataProvider', $data.StorageProviderBase, null
                         callBack.success(that.context);
                     }];
 
-                    if (this.providerConfiguration.user) {
-                        requestData[0].user = this.providerConfiguration.user;
-                        requestData[0].password = this.providerConfiguration.password || "";
-                    }
+                    this.appendBasicAuth(requestData[0], this.providerConfiguration.user, this.providerConfiguration.password);
+                    //if (this.providerConfiguration.user) {
+                    //    requestData[0].user = this.providerConfiguration.user;
+                    //    requestData[0].password = this.providerConfiguration.password || "";
+                    //}
 
                     this.context.prepareRequest.call(this, requestData);
                     OData.request.apply(this, requestData);
@@ -135,6 +136,7 @@ $C('$data.storageProviders.oData.oDataProvider', $data.StorageProviderBase, null
         var requestData = [
             {
                 requestUri: this.providerConfiguration.oDataServiceHost + sql.queryText,
+                method: sql.method,
                 headers: {
                     MaxDataServiceVersion: this.providerConfiguration.maxDataServiceVersion
                 }
@@ -147,14 +149,15 @@ $C('$data.storageProviders.oData.oDataProvider', $data.StorageProviderBase, null
                 }
             },
             function (jqXHR, textStatus, errorThrow) {
-                callBack.error(errorThrow);
+                callBack.error(errorThrow || new Exception('Request failed', 'RequestError', arguments));
             }
         ];
 
-        if (this.providerConfiguration.user) {
-            requestData[0].user = this.providerConfiguration.user;
-            requestData[0].password = this.providerConfiguration.password || "";
-        }
+        this.appendBasicAuth(requestData[0], this.providerConfiguration.user, this.providerConfiguration.password);
+        //if (this.providerConfiguration.user) {
+        //    requestData[0].user = this.providerConfiguration.user;
+        //    requestData[0].password = this.providerConfiguration.password || "";
+        //}
 
         this.context.prepareRequest.call(this, requestData);
         //$data.ajax(requestData);
@@ -176,6 +179,92 @@ $C('$data.storageProviders.oData.oDataProvider', $data.StorageProviderBase, null
         }
     },
     saveInternal: function (independentBlocks, index2, callBack) {
+        if (independentBlocks.length > 1 || (independentBlocks.length == 1 && independentBlocks[0].length > 1))
+            this._saveBatch(independentBlocks, index2, callBack);
+        else
+            this._saveRest(independentBlocks, index2, callBack);
+    },
+    _saveRest: function (independentBlocks, index2, callBack) {
+        batchRequests = [];
+        convertedItem = [];
+        var request;
+        for (var index = 0; index < independentBlocks.length; index++) {
+            for (var i = 0; i < independentBlocks[index].length; i++) {
+                convertedItem.push(independentBlocks[index][i].data);
+                request = {
+                    requestUri: this.providerConfiguration.oDataServiceHost + '/',
+                    headers: {}
+                };
+                //request.headers = { "Content-Id": convertedItem.length };
+                switch (independentBlocks[index][i].data.entityState) {
+                    case $data.EntityState.Unchanged: continue; break;
+                    case $data.EntityState.Added:
+                        request.method = "POST";
+                        request.requestUri += independentBlocks[index][i].entitySet.name;
+                        request.data = this.save_getInitData(independentBlocks[index][i], convertedItem);
+                        break;
+                    case $data.EntityState.Modified:
+                        request.method = "MERGE";
+                        request.requestUri += independentBlocks[index][i].entitySet.name;
+                        request.requestUri += "(" + this.getEntityKeysValue(independentBlocks[index][i]) + ")";
+                        this.save_addConcurrencyHeader(independentBlocks[index][i], request.headers);
+                        request.data = this.save_getInitData(independentBlocks[index][i], convertedItem);
+                        break;
+                    case $data.EntityState.Deleted:
+                        request.method = "DELETE";
+                        request.requestUri += independentBlocks[index][i].entitySet.name;
+                        request.requestUri += "(" + this.getEntityKeysValue(independentBlocks[index][i]) + ")";
+                        this.save_addConcurrencyHeader(independentBlocks[index][i], request.headers);
+                        break;
+                    default: Guard.raise(new Exception("Not supported Entity state"));
+                }
+                //batchRequests.push(request);
+            }
+        }
+        var that = this;
+
+        var requestData = [request, function (data, response) {
+            if (response.statusCode > 200 && response.statusCode < 300) {
+                var item = convertedItem[0];
+                if (response.statusCode == 204) {
+                    if (response.headers.ETag) {
+                        var property = item.getType().memberDefinitions.getPublicMappedProperties().filter(function (memDef) { return memDef.concurrencyMode === $data.ConcurrencyMode.Fixed });
+                        if (property && property[0]) {
+                            item[property[0].name] = response.headers.ETag;
+                        }
+                    }
+                } else {
+
+                    item.getType().memberDefinitions.getPublicMappedProperties().forEach(function (memDef) {
+                        if (memDef.computed) {
+                            if (memDef.concurrencyMode === $data.ConcurrencyMode.Fixed) {
+                                item[memDef.name] = response.headers.ETag;
+                            } else {
+                                item[memDef.name] = data[memDef.name];
+                            }
+                        }
+                    }, this);
+                }
+                
+                if (callBack.success) {
+                    callBack.success(convertedItem.length);
+                }
+            } else {
+                callBack.error(response);
+            }
+
+        }, callBack.error];
+
+        this.appendBasicAuth(requestData[0], this.providerConfiguration.user, this.providerConfiguration.password);
+        //if (this.providerConfiguration.user) {
+        //    requestData[0].user = this.providerConfiguration.user;
+        //    requestData[0].password = this.providerConfiguration.password || "";
+        //}
+
+        this.context.prepareRequest.call(this, requestData);
+        OData.request.apply(this, requestData);
+    },
+    _saveBatch: function (independentBlocks, index2, callBack) {
         batchRequests = [];
         convertedItem = [];
         for (var index = 0; index < independentBlocks.length; index++) {
@@ -219,7 +308,6 @@ $C('$data.storageProviders.oData.oDataProvider', $data.StorageProviderBase, null
         }, function (data, response) {
             if (response.statusCode == 202) {
                 var result = data.__batchResponses[0].__changeResponses;
-                var resultEntities = [];
                 for (var i = 0; i < result.length; i++) {
                     var item = convertedItem[i];
                     if (result[i].statusCode == 204) {
@@ -233,6 +321,7 @@ $C('$data.storageProviders.oData.oDataProvider', $data.StorageProviderBase, null
                     }
 
                     item.getType().memberDefinitions.getPublicMappedProperties().forEach(function (memDef) {
+                        //TODO: is this correct?
                         if (memDef.computed) {
                             if (memDef.concurrencyMode === $data.ConcurrencyMode.Fixed) {
                                 item[memDef.name] = result[i].headers.ETag;
@@ -241,6 +330,7 @@ $C('$data.storageProviders.oData.oDataProvider', $data.StorageProviderBase, null
                             }
                         }
                     }, this);
+                    
                 }
                 if (callBack.success) {
                     callBack.success(convertedItem.length);
@@ -251,10 +341,11 @@ $C('$data.storageProviders.oData.oDataProvider', $data.StorageProviderBase, null
 
         }, callBack.error, OData.batchHandler];
 
-        if (this.providerConfiguration.user) {
-            requestData[0].user = this.providerConfiguration.user;
-            requestData[0].password = this.providerConfiguration.password || "";
-        }
+        this.appendBasicAuth(requestData[0], this.providerConfiguration.user, this.providerConfiguration.password);
+        //if (this.providerConfiguration.user) {
+        //    requestData[0].user = this.providerConfiguration.user;
+        //    requestData[0].password = this.providerConfiguration.password || "";
+        //}
 
         this.context.prepareRequest.call(this, requestData);
         OData.request.apply(this, requestData);
@@ -284,7 +375,7 @@ $C('$data.storageProviders.oData.oDataProvider', $data.StorageProviderBase, null
         var sqlText = this._compile(queryable);
         return queryable;
     },
-    supportedDataTypes: { value: [$data.Integer, $data.String, $data.Number, $data.Blob, $data.Boolean, $data.Date], writable: false },
+    supportedDataTypes: { value: [$data.Integer, $data.String, $data.Number, $data.Blob, $data.Boolean, $data.Date, $data.Object], writable: false },
 
     supportedBinaryOperators: {
         value: {
@@ -457,7 +548,8 @@ $C('$data.storageProviders.oData.oDataProvider', $data.StorageProviderBase, null
             orderBy: {},
             orderByDescending: {},
             first: {},
-            include: {}
+            include: {},
+            batchDelete: {}
         },
         enumerable: true,
         writable: true
@@ -465,7 +557,7 @@ $C('$data.storageProviders.oData.oDataProvider', $data.StorageProviderBase, null
     fieldConverter: {
         value: {
             fromDb: {
-                '$data.Integer': function (number) { return number; },
+                '$data.Integer': function (number) { return (typeof number === 'string' && /^\d+$/.test(number)) ? parseInt(number) : number; },
                 '$data.Number': function (number) { return number; },
                 '$data.Date': function (dbData) { return dbData ? new Date(parseInt(dbData.substr(6))) : undefined; },
                 '$data.String': function (text) { return text; },
@@ -475,7 +567,7 @@ $C('$data.storageProviders.oData.oDataProvider', $data.StorageProviderBase, null
                 '$data.Array': function (o) { if (o === undefined) { return new $data.Array(); } else if (o instanceof $data.Array) { return o; } return JSON.parse(o); }
             },
             toDb: {
-                '$data.Entity': function(e) { return "'" + JSON.stringify(e.initData) + "'"},
+                '$data.Entity': function (e) { return "'" + JSON.stringify(e.initData) + "'" },
                 '$data.Integer': function (number) { return number; },
                 '$data.Number': function (number) { return number % 1 == 0 ? number : number + 'm'; },
                 '$data.Date': function (date) { return date ? "datetime'" + date.toISOString() + "'" : null; },
@@ -530,7 +622,7 @@ $C('$data.storageProviders.oData.oDataProvider', $data.StorageProviderBase, null
             return result.join(",");
         }
         return keyValue;
-    }/*,
+    },/*
     getServiceMetadata: function () {
         $data.ajax(this._setAjaxAuthHeader({
             url: this.providerConfiguration.oDataServiceHost + "/$metadata",
@@ -567,6 +659,53 @@ $C('$data.storageProviders.oData.oDataProvider', $data.StorageProviderBase, null
         }
     }
     */
+    appendBasicAuth: function(request, user, password){
+        request.headers = request.headers || {};
+        if (!request.headers.Authorization && user && password) {
+            request.headers.Authorization = "Basic " + this.__encodeBase64(user + ":" + password);
+        }
+    },
+    __encodeBase64: function (val) {
+        var b64array = "ABCDEFGHIJKLMNOP" +
+                           "QRSTUVWXYZabcdef" +
+                           "ghijklmnopqrstuv" +
+                           "wxyz0123456789+/" +
+                           "=";
+
+        var input = val;
+        var base64 = "";
+        var hex = "";
+        var chr1, chr2, chr3 = "";
+        var enc1, enc2, enc3, enc4 = "";
+        var i = 0;
+
+        do {
+            chr1 = input.charCodeAt(i++);
+            chr2 = input.charCodeAt(i++);
+            chr3 = input.charCodeAt(i++);
+
+            enc1 = chr1 >> 2;
+            enc2 = ((chr1 & 3) << 4) | (chr2 >> 4);
+            enc3 = ((chr2 & 15) << 2) | (chr3 >> 6);
+            enc4 = chr3 & 63;
+
+            if (isNaN(chr2)) {
+                enc3 = enc4 = 64;
+            } else if (isNaN(chr3)) {
+                enc4 = 64;
+            }
+
+            base64 = base64 +
+                        b64array.charAt(enc1) +
+                        b64array.charAt(enc2) +
+                        b64array.charAt(enc3) +
+                        b64array.charAt(enc4);
+            chr1 = chr2 = chr3 = "";
+            enc1 = enc2 = enc3 = enc4 = "";
+        } while (i < input.length);
+
+        return base64;
+    }
 }, null);
 
 $data.StorageProviderBase.registerProvider("oData", $data.storageProviders.oData.oDataProvider);
@@ -596,7 +735,7 @@ $C('$data.storageProviders.oData.oDataCompiler', $data.Expressions.EntityExpress
         var queryText = queryFragments.urlText;
         var addAmp = false;
         for (var name in queryFragments) {
-            if (name != "urlText" && name != "actionPack" && name != "data" && name != "lambda" && queryFragments[name] != "") {
+            if (name != "urlText" && name != "actionPack" && name != "data" && name != "lambda" && name != "method" && queryFragments[name] != "") {
                 if (addAmp) { queryText += "&"; } else { queryText += "?"; }
                 addAmp = true;
                 if(name != "$urlParams"){
@@ -610,6 +749,7 @@ $C('$data.storageProviders.oData.oDataCompiler', $data.Expressions.EntityExpress
         
         return {
             queryText: queryText,
+            method: queryFragments.method || 'GET',
             params: []
         };
     },
@@ -685,6 +825,11 @@ $C('$data.storageProviders.oData.oDataCompiler', $data.Expressions.EntityExpress
                 this.Visit(expression.params[i], context);
             }
         }
+    },
+    VisitBatchDeleteExpression: function (expression, context) {
+        this.Visit(expression.source, context);
+        context.urlText += '/$batchDelete';
+        context.method = 'DELETE';
     },
 
     VisitConstantExpression: function (expression, context) {

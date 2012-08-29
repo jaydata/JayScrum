@@ -86,7 +86,7 @@ function registerEdmTypes() {
 registerEdmTypes();
 
 $data.Class.define('$data.JayStormAPI.User', $data.Entity, null, {
-    UserID: { type: 'id', key: true, computed: true },
+    UserID: { type: 'id', key: true, computed: true, $visible:false },
     Login: { type: 'Edm.String' },
     Age: { type: 'Edm.Int32', required: true },
     FirstName: { type: 'Edm.String' },
