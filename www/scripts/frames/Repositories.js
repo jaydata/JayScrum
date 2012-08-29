@@ -109,7 +109,7 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
       console.log("-== 5. create or update tran");
         console.log(JSON.stringify(transactions));
         $.ajax({
-            url:'http://192.168.1.142:3000/CreateDatabase2',
+            url: JayScrum.Frames.Repositories.ServerUrl+'CreateDatabase2',
             data:JSON.stringify(transactions),
             type:"POST",
             contentType: 'application/json',
@@ -182,42 +182,9 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
         }
         var url = repoSetting.Url();
         if(url.indexOf('http') !== 0){
-            //url = 'http://app1.storm.jaystack.com:3000/'+repoSetting.Url.toLowerCase();
-            url = 'http://192.168.1.142:3000/'+repoSetting.Url().toLowerCase();
+            url = JayScrum.Frames.Repositories.ServerUrl+repoSetting.Url().toLowerCase();
         }
         JayScrum.app._initializeRepositories(url, repoSetting.UserName, repoSetting.Password);
-
-        /*var urlparser = document.createElement('a');
-        urlparser.href = url;
-        var dbName = urlparser.pathname.slice(1);
-        if(dbName[dbName.length-1] === '/'){
-            dbName = dbName.slice(0,-1);
-        }
-
-        var createDbUrl = urlparser.protocol + '//' + urlparser.host + '/CreateDatabase?dbName=' + dbName + '&schemaName=jayscrumcontext';
-        var createUserDbUrl = urlparser.protocol + '//' + urlparser.host + '/CreateDatabase?dbName=' + dbName + '_users&schemaName=jaystormcontext';
-
-        $.ajax({
-            url:createDbUrl,
-            error:function (xhr, status, error) {
-                console.log(error);
-                JayScrum.app.selectedFrame()._initializeRepositoriesFrame();
-            },
-            success:function (data, status, xhr) {
-
-                $.ajax({
-                    url: createUserDbUrl,
-                    error:function (xhr, status, error) {
-                        console.log(error);
-                        JayScrum.app.selectedFrame()._initializeRepositoriesFrame();
-                    },
-                    success:function (data, status, xhr) {
-                        JayScrum.app._initializeRepositories(url, repoSetting.UserName, repoSetting.Password);
-                    }
-                });
-            }
-        });*/
-
     },
     editSetting:function(item){
         var entity = JayScrum.app.selectedFrame().localContext.Repositories.attachOrGet(item);
@@ -344,21 +311,7 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
             "transactions",
             [{usr:item.UserName(), psw:item.Password(), dbName: item.Url(), title:item.Title()}]);
 	}
-}, null);
-
-/*
-cordova = {};
-cordova.exec = function(success, error, name, functionname, params){
-    if(functionname == "transactions" && params.length == 0){
-
-        success(JSON.parse('[{"OrderId":"order1", "productId":"havielofzu_nagy", "purchaseToken":"", "DevPayLoad":{"Title":"Repository","Url":"af","UserName":"asdf","Password":"sdf","IsDefault":false}},' +
-            '{"OrderId":"order2", "productId":"havielofzu_nagy", "purchaseToken":"", "DevPayLoad":{"Title":"Repository","Url":"af2","UserName":"asdf","Password":"sdf","IsDefault":false}}]'));
-        return;
-    }else if(functionname == "subscribe"){
-        success({res:"RESULT_OK", subscriptionId:'havielofzu_nagy'});
-    }else if(functionname == "transactions" && params.length != 0){
-        success(JSON.parse('{"OrderId":"order1", "productId":"havielofzu_nagy", "purchaseToken":"", "DevPayLoad":{"Title":"Repository","Url":"af","UserName":"asdf","Password":"sdf","IsDefault":false}}'));
-    }
-    //success(params[0]);
-
-}*/
+}, {
+    ServerUrl:'http://192.168.1.142:3000/'
+    //ServerSideUrl:'http://app1.storm.jaystack.com:3000/'
+});
