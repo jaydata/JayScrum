@@ -37,7 +37,7 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
             settings: ko.observableArray(),
             errorMsg: ko.observable(),
             isRegistration: ko.observable(false),
-            isSupportedPurchase: ko.observable(android)
+            isSupportedPurchase: ko.observable(true)
         });
 
     },
@@ -136,8 +136,7 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
                         }
                     }else{
                     	console.log("-== 7/2. Add new repo: "+JSON.stringify(result[i]));
-                        //add new repo
-                    	if(result[i].Title){
+                        if(result[i].Title){
 	                        var repo = new JayScrum.Settings.Repository({
 	                            Title: result[i].Title,
 	                            Status: result[i].Status,
@@ -315,18 +314,8 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
         JayScrum.app.selectedFrame().hideActionBar();
         JayScrum.app.selectedFrame().selectedView().i_scroll.destroy();
         JayScrum.app.selectedFrame().selectedView().i_scroll = JayScrum.app.initScrollById("settingPageScroll");
-        /*cordova.exec(JayScrum.app.selectedFrame()._sendTransactionToSrv,
-            JayScrum.app.selectedFrame()._cordovaFailCallback,
-            "InAppBilling",
-            "transactions",
-            [result.subscriptionId]);*/
 
     },
-    /*_sendTransactionToSrv: function(transaction){
-        console.log("Save transaction to db!");
-
-        console.log(transactions);
-    },*/
     _cordovaFailCallback:function(){
     	console.log("!!!!!!!ERROR!!!!!!!");
         alert('ERROR: '+JSON.stringify(arguments));
@@ -340,6 +329,12 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
             "subscribe",
             [item.innerInstance]);
     },
+    unSubscriptionDatabase:function(){
+        console.log("unsubscription");
+    },
+    refreshSettings:function(){
+      JayScrum.app.selectedFrame()._initializeRepositoriesFrame();
+    },
 
 	getTransactionsClick:function(item){
 		console.log('getTransactions: '+JSON.stringify(item));
@@ -350,19 +345,19 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
             [{usr:item.UserName(), psw:item.Password(), dbName: item.Url(), title:item.Title()}]);
 	}
 }, null);
-/*
+
 cordova = {};
 cordova.exec = function(success, error, name, functionname, params){
-    if(functionname == "transactions" && params == null){
+    if(functionname == "transactions" && params.length == 0){
 
-        success(JSON.parse('[{"OrderId":"order1", "productId":"havielofzu_nagy", "purchaseToken":"", "devPayLoad":{"Title":"Repository","Url":"af","UserName":"asdf","Password":"sdf","IsDefault":false}},' +
-            '{"OrderId":"order2", "productId":"havielofzu_nagy", "purchaseToken":"", "devPayLoad":{"Title":"Repository","Url":"af2","UserName":"asdf","Password":"sdf","IsDefault":false}}]'));
+        success(JSON.parse('[{"OrderId":"order1", "productId":"havielofzu_nagy", "purchaseToken":"", "DevPayLoad":{"Title":"Repository","Url":"af","UserName":"asdf","Password":"sdf","IsDefault":false}},' +
+            '{"OrderId":"order2", "productId":"havielofzu_nagy", "purchaseToken":"", "DevPayLoad":{"Title":"Repository","Url":"af2","UserName":"asdf","Password":"sdf","IsDefault":false}}]'));
         return;
     }else if(functionname == "subscribe"){
         success({res:"RESULT_OK", subscriptionId:'havielofzu_nagy'});
-    }else if(functionname == "transactions" && params != null){
-        success(JSON.parse('{"OrderId":"order1", "productId":"havielofzu_nagy", "purchaseToken":"", "devPayLoad":{"Title":"Repository","Url":"af","UserName":"asdf","Password":"sdf","IsDefault":false}}'));
+    }else if(functionname == "transactions" && params.length != 0){
+        success(JSON.parse('{"OrderId":"order1", "productId":"havielofzu_nagy", "purchaseToken":"", "DevPayLoad":{"Title":"Repository","Url":"af","UserName":"asdf","Password":"sdf","IsDefault":false}}'));
     }
     //success(params[0]);
 
-}*/
+}

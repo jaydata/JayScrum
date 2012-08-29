@@ -1180,9 +1180,10 @@
                                 <h2 data-bind="text: Title, click: $parent.connectTo"></h2>
                                 <span data-bind="text:$data.Status"></span>
                                 <div class="actions fright">
+                                    <!--ko if: $data.Status() == 'static' || $data.Status() == 'ready'-->
                                     <span class="icon-action connect" data-bind="click: $parent.connectTo">
                                         <span></span></span>
-
+                                    <!--/ko-->
                                     <!--ko ifnot: $data.Id() == -1-->
                                     <span class="icon-action edit" data-bind="click: $parent.editSetting">
                                         <span></span></span>
@@ -1192,10 +1193,10 @@
                                     <!--/ko-->
                                     <!--ko ifnot: $data.Status() == 'static'-->
                                     <!--ko if: $data.Status() == 'ready'-->
-                                    <span class="icon-action money" data-bind="click: $parent.updateStatus"><span></span></span>
+                                    <span class="icon-action money" data-bind="click: $parent.unSubscriptionDatabase"><span></span></span>
                                     <!--/ko-->
                                     <!--ko ifnot: $data.Status() == 'ready'-->
-                                    <span class="icon-action update" data-bind="click: $parent.updateStatus"><span></span></span>
+                                    <span class="icon-action update" data-bind="click: $parent.refreshSettings"><span></span></span>
                                     <!--/ko-->
                                     <!--/ko-->
                                     <!--/ko-->

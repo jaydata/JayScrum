@@ -201,6 +201,71 @@ var moment = require('moment');
         };
     }
 
+    function updateConnectedDataSprintChanged() {
+        return function (callBackHandler, sprintList) {
+            var self = this;
+            var sprintIds = sprintList.map(function (wrkItem) {return wrkItem.Id;});
+
+            self.WorkItems.where(function (item) {return item.WorkItem_Sprint in this.ids1}, {ids1:sprintIds}).toArray(function (workItemList) {
+                for (var i = 0; i < workItemList.length; i++) {
+                    wrkItem = workItemList[i];
+                    var sprint = sprintList.filter(function (item) {return item.Id == wrkItem.WorkItem_Sprint})[0];
+                    if (sprint) {
+                        self.WorkItems.update(wrkItem);
+                        wrkItem.SprintName = sprint.Name;
+                    }
+                }
+                self.saveChanges(function () {
+                    callBackHandler();
+                });
+
+            });
+        };
+    }
+    function updateConnectedDataProjectChanged() {
+        return function (callBackHandler, projectList) {
+            var self = this;
+            var projectIds = projectList.map(function (wrkItem) {return wrkItem.Id;});
+
+            self.WorkItems.where(function (item) {return item.WorkItem_Project in this.ids1}, {ids1:projectIds}).toArray(function (workItemList) {
+                for (var i = 0; i < workItemList.length; i++) {
+                    wrkItem = workItemList[i];
+                    var project = projectList.filter(function (item) {return item.Id == wrkItem.WorkItem_Project})[0];
+                    if (project) {
+                        self.WorkItems.update(wrkItem);
+                        wrkItem.ProjectName = project.Name;
+                    }
+                }
+                console.log("Update workItem after change project!");
+                self.saveChanges(function () {
+                    callBackHandler();
+                });
+
+            });
+        };
+    }
+    function updateConnectedDataUserStoryChanged() {
+        return function (callBackHandler, workItemList) {
+            var self = this;
+            var useStoryIds = workItemList.filter(function (){return item.Type == "UserStory"}).map(function (wrkItem) {return wrkItem.Id;});
+
+            self.WorkItems.where(function (item) {return item.WorkItem_WorkItem in this.ids1}, {ids1:useStoryIds}).toArray(function (workItemList) {
+                for (var i = 0; i < workItemList.length; i++) {
+                    wrkItem = workItemList[i];
+                    var project = workItemList.filter(function (item) {return item.Id == wrkItem.WorkItem_WorkItem})[0];
+                    if (project) {
+                        self.WorkItems.update(wrkItem);
+                        wrkItem.ParentName = project.Name;
+                    }
+                }
+                self.saveChanges(function () {
+                    callBackHandler();
+                });
+
+            });
+        };
+    }
+
     registerEdmTypes();
     $data.Entity.extend('LightSwitchApplication.WorkItem', {
         'Id':{ key:true, type:'id', nullable:false, computed:true },
@@ -379,7 +444,7 @@ var moment = require('moment');
     });
     $data.Class.defineEx('LightSwitchApplication.ApplicationData',[$data.EntityContext, LightSwitchApplication.ApplicationService], null, {
         WorkItems:{ type:$data.EntitySet, elementType:LightSwitchApplication.WorkItem , 'afterCreate':updateBurndownData, 'afterUpdate':updateBurndownData, 'beforeCreate':updateConnectedData, 'beforeUpdate':updateConnectedData },
-        Projects:{ type:$data.EntitySet, elementType:LightSwitchApplication.Project },
+        Projects:{ type:$data.EntitySet, elementType:LightSwitchApplication.Project/*, 'afterUpdate':updateConnectedDataProjectChanged*/},
         Sprints:{ type:$data.EntitySet, elementType:LightSwitchApplication.Sprint,  'afterCreate':afterUpdateCreateSprint, 'afterUpdate':afterUpdateCreateSprint},
         SprintBurndown:{ type:$data.EntitySet, elementType:LightSwitchApplication.BurndownData }/*,
          Microsoft_LightSwitch_GetCanInformation: $data.EntityContext.generateServiceOperation({ serviceName: 'Microsoft_LightSwitch_GetCanInformation', returnType: 'Edm.String', params: [{ dataServiceMembers: 'Edm.String' }], method: 'GET' })*/

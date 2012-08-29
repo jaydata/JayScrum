@@ -108,6 +108,8 @@ app.use("/CreateDatabase2", function(req, res){
         }
         repo.OrderId = req.body[i].OrderId;
 
+        if(repo.OrderId == 'order2'){repo.Status = "initialize"};
+
         if(repo.Status == "ready"){
             (function(){
                 var appdb = new appContextType({ name:'mongoDB', databaseName: appDBName, address: dbAddress});
