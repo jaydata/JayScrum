@@ -1177,30 +1177,31 @@
                     <div class="list detail">
                         <ul id="setting-list" class="setting-list" data-bind="foreach: $data.data().settings">
                             <li>
+                                <!--ko if: $data.Status() == 'static' || $data.Status() == 'ready'-->
                                 <h2 data-bind="text: Title, click: $parent.connectTo"></h2>
+                                <!-- /ko -->
+                                <!--ko ifnot: $data.Status() == 'static' || $data.Status() == 'ready'-->
+                                <h2 class="noclick" data-bind="text: Title"></h2>
+                                <!-- /ko -->
                                 <span data-bind="text:$data.Status"></span>
                                 <div class="actions fright">
                                     <!--ko if: $data.Status() == 'static' || $data.Status() == 'ready'-->
-                                    <span class="icon-action connect" data-bind="click: $parent.connectTo">
-                                        <span></span></span>
+                                    <span class="icon-action connect" data-bind="click: $parent.connectTo"><span></span></span>
                                     <!--/ko-->
                                     <!--ko ifnot: $data.Id() == -1-->
-                                    <span class="icon-action edit" data-bind="click: $parent.editSetting">
-                                        <span></span></span>
+                                    <span class="icon-action edit" data-bind="click: $parent.editSetting"><span></span></span>
                                     <!--ko if: $data.Status() == 'static'-->
-                                    <span class="icon-action delete" data-bind="click: $parent.deleteSetting">
-                                        <span></span></span>
+                                    <span class="icon-action delete" data-bind="click: $parent.deleteSetting"><span></span></span>
                                     <!--/ko-->
                                     <!--ko ifnot: $data.Status() == 'static'-->
                                     <!--ko if: $data.Status() == 'ready'-->
-                                    <span class="icon-action money" data-bind="click: $parent.unSubscriptionDatabase"><span></span></span>
+                                    <span class="icon-action nomoney" data-bind="click: $parent.unSubscriptionDatabase"><span></span></span>
                                     <!--/ko-->
                                     <!--ko ifnot: $data.Status() == 'ready'-->
                                     <span class="icon-action update" data-bind="click: $parent.refreshSettings"><span></span></span>
                                     <!--/ko-->
                                     <!--/ko-->
                                     <!--/ko-->
-
                                 </div>
                             </li>
                         </ul>
@@ -1312,7 +1313,7 @@
                 <h1 class="title">users</h1>
             </div>
             <div class="scroll-list pivot-default-opacity scrollable-list animate bottom45" id="settingPageScroll">
-                <div class="scroller-list">
+                <div class="scroller-list reset">
                     <div class="list detail maxlist" >
                         <div id="x567" data-bind="jayGrid: {source: $data.data().collection}"></div>
                     </div>

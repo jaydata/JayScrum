@@ -43,18 +43,28 @@
 	&.add span          { background-position: 0 -420px; }
 	&.edit span         { background-position: 0 -270px; }
 	&.delete span       { background-position: 0 -630px; }
+	&.delete.undo span  { background-position: 0 -1290px; }
 	&.update span       { background-position: 0 -540px; }
 	&.download span     { background-position: 0 -1110px; .rotate(180deg); }
 	&.save span         { background-position: 0 -240px; }
+	&.save              { background-position: 0 -240px; }
 	&.undo span         { background-position: 0 -720px; }
 	&.client span       { background-position: 0 -870px; }
 	&.server span       { background-position: 0 -900px; }
 	&.money span        { background-position: 0 -930px; }
+	&.nomoney span      { background-position: 0 -1260px; }
 	&.settings span     { background-position: 0 -390px; }
 	&.upload span       { background-position: 0 -1110px; }
 	&.pin span          { background-position: 0 -750px; }
 	&.unpin span        { background-position: 0 -1140px; }
 	&.user span         { background-position: 0 -1020px; }
+	&.revert span       { background-position: 0 -600px; }
+}
+input.icon-action 
+{
+    background: url("@{img-folder}/icon_actions.png") no-repeat; border: none;
+    
+    &:hover { cursor: pointer; z-index: 4500; }
 }
 body[theme=white] .icon-action {
     &.back span         { background-position: -30px -30px; }
