@@ -111,7 +111,12 @@ var moment = require('moment');
             Q.all(fns)
                 .then(function(){
                     self.saveChanges(function(){
-                        callbackHandler();})});
+                        var fnUpdateConnectedData = updateConnectedDataSprintChanged();
+                        fnUpdateConnectedData.apply(self,[function(){
+                            callbackHandler();
+                        }, sprintList]);
+                    });
+                });
         };
     };
 
@@ -163,7 +168,10 @@ var moment = require('moment');
                     Q.all(fns)
                         .then(function(){
                             self.saveChanges(function(){
-                                callbackHandler();
+                                var fnUpdateConnectedData = updateConnectedDataUserStoryChanged();
+                                fnUpdateConnectedData.apply(self,[function(){
+                                    callbackHandler();
+                                }, workItemList]);
                             });
                         });
 
@@ -204,14 +212,16 @@ var moment = require('moment');
     function updateConnectedDataSprintChanged() {
         return function (callBackHandler, sprintList) {
             var self = this;
-            var sprintIds = sprintList.map(function (wrkItem) {return wrkItem.Id;});
+            var sprintIds = sprintList.map(function (wrkItem) {
+                return wrkItem.Id;
+            });
 
             self.WorkItems.where(function (item) {return item.WorkItem_Sprint in this.ids1}, {ids1:sprintIds}).toArray(function (workItemList) {
                 for (var i = 0; i < workItemList.length; i++) {
                     wrkItem = workItemList[i];
                     var sprint = sprintList.filter(function (item) {return item.Id == wrkItem.WorkItem_Sprint})[0];
                     if (sprint) {
-                        self.WorkItems.update(wrkItem);
+                        self.WorkItems.attach(wrkItem);
                         wrkItem.SprintName = sprint.Name;
                     }
                 }
@@ -232,7 +242,7 @@ var moment = require('moment');
                     wrkItem = workItemList[i];
                     var project = projectList.filter(function (item) {return item.Id == wrkItem.WorkItem_Project})[0];
                     if (project) {
-                        self.WorkItems.update(wrkItem);
+                        self.WorkItems.attach(wrkItem);
                         wrkItem.ProjectName = project.Name;
                     }
                 }
@@ -245,16 +255,15 @@ var moment = require('moment');
         };
     }
     function updateConnectedDataUserStoryChanged() {
-        return function (callBackHandler, workItemList) {
+        return function (callBackHandler, userStoryItemList) {
             var self = this;
-            var useStoryIds = workItemList.filter(function (){return item.Type == "UserStory"}).map(function (wrkItem) {return wrkItem.Id;});
-
-            self.WorkItems.where(function (item) {return item.WorkItem_WorkItem in this.ids1}, {ids1:useStoryIds}).toArray(function (workItemList) {
+            var userStoryIds = userStoryItemList.filter(function (item){return item.Type == "UserStory"}).map(function (wrkItem) {return wrkItem.Id;});
+            self.WorkItems.where(function (item) {return item.WorkItem_WorkItem in this.ids1}, {ids1:userStoryIds}).toArray(function (workItemList) {
                 for (var i = 0; i < workItemList.length; i++) {
                     wrkItem = workItemList[i];
-                    var project = workItemList.filter(function (item) {return item.Id == wrkItem.WorkItem_WorkItem})[0];
+                    var project = userStoryItemList.filter(function (item) {return item.Id == wrkItem.WorkItem_WorkItem})[0];
                     if (project) {
-                        self.WorkItems.update(wrkItem);
+                        self.WorkItems.attach(wrkItem);
                         wrkItem.ParentName = project.Name;
                     }
                 }
@@ -269,7 +278,6 @@ var moment = require('moment');
     registerEdmTypes();
     $data.Entity.extend('LightSwitchApplication.WorkItem', {
         'Id':{ key:true, type:'id', nullable:false, computed:true },
-        'RowVersion':{ type:'Edm.Binary', nullable:false, concurrencyMode:$data.ConcurrencyMode.Fixed, computed:true },
         'Title':{ type:'Edm.String', nullable:false, required:true, maxLength:255 },
         'Type':{ type:'Edm.String', nullable:false, required:true, maxLength:255 },
         'Description':{ type:'Edm.String', maxLength:1024 },
@@ -298,14 +306,12 @@ var moment = require('moment');
     });
     $data.Entity.extend('LightSwitchApplication.Project', {
         'Id':{ key:true, type:'id', nullable:false, computed:true },
-        'RowVersion':{ type:'Edm.Binary', nullable:false, concurrencyMode:$data.ConcurrencyMode.Fixed, computed:true },
         'Name':{ type:'Edm.String', nullable:false, required:true, maxLength:255 },
         'Description':{ type:'Edm.String', maxLength:1024 }
         //'WorkItems': { type: 'Array', elementType: 'LightSwitchApplication.WorkItem', inverseProperty: 'Project' }
     });
     $data.Entity.extend('LightSwitchApplication.Sprint', {
         'Id':{ key:true, type:'id', nullable:false, computed:true },
-        'RowVersion':{ type:'Edm.Binary', nullable:false, concurrencyMode:$data.ConcurrencyMode.Fixed, computed:true },
         'Name':{ type:'Edm.String', nullable:false, required:true, maxLength:255 },
         'StartDate':{ type:'Edm.DateTime', nullable:false, required:true },
         'FinishDate':{ type:'Edm.DateTime', nullable:false, required:true }
@@ -318,17 +324,20 @@ var moment = require('moment');
         'ToDo':{ type:'Edm.Int32'},
         'Left':{ type:'Edm.Int32'}
     });
-    $data.Entity.extend('LightSwitchApplication.SprintData', {
+    /*$data.Entity.extend('LightSwitchApplication.SprintData', {
         'Id':{ key:true, type:'id', nullable:false, computed:true },
         'Name':{ type:'Edm.String', nullable:false, required:true, maxLength:255 },
         'StartDate':{ type:'Edm.DateTime', nullable:false, required:true },
         'FinishDate':{ type:'Edm.DateTime', nullable:false, required:true },
         'tasksLeft': {type:'Edm.Int32'}
-    });
+    });*/
+    LightSwitchApplication.Sprint.extend("LightSwitchApplication.SprintExtended", {
+        tasksLeft:{ type:'Edm.Int32' }
+    }, null);
     $data.ServiceBase.extend('LightSwitchApplication.ApplicationService', {
         getSprintsData:$data.JayService.serviceFunction()
             .param("sprintIds", "Array")
-            .returnsArrayOf("$data.Object")
+            .returnsArrayOf("LightSwitchApplication.SprintExtended")
             (function (sprintIdList) {
                 return function () {
 
@@ -351,7 +360,7 @@ var moment = require('moment');
                                     var data = workitemQueries.map(function(item, index){
                                         var d = sprintList[index].initData;
                                         d.tasksLeft = item.valueOf();
-                                        return  d;
+                                        return new LightSwitchApplication.SprintExtended(d);
                                     });
 
                                     self.success(data);
@@ -444,7 +453,7 @@ var moment = require('moment');
     });
     $data.Class.defineEx('LightSwitchApplication.ApplicationData',[$data.EntityContext, LightSwitchApplication.ApplicationService], null, {
         WorkItems:{ type:$data.EntitySet, elementType:LightSwitchApplication.WorkItem , 'afterCreate':updateBurndownData, 'afterUpdate':updateBurndownData, 'beforeCreate':updateConnectedData, 'beforeUpdate':updateConnectedData },
-        Projects:{ type:$data.EntitySet, elementType:LightSwitchApplication.Project/*, 'afterUpdate':updateConnectedDataProjectChanged*/},
+        Projects:{ type:$data.EntitySet, elementType:LightSwitchApplication.Project, 'afterUpdate':updateConnectedDataProjectChanged},
         Sprints:{ type:$data.EntitySet, elementType:LightSwitchApplication.Sprint,  'afterCreate':afterUpdateCreateSprint, 'afterUpdate':afterUpdateCreateSprint},
         SprintBurndown:{ type:$data.EntitySet, elementType:LightSwitchApplication.BurndownData }/*,
          Microsoft_LightSwitch_GetCanInformation: $data.EntityContext.generateServiceOperation({ serviceName: 'Microsoft_LightSwitch_GetCanInformation', returnType: 'Edm.String', params: [{ dataServiceMembers: 'Edm.String' }], method: 'GET' })*/
