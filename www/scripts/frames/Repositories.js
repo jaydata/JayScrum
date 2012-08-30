@@ -313,5 +313,5 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
 	}
 }, {
     ServerUrl:'http://192.168.1.142:3000/'
-    //ServerSideUrl:'http://app1.storm.jaystack.com:3000/'
+    //ServerUrl:'http://app1.storm.jaystack.com:3000/'
 });
