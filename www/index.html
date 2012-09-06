@@ -1281,11 +1281,11 @@
         <div id="settingPageActionBar" class="metro-actionbar opened">
             <ul>
                 <li class="icon-action add"><span data-bind="click: $data.addSetting"></span></li>
-                <li class="icon-action more"><span onclick="$('#repo-info').toggleClass('opened');"></span></li>
                 <!--ko if: $data.data().isSupportedPurchase-->
                 <li class="icon-action money"><span data-bind="click: $data.buyDatabase"></span></li>
                 <li class="icon-action update"><span data-bind="click: $data.refreshSettings"></span></li>
                 <!--/ko-->
+                <li class="icon-action more abs-right"><span onclick="$('div#repo-info').toggleClass('opened');"></span></li>
             </ul>
         </div>
 
