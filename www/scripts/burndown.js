@@ -1,5 +1,3 @@
-
-
 function DisplayBurndownChart() {
     var rawObject = JayScrum.app.selectedFrame().data().summaryList().SprintBurndownData();
 
