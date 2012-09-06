@@ -20,7 +20,6 @@
         }
     }
 
-
     regiserTemplates($data.jayGridTemplates.tableTemplate);
 
     function getColumnsMetadata(source, fields, itemCommands) {
@@ -279,8 +278,6 @@
                     o = o.asKoObservable();
                     var idx = self.items().length;
 
-
-
                     o.getColumns = function() {
                         var result = [];
                         for (var i = 0; i < self.columns().length; i++) {
@@ -297,7 +294,6 @@
                         }
                         return result;
                     }
-
 
                     var v = ko.utils.unwrapObservable(self.discriminatorValue),
                         f = ko.utils.unwrapObservable(self.discriminatorColumn);
@@ -327,10 +323,8 @@
 
                     }
 
-
+                    JayScrum.app.selectedFrame().selectedView().i_scroll.refresh();
                 };
-
-
 
                 var itemCommands = [
                     {
@@ -563,11 +557,7 @@
                 container,
                 "replaceNode");
 
-
-
             //source.take(200).toArray(model.items);
         }
-
     }
-
 })();

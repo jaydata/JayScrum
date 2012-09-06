@@ -108,6 +108,21 @@ $data.Class.define('JayScrum.Frames.Sprints', JayScrum.Frame, null, {
         }
 
         JayScrum.app.selectedFrame().selectView('sprintEdit');
+
+        $(".field-date-value").each(function(){
+            var date = $(this).val();
+            console.log(date, moment(date).format("YYYY-MM-DD"))
+
+            $(this).val(moment(date).format("YYYY-MM-DD"));
+
+            $(this).scroller({
+                preset: 'date',
+                display: 'modal',
+                mode: 'scroller',
+                theme: ios ? 'ios' : 'android-ics',
+                dateFormat: 'yy-mm-dd'
+            });
+        });
     },
     onCancelSprint: function (sprintItem) {
         if (sprintItem != null) {

@@ -154,7 +154,8 @@ $data.Class.define('JayScrum.ScrumApp', JayScrum.FrameApp, null,{
 
         var swipe = $("div#" + id),
             currentIndex = 0,
-            gallery = null;
+            gallery = null,
+            scroll0 = scroll1 = scroll2 = null;
 
         if (list != null && swipe.length > 0) {
             list.filter(function (item, index) {
@@ -197,6 +198,24 @@ $data.Class.define('JayScrum.ScrumApp', JayScrum.FrameApp, null,{
                         JayScrum.app.selectedFrame().data().selectedWorkItemActive(JayScrum.app.selectedFrame().data().selectedWorkItemNext());
                         break;
                 }
+
+                if (scroll0 != null) {
+                    scroll0.destroy();
+                    scroll0 = null;
+                }
+                scroll0 = JayScrum.app.initScrollById("swipeview-inside-0", null, null, false);
+
+                if (scroll1 != null) {
+                    scroll1.destroy();
+                    scroll1 = null;
+                }
+                scroll1 = JayScrum.app.initScrollById("swipeview-inside-1", null, null, false);
+
+                if (scroll2 != null) {
+                    scroll2.destroy();
+                    scroll2 = null;
+                }
+                scroll2 = JayScrum.app.initScrollById("swipeview-inside-2", null, null, false);
             });
             gallery.goToPage(currentIndex);
 
