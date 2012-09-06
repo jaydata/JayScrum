@@ -9,6 +9,7 @@
 @import "less/htmlcontrols.less";
 @import "less/loading.less";
 @import "less/detailedview.less";
+@import "less/mobiscroll-2.0.2.custom.min.less";
 @import "less/mediaqueries.less";
 
 /*#region GENERAL METRO STYLE */
@@ -19,7 +20,7 @@ h1, h2, h3, h4, h5, h6
     &:focus { outline: none; }
 }
 
-a, span, div, p {
+a, span, div:not(.dw), p {
     .box;
         
     &:focus { outline: none; }
@@ -170,12 +171,23 @@ body:not(.android)
         -webkit-transition-delay: 500ms;
         -webkit-transform: translate3d(0, 0, 0);*/
     }
-        
+    
     ul {
         .iblock; .reset-m; .size(100%, 100%); padding: 7px 0 0 0; 
         
         li { line-height: 25px; }
     }
+}
+
+#repo-info {
+    height: auto; 
+        
+    &.opened {
+        .transition();
+        -webkit-transform: translateY(-44px);
+    }
+    
+    p { padding: 0 10px; }
 }
 /*#endregion ACTIONBAR */
 
@@ -249,3 +261,7 @@ body:not(.android)
     .position(absolute, -35px, auto, auto, 50%); .size(@hb-width, 30px, 30px); margin-left: -@hb-width / 2;
 }
 /*#endregion HINTS */
+
+/*#region BURNDOWN */
+#burndownChart { margin-bottom: 20px; }
+/*#endregion BURNDOWN */

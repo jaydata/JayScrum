@@ -2,28 +2,36 @@
 
 function DisplayBurndownChart() {
     var rawObject = JayScrum.app.selectedFrame().data().summaryList().SprintBurndownData();
-    console.log(rawObject);
 
     // A couple flotr configuration options:
     var options = {
-            xaxis:{
-                min:0,
-                max:rawObject.length-1
+            shadowSize: 0,
+            colors: ['#ffa500', '#ffa500', '#da0134', '#24A0DA', '#24A0DA'],
+            xaxis: {
+                min: 0,
+                max: rawObject.length-1,
+                tickDecimals: 0,
+                margin: true
             },
-            yaxis:{
-                min:0,
-                max:rawObject.remainingLine[rawObject.remainingLine.length-1][1]
+            yaxis: {
+                min: 0,
+                max: rawObject.remainingLine[rawObject.remainingLine.length - 1][1],
+                tickDecimals: 1
             },
-            grid:{
-                minorVerticalLines:false
+            grid: {
+                color: '#fff',
+                verticalLines: false,
+                horizontalLines: false,
+                backgroundColor: null,
+                tickColor: '#fff',
+                labelMargin: 10,
+                outlineWidth: 1,
+                outline: 'sw'
             }
         },
         i, graph;
 
-
-
-    // Draw the graph:
-    graph = Flotr.draw(
+        graph = Flotr.draw(
         $('#burndownChart')[0], // Container element
         [
             {data:rawObject.remainingLine, lines:{fill:true}},

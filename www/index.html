@@ -1272,9 +1272,16 @@
             </div>
             <!--/ko-->
         </div>
-        <div id="settingPageActionBar" class="metro-actionbar detail-view-edit opened">
+        <div id="repo-info" class="metro-actionbar">
+            <ul>
+                <li><p>To be more effective buy repositories for JayScrum! With this feature you can actually do thing that you can not do without them! 
+                    Try it now by click the money icon on the bottom bar! </p></li>
+            </ul>
+        </div>
+        <div id="settingPageActionBar" class="metro-actionbar opened">
             <ul>
                 <li class="icon-action add"><span data-bind="click: $data.addSetting"></span></li>
+                <li class="icon-action more"><span onclick="$('#repo-info').toggleClass('opened');"></span></li>
                 <!--ko if: $data.data().isSupportedPurchase-->
                 <li class="icon-action money"><span data-bind="click: $data.buyDatabase"></span></li>
                 <li class="icon-action update"><span data-bind="click: $data.refreshSettings"></span></li>
@@ -1319,6 +1326,15 @@
                     </div>
                 </div>
             </div>
+            <div id="user-actionbar" class="metro-actionbar opened">
+                <ul>
+                    <!-- TODO: 2 click bekötése -->
+                    <li class="icon-action add"><span data-bind="click: null"></span></li>
+                    <li class="icon-action delete"><span data-bind="click: null"></span></li>
+                    <li class="icon-action save"><span data-bind="click: null"></span>
+                </li>
+                </ul>
+            </div>
         </div>
     </script>
     <!-- #endregion TEMPLATES -->
@@ -1356,6 +1372,7 @@
     <script type="text/javascript" src="scripts/RepositoryContext.js"></script>
     <script type="text/javascript" src="scripts/IScroll/iscroll.min.js"></script>
     <script type="text/javascript" src="scripts/IScroll/swipeview.js"></script>
+    <script type="text/javascript" src="scripts/libs/mobiscroll-2.0.2.custom.min.js"></script>
 
     <script type="text/javascript" src="scripts/init.js"></script>
     <script type="text/javascript" src="scripts/scrum.js"></script>

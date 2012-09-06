@@ -22,16 +22,6 @@
                 <!-- ko template: { name: 'jay-data-grid-body' } --> \
                 <!-- /ko -->\
             </table>\
-                <div data-bind='visible: source' class='action-buttons'>\
-                    <div class='ohidden marginb20'>\
-                        <a class='btn btn-info icon-action add fleft' href='#' data-bind='click: addNew'><span></span></a> \
-                        <input class='btn btn-success icon-action save fleft' type='submit' value='' data-bind='visible: pendingChanges'/>\
-                    </div>\
-                    <span class='iblock'>\
-                        <select class='input-small iblock fleft metro-select marginr10' data-bind='options: ko.utils.range(1,50), value: pageSize, visible: pageSize() > 0'></select>\
-                        <span class='top5' data-bind='visible: pendingChanges, text: pendingStatusInfo()'></span>\
-                    </span>\
-                </div>\
             </form>"],
 
         ["jay-data-grid-head",
@@ -41,7 +31,6 @@
                </tr>\
             </thead>"],
 
-
         ["jay-data-grid-body",
             "<tbody data-bind=\"template: {name: 'jay-data-grid-row', foreach: items}\"></tbody>"],
 
@@ -50,7 +39,6 @@
                 <!-- ko template: { name: (metadata[\"isVirtual\"] ? 'jay-data-grid-control-cell' : 'jay-data-grid-data-cell') } -->\
                 <!-- /ko -->\
             </tr>"],
-
 
         ["jay-data-grid-data-cell",
             "<td data-bind='template: $root.getTemplate($data.owner,$data.metadata)'></td>"],
