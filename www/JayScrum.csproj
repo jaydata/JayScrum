@@ -73,6 +73,15 @@
     <Content Include="Scripts\JayApp\Frame.js" />
     <Content Include="Scripts\JayApp\FrameApp.js" />
     <Content Include="Scripts\JayApp\FrameView.js" />
+    <Content Include="Scripts\jaydatamodules\deferred.js" />
+    <Content Include="Scripts\jaydatamodules\errorhandler.js" />
+    <Content Include="Scripts\jaydatamodules\formBinder.js" />
+    <Content Include="Scripts\jaydatamodules\inMemory.js" />
+    <Content Include="Scripts\jaydatamodules\knockout.js" />
+    <Content Include="Scripts\jaydatamodules\qDeferred.js" />
+    <Content Include="Scripts\jaydatamodules\sencha.js" />
+    <Content Include="Scripts\jaydatamodules\template.js" />
+    <Content Include="Scripts\jaydatamodules\validate.js" />
     <Content Include="Scripts\JayDataProviders\InMemoryProvider.js" />
     <Content Include="Scripts\JayDataProviders\SqLiteProvider.js" />
     <Content Include="Scripts\JayDataProviders\StormProvider.js" />
@@ -134,17 +143,17 @@
     </Content>
     <Content Include="Scripts\libs\knockout-2.1.0.debug.js" />
     <Content Include="Scripts\libs\knockout-2.1.0.js" />
+    <Content Include="Scripts\libs\mobiscroll-2.0.2.custom.min.js" />
     <Content Include="Scripts\libs\moment.js" />
     <Content Include="Scripts\libs\q.js" />
     <Content Include="Scripts\libs\zeptojs.min.js" />
-    <Content Include="Scripts\Models\MainPage.js" />
-    <Content Include="Scripts\Models\SettingPage.js" />
     <Content Include="Scripts\RepositoryContext.js" />
     <Content Include="Scripts\scrum.js" />
+    <Content Include="Scripts\userEditor\jaygrid-table-template.js" />
+    <Content Include="Scripts\userEditor\jaygrid.js" />
     <Content Include="Styles\fonts\segoeuil-webfont.svg" />
     <Content Include="Styles\metro.css" />
     <Content Include="Web.config" />
-    <Content Include="Scripts\libs\q.js~" />
     <Content Include="Styles\less\detailedview.less" />
     <Content Include="Styles\less\font.less" />
     <Content Include="Styles\less\htmlcontrols.less" />
