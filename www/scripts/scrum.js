@@ -1,8 +1,3 @@
-/// <reference path="knockout-2.0.0.debug.js" />
-/// <reference path="serverevents.js" />
-/// <reference path="iscroll.js" />
-/// <reference path="JayData.js" />
-
 var debug = true,
     iScrollOptions = function (fn, fn2) {
         this.useTransition = true;
@@ -273,7 +268,8 @@ JayScrum.pushObservablesToList= function (list, rawData) {
         list.push(obs);
     }
 };
-if(android){
+//android = true;
+if(window['android'] && window['cordova']){
 	document.addEventListener("deviceready", function(){
 		initApplication();	
 		document.addEventListener("backbutton", function(e){
@@ -286,7 +282,7 @@ if(android){
 		}, false);
 	}, false);
 }else{
-	initApplication();
+    initApplication();
 }
 function initApplication(){
 	$(function () {

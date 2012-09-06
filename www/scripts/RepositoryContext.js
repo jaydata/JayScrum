@@ -6,13 +6,16 @@
  * To change this template use File | Settings | File Templates.
  */
 function InstallLocalDemoDb(ctx){
+    console.log("-== Install local db START");
     var p = Q.defer();
     ctx.Users.add(new JayScrum.SqLite.Storm.User({UserID:1, Login:'administrator', Age:32, FirstName:'Mr.', LastName:'Administrator', Enabled:true}));
     ctx.Projects.add(new JayScrum.SqLite.Project({Id:1, Name:"Learn using JayScrum locally", Description:"Step by step instructions: using JayScrum like a todo list" }));
     ctx.Projects.add(new JayScrum.SqLite.Project({Id:2, Name:"Use JayScrum in a team - repo in the cloud", Description:"Step by step instructions: using JayScrum in a team" }));
     ctx.Sprints.add(new JayScrum.SqLite.Sprint({Id:1, Name:"Learn JayScrum", StartDate:moment().add('days', -1).utc().toDate(), FinishDate:moment().add('days', 7).utc().toDate() }));
     ctx.Sprints.add(new JayScrum.SqLite.Sprint({Id:2, Name:"Use JayScrum in a team", StartDate:moment().add('days', -1).utc().toDate(), FinishDate:moment().add('days', 14).utc().toDate() }));
+    console.log("-== Save localdb 1st");
     ctx.saveChanges(function(){
+        console.log("Save success, create tasks");
         ctx.WorkItems.add(new JayScrum.SqLite.WorkItem({Id:1, Title:"Create local repository", Description:"You will need a local repository in order to store your work items on your device. This repo is stored only on your current device. Team-work scenarion with a cloud-based repository will be covered in Sprint 2 - Using JayScrum in a team" , Priority: 10, Effort:Math.floor(Math.random() * 30), Effort:Math.floor(Math.random() * 50), BusinessValue:Math.floor(Math.random() * 100), Type:"UserStory" , WorkItem_Sprint:1, WorkItem_Project:1, CreatedDate:moment().toDate(), CreatedBy:'administrator', RemainingWork:1, ChangedDate:moment().toDate(), ChangedBy:'administrator', AssignedTo:"administrator", State:"New" }));
         ctx.WorkItems.add(new JayScrum.SqLite.WorkItem({Id:2, Title:"Customizing JayScrum to your needs", Description:"After performing the tasks below you will have a customized JayScrum application" , Priority: 9, Effort:Math.floor(Math.random() * 30), Effort:Math.floor(Math.random() * 50), BusinessValue:Math.floor(Math.random() * 100), Type:"UserStory" , WorkItem_Sprint:1, WorkItem_Project:1, CreatedDate:moment().toDate(), CreatedBy:'administrator', RemainingWork:1, ChangedDate:moment().toDate(), ChangedBy:'administrator', AssignedTo:"administrator", State:"New" }));
         ctx.WorkItems.add(new JayScrum.SqLite.WorkItem({Id:3, Title:"Using JayScrum from sprint to sprint", Description:"Learn how to build a project backlog and keep work item up-to-date" , Priority: 8, Effort:Math.floor(Math.random() * 30), Effort:Math.floor(Math.random() * 50), BusinessValue:Math.floor(Math.random() * 100), Type:"UserStory" , WorkItem_Sprint:1, WorkItem_Project:1, CreatedDate:moment().toDate(), CreatedBy:'administrator', RemainingWork:1, ChangedDate:moment().toDate(), ChangedBy:'administrator', AssignedTo:"administrator", State:"New" }));
@@ -33,7 +36,11 @@ function InstallLocalDemoDb(ctx){
         ctx.WorkItems.add(new JayScrum.SqLite.WorkItem({Id:18, Title:"Navigating between tasks with the same status", Description:"You can easily navigate between the in-progress tasks based to review the unfinished work items.- Navigate to the Scrum Wall- Select one task with In-progress state- After the task description appears, swipe left and right to navigate between tasks" , Priority: 9, Effort:Math.floor(Math.random() * 20), Effort:Math.floor(Math.random() * 50), BusinessValue:Math.floor(Math.random() * 100), Type:"Task" , WorkItem_Sprint:1, WorkItem_Project:1, WorkItem_WorkItem:3, CreatedDate:moment().toDate(), CreatedBy:'administrator', RemainingWork:1, ChangedDate:moment().toDate(), ChangedBy:'administrator', AssignedTo:"administrator", State:"To Do" }));
         ctx.WorkItems.add(new JayScrum.SqLite.WorkItem({Id:19, Title:"Working with more sprints at the same time", Description:"You can manage more sprint at the same time. To do this easily, navigate to the Sprints tile of the Main Screen and pin the second sprint to the Main Screen. " , Priority: 9, Effort:Math.floor(Math.random() * 20), Effort:Math.floor(Math.random() * 50), BusinessValue:Math.floor(Math.random() * 100), Type:"Task" , WorkItem_Sprint:1, WorkItem_Project:1, WorkItem_WorkItem:4, CreatedDate:moment().toDate(), CreatedBy:'administrator', RemainingWork:1, ChangedDate:moment().toDate(), ChangedBy:'administrator', AssignedTo:"administrator", State:"To Do" }));
         ctx.WorkItems.add(new JayScrum.SqLite.WorkItem({Id:20, Title:"Buy cloud repo", Description:"Navigate to Repository tab, a buy your new database" , Priority: 5, Effort:Math.floor(Math.random() * 20), Effort:Math.floor(Math.random() * 50), BusinessValue:Math.floor(Math.random() * 100), Type:"Task" , WorkItem_Sprint:2, WorkItem_Project:2, WorkItem_WorkItem:5, CreatedDate:moment().toDate(), CreatedBy:'administrator', RemainingWork:1, ChangedDate:moment().toDate(), ChangedBy:'administrator', AssignedTo:"administrator", State:"To Do" }));
-        ctx.saveChanges(function(){p.resolve();});
+        console.log("Save localdb 2nd");
+        ctx.saveChanges(function(){
+            console.log("Install local db END");
+            p.resolve();
+        });
     });
     return p.promise;
 }
@@ -469,8 +476,21 @@ $data.ServiceBase.extend('JayScrum.SqLite.ApplicationService', {
                                             result.burnDown.todoLine.push([i, bdData[i].ToDo]);
                                         }
                                     }
+                                    while(result.burnDown.remainingLine.length<2){
 
-
+                                        result.burnDown.remainingLine.push([result.burnDown.remainingLine.length,
+                                                                            result.burnDown.remainingLine.length==0
+                                                                                ? 0
+                                                                                : result.burnDown.remainingLine[result.burnDown.remainingLine.length-1][1]
+                                                                            ]);
+                                    }
+                                    while(result.burnDown.todoLine.length<2){
+                                        result.burnDown.todoLine.push([result.burnDown.todoLine.length,
+                                                                        result.burnDown.todoLine.length==0
+                                                                            ? 0
+                                                                            : result.burnDown.todoLine[result.burnDown.todoLine.length-1][1]
+                                                                      ]);
+                                    }
 
                                     q.resolve(result);
                                 };

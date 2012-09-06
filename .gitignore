@@ -3,6 +3,7 @@ bin
 obj
 *.suo
 .idea
+nohup.out
 
 # mstest test results
 TestResults

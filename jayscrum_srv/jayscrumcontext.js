@@ -426,6 +426,21 @@ var moment = require('moment');
                                                             result.burnDown.todoLine.push([i, bdData[i].ToDo]);
                                                         }
                                                     }
+                                                    while(result.burnDown.remainingLine.length<2){
+
+                                                        result.burnDown.remainingLine.push([result.burnDown.remainingLine.length,
+                                                            result.burnDown.remainingLine.length==0
+                                                                ? 0
+                                                                : result.burnDown.remainingLine[result.burnDown.remainingLine.length-1][1]
+                                                        ]);
+                                                    }
+                                                    while(result.burnDown.todoLine.length<2){
+                                                        result.burnDown.todoLine.push([result.burnDown.todoLine.length,
+                                                            result.burnDown.todoLine.length==0
+                                                                ? 0
+                                                                : result.burnDown.todoLine[result.burnDown.todoLine.length-1][1]
+                                                        ]);
+                                                    }
                                                     self.success(result);
                                                 };
 
