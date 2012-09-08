@@ -71,11 +71,11 @@ Guard.requireType = function (name, value, typeOrTypes) {
 
 Guard.raise = function(exception){
 	if (typeof intellisense === 'undefined') {
-		/*if (exception instanceof Exception){
+		if (exception instanceof Exception){
 			console.error(exception.name + ':', exception.message + '\n', exception);
 		}else{
 			console.error(exception);
-		}*/
+		}
 		throw exception;
 	}
 };
@@ -7967,7 +7967,8 @@ JAYLINT = (function () {
         this.isPrimitiveType = function(type) {
             var t = this.resolveType(type);
             return t === Number || t === String || t === Date || t === String || t === Boolean || t === Array || t === Object ||
-                t === $data.Number || t === $data.String || t === $data.Date || t === $data.String || t === $data.Boolean || t === $data.Array || t === $data.Object;
+                t === $data.Number || t === $data.String || t === $data.Date || t === $data.String || t === $data.Boolean || t === $data.Array || t === $data.Object ||
+                t === $data.Geography;
         };
 
         this.resolveType = function (typeOrName) {
@@ -8002,6 +8003,7 @@ JAYLINT = (function () {
                     if (value instanceof Array) return '$data.Array';
                     if (value.getType) return value.getType().fullName;
                     if (value instanceof Date) return '$data.Date';
+                    if (value instanceof $data.Geography) return '$data.Geography';
                     //if(value instanceof "number") return
                 default:
                     return typeof value;
@@ -8218,7 +8220,9 @@ $data.defaultErrorCallback = function () {
         console.dir(arguments);
     else
         console.log(arguments);*/
-    Guard.raise(new Exception("DEFAULT ERROR CALLBACK!", "DefaultError", arguments));
+    if (arguments[arguments.length - 1] && typeof arguments[arguments.length - 1].reject === 'function'){
+        arguments[arguments.length - 1].reject.apply(arguments[arguments.length - 1], arguments);
+    }else Guard.raise(new Exception("DEFAULT ERROR CALLBACK!", "DefaultError", arguments));
 };
 $data.defaultSuccessCallback = function () { /*console.log('DEFAULT SUCCES CALLBACK');*/ };
 $data.defaultNotifyCallback = function () { /*console.log('DEFAULT NOTIFY CALLBACK');*/ };
@@ -8327,6 +8331,58 @@ $data.typeSystem = {
             //////OPTIMIZATION
             Object.defineProperty(obj, memDef.name, propDef);
         }
+    }
+};
+$data.Class.define('$data.TraceBase', null, null, {
+    log: function () { },
+    warn: function () { },
+    error: function () { }
+});
+
+$data.Trace = new $data.TraceBase();
+$data.Class.define('$data.Logger', $data.TraceBase, null, {
+    log: function () {
+        Array.prototype.unshift.call(arguments, this.getDateFormat());
+        console.log.apply(console, arguments);
+    },
+    warn: function () {
+        Array.prototype.unshift.call(arguments, this.getDateFormat());
+        console.warn.apply(console, arguments);
+    },
+    error: function () {
+        Array.prototype.unshift.call(arguments, this.getDateFormat());
+        console.error.apply(console, arguments);
+    },
+
+    getDateFormat: function () {
+        var date = new Date();
+        return date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds() + '.' + date.getMilliseconds();
+    }
+});
+$data.Geography = function Geography(lon, lat) {
+    if (typeof lon === 'object' && Array.isArray(lon.coordinates)) {
+        this.longitude = lon.coordinates[0];
+        this.latitude = lon.coordinates[1];
+    } else {
+        this.longitude = lon;
+        this.latitude = lat;
+    }
+};
+$data.Container.registerType(['$data.Geography', 'Geography', 'geography', 'geo'], $data.Geography);
+
+$data.Geography.prototype.toJSON = function () {
+    return {
+
+        //http://www.odata.org/blog/2011/5/3/geospatial-data-support-in-odata but http://services.odata.org/V3/OData/OData.svc/Suppliers(1) has this values
+        //__metadata: { type: 'Edm.GeographyPoint' },
+        type: 'Point',
+        coordinates: [this.longitude, this.latitude]/*,
+        crs: {
+            type: 'name',
+            properties: {
+                name: "EPSG:4326"
+            }
+        }*/
     }
 };
 $data.ASTNode = function() {
@@ -11980,7 +12036,15 @@ $data.Entity = Entity = $data.Class.define("$data.Entity", null, null, {
             this.initData = {};
             for (var i in initData) {
                 if (memDefNames.indexOf(i) > -1) {
-                    this.initData[i] = Container.resolveType(typeMemDefs.getMember(i).type) === $data.Date && typeof initData[i] === 'string' ? new Date(initData[i]) : initData[i];
+                    var type = Container.resolveType(typeMemDefs.getMember(i).type);
+                    if (type === $data.Date && typeof initData[i] === 'string')
+                        this.initData[i] = new Date(initData[i]);
+                    else if (type === $data.Geography && typeof initData[i] === 'object' && !(initData[i] instanceof $data.Geography))
+                        this.initData[i] = new $data.Geography(initData[i]);
+                    else {
+                        this.initData[i] = initData[i];
+
+                    }
                 }
             }
 
@@ -13824,7 +13888,7 @@ $data.Class.define('$data.QueryProvider', null, null,
 
 		if (meta.$value){
 			if (typeof meta.$value === 'function'){
-				result = meta.$value.call(meta, meta, data);
+				result = meta.$value.call(this, meta, data);
             }else if (meta.$type){
                 var type = Container.resolveName(meta.$type);
                 var converter = this.context.storageProvider.fieldConverter.fromDb[type];
@@ -15161,244 +15225,6 @@ Exception.prototype._getStackTrace = function () {
     //}
     return callstack.join("\n\r");	 */
 };
-Function.prototype.toServiceOperation = function(config){
-    return new $data.FunctionImport(this, config);
-};
-
-$data.FunctionImport = function(fn, config){
-    Object.defineProperty(this, 'asFunction', { value: fn });
-    Object.getPrototypeOf(this).valueOf = function(){
-        return this.asFunction;
-    };
-    Object.getPrototypeOf(this).toString = function(){
-        return this.asFunction.toString();
-    };
-    Object.getPrototypeOf(this).call = function(){
-        return this.asFunction.call.apply(arguments[0], Array.prototype.slice.call(arguments, 1));
-    };
-    Object.getPrototypeOf(this).apply = function(scope, args){
-        return this.asFunction.apply(scope, args);
-    };
-    if (config) fn.extend(config);
-};
-
-$data.FunctionImport.prototype = {
-    toServiceOperation: function(config){
-        return new $data.FunctionImport(this.asFunction, config);
-    },
-    extend: function(extend){
-        for (var i in extend){
-            this[i] = extend[i];
-        }
-        
-        return this;
-    },
-    chain: function(before, after){
-        var fn = this;
-        
-        var ret = function(){
-            var chain = arguments.callee.chainFn;
-            var args = [];
-            if (arguments.length){
-                for (var i = 0; i < arguments.length; i++){
-                    args.push(arguments[i]);
-                }
-            }
-            var argsCount = args.length;
-            var i = 0;
-            
-            var readyFn = function(){
-                if (args[args.length - 1] && args[args.length - 1].success && typeof args[args.length - 1].success === 'function'){
-                    var fn = args[args.length - 1].success;
-                    fn.apply(this, arguments);
-                }else return arguments.length ? arguments[0] : undefined;
-            };
-            
-            var callbackFn = function(){
-                var fn = chain[i];
-                i++;
-                
-                var r = fn.apply(this, args);
-                if (typeof r === 'function'){
-                    var argsFn = arguments;
-                    args[argsCount] = (i < chain.length ? (function(){ return callbackFn.apply(this, argsFn); }) : (function(){ return readyFn.apply(this, argsFn); }));
-                    r.apply(this, args);
-                }else{
-                    if (i < chain.length){
-                        callbackFn.apply(this, arguments);
-                    }else readyFn(this, arguments);
-                }
-            }
-            
-            callbackFn();
-        };
-        
-        if (!ret.chainFn) ret.chainFn = (before || []).concat([fn].concat(after || []));
-        
-        return ret;
-    },
-    before: function(on){
-        var ret = this;
-        
-        if (!this.chainFn) ret = ret.chain();
-        ret.chainFn.unshift(on);
-            
-        return ret;
-    },
-    after: function(on){
-        var ret = this;
-        
-        if (!this.chainFn) ret = ret.chain();
-        ret.chainFn.push(on);
-            
-        return ret;
-    },
-    asResult: function(type, config){
-        return this.extend({
-            resultType: type,
-            resultCfg: config
-        });
-    },
-    returns: function(type, elementType){
-        if (typeof type === 'string')
-            type = Container.resolveType(type);
-            
-        if (typeof elementType === 'string')
-            elementType = Container.resolveType(elementType);
-
-        return this.extend({
-            returnType: type,
-            elementType: elementType
-        });
-    },
-    params: function(params){
-        /*for (var p in params){
-            if (typeof params[p] === 'string')
-                params[p] = Container.resolveType(params[p]);
-        }*/
-        
-        return this.extend({
-            params: params
-        });
-    },
-    serviceName: function(serviceName){
-        return this.extend({
-            serviceName: serviceName
-        });
-    },
-    httpMethod: function(method){
-        return this.extend({
-            method: method
-        });
-    },
-    webGet: function(){
-        return this.httpMethod('GET');
-    },
-    webInvoke: function(){
-        return this.httpMethod('POST');
-    },
-    authorize: function(roles, callback){
-        var r = {};
-        if (roles instanceof Array){
-            for (var i = 0; i < roles.length; i++){
-                if (typeof roles[i] === 'string') r[roles[i]] = true;
-            }
-        }else r = roles;
-        
-        this.roles = r;
-
-        var fn = this;
-        
-        ret = function(){
-            var pHandler = new $data.PromiseHandler();
-            var clbWrapper = pHandler.createCallback(callback);
-            var pHandlerResult = pHandler.getPromise();
-            var args = arguments;
-            
-            clbWrapper.success = clbWrapper.success.after(function(){
-                fn.apply(this, args);
-            });
-            
-            $data.Access.isAuthorized($data.Access.Execute, this.user, fn.roles, clbWrapper);
-            
-            return pHandlerResult;
-        };
-        
-        return ret;
-    },
-    toPromise: function(callback){
-        var fn = this;
-        
-        var ret = function(){
-            var pHandler = new $data.PromiseHandler();
-            var clbWrapper = pHandler.createCallback(callback);
-            var pHandlerResult = pHandler.getPromise();
-            
-            arguments[arguments.length++] = clbWrapper;
-            fn.apply(this, arguments);
-            
-            return pHandlerResult;
-        };
-        
-        return this;
-    }
-};
-
-$data.ServiceOperation = (function(){
-    var fn = arguments.callee;
-    
-    var virtualEntitySet = fn.elementType ? this.getEntitySetFromElementType(Container.resolveType(fn.elementType)) : null;
-    
-    var paramConstExpression = null;
-    if (fn.params) {
-        paramConstExpression = [];
-        for (var i = 0; i < fn.params.length; i++) {
-            //TODO: check params type
-            for (var name in fn.params[i]) {
-                paramConstExpression.push(Container.createConstantExpression(arguments[i], Container.resolveType(fn.params[i][name]), name));
-            }
-        }
-    }
-
-    var ec = Container.createEntityContextExpression(this);
-    var memberdef = this.getType().getMemberDefinition(fn.serviceName);
-    var es = Container.createServiceOperationExpression(ec,
-            Container.createMemberInfoExpression(memberdef),
-            paramConstExpression,
-            fn);
-
-    //Get callback function
-    var clb = arguments[arguments.length - 1];
-    if (typeof clb !== 'function') {
-        clb = undefined;
-    }
-
-    if (virtualEntitySet) {
-        var q = Container.createQueryable(virtualEntitySet, es);
-        if (clb) {
-            es.isTerminated = true;
-            return q._runQuery(clb);
-        }
-        return q;
-    }
-    else {
-        var returnType = Container.resolveType(fn.returnType);
-
-        var q = Container.createQueryable(this, es);
-        q.defaultType = returnType;
-
-        if (returnType === $data.Queryable) {
-            q.defaultType = Container.resolveType(fn.elementType);
-            if (clb) {
-                es.isTerminated = true;
-                return q._runQuery(clb);
-            }
-            return q;
-        }
-        es.isTerminated = true;
-        return q._runQuery(clb);
-    }
-});
 $data.StorageProviderLoader = {
     isSupported: function (providerName) {
         switch (providerName) {
@@ -15774,6 +15600,244 @@ $data.Class.define('$data.StorageProviderBase', null, null,
 });$data.Base.extend('$data.EntityWrapper', {
     getEntity: function () {
         Guard.raise("pure object");
+    }
+});
+Function.prototype.toServiceOperation = function(config){
+    return new $data.FunctionImport(this, config);
+};
+
+$data.FunctionImport = function(fn, config){
+    Object.defineProperty(this, 'asFunction', { value: fn });
+    Object.getPrototypeOf(this).valueOf = function(){
+        return this.asFunction;
+    };
+    Object.getPrototypeOf(this).toString = function(){
+        return this.asFunction.toString();
+    };
+    Object.getPrototypeOf(this).call = function(){
+        return this.asFunction.call.apply(arguments[0], Array.prototype.slice.call(arguments, 1));
+    };
+    Object.getPrototypeOf(this).apply = function(scope, args){
+        return this.asFunction.apply(scope, args);
+    };
+    if (config) fn.extend(config);
+};
+
+$data.FunctionImport.prototype = {
+    toServiceOperation: function(config){
+        return new $data.FunctionImport(this.asFunction, config);
+    },
+    extend: function(extend){
+        for (var i in extend){
+            this[i] = extend[i];
+        }
+        
+        return this;
+    },
+    chain: function(before, after){
+        var fn = this;
+        
+        var ret = function(){
+            var chain = arguments.callee.chainFn;
+            var args = [];
+            if (arguments.length){
+                for (var i = 0; i < arguments.length; i++){
+                    args.push(arguments[i]);
+                }
+            }
+            var argsCount = args.length;
+            var i = 0;
+            
+            var readyFn = function(){
+                if (args[args.length - 1] && args[args.length - 1].success && typeof args[args.length - 1].success === 'function'){
+                    var fn = args[args.length - 1].success;
+                    fn.apply(this, arguments);
+                }else return arguments.length ? arguments[0] : undefined;
+            };
+            
+            var callbackFn = function(){
+                var fn = chain[i];
+                i++;
+                
+                var r = fn.apply(this, args);
+                if (typeof r === 'function'){
+                    var argsFn = arguments;
+                    args[argsCount] = (i < chain.length ? (function(){ return callbackFn.apply(this, argsFn); }) : (function(){ return readyFn.apply(this, argsFn); }));
+                    r.apply(this, args);
+                }else{
+                    if (i < chain.length){
+                        callbackFn.apply(this, arguments);
+                    }else readyFn(this, arguments);
+                }
+            }
+            
+            callbackFn();
+        };
+        
+        if (!ret.chainFn) ret.chainFn = (before || []).concat([fn].concat(after || []));
+        
+        return ret;
+    },
+    before: function(on){
+        var ret = this;
+        
+        if (!this.chainFn) ret = ret.chain();
+        ret.chainFn.unshift(on);
+            
+        return ret;
+    },
+    after: function(on){
+        var ret = this;
+        
+        if (!this.chainFn) ret = ret.chain();
+        ret.chainFn.push(on);
+            
+        return ret;
+    },
+    asResult: function(type, config){
+        return this.extend({
+            resultType: type,
+            resultCfg: config
+        });
+    },
+    returns: function(type, elementType){
+        if (typeof type === 'string')
+            type = Container.resolveType(type);
+            
+        if (typeof elementType === 'string')
+            elementType = Container.resolveType(elementType);
+
+        return this.extend({
+            returnType: type,
+            elementType: elementType
+        });
+    },
+    params: function(params){
+        /*for (var p in params){
+            if (typeof params[p] === 'string')
+                params[p] = Container.resolveType(params[p]);
+        }*/
+        
+        return this.extend({
+            params: params
+        });
+    },
+    serviceName: function(serviceName){
+        return this.extend({
+            serviceName: serviceName
+        });
+    },
+    httpMethod: function(method){
+        return this.extend({
+            method: method
+        });
+    },
+    webGet: function(){
+        return this.httpMethod('GET');
+    },
+    webInvoke: function(){
+        return this.httpMethod('POST');
+    },
+    authorize: function(roles, callback){
+        var r = {};
+        if (roles instanceof Array){
+            for (var i = 0; i < roles.length; i++){
+                if (typeof roles[i] === 'string') r[roles[i]] = true;
+            }
+        }else r = roles;
+        
+        this.roles = r;
+
+        var fn = this;
+        
+        ret = function(){
+            var pHandler = new $data.PromiseHandler();
+            var clbWrapper = pHandler.createCallback(callback);
+            var pHandlerResult = pHandler.getPromise();
+            var args = arguments;
+            
+            clbWrapper.success = clbWrapper.success.after(function(){
+                fn.apply(this, args);
+            });
+            
+            $data.Access.isAuthorized($data.Access.Execute, this.user, fn.roles, clbWrapper);
+            
+            return pHandlerResult;
+        };
+        
+        return ret;
+    },
+    toPromise: function(callback){
+        var fn = this;
+        
+        var ret = function(){
+            var pHandler = new $data.PromiseHandler();
+            var clbWrapper = pHandler.createCallback(callback);
+            var pHandlerResult = pHandler.getPromise();
+            
+            arguments[arguments.length++] = clbWrapper;
+            fn.apply(this, arguments);
+            
+            return pHandlerResult;
+        };
+        
+        return this;
+    }
+};
+
+$data.ServiceOperation = (function(){
+    var fn = arguments.callee;
+    
+    var virtualEntitySet = fn.elementType ? this.getEntitySetFromElementType(Container.resolveType(fn.elementType)) : null;
+    
+    var paramConstExpression = null;
+    if (fn.params) {
+        paramConstExpression = [];
+        for (var i = 0; i < fn.params.length; i++) {
+            //TODO: check params type
+            for (var name in fn.params[i]) {
+                paramConstExpression.push(Container.createConstantExpression(arguments[i], Container.resolveType(fn.params[i][name]), name));
+            }
+        }
+    }
+
+    var ec = Container.createEntityContextExpression(this);
+    var memberdef = this.getType().getMemberDefinition(fn.serviceName);
+    var es = Container.createServiceOperationExpression(ec,
+            Container.createMemberInfoExpression(memberdef),
+            paramConstExpression,
+            fn);
+
+    //Get callback function
+    var clb = arguments[arguments.length - 1];
+    if (typeof clb !== 'function') {
+        clb = undefined;
+    }
+
+    if (virtualEntitySet) {
+        var q = Container.createQueryable(virtualEntitySet, es);
+        if (clb) {
+            es.isTerminated = true;
+            return q._runQuery(clb);
+        }
+        return q;
+    }
+    else {
+        var returnType = Container.resolveType(fn.returnType);
+
+        var q = Container.createQueryable(this, es);
+        q.defaultType = returnType;
+
+        if (returnType === $data.Queryable) {
+            q.defaultType = Container.resolveType(fn.elementType);
+            if (clb) {
+                es.isTerminated = true;
+                return q._runQuery(clb);
+            }
+            return q;
+        }
+        es.isTerminated = true;
+        return q._runQuery(clb);
     }
 });
 if (typeof jQuery !== 'undefined' && jQuery.ajax) {
@@ -16347,11 +16411,12 @@ $data.Class.define("$data.Authentication.AuthenticationBase", null, null, {
 }, null);﻿
 $data.Class.define('$data.MetadataLoaderClass', null, null, {
     load: function (metadataUri, callBack, config) {
-
+        
         var cnf = {
             EntityBaseClass: '$data.Entity',
             ContextBaseClass: '$data.EntityContext',
             AutoCreateContext: true,
+            DefaultNamespace: ('ns' + Math.random()).replace('.', '') + metadataUri.replace(/[^\w]/g, "_"),
             ContextInstanceName: 'context',
             EntitySetBaseClass: '$data.EntitySet',
             CollectionBaseClass: 'Array',
@@ -16362,6 +16427,8 @@ $data.Class.define('$data.MetadataLoaderClass', null, null, {
 
         $data.typeSystem.extend( cnf, config || {});
 
+        if (cnf.DefaultNamespace && cnf.DefaultNamespace.lastIndexOf('.') !== (cnf.DefaultNamespace.length - 1))
+            cnf.DefaultNamespace += '.';
 
         this.factoryCache = this.factoryCache || {};
         callBack = $data.typeSystem.createCallbackSetting(callBack);
@@ -16390,11 +16457,16 @@ $data.Class.define('$data.MetadataLoaderClass', null, null, {
         }
 
         var self = this;
-        self._loadXMLDoc(cnf.metadataUri, cnf, function (xml) {
+        self._loadXMLDoc(cnf, function (xml) {
             var versionInfo = self._findVersion(xml);
             if (self.xsltRepoUrl) {
                 console.log('XSLT: ' + self.xsltRepoUrl + self._supportedODataVersionXSLT[versionInfo.version])
-                self._loadXMLDoc(self.xsltRepoUrl + self._supportedODataVersionXSLT[versionInfo.version], cnf, function (xsl) {
+                self._loadXMLDoc({ 
+                    metadataUri: self.xsltRepoUrl + self._supportedODataVersionXSLT[versionInfo.version],
+                    user: cnf.user,
+                    password: cnf.password,
+                    headers: cnf.headers
+                }, function (xsl) {
                     self._transform(callBack, versionInfo, xml, xsl, cnf);
                 });
             } else {
@@ -16436,9 +16508,14 @@ $data.Class.define('$data.MetadataLoaderClass', null, null, {
         else
             callBack.success(factoryFn, ctxType);
     },
-    _loadXMLDoc: function (uri, cnf, callback) {
+    _loadXMLDoc: function (cnf, callback) {
         var xhttp = new XMLHttpRequest();
-        xhttp.open("GET", uri, true, cnf.user, cnf.password);
+        xhttp.open("GET", cnf.metadataUri, true, cnf.user, cnf.password);
+        if (cnf.httpHeaders) {
+            Object.keys(cnf.httpHeaders).forEach(function (header) {
+                xhttp.setRequestHeader(header, cnf.httpHeaders[header]);
+            });
+        }
         xhttp.onreadystatechange = function () {
             if (xhttp.readyState === 4) {
                 callback(xhttp.responseXML || xhttp.responseText);
@@ -16478,6 +16555,7 @@ $data.Class.define('$data.MetadataLoaderClass', null, null, {
                     xslproc.addParameter('ContextInstanceName', cnf.ContextInstanceName);
                     xslproc.addParameter('EntitySetBaseClass', cnf.EntitySetBaseClass);
                     xslproc.addParameter('CollectionBaseClass', cnf.CollectionBaseClass);
+                    xslproc.addParameter('DefaultNamespace', cnf.DefaultNamespace);
 
 
                     xslproc.transform();
@@ -16503,6 +16581,7 @@ $data.Class.define('$data.MetadataLoaderClass', null, null, {
             xsltProcessor.setParameter(null, 'ContextInstanceName', cnf.ContextInstanceName);
             xsltProcessor.setParameter(null, 'EntitySetBaseClass', cnf.EntitySetBaseClass);
             xsltProcessor.setParameter(null, 'CollectionBaseClass', cnf.CollectionBaseClass);
+            xsltProcessor.setParameter(null, 'DefaultNamespace', cnf.DefaultNamespace);
             resultDocument = xsltProcessor.transformToFragment(metadata, document);
 
             return resultDocument.textContent;
@@ -16517,12 +16596,13 @@ $data.Class.define('$data.MetadataLoaderClass', null, null, {
                 'AutoCreateContext', "'" + cnf.AutoCreateContext + "'",
                 'ContextInstanceName', "'" + cnf.ContextInstanceName + "'",
                 'EntitySetBaseClass', "'" + cnf.EntitySetBaseClass + "'",
-                'CollectionBaseClass', "'" + cnf.CollectionBaseClass + "'"
+                'CollectionBaseClass', "'" + cnf.CollectionBaseClass + "'",
+                'DefaultNamespace', "'" + cnf.DefaultNamespace + "'"
             ]);
         }
     },
     _findVersion: function (metadata) {
-        if (metadata.getElementsByTagName){
+        if ("getElementsByTagName" in metadata){
             var version = 'http://schemas.microsoft.com/ado/2008/09/edm';
             var item = metadata.getElementsByTagName('Schema');
             if (item)
@@ -16585,17 +16665,20 @@ $data.Class.define('$data.MetadataLoaderClass', null, null, {
     _metadataConverterXSLT: {
         type: 'string',
         value:
-            "<xsl:stylesheet version=\"1.0\" xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" \r\n" +
+                "<xsl:stylesheet version=\"1.0\" xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" \r\n" +
                 "                xmlns:edm=\"@@VERSIONNS@@\" \r\n" +
                 "                xmlns:m=\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\" \r\n" +
                 "                xmlns:annot=\"http://schemas.microsoft.com/ado/2009/02/edm/annotation\" \r\n" +
                 "                xmlns:exsl=\"http://exslt.org/common\" \r\n" +
                 "                xmlns:msxsl=\"urn:schemas-microsoft-com:xslt\" exclude-result-prefixes=\"msxsl\">\r\n" +
+                "\r\n" +
                 "  <xsl:key name=\"entityType\" match=\"edm:EntityType\" use=\"concat(string(../@Namespace),'.', string(@Name))\"/>\r\n" +
                 "  <xsl:key name=\"associations\" match=\"edm:Association\" use=\"concat(string(../@Namespace),'.', string(@Name))\"/>\r\n" +
+                "\r\n" +
                 "  <xsl:strip-space elements=\"property item unprocessed\"/>\r\n" +
                 "  <xsl:output method=\"text\" indent=\"no\"  />\r\n" +
                 "  <xsl:param name=\"contextNamespace\" />\r\n" +
+                "\r\n" +
                 "  <xsl:param name=\"SerivceUri\" />\r\n" +
                 "  <xsl:param name=\"EntityBaseClass\"/>\r\n" +
                 "  <xsl:param name=\"ContextBaseClass\"/>\r\n" +
@@ -16603,7 +16686,10 @@ $data.Class.define('$data.MetadataLoaderClass', null, null, {
                 "  <xsl:param name=\"ContextInstanceName\"/>\r\n" +
                 "  <xsl:param name=\"EntitySetBaseClass\"/>\r\n" +
                 "  <xsl:param name=\"CollectionBaseClass\"/>\r\n" +
+                "  <xsl:param name=\"DefaultNamespace\"/>\r\n" +
+                "\r\n" +
                 "  <xsl:template match=\"/\">\r\n" +
+                "\r\n" +
                 "/*//////////////////////////////////////////////////////////////////////////////////////\r\n" +
                 "////// Autogenerated by JaySvcUtil.exe http://JayData.org for more info        /////////\r\n" +
                 "//////                             oData @@VERSION@@                                    /////////\r\n" +
@@ -16624,8 +16710,9 @@ $data.Class.define('$data.MetadataLoaderClass', null, null, {
                 "    <map from=\"Edm.Int64\" to=\"$data.Integer\" />\r\n" +
                 "    <map from=\"Edm.Byte\" to=\"$data.Integer\" />\r\n" +
                 "    <map from=\"Edm.String\" to=\"$data.String\" />\r\n" +
-                "    <map from=\"Edm.GeographyPoint\" to=\"$data.Blob\" />\r\n" +
+                "    <map from=\"Edm.GeographyPoint\" to=\"$data.Geography\" />\r\n" +
                 "  </xsl:variable>\r\n" +
+                "\r\n" +
                 "  function registerEdmTypes() { <xsl:choose>\r\n" +
                 "    <xsl:when test=\"function-available('msxsl:node-set')\">\r\n" +
                 "      <xsl:for-each select=\"msxsl:node-set($EdmJayTypeMapping)/*\">\r\n" +
@@ -16635,6 +16722,7 @@ $data.Class.define('$data.MetadataLoaderClass', null, null, {
                 "      </xsl:for-each>\r\n" +
                 "    </xsl:when>\r\n" +
                 "    <xsl:otherwise>\r\n" +
+                "\r\n" +
                 "      <xsl:for-each select=\"exsl:node-set($EdmJayTypeMapping)/*\">\r\n" +
                 "        function <xsl:value-of select=\"translate(@from,'.','_')\" />() { };\r\n" +
                 "        $data.Container.registerType('<xsl:value-of select=\"@from\"/>', <xsl:value-of select=\"translate(@from,'.','_')\"/>);\r\n" +
@@ -16644,13 +16732,15 @@ $data.Class.define('$data.MetadataLoaderClass', null, null, {
                 "  </xsl:choose>\r\n" +
                 "  };\r\n" +
                 "  registerEdmTypes();\r\n" +
+                "\r\n" +
+                "\r\n" +
                 "<xsl:for-each select=\"//edm:EntityType | //edm:ComplexType\" xml:space=\"default\">\r\n" +
                 "  <xsl:message terminate=\"no\">Info: generating type <xsl:value-of select=\"concat(../@Namespace, '.', @Name)\"/>\r\n" +
                 "</xsl:message>\r\n" +
                 "  <xsl:variable name=\"props\">\r\n" +
                 "    <xsl:apply-templates select=\"*\" />\r\n" +
                 "  </xsl:variable>\r\n" +
-                "  <xsl:text xml:space=\"preserve\">  </xsl:text><xsl:value-of select=\"$EntityBaseClass\"  />.extend('<xsl:value-of select=\"../@Namespace\"/>.<xsl:value-of select=\"@Name\"/>', {\r\n" +
+                "  <xsl:text xml:space=\"preserve\">  </xsl:text><xsl:value-of select=\"$EntityBaseClass\"  />.extend('<xsl:value-of select=\"concat($DefaultNamespace,../@Namespace)\"/>.<xsl:value-of select=\"@Name\"/>', {\r\n" +
                 "    <xsl:choose><xsl:when test=\"function-available('msxsl:node-set')\">\r\n" +
                 "    <xsl:for-each select=\"msxsl:node-set($props)/*\">\r\n" +
                 "      <xsl:value-of select=\".\"/><xsl:if test=\"position() != last()\">,\r\n" +
@@ -16665,27 +16755,33 @@ $data.Class.define('$data.MetadataLoaderClass', null, null, {
                 "  });\r\n" +
                 "  \r\n" +
                 "</xsl:for-each>\r\n" +
+                "\r\n" +
                 "<xsl:for-each select=\"//edm:EntityContainer\">\r\n" +
-                "  <xsl:text xml:space=\"preserve\">  </xsl:text><xsl:value-of select=\"$ContextBaseClass\"  />.extend('<xsl:value-of select=\"concat(../@Namespace, '.', @Name)\"/>', {\r\n" +
+                "  <xsl:text xml:space=\"preserve\">  </xsl:text><xsl:value-of select=\"$ContextBaseClass\"  />.extend('<xsl:value-of select=\"concat(concat($DefaultNamespace,../@Namespace), '.', @Name)\"/>', {\r\n" +
                 "    <xsl:for-each select=\"edm:EntitySet | edm:FunctionImport\">\r\n" +
                 "      <xsl:apply-templates select=\".\"></xsl:apply-templates><xsl:if test=\"position() != last()\">,\r\n" +
                 "    </xsl:if>\r\n" +
                 "    </xsl:for-each>\r\n" +
                 "  });\r\n" +
+                "\r\n" +
                 "  $data.generatedContexts = $data.generatedContexts || [];\r\n" +
-                "  $data.generatedContexts.push(<xsl:value-of select=\"concat(../@Namespace, '.', @Name)\" />);\r\n" +
+                "  $data.generatedContexts.push(<xsl:value-of select=\"concat(concat($DefaultNamespace,../@Namespace), '.', @Name)\" />);\r\n" +
                 "  <xsl:if test=\"$AutoCreateContext = 'true'\">\r\n" +
                 "  /*Context Instance*/\r\n" +
-                "  <xsl:value-of select=\"../@Namespace\"/>.<xsl:value-of select=\"$ContextInstanceName\" /> = new <xsl:value-of select=\"concat(../@Namespace, '.', @Name)\" />( { name:'oData', oDataServiceHost: '<xsl:value-of select=\"$SerivceUri\" />' });\r\n" +
+                "  <xsl:value-of select=\"$DefaultNamespace\"/><xsl:value-of select=\"$ContextInstanceName\" /> = new <xsl:value-of select=\"concat(concat($DefaultNamespace,../@Namespace), '.', @Name)\" />( { name:'oData', oDataServiceHost: '<xsl:value-of select=\"$SerivceUri\" />' });\r\n" +
                 "</xsl:if>\r\n" +
+                "\r\n" +
                 "</xsl:for-each>\r\n" +
                 "      \r\n" +
                 "})(window, $data);\r\n" +
                 "      \r\n" +
                 "    </xsl:template>\r\n" +
+                "\r\n" +
                 "  <xsl:template match=\"edm:Key\"></xsl:template>\r\n" +
+                "\r\n" +
                 "  <xsl:template match=\"edm:FunctionImport\">'<xsl:value-of select=\"@Name\"/>': $data.EntityContext.generateServiceOperation({ serviceName:'<xsl:value-of select=\"@Name\"/>', returnType: <xsl:apply-templates select=\".\" mode=\"render-return-config\" />, <xsl:apply-templates select=\".\" mode=\"render-elementType-config\" />params: [<xsl:for-each select=\"edm:Parameter\">{ <xsl:value-of select=\"@Name\"/>: '<xsl:value-of select=\"@Type\"/>' }<xsl:if test=\"position() != last()\">,</xsl:if>\r\n" +
                 "    </xsl:for-each>], method: '<xsl:value-of select=\"@m:HttpMethod\"/>' })</xsl:template>\r\n" +
+                "\r\n" +
                 "  <xsl:template match=\"edm:FunctionImport\" mode=\"render-return-config\">\r\n" +
                 "    <xsl:choose>\r\n" +
                 "      <xsl:when test=\"not(@ReturnType)\">null</xsl:when>\r\n" +
@@ -16695,9 +16791,10 @@ $data.Class.define('$data.MetadataLoaderClass', null, null, {
                 "  </xsl:template>\r\n" +
                 "  <xsl:template match=\"edm:FunctionImport\" mode=\"render-elementType-config\">\r\n" +
                 "    <xsl:if test=\"starts-with(@ReturnType, 'Collection')\">\r\n" +
-                "      <xsl:variable name=\"len\" select=\"string-length(@ReturnType)-12\"/>elementType: '<xsl:value-of select=\"substring(@ReturnType,12,$len)\"/>', </xsl:if>\r\n" +
+                "      <xsl:variable name=\"len\" select=\"string-length(@ReturnType)-12\"/>elementType: '<xsl:value-of select=\"concat($DefaultNamespace,substring(@ReturnType,12,$len))\"/>', </xsl:if>\r\n" +
                 "  </xsl:template>\r\n" +
-                "  <xsl:template match=\"edm:EntitySet\">'<xsl:value-of select=\"@Name\"/>': { type: <xsl:value-of select=\"$EntitySetBaseClass\"  />, elementType: <xsl:value-of select=\"@EntityType\"/> }</xsl:template>\r\n" +
+                "\r\n" +
+                "  <xsl:template match=\"edm:EntitySet\">'<xsl:value-of select=\"@Name\"/>': { type: <xsl:value-of select=\"$EntitySetBaseClass\"  />, elementType: <xsl:value-of select=\"concat($DefaultNamespace,@EntityType)\"/> }</xsl:template>\r\n" +
                 "  \r\n" +
                 "  <xsl:template match=\"edm:Property | edm:NavigationProperty\">\r\n" +
                 "    <property>\r\n" +
@@ -16715,21 +16812,27 @@ $data.Class.define('$data.MetadataLoaderClass', null, null, {
                 "  \r\n" +
                 "  <xsl:template match=\"@Name\" mode=\"render-field\">\r\n" +
                 "  </xsl:template>\r\n" +
+                "\r\n" +
                 "  <xsl:template match=\"@Type\" mode=\"render-field\">\r\n" +
                 "    <xsl:choose>\r\n" +
                 "      <xsl:when test=\"starts-with(., 'Collection')\">\r\n" +
                 "        <attribute name=\"type\">'Array'</attribute>\r\n" +
                 "        <xsl:variable name=\"len\" select=\"string-length(.)-12\"/>\r\n" +
-                "        <attribute name=\"elementType\">'<xsl:value-of select=\"substring(.,12,$len)\" />'</attribute>\r\n" +
+                "        <attribute name=\"elementType\">'<xsl:value-of select=\"$DefaultNamespace\"/><xsl:value-of select=\"substring(.,12,$len)\" />'</attribute>\r\n" +
+                "      </xsl:when>\r\n" +
+                "      <xsl:when test=\"starts-with(., ../../../@Namespace)\">\r\n" +
+                "        <attribute name=\"type\">'<xsl:value-of select=\"$DefaultNamespace\"/><xsl:value-of select=\".\"/>'</attribute>\r\n" +
                 "      </xsl:when>\r\n" +
                 "      <xsl:otherwise>\r\n" +
                 "        <attribute name=\"type\">'<xsl:value-of select=\".\"/>'</attribute>\r\n" +
                 "      </xsl:otherwise>\r\n" +
                 "    </xsl:choose>\r\n" +
                 "  </xsl:template>\r\n" +
+                "\r\n" +
                 "  <xsl:template match=\"@ConcurrencyMode\" mode=\"render-field\">\r\n" +
                 "    <attribute name=\"concurrencyMode\">$data.ConcurrencyMode.<xsl:value-of select=\".\"/></attribute>\r\n" +
                 "  </xsl:template>\r\n" +
+                "\r\n" +
                 "  <xsl:template match=\"@Nullable\" mode=\"render-field\">\r\n" +
                 "    <attribute name=\"nullable\"><xsl:value-of select=\".\"/></attribute>\r\n" +
                 "    \r\n" +
@@ -16740,9 +16843,11 @@ $data.Class.define('$data.MetadataLoaderClass', null, null, {
                 "      </xsl:choose>\r\n" +
                 "    </xsl:if>\r\n" +
                 "  </xsl:template>\r\n" +
+                "\r\n" +
                 "  <xsl:template match=\"@annot:StoreGeneratedPattern\" mode=\"render-field\">\r\n" +
                 "    <xsl:if test=\". != 'None'\"><attribute name=\"computed\">true</attribute></xsl:if>    \r\n" +
                 "  </xsl:template>\r\n" +
+                "\r\n" +
                 "  <xsl:template match=\"@MaxLength\" mode=\"render-field\">\r\n" +
                 "    <attribute name=\"maxLength\">\r\n" +
                 "      <xsl:choose>\r\n" +
@@ -16753,6 +16858,7 @@ $data.Class.define('$data.MetadataLoaderClass', null, null, {
                 "      </xsl:choose>\r\n" +
                 "    </attribute>\r\n" +
                 "  </xsl:template>\r\n" +
+                "\r\n" +
                 "  <xsl:template match=\"@FixedLength | @Unicode | @Precision | @Scale\" mode=\"render-field\">\r\n" +
                 "  </xsl:template>\r\n" +
                 "  <xsl:template match=\"@*\" mode=\"render-field\">\r\n" +
@@ -16768,6 +16874,7 @@ $data.Class.define('$data.MetadataLoaderClass', null, null, {
                 "    </xsl:variable>\r\n" +
                 "    <xsl:element name=\"attribute\"><xsl:attribute name=\"extended\">true</xsl:attribute><xsl:attribute name=\"name\"><xsl:value-of select=\"$nameProp\"/></xsl:attribute>'<xsl:value-of select=\".\"/>'</xsl:element>\r\n" +
                 "  </xsl:template>\r\n" +
+                "\r\n" +
                 "  <xsl:template match=\"@Relationship\" mode=\"render-field\">\r\n" +
                 "    <xsl:variable name=\"relationName\" select=\"string(../@ToRole)\"/>\r\n" +
                 "    <xsl:variable name=\"relationshipName\" select=\"string(.)\" />\r\n" +
@@ -16778,14 +16885,14 @@ $data.Class.define('$data.MetadataLoaderClass', null, null, {
                 "    <xsl:choose>\r\n" +
                 "      <xsl:when test=\"$m = '*'\">\r\n" +
                 "        <attribute name=\"type\">'<xsl:value-of select=\"$CollectionBaseClass\"/>'</attribute>\r\n" +
-                "        <attribute name=\"elementType\">'<xsl:value-of select=\"$relation/@Type\"/>'</attribute>\r\n" +
+                "        <attribute name=\"elementType\">'<xsl:value-of select=\"$DefaultNamespace\"/><xsl:value-of select=\"$relation/@Type\"/>'</attribute>\r\n" +
                 "        <xsl:if test=\"not($otherProp/@Name)\">\r\n" +
                 "          <attribute name=\"inverseProperty\">'$$unbound'</attribute></xsl:if>\r\n" +
                 "        <xsl:if test=\"$otherProp/@Name\">\r\n" +
                 "          <attribute name=\"inverseProperty\">'<xsl:value-of select=\"$otherProp/@Name\"/>'</attribute></xsl:if>\r\n" +
                 "      </xsl:when>\r\n" +
                 "      <xsl:when test=\"$m = '0..1'\">\r\n" +
-                "        <attribute name=\"type\">'<xsl:value-of select=\"$relation/@Type\"/>'</attribute>\r\n" +
+                "        <attribute name=\"type\">'<xsl:value-of select=\"$DefaultNamespace\"/><xsl:value-of select=\"$relation/@Type\"/>'</attribute>\r\n" +
                 "        <xsl:choose>\r\n" +
                 "          <xsl:when test=\"$otherProp\">\r\n" +
                 "            <attribute name=\"inverseProperty\">'<xsl:value-of select=\"$otherProp/@Name\"/>'</attribute>\r\n" +
@@ -16798,7 +16905,7 @@ $data.Class.define('$data.MetadataLoaderClass', null, null, {
                 "        </xsl:choose>\r\n" +
                 "      </xsl:when>\r\n" +
                 "      <xsl:when test=\"$m = '1'\">\r\n" +
-                "        <attribute name=\"type\">'<xsl:value-of select=\"$relation/@Type\"/>'</attribute>\r\n" +
+                "        <attribute name=\"type\">'<xsl:value-of select=\"$DefaultNamespace\"/><xsl:value-of select=\"$relation/@Type\"/>'</attribute>\r\n" +
                 "        <attribute name=\"required\">true</attribute>\r\n" +
                 "        <xsl:choose>\r\n" +
                 "          <xsl:when test=\"$otherProp\">\r\n" +
@@ -16814,7 +16921,10 @@ $data.Class.define('$data.MetadataLoaderClass', null, null, {
                 "      </xsl:when>\r\n" +
                 "    </xsl:choose>\r\n" +
                 "  </xsl:template>\r\n" +
+                "\r\n" +
+                "\r\n" +
                 "  <xsl:template match=\"@FromRole | @ToRole\" mode=\"render-field\"></xsl:template>\r\n" +
+                "\r\n" +
                 "  <xsl:template match=\"*\" mode=\"render-field\">\r\n" +
                 "    <!--<unprocessed>!!<xsl:value-of select=\"name()\"/>!!</unprocessed>-->\r\n" +
                 "    <xsl:message terminate=\"no\">  Warning: <xsl:value-of select=\"../../@Name\"/>.<xsl:value-of select=\"../@Name\"/>:<xsl:value-of select=\"name()\"/> is an unknown/unprocessed attribued</xsl:message>\r\n" +

@@ -3,6 +3,8 @@ bin
 obj
 *.suo
 *.user
+*.csproj
+*.config
 
 # mstest test results
 TestResults

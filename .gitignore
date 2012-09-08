@@ -4,6 +4,8 @@ obj
 *.suo
 .idea
 nohup.out
+*.sln
+*.apk
 
 # mstest test results
 TestResults
