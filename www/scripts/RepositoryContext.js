@@ -326,7 +326,7 @@ function updateConnectedData(){
 $data.Entity.extend('JayScrum.Settings.Repository', {
     Id:{ type:$data.Integer, key:true, computed:true },
     Title:{ type:$data.String, nullable:false, required:true },
-    Url:{ type:$data.String, nullable:false, required:true },
+    Url:{ type:$data.String, require:true },
     UserName:{ type:$data.String, nullable:true },
     Password:{ type:$data.String, nullable:true },
     IsDefault:{ type:$data.Boolean, nullable:true },

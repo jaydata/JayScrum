@@ -109,7 +109,8 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
       console.log("-== 5. create or update tran");
         console.log(JSON.stringify(transactions));
         $.ajax({
-            url: JayScrum.Frames.Repositories.ServerUrl+'CreateDatabase2',
+ //TODO application db
+            url: 'http://192.168.1.142:3000/CreateDatabase2',
             data:JSON.stringify(transactions),
             type:"POST",
             contentType: 'application/json',
@@ -121,6 +122,7 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
                 console.log("-== 6. create database ok");
                 console.log(data);
                 var result = JSON.parse(data);
+                console.log(result);
                 var redirect = false;
                 for(var i=0;i<result.length;i++){
                 	console.log("-== 7/0 i count: "+i+", tracked entities: "+JayScrum.app.selectedFrame().localContext.stateManager.trackedEntities.length)
@@ -136,14 +138,14 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
                         }
                     }else{
                     	console.log("-== 7/2. Add new repo: "+JSON.stringify(result[i]));
-                        if(result[i].Title){
+                        if(result[i].DevPayLoad.Title){
 	                        var repo = new JayScrum.Settings.Repository({
-	                            Title: result[i].Title,
+	                            Title: result[i].DevPayLoad.Title,
 	                            Status: result[i].Status,
 	                            OrderId:result[i].OrderId,
-	                            Url:result[i].Url,
-	                            UserName:result[i].UserName,
-	                            Password:result[i].Password});
+                                Url:result[i].DevPayLoad.Url ? result[i].DevPayLoad.Url : "",
+	                            UserName:result[i].DevPayLoad.UserName,
+	                            Password:result[i].DevPayLoad.Password});
 	                        console.log("###!!! new repo orderid: "+repo.OrderId);
 	                        JayScrum.app.selectedFrame().localContext.add(repo);
 	                        redirect = true;
@@ -152,7 +154,7 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
                 }
                 console.log("-== 8. redirect: "+redirect+" tracked entities: "+JayScrum.app.selectedFrame().localContext.stateManager.trackedEntities.length);
                 if(redirect){
-                	
+
                     JayScrum.app.selectedFrame().localContext.saveChanges({
                     	success:function () {
                     		console.log("-== 9/1. save new repos");
@@ -160,7 +162,7 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
                     	}, 
                     	error:function(error){
                     		console.log("-== 9/2. error in save");
-                    		alert(JSON.stringify(error));
+                    		console.log(JSON.stringify(error));
                     	}
                     });
                 }
@@ -182,7 +184,7 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
         }
         var url = repoSetting.Url();
         if(url.indexOf('http') !== 0){
-            url = JayScrum.Frames.Repositories.ServerUrl+repoSetting.Url().toLowerCase();
+            url = "http://"+repoSetting.Url().toLowerCase()+JayScrum.Frames.Repositories.ServerUrl;
         }
         JayScrum.app._initializeRepositories(url, repoSetting.UserName, repoSetting.Password);
     },
@@ -313,6 +315,24 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
             [{usr:item.UserName(), psw:item.Password(), dbName: item.Url(), title:item.Title()}]);
 	}
 }, {
-    ServerUrl:'http://192.168.1.142:3000/'
+    ServerUrl:'.jaystack.net/JayScrum'
     //ServerUrl:'http://app1.storm.jaystack.com:3000/'
 });
+
+
+
+window['cordova'] = {};
+cordova.exec = function (success, error, name, functionname, params) {
+    if (functionname == "transactions" && params.length == 0) {
+
+        success(JSON.parse('[{"OrderId":"order1", "productId":"havielofzu_nagy", "purchaseToken":"trivkrjcyozqswvsfeuhnmrs", "DevPayLoad":{"Title":"Repository","Url":"af","UserName":"asdf","Password":"sdf","IsDefault":false}},' +
+            '{"OrderId":"order2", "productId":"havielofzu_nagy", "purchaseToken":"trivkrjcyozqswvsfeuhnmrs", "DevPayLoad":{"Title":"Repository","Url":"af2","UserName":"asdf","Password":"sdf","IsDefault":false}}]'));
+        return;
+    } else if (functionname == "subscribe") {
+        success({res:"RESULT_OK", subscriptionId:'havielofzu_nagy'});
+    } else if (functionname == "transactions" && params.length != 0) {
+        success(JSON.parse('{"OrderId":"order1", "productId":"havielofzu_nagy", "purchaseToken":"", "DevPayLoad":{"Title":"Repository","Url":"af","UserName":"asdf","Password":"sdf","IsDefault":false}}'));
+    }
+//success(params[0]);
+
+}

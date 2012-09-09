@@ -105,7 +105,6 @@ $data.Class.define('JayScrum.ScrumApp', JayScrum.FrameApp, null,{
             });
             loadPromise.resolve();
         });
-        //JayScrum.app.globalData().userList(['', 'hajni', 'robesz', 'zpace', 'nochtap', 'kimi', 'viktor', 'vektor']);
 
         return loadPromise.promise;
     },
@@ -287,8 +286,11 @@ JayScrum.pushObservablesToList= function (list, rawData) {
         list.push(obs);
     }
 };
-//android = true;
+
+android = true;
 if(window['android'] && window['cordova']){
+    //TODO REMOVE!!!!!
+    initApplication();return;
 	document.addEventListener("deviceready", function(){
 		initApplication();	
 		document.addEventListener("backbutton", function(e){
@@ -315,15 +317,8 @@ function initApplication(){
 	});
 }
 
-
-Date.prototype.todayUTC = function () {
-    var d = Date.UTC(this.getFullYear(), this.getMonth(), this.getDate());
-    return new Date(d);
-}
 Date.prototype.addDays = function (days) {
     this.setDate(this.getDate() + days);
     return this;
 }
-Date.prototype.diffInDays = function (date) {
-    return 55;
-}
+
