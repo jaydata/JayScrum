@@ -1315,8 +1315,9 @@
     <script type="text/html" id="setPasswordUI">
         <form data-bind="submit: savePassword">
             <div>
+                <div data-bind="text:validation"></div>
                 Password: <input type="password" required/><br />
-                Retype: <input type="password" required/>
+                Confirm password: <input type="password" required/>
             </div>
             <input type="submit" />
         </form>
@@ -1338,7 +1339,7 @@
                     <a href="#">!!</a>
                 </div>
                 <div type="text/html" data-name-template="Password-display">
-                        <a href="#" data-bind="click: $data.showControls.bind({}, 'setPasswordUI', SetPasswordModel, {})">Reset password</a>
+                        <a href="#" data-bind="click: $data.showControls.bind({}, 'setPasswordUI', SetPasswordModel, $data)">Reset password</a>
                 </div>
             </div>
         </div>
