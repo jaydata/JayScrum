@@ -1311,6 +1311,18 @@
         <!-- /ko -->
     </script>
 
+
+    <script type="text/html" id="setPasswordUI">
+        <form data-bind="submit: savePassword">
+            <div>
+                Password: <input type="password" required/><br />
+                Retype: <input type="password" required/>
+            </div>
+            <input type="submit" />
+        </form>
+        <a href="#" data-bind="click: close">close</a>
+    </script>
+
     <script type="text/html" id="usersPage-template">
         <div class="maxw768" id="settingPage">
             <div class="icon-action back topleft">
@@ -1319,21 +1331,15 @@
             <div class="main-header">
                 <h1 class="title">users</h1>
             </div>
-            <div class="scroll-list pivot-default-opacity scrollable-list animate bottom45" id="settingPageScroll">
-                <div class="scroller-list reset">
-                    <div class="list detail maxlist" >
-                        <div id="x567" data-bind="jayGrid: {source: $data.data().collection}"></div>
-                    </div>
+            <div data-bind="jayGrid: { source: $data.data().collection,
+                                    fields: ['Login', 'FirstName','LastName','Password','Enabled'] }">
+
+                <div type="text/html" data-name-template="Password-editor">
+                    <a href="#">!!</a>
                 </div>
-            </div>
-            <div id="user-actionbar" class="metro-actionbar opened">
-                <ul>
-                    <!-- TODO: 2 click bekötése -->
-                    <li class="icon-action add"><span data-bind="click: null"></span></li>
-                    <li class="icon-action delete"><span data-bind="click: null"></span></li>
-                    <li class="icon-action save"><span data-bind="click: null"></span>
-                </li>
-                </ul>
+                <div type="text/html" data-name-template="Password-display">
+                        <a href="#" data-bind="click: $data.showControls.bind({}, 'setPasswordUI', SetPasswordModel, {})">Reset password</a>
+                </div>
             </div>
         </div>
     </script>

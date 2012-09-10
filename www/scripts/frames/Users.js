@@ -30,7 +30,7 @@ $data.Class.define('JayScrum.Frames.Users', JayScrum.Frame, null, {
         this.selectMetaView('defaultMeta');
         this.data = ko.observable({
             collection:ko.observable()
-        });
+                });
     },
     _loadData:function(){
         var loadingPromise = Q.defer();
@@ -40,3 +40,17 @@ $data.Class.define('JayScrum.Frames.Users', JayScrum.Frame, null, {
         return loadingPromise.promise;
     }
 }, null);
+
+function SetPasswordModel(model) {
+    var self = this;
+    var user = model.user;
+
+    this.validation = ko.observable();
+    this.savePassword = function () {
+
+        this.close();
+    }
+    this.close = function () {
+        model.closeControlBox();
+    }
+}

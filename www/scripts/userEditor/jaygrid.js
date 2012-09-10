@@ -1,12 +1,63 @@
-/**
- * Created with JetBrains WebStorm.
- * User: peterzentai
- * Date: 8/16/12
- * Time: 12:39 PM
- * To change this template use File | Settings | File Templates.
- */
-(function() {
+(function ($data) {
+
+    function voidTrace() {
+    };
+
+    function debugTraceConsole() {
+        //console.log.apply(console, arguments);
+    }
+
+    $data.trace = debugTraceConsole;
+
+})(window["$data"] || (window["$data"] = {}));
+
+(function ($data) {
+
+    $data.jayGrid = $data.jayGrid || {};
+
+    window['GroupEditor'] = function (viewModel) {
+        var self = this;
+        console.dir("groupEditor created");
+        $data.typeSystem.extend(this, viewModel);
+        self.Groups = ko.observableArray([]);
+
+        var currentList = self.value() || [];
+        viewModel.context().Groups.forEach(function (item) {
+            item.selected = ko.observable(currentList.indexOf(item.GroupID) > -1);
+            item.selected.subscribe(function (value) {
+                var list = self.value() || [];
+                if (value) {
+                    list.push(item.GroupID);
+                } else {
+                    list.splice(list.indexOf(item.GroupID), 1);
+                }
+                self.value(list);
+            });
+            self.Groups.push(item);
+        });
+
+    };
+
     var templateEngine = new ko.nativeTemplateEngine();
+
+    var i = 0;
+
+    if (! ($data.EntitySet.prototype.toKoArray) ) {
+
+
+        $data.EntitySet.prototype.toKoArray = function() {
+            if (this._cached_ko_array) {
+                return this._cached_ko_array;
+            }
+            var z = this._cached_ko_array = ko.observableArray([]);
+            this.toArray( function(items) {
+                items.forEach(function(item) {
+                    z.push(item);
+                })
+            });
+            return z;
+        }
+    }
 
     templateEngine.addTemplate = function(templateName, templateMarkup) {
         document.write("<script type='text/html' id='" + templateName + "'>" + templateMarkup + "<" + "/script>");
@@ -19,6 +70,7 @@
             templateEngine.addTemplate(templates[i][0], templates[i][1]);
         }
     }
+
 
     regiserTemplates($data.jayGridTemplates.tableTemplate);
 
@@ -34,15 +86,36 @@
         var props = [].concat(entityType.memberDefinitions.getPublicMappedProperties());
         if (fields.length > 0) {
             var res = [];
-            for(var i = 0; i < fields.length; i++) {
-                var propname = fields[i].name || fields[i];
+            for (var i = 0; i < fields.length; i++) {
                 var prop = null;
-                j = 0;
-                while(!prop && j < props.length) {
-                    if (props[j].name === propname) {
-                        prop = props[j];
+                var propname = fields[i];
+                if (typeof propname === 'string') {
+                    j = 0;
+                    while (!prop && j < props.length) {
+                        if (props[j].name === propname) {
+                            prop = props[j];
+                        }
+                        j++;
                     }
-                    j++;
+                } else {
+                    //if object then is a memDef
+                    console.log("fakefield");
+                    if (fields[i].isVirtual) {
+                        prop = fields[i];
+                    } else {
+                        var propname = fields[i].name;
+                        var j = 0;
+                        while (!prop && j < props.length) {
+                            if (props[j].name === propname) {
+                                prop = props[j];
+                            }
+                            j++;
+                        }
+                        if (prop) {
+                            $data.typeSystem.extend(fields[i], prop);
+                        }
+                        prop = fields[i];
+                    }
                 }
                 if (prop) {
                     res.push(prop);
@@ -50,15 +123,6 @@
             }
             props = res;
         }
-//        props.push( {
-//            name: 'ValidationErrors',
-//            type: 'Array'
-//        });
-//
-//        props.push( {
-//            name: 'entityState',
-//            type: 'int'
-//        });
 
         if (itemCommands.length > 0) {
             var meta = {
@@ -77,6 +141,7 @@
         'update': function (element, valueAccessor) {
             var v = valueAccessor();
             var eset = ko.utils.unwrapObservable(v.source);
+
             var key = ko.utils.unwrapObservable(v.key);
             if (!key) {
                 return;
@@ -102,8 +167,14 @@
             return { 'controlsDescendantBindings': true };
         },
 
-        update: function(element, viewModelAccessor, allBindingsAccessor, vModel) {
+        update: function (element, viewModelAccessor, allBindingsAccessor, vModel) {
+            this.x = this.x || 1;
+            this.x += 1;
+            console.dir(this);
             //console.dir(vModel);
+            if (element["jaystate"] && element["jaystate"]["dispose"]) {
+                element["jaystate"].dispose();
+            }
             var viewModel = viewModelAccessor(), allBindings = allBindingsAccessor();
 
             var source = null, fields = [];
@@ -129,7 +200,8 @@
                     if (child.nodeType == 1) {
                         tmpName = child.getAttribute("data-type-template");
                         if (tmpName) {
-                            var rndId = Math.random().toString().replace(".","").replace(",","");
+                            var rndId = Math.random().toString().replace(".", "").replace(",", "");
+
                             child.setAttribute("id", rndId);
                             element.typeTemplates[tmpName] = rndId;
                             document.body.appendChild(child);
@@ -161,21 +233,25 @@
             fields = viewModel.fields || [];
 
 
-            function _model() {
-                for (var j in vModel) {
-                    this[j] = vModel[j];
-                };
+            console.dir(element);
+            function _model(container) {
 
                 for(var j in viewModel) {
                     this[j] = viewModel[j];
                 };
 
+                for (var j in vModel) {
+                    this[j] = vModel[j];
+                };
+
                 console.log("Grid model created");
                 var self = this;
 
-                self.pageSize = ko.isObservable(viewModel.pageSize) ? viewModel.pageSize : ko.observable(viewModel.pageSize || 10);
+                self.pageSize = ko.isObservable(viewModel.pageSize) ?
+                    viewModel.pageSize : ko.observable(viewModel.pageSize || 10);
 
-                self.itemCount = ko.observable(100);
+                self.itemCount = ko.observable();
+
 
                 self.currentPage = ko.observable(0);
 
@@ -183,10 +259,13 @@
 
 
 
-                self.source.subscribe( function(){
-                    self.sortColumn('');
-                }, 'beforeChange');
+                //self.source.subscribe( function(){
+                //    self.sortColumn('');
+                //}, 'beforeChange');
 
+                if (viewModel.items) {
+                    console.log("replacing items");
+                }
                 self.items =  viewModel.items || ko.observableArray([]);
 
                 if (self.monitorItems) {
@@ -196,12 +275,12 @@
                 self.objectsToDelete = ko.observableArray([]);
                 self.objectsInEditMode = ko.observableArray([]);
 
-
+                self.saving = ko.observable(false);
 
                 self.save =  function() {
 
                     console.dir("Saving changes: " + arguments);
-
+                    self.saving(true);
                     var source = ko.utils.unwrapObservable(self.source);
                     console.log("Items in tracker:" + source.entityContext.stateManager.trackedEntities.length);
                     ccc = source.entityContext;
@@ -213,10 +292,14 @@
                     function doSave() {
                         source.entityContext.saveChanges( function() {
                             console.log("Items in tracker #2:" + source.entityContext.stateManager.trackedEntities.length);
-                            self.refresh(Math.random());
+                            if (self.objectsToDelete().length > 0) {
+                                self.refresh(Math.random());
+                            }
                             self.objectsToDelete.removeAll();
-                            self.objectsInEditMode.removeAll()
-                        })
+                            self.objectsInEditMode.removeAll();
+                            self.saving(false);
+
+                        }).fail( function() { console.dir(arguments); })
                     }
 
                     if (self.beforeSave) {
@@ -240,6 +323,13 @@
                 };
 
 
+                self.showNewCommand = ("showNewCommand" in self) ? self.showNewCommand : ko.observable(true);
+                self.showNewCommandTop = ("showNewCommandTop" in self) ? self.showNewCommandTop : ko.observable(true);
+                self.showNewCommandBottom = ("showNewCommandBottom" in self) ? self.showNewCommandBottom : ko.observable(true);
+                self.showRemoveAllCommand = ("showRemoveAllCommand" in self) ? self.showRemoveAllCommand : ko.observable(true);
+                self.showSaveCommand = ("showSaveCommand" in self) ? self.showSaveCommand : ko.observable(false);
+                self.showSort = ("showSort" in self) ? self.showSort: ko.observable(true);
+
 
                 self.pendingChanges = ko.computed( function() {
                     return this.objectsToDelete().length > 0 ||
@@ -254,46 +344,38 @@
 
                 self.removeAll = function() {
                     var entitySet = ko.utils.unwrapObservable(self.source);
-//                    es.removeAll( function() {
-//                        alert("removed!");
-//                    })
+                    entitySet.removeAll(function () {
+                        self.refresh(Math.random());
+                    })
 
-                    var keyname = entitySet.defaultType.memberDefinitions.getKeyProperties()[0].name;
-                    entitySet.map("it." + keyname).toArray(function(ids) {
-                        ids.forEach( function(id) {
-                            var obj = { };
-                            obj[keyname] = id;
-                            entitySet.remove(obj);
-                        });
-                        entitySet.entityContext.saveChanges( function() {
-                            self.refresh(Math.random());
-                        })
-                    });
+                    //var keyname = entitySet.defaultType.memberDefinitions.getKeyProperties()[0].name;
+                    //entitySet.map("it." + keyname).toArray(function(ids) {
+                    //    ids.forEach( function(id) {
+                    //        var obj = { };
+                    //        obj[keyname] = id;
+                    //        entitySet.remove(obj);
+                    //    });
+                    //    entitySet.entityContext.saveChanges( function() {
+                    //        self.refresh(Math.random());
+                    //    })
+                    //});
                     //alert("it." + );
                 };
 
-                self.addNew = function() {
+                var click = 0,
+                    ipad = navigator.userAgent.toString().toLowerCase().match(/ipad/i) != null;
+
+                self.addNew = function () {
+                    // iPad double click fix
+                    click++;
+                    if (ipad && click % 2) return;
+
                     var es = ko.utils.unwrapObservable(self.source);
                     var o = new es.createNew();
                     o = o.asKoObservable();
                     var idx = self.items().length;
 
-                    o.getColumns = function() {
-                        var result = [];
-                        for (var i = 0; i < self.columns().length; i++) {
-                            var col = {
-                                rowIndex: idx,
-                                columnIndex: i,
-                                value: this[self.columns()[i].name],
-                                name: self.columns()[i].name,
-                                metadata: self.columns()[i],
-                                owner: this,
-                                itemCommands: itemCommands
-                            }
-                            result.push(col);
-                        }
-                        return result;
-                    }
+                    self.extendItem(o);
 
                     var v = ko.utils.unwrapObservable(self.discriminatorValue),
                         f = ko.utils.unwrapObservable(self.discriminatorColumn);
@@ -303,6 +385,7 @@
                     }
                     if (self.defaultValues) {
                         for(var m in self.defaultValues) {
+                            console.log("setting default: " + m +" " + self.defaultValues[m]);
                             o[m](ko.utils.unwrapObservable(self.defaultValues[m]));
                         }
                     }
@@ -320,11 +403,9 @@
                         }
                     } else {
                         self.items.push(o);
-
                     }
-
-                    JayScrum.app.selectedFrame().selectedView().i_scroll.refresh();
                 };
+
 
                 var itemCommands = [
                     {
@@ -398,7 +479,24 @@
 
                 self.columns = ko.observableArray(cols);
 
+                self.resolveEditorModel = function (colData) {
+                    var editorModel;
+                    if (colData.metadata instanceof $data.MemberDefinition) {
+                        var defaultEditorModelResolver;
+                        if (viewModel.EditorModelTemplate && viewModel.EditorModelTemplate.isAssignableTo && viewModel.EditorModelTemplate.isAssignableTo($data.jayGrid.EditorModelBase)) {
+                            defaultEditorModelResolver = new viewModel.EditorModelTemplate();
+                        } else {
+                            defaultEditorModelResolver = new $data.jayGrid.EditorModelBase();
+                        }
+                        colData.Model = defaultEditorModelResolver.getModel(colData);
+                    }
+
+                    return colData;
+                }
+
+                //a micro viewmodel for the cells, all necessary data collected
                 function getKoItemColumns(rowIndex) {
+                    var self2 = this;
                     var result = [];
                     for (var i = 0; i < self.columns().length; i++) {
                         var col = {
@@ -410,14 +508,51 @@
                             owner: this,
                             itemCommands: itemCommands
                         }
-                        result.push(col);
+                        col.showControls = (function(i, col) {
+                            return function (template, viewModelType, viewModelData) {
+                                self2.showControlBox(i, col, template, viewModelType, viewModelData);
+                            }})(i, col)
+
+                        result.push(self.resolveEditorModel(col));
                     }
+
                     return result;
                 }
 
-                self.extendItem = function(koItem) {
+                self.extendItem = function (koItem) {
+
+
                     koItem.getColumns = getKoItemColumns;
-                    if( self.itemExtender ) {
+                    var koCells = ko.observableArray([]);
+                    koItem.getControlCells = koCells;
+                    koItem.showControlBox = function (index, data, template, viewModelType, viewModelData) {
+                        koCells.removeAll();
+                        console.log("showControlBox");
+                        viewModelData.closeControlBox = function () {
+                            koCells.removeAll();
+                        };
+                        var vm = new viewModelType(viewModelData);
+                        var colcount = self.columns().length;
+                        for (var i = 0; i < colcount; i++) {
+                            var item = { index : i, asked: index };
+                            item.colspan = 1;
+                            item.templateName = undefined;
+                            item.viewModel = {};
+                            item.data = {};
+                            if (index == i) {
+                                item.colspan = 2;
+                                item.templateName = template;
+                                item.data = data;
+                                item.viewModel = vm;
+                                i++;
+                            }
+                            koCells.push(item);
+                        }
+                        console.log(koCells().length);
+
+                    }
+
+                    if (self.itemExtender) {
                         self.itemExtender( koItem );
                     }
                 }
@@ -439,65 +574,92 @@
                 }, this);
 
                 self.goToNextPage = function() {
-                    self.currentPage( self.currentPage() + 1);
+                    self.currentPage(self.currentPage() + 1);
+                    self.refresh(Math.random());
                 };
 
                 self.goToPreviousPage = function() {
-                    self.currentPage( self.currentPage() - 1);
+                    self.currentPage(self.currentPage() - 1);
+                    self.refresh(Math.random());
                 }
 
                 //console.log("model builder:" + viewModel.discriminatorColumn);
                 self.discriminatorColumn = viewModel.discriminatorColumn; // || ko.observable();
                 self.discriminatorValue = viewModel.discriminatorValue; //|| ko.observable();
 
-                self.refresh = ko.observable();
+                self.refresh = viewModel.refresher || ko.observable();
 
-                self.itemsTrigger = ko.computed( function(){
-                    if (ko.utils.unwrapObservable(this.source) == null) {
-                        return;
-                    }
-                    var q = this.source();
+                self.filter = ko.isObservable(viewModel.filter) ? viewModel.filter : ko.observable(viewModel.filter);
 
-                    var ref = this.refresh();
 
-                    var column = ko.utils.unwrapObservable(this.discriminatorColumn);
-                    var value = ko.utils.unwrapObservable(this.discriminatorValue);
+                console.dir("@@@@@@@@@@@");
+                //console.dir(ko.contextFor(container));
 
-                    if (column && !(value) ) {
-                        return;
-                    }
+                self.itemsTrigger = ko.computed({
+                    //disposeWhenNodeIsRemoved: container,
+                    read: function () {
 
-                    if (value  && column) {
-                        q = q.filter("it." + column + " == '" + value + "'");
-                    }
+                        var v = this.pageSize();
+                        var z = this.currentPage();
+                        var w = this.sortColumn();
 
-                    var sortColumn = this.sortColumn();
-
-                    if (!q.defaultType.memberDefinitions["$" + sortColumn]) {
-                        sortColumn = '';
-                    }
-
-                    return q
-                        .order(sortColumn)
-                        .skip(this.pageSize() * this.currentPage())
-                        .take(this.pageSize())
-                        .toArray(
-                        function (entities) {
-                            self.items.removeAll();
-                            for(var i = 0; i < entities.length; i++) {
-                                var item = entities[i];
-                                var koItem = item.asKoObservable();
-                                self.extendItem(koItem);
-                                self.items.push( koItem );
-                            }
-
+                        if (ko.utils.unwrapObservable(this.source) == null) {
+                            console.log("quitting without anything...");
+                            return;
                         }
-                    );
-                }, this);
+                        var q = this.source();
 
+                        var ref = this.refresh();
+                        var column = ko.utils.unwrapObservable(this.discriminatorColumn);
+                        var value = ko.utils.unwrapObservable(this.discriminatorValue);
 
+                        if (column && !(value)) {
+                            return;
+                        }
 
-                self.getTemplate =  function(propertyOwner, metadata) {
+                        if (value && column) {
+                            q = q.filter("it." + column + " == '" + value + "'");
+                        }
+
+                        var sortColumn = this.sortColumn();
+
+                        if (!q.defaultType.memberDefinitions["$" + sortColumn]) {
+                            sortColumn = '';
+                        }
+                        //get length of current selection;
+
+                        if (this.filter()) {
+                            q = q.filter(ko.utils.unwrapObservable(self.filter));
+                        };
+
+                        q.length(function (x) {
+                            self.itemCount(x);
+                        });
+
+                        q = q.order(sortColumn)
+                            .skip(this.pageSize() * this.currentPage())
+                            .take(this.pageSize())
+                            .toArray(
+                            function (entities) {
+                                $data.trace(1, "JayGrid data received:", entities);
+                                self.items.removeAll();
+                                for (var i = 0; i < entities.length; i++) {
+                                    var item = entities[i];
+                                    var koItem = item.asKoObservable();
+                                    self.extendItem(koItem);
+                                    self.items.push(koItem);
+                                }
+                                $data.trace(1, "JayGrid data pushed to grid:", self.items());
+                            }
+                        );
+                    },
+                    owner: this
+
+                });
+
+                element["jaystate"] = self.itemsTrigger;
+
+                self.getTemplate =  function(propertyOwner, metadata, customModel) {
                     var nameSuffix = '';
 
                     if (! (metadata.resolvedName && metadata.stringName)) {
@@ -505,14 +667,19 @@
                         metadata.resolvedName = Container.resolveName(metadata.type);
                     };
 
-                    if (self.objectsInEditMode.indexOf(propertyOwner) > -1) {
+                    if (!customModel) customModel = {};
+
+                    if (self.objectsInEditMode.indexOf(propertyOwner) > -1 && metadata['$editable'] !== false) {
                         var templateId;
-                        return element.nameTemplates[metadata.name + "-editor"] ||
+                        var result = element.nameTemplates[metadata.name + "-editor"] ||
                             element.typeTemplates[metadata.stringName + "-editor"] ||
                             element.typeTemplates[metadata.resolvedName + "-editor"] ||
-                            (document.getElementById('jay-data-grid-' + metadata.resolvedName + '-editor') ?
-                                'jay-data-grid-' + metadata.resolvedName + '-editor' :
-                                'jay-data-grid-generic-editor');
+                            (document.getElementById(customModel.templateName + '-editor') ? customModel.templateName + '-editor' : undefined) ||
+                            (metadata['$sourceTable']  ? 'jay-data-grid-bound-field-editor' :
+                                (document.getElementById('jay-data-grid-' + metadata.resolvedName + '-editor') ?
+                                    'jay-data-grid-' + metadata.resolvedName + '-editor' :
+                                    'jay-data-grid-generic-editor'));
+                        return result;
                         //nameSuffix = '-editor';
                     } else {
 
@@ -526,10 +693,10 @@
                     var result = element.nameTemplates[metadata.name + '-display'] ||
                         element.typeTemplates[metadata.stringName + '-display'] ||
                         element.typeTemplates[metadata.resolvedName + '-display'] ||
-                        (document.getElementById('jay-data-grid-' + metadata.resolvedName + '-display') ?
-                            'jay-data-grid-' + metadata.resolvedName + '-display' :
-                            'jay-data-grid-generic-display');
-
+                        (document.getElementById(customModel.templateName + '-display') ? customModel.templateName + '-display' : undefined) ||
+                        (metadata['$sourceTable']  ? 'jay-data-grid-bound-field-display' :
+                            (document.getElementById('jay-data-grid-' + metadata.resolvedName + '-display') ?
+                                'jay-data-grid-' + metadata.resolvedName + '-display' : 'jay-data-grid-generic-display'));
 
                     return result;
 
@@ -539,25 +706,181 @@
 
             }
 
-
+            zzzzzzz = element;
             var receiveEvents = viewModel.receiveEvents !== false;
 
 
-            while(element.firstChild) {
+            while (element.firstChild) {
+                ko.cleanNode(element.firstChild);
                 ko.removeNode(element.firstChild);
             }
 
             var gridTemplateName = allBindings.gridTemplate || "jay-data-grid";
 
             var container = element.appendChild( document.createElement("div"));
+            ccccccc = container;
 
-            ko.renderTemplate(  gridTemplateName,
-                new _model(),
+            ssss = ko.renderTemplate(  gridTemplateName,
+                new _model(container),
                 {templateEngine: templateEngine},
                 container,
                 "replaceNode");
 
+
+
             //source.take(200).toArray(model.items);
         }
+
     }
-})();
+
+    $data.Class.define("$data.jayGrid.EditorModelBase", null, null, {
+        getModel: function (columnInfo) {
+
+            var typeName = Container.resolveName(columnInfo.metadata.type)
+            if (typeName in this) {
+                return this[typeName].call(this, columnInfo);
+            }
+
+            return {};
+        },
+
+        '$data.Integer': function (columnInfo) {
+            var model = {
+                Value: ko.observable(columnInfo.value()),
+                templateName: 'jay-data-grid-$data.Integer-default'
+            }
+
+            model.Value.subscribe(function (val) {
+                columnInfo.value(parseInt(val));
+            });
+
+            return model;
+        },
+
+        '$data.Number': function (columnInfo) {
+            var model = {
+                Value: ko.observable(columnInfo.value()),
+                templateName: 'jay-data-grid-$data.Number-default'
+            }
+
+            var self = this;
+            model.Value.subscribe(function (val) {
+                if (self.isDecimal(val))
+                    columnInfo.value(parseFloat(val));
+
+                model.Value(columnInfo.value());
+            });
+
+            return model;
+        },
+        isDecimal: function (val) {
+            return typeof val === 'string' && (/^[0-9]+.[0-9]+$/.test(val) || /^[0-9]+$/.test(val) || /^[-+][0-9]+.[0-9]+$/.test(val) || /^[-+][0-9]+$/.test(val));
+        },
+
+        '$data.Date': function (columnInfo) {
+            var dateVal = columnInfo.value() || new Date();
+            var dateStr = this.numComplete(dateVal.getFullYear()) + "-" + this.numComplete(dateVal.getMonth() + 1) + "-" + this.numComplete(dateVal.getDate());
+            //var timeStr = this.numComplete(dateVal.getHours()) + ":" + this.numComplete(dateVal.getMinutes()) + ":" + this.numComplete(dateVal.getSeconds());
+            var timeStr = dateVal.toLocaleTimeString();
+
+            var dispDate = this.displayDate(dateVal);
+            var model = {
+                Date: ko.observable(dateStr),
+                Time: ko.observable(timeStr),
+                Display: {
+                    Date: ko.observable(dispDate.Date),
+                    Time: ko.observable(dispDate.Time),
+                    Offset: ko.observable(dispDate.Offset),
+                    OffsetPoz: ko.observable(dateVal.getTimezoneOffset() <= 0 ? '+' : '')
+                },
+                templateName: 'jay-data-grid-$data.Date-default'
+            }
+
+            var self = this;
+            columnInfo.value.subscribe(function (val) {
+                var newDate = self.displayDate(val);
+                model.Display.Date = ko.observable(newDate.Date);
+                model.Display.Time = ko.observable(newDate.Time);
+                model.Display.Offset = ko.observable(newDate.Offset);
+                model.Display.OffsetPoz = ko.observable(val.getTimezoneOffset() <= 0 ? '+' : '');
+            });
+
+            model.Date.subscribe(function (val) {
+                var date = columnInfo.value();
+                var newdate = new Date(val);
+
+                date.setYear(newdate.getFullYear());
+                date.setMonth(newdate.getMonth());
+                date.setDate(newdate.getDate());
+
+                columnInfo.value(date);
+            });
+
+            model.Time.subscribe(function (val) {
+                var time = new Date('0001/01/01 ' + val);
+                var date = columnInfo.value();
+
+                date.setHours(time.getHours());
+                date.setMinutes(time.getMinutes());
+                date.setSeconds(time.getSeconds());
+
+                columnInfo.value(date);
+            });
+
+            return model;
+        },
+        numComplete: function (int) {
+            switch (true) {
+                case int < 10 && int >= 0:
+                    return '0' + int;
+                case int > -10 && int < 0:
+                    return '-0' + int * (-1);
+                default:
+                    return int;
+
+            }
+            return int < 10 ? '0' + int : int;
+        },
+        displayDate: function (date) {
+            return {
+                Date: this.numComplete(date.getMonth() + 1) + "/" + this.numComplete(date.getDate()) + "/" + this.numComplete(date.getFullYear()),
+                Time: date.toLocaleTimeString(),
+                Offset: this.numComplete(Math.round(date.getTimezoneOffset() / -60)) + ":" + this.numComplete(date.getTimezoneOffset() % -60)
+            }
+        },
+
+        '$data.Geography': function (columnInfo) {
+            var geoVal = columnInfo.value() || new $data.Geography(0, 0);
+            var model = {
+                Longitude: ko.observable(geoVal.longitude),
+                Latitude: ko.observable(geoVal.latitude),
+                templateName: 'jay-data-grid-$data.Geography-default'
+            }
+
+            var self = this;
+            model.Longitude.subscribe(function (val) {
+                var geo = columnInfo.value() || new $data.Geography(0, 0);
+                if (self.isDecimal(val)) {
+                    geo.longitude = parseFloat(val);
+                    columnInfo.value(geo);
+                }
+                console.log('set');
+                model.Longitude(geo.longitude);
+            });
+            model.Latitude.subscribe(function (val) {
+                var geo = columnInfo.value() || new $data.Geography(0, 0);
+                if (self.isDecimal(val)) {
+                    geo.latitude = parseFloat(val);
+                    columnInfo.value(geo);
+                }
+                model.Latitude(geo.latitude);
+            });
+
+            return model;
+        }
+
+    });
+
+})($data);
+
+
