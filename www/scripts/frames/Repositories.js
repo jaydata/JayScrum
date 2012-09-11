@@ -181,6 +181,13 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
         JayScrum.app._initializeRepositories(url, repoSetting.UserName(), repoSetting.Password())
             .fail(function(){
                 JayScrum.app.selectedFrame().data().errorMsg('Failed to connect repository!');
+                if (!$('div#error-msg').hasClass('opened')) {
+                    if ($('div#repo-info').hasClass('opened')) {
+                        $('div#repo-info').removeClass('opened');
+                    }
+
+                    $('div#error-msg').addClass('opened');
+                }
             });
     },
     editSetting:function(item){

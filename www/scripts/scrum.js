@@ -1,5 +1,5 @@
 var debug = true,
-    iScrollOptions = function (fn, fn2) {
+    iScrollOptions = function (fn, fn2, checkDomChanges) {
         this.useTransition = true;
         this.hScroll = false;
         this.vScroll = true;
@@ -8,6 +8,7 @@ var debug = true,
         this.scrollbarClass = "iscrollbar";
         this.bounce = true;
         this.lockDirection = true;
+        this.checkDOMChanges = checkDomChanges;
         this.onScrollStart = function () {
             if ($('input:focus, select:focus, textarea:focus').length > 0) {
                 $(':focus').blur();
@@ -120,11 +121,11 @@ $data.Class.define('JayScrum.ScrumApp', JayScrum.FrameApp, null,{
             });
         return loadPromise.promise;
     },
-    initScrollById:function (id, fn, fn2, hideLoad) {
+    initScrollById: function (id, fn, fn2, hideLoad, checkDomChanges) {
         var i_scroll = null,
             transition = $("div#" + id);
 
-        i_scroll = new iScroll(id, new iScrollOptions(fn, fn2));
+        i_scroll = new iScroll(id, new iScrollOptions(fn, fn2, checkDomChanges));
         transition.addClass("animate").parent().find('h1.pivot-default').addClass("animate");
 
         // pull up to load more
@@ -258,7 +259,7 @@ $data.Class.define('JayScrum.ScrumApp', JayScrum.FrameApp, null,{
                                     if (user && user.length > 0) {
                                         JayScrum.app.globalData().user(user[0].asKoObservable());
                                     } else {
-                                        //TODO remove
+                                        // TODO remove
                                         JayScrum.app.globalData().user((new JayScrum.stormContext.Users.createNew({Id:'administrator', Login:'administrator', FirstName:'Administrator', LastName:'!!!'})).asKoObservable());
                                     }
                                     JayScrum.app.selectFrame('MainFrame');
@@ -266,23 +267,22 @@ $data.Class.define('JayScrum.ScrumApp', JayScrum.FrameApp, null,{
                                 },
                                 error:function(){
                                     // get context from cache but connect to applicationdb failed
-                                    console.log("Auth faild!");
+                                    console.log("Auth failed!");
                                     console.log(arguments);
                                     connectDefer.reject();
                                 }
                             });
-
                     },
-                    error:function (){
-                        //Error to connect Application DB
-                        console.log('almafa');
+                    error: function (){
+                        // Error to connect Application DB
+                        console.log('Error on connect Application DB!');
                         connectDefer.reject();
                     }
                 },{user: userName, password: psw});
             },
-            error:function(){
-                ///Error to connect JayScrum service
-                console.log('almafa')
+            error: function(){
+                // Error to connect JayScrum service
+                console.log('Error to connect JayScrum service!');
                 connectDefer.reject();
             }
         },{user: userName, password: psw});

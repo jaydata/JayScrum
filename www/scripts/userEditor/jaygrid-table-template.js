@@ -31,7 +31,7 @@
             <div id='user-actionbar' class='metro-actionbar opened'>\
                 <ul>\
                     <li class='icon-action add'><span data-bind='click: addNew'></span></li>\
-                    <li class=' icon-action save'><input class='btn btn-success' type='submit' value='' data-bind='visible: pendingChanges' />\
+                    <li class='icon-action save'><input class='btn btn-success icon-action save' type='submit' value='' data-bind='visible: pendingChanges' />\
                     </li>\
                 </ul>\
             </div>"],
@@ -51,8 +51,8 @@
                 <!-- ko template: { name: (metadata[\"isVirtual\"] ? 'jay-data-grid-control-cell' : 'jay-data-grid-data-cell') } -->\
                 <!-- /ko -->\
             </tr>\
-                <tr data-bind='foreach: getControlCells'>\
-            <td data-bind='attr: { colspan: colspan }, template: { name: templateName, data: viewModel }'></td>\
+            <tr class='subrow' data-bind='foreach: getControlCells'>\
+                <td data-bind='attr: { colspan: 4 }, template: { name: templateName, data: viewModel }'></td>\
             </tr>"
         ],
 
@@ -80,7 +80,7 @@
 
         ["jay-data-grid-$data.Boolean-display",
             "<div class='metro-checkbox white fnone_'>\
-                '<input class='disabled' type='checkbox' data-bind='checked: value' disabled />\
+                '<input class='disabled' type='checkbox' data-bind='checked: value' disabled='disabled' />\
                 '<label data-bind='attr: { for: $parent[name] }'></label>'\
             </div>"],
 
@@ -95,7 +95,7 @@
 
         ["jay-data-grid-$data.Boolean-editor",
             "<div class='metro-checkbox white fnone_'>\
-                '<input type='checkbox' data-bind='checked: $parent[name], attr: { id: $parent[name] }' />\
+                '<input type='checkbox' value='None' data-bind='checked: $parent[name], attr: { id: $parent[name] }' />\
                 '<label data-bind='attr: { for: $parent[name] }'></label>'\
             </div>"],
 

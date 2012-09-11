@@ -12,7 +12,7 @@ $data.Class.define('JayScrum.Views.Users', JayScrum.FrameView, null, {
     },
     initializeView:function(){
         JayScrum.app.hideLoading();
-        this.i_scroll = JayScrum.app.initScrollById("settingPageScroll");
+        this.i_scroll = JayScrum.app.initScrollById("settingPageScroll", null, null, false, true);
     },
     tearDownView:function(){
         if (this.i_scroll){

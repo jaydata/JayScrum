@@ -156,7 +156,7 @@ body:not(.android)
 
 /*#region ACTIONBAR */
 .metro-actionbar {
-	.position(absolute, auto, 0, 0, 0); .size(100%, 44px); .tacenter; opacity: 0; /*visibility: hidden;*/
+	.position(absolute, auto, 0, 0, 0); .size(100%, 44px); .tacenter; opacity: 0; visibility: hidden;
     z-index: 100;
     background: rgba(45, 45, 45, 0.9);
     
@@ -165,7 +165,7 @@ body:not(.android)
     -webkit-transition: -webkit-transform 400ms;*/
         
     &.opened {
-        opacity: 1;
+        opacity: 1; visibility: visible;
         
         /*-webkit-transition: -webkit-transform 400ms;
         -webkit-transition-delay: 500ms;
@@ -173,9 +173,9 @@ body:not(.android)
     }
     
     ul {
-        .iblock; .reset-m; .size(100%, 100%); padding: 7px 0 0 0; 
+        .iblock; .reset-m; .size(auto, 100%); padding: 7px 0 0 0; 
         
-        li { line-height: 25px; }
+        li { line-height: 25px; .fleft; }
     }
 }
 
@@ -183,7 +183,7 @@ body:not(.android)
     height: auto; z-index: 50;
         
     &.opened {
-        .transition();
+        .transition(); 
         -webkit-transform: translateY(-44px);
     }
     

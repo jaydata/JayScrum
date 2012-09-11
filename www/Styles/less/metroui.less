@@ -222,19 +222,43 @@ body[theme=white] .detail .tile-small {
     
     thead th, tbody tr td 
     {
-        &:first-child    { .hide; }
-        &:nth-child(3)   { .hide; }
-        &:nth-child(6)   { .hide; }
-        &:nth-child(8)   { .hide; }
+        font-size: 16px; .taleft;
+        
+        &:first-child   { width: 100px; max-width: 100px; }
+        &:nth-child(2)  { .tacenter; }
+        &:nth-child(3)  { .tacenter; }
     }
     
-    thead th    { .tolower; font-size: 20px; padding: 10px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.3); }
+    thead th    { .tolower;  padding: 10px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.3); }
     tbody tr td  
     {
-        .tacenter; padding: 10px 0 5px;
+        padding: 10px 0 5px;
         
-        input[type='text'] { width: 85%; }
+        input[type="text"] { width: 85%; max-width: 100px; }
+        
+        .icon-action { margin: 0 0 0 5px; }
     }
+    
+    tr.subrow 
+    {
+        
+        
+        td 
+        {
+            &:first-child  { .hide; }
+            &:nth-child(2) { padding: 10px 20px; border-bottom: 1px solid rgba(255, 255, 255, .3); }
+            &:last-child   { .hide; }
+            
+            .control 
+            {
+                margin: 2px 0 10px;
+                
+                label { .show; margin: 0 0 5px; }
+            }
+        }
+    }
+    
+    .error-msg { font-size: 15px; margin: 5px 0; color: Red; }
 }
 /*#endregion METRO-TABLE */
 

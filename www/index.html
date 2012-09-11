@@ -27,11 +27,7 @@
     </div>
 
     <!-- #region TEMPLATES -->
-
     <script type="text/html" id="dashBoard-template">
-        <!--        <div class="main-header" data-bind="attr: { 'class': 'main-header main-page' }">
-            <h1 class="pivot-default animate" data-bind="text: $root.selectedFrame().data().name"></h1>
-        </div>-->
         <div id="metro-tiles-scroll" class="scroll-out pivot-default-opacity">
             <div class="scroll-in">
                 <div id="metro-tiles">
@@ -1285,7 +1281,7 @@
                 <li class="icon-action money"><span data-bind="click: $data.buyDatabase"></span></li>
                 <li class="icon-action update"><span data-bind="click: $data.refreshSettings"></span></li>
                 <!--/ko-->
-                <li class="icon-action more abs-right"><span onclick="$('div#repo-info').toggleClass('opened');"></span></li>
+                <li class="icon-action more abs-right"><span onclick="$('div#repo-info').toggleClass('opened'); $('div#error-msg').removeClass('opened');"></span></li>
             </ul>
         </div>
 
@@ -1315,13 +1311,23 @@
     <script type="text/html" id="setPasswordUI">
         <form data-bind="submit: savePassword">
             <div>
-                <div data-bind="text:validation"></div>
-                Password: <input type="password" required/><br />
-                Confirm password: <input type="password" required/>
+                <div class="error-msg" data-bind="text:validation"></div>
+                <div class="control taleft">
+                    <label for="password" data-bind="attr: { for: $index }">password:</label>
+                    <input id="password" type="password" required="required" />
+                </div>
+                <div class="control taleft">
+                    <label for="passwordagain">confirm password:</label>
+                    <input id="passwordagain" type="password" required="required" />
+                </div>
             </div>
-            <input type="submit" />
+            <div class="tacenter">
+                <span class="iblock">
+                    <input type="submit" class="icon-action save marginr10 fleft" value="" />
+                    <span class="icon-action undo fleft"><span data-bind="click: close"></span></span>
+                </span>
+            </div>
         </form>
-        <a href="#" data-bind="click: close">close</a>
     </script>
 
     <script type="text/html" id="usersPage-template">
@@ -1333,13 +1339,13 @@
                 <h1 class="title">users</h1>
             </div>
             <div data-bind="jayGrid: { source: $data.data().collection,
-                                    fields: ['Login', 'FirstName','LastName','Password','Enabled'] }">
+                                    fields: ['Login', 'Password','Enabled'] }">
 
-                <div type="text/html" data-name-template="Password-editor">
-                    <a href="#">!!</a>
+                <div type="text/html" data-name-template="Password-editor" class="hide">
+                    <a href="#">&nbsp;</a>
                 </div>
-                <div type="text/html" data-name-template="Password-display">
-                        <a href="#" data-bind="click: $data.showControls.bind({}, 'setPasswordUI', SetPasswordModel, $data)">Reset password</a>
+                <div type="text/html" data-name-template="Password-display" class="hide">
+                    <span class="icon-action edit mini"><span data-bind="click: $data.showControls.bind({}, 'setPasswordUI', SetPasswordModel, $data)"></span></span>
                 </div>
             </div>
         </div>
@@ -1381,9 +1387,6 @@
     <script type="text/javascript" src="scripts/scrum.js"></script>
     <script type="text/javascript" src="scripts/JaySvcUtil/JaySvcUtil.js"></script>
 
-<!--    <script type="text/javascript" src="scripts/raphael/raphael-min.js"></script>
-    <script type="text/javascript" src="scripts/raphael/g.raphael-min.js"></script>
-    <script type="text/javascript" src="scripts/raphael/g.line-min.js"></script>-->
     <script type="text/javascript" src="scripts/flotr2/flotr2.js"></script>
     <script type="text/javascript" src="scripts/burndown.js"></script>
     <script type="text/javascript" src="scripts/userEditor/jaygrid-table-template.js"></script>
