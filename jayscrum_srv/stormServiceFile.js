@@ -6,13 +6,14 @@
  * To change this template use File | Settings | File Templates.
  */
 var Q = require('q');
-var moment = require('moment');
+//var moment = require('moment');
 
 function updateBurndownDataList(sprint, context){
     var p = Q.defer();
     var self = context;
 
-    var sprintDays = moment(sprint.FinishDate).diff(sprint.StartDate, 'days');
+    var sprintDays = parseInt((sprint.FinishDate.getTime()-sprint.StartDate.getTime())/(24*3600*1000));
+    //var sprintDays = moment(sprint.FinishDate).diff(sprint.StartDate, 'days');
     self.SprintBurndown
         .where(function(item){return item.SprintId == this.sprintId && item.SprintDay> this.maxDay},{sprintId:sprint.Id, maxDay:sprintDays})
         .toArray(function(sprintBurndownData){
@@ -71,7 +72,8 @@ function updateSprintBurndownData(sprint, context){
     var p= Q.defer();
     var self = context;
 
-    var sprintDay = moment().diff(sprint.StartDate, 'days');
+    var sprintDays = parseInt((Date.now()-sprint.StartDate.getTime())/(24*3600*1000));
+    //var sprintDay = moment().diff(sprint.StartDate, 'days');
     self.WorkItems
         .where(function (wrk) {wrk.WorkItem_Sprint == this.sprintId && (wrk.Type == "Task" || wrk.Type == "Bug") && (wrk.State == "To Do" || wrk.State == "In Progress")}, {sprintId:sprint.Id})
         .toArray( function(wrkItems){
