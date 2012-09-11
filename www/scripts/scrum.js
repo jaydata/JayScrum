@@ -243,25 +243,50 @@ $data.Class.define('JayScrum.ScrumApp', JayScrum.FrameApp, null,{
         return vScroll;
     },
     _initializeRepositories:function(url, userName, psw){
+        var connectDefer = Q.defer();
+        console.log('!!!! Initialize repository, username: '+userName+', password: '+psw);
+        $data.service( url+"/JayScrum/$metadata", {
+            success:function(factory, contextType) {
+                JayScrum.repository = factory(userName, psw);
+                $data.service( url+"/ApplicationDB/$metadata", {
+                    success:function(usrfactory, usrcontextType){
+                        JayScrum.stormContext = usrfactory(userName, psw);
+                        JayScrum.stormContext.Users
+                            .where(function(item){return item.Login == this.loginName}, {loginName: userName})
+                            .toArray({
+                                success:function(user){
+                                    if (user && user.length > 0) {
+                                        JayScrum.app.globalData().user(user[0].asKoObservable());
+                                    } else {
+                                        //TODO remove
+                                        JayScrum.app.globalData().user((new JayScrum.stormContext.Users.createNew({Id:'administrator', Login:'administrator', FirstName:'Administrator', LastName:'!!!'})).asKoObservable());
+                                    }
+                                    JayScrum.app.selectFrame('MainFrame');
+                                    connectDefer.resolve();
+                                },
+                                error:function(){
+                                    // get context from cache but connect to applicationdb failed
+                                    console.log("Auth faild!");
+                                    console.log(arguments);
+                                    connectDefer.reject();
+                                }
+                            });
 
-        $data.MetadataLoader.load({url: url+"/$metadata", AutoCreateContext:false}, function(factory, contextType){
-            JayScrum.repository = factory();
-            $data.MetadataLoader.load({url:url+"_users/$metadata", AutoCreateContext:false}, function(usrfactory, usrcontextType){
-                JayScrum.stormContext = usrfactory();
-                JayScrum.stormContext.Users
-                    .where(function(item){return item.Login == this.loginName}, {loginName: userName})
-                    .toArray(function(user){
-                        if (user && user.length > 0) {
-                            JayScrum.app.globalData().user(user[0].asKoObservable());
-                        } else {
-                            //TODO remove
-                            JayScrum.app.globalData().user((new JayScrum.stormContext.Users.createNew({Id:'administrator', Login:'administrator', FirstName:'Administrator', LastName:'!!!'})).asKoObservable());
-                        }
-                        JayScrum.app.selectFrame('MainFrame');
-                    });
-
-            });
-        });
+                    },
+                    error:function (){
+                        //Error to connect Application DB
+                        console.log('almafa');
+                        connectDefer.reject();
+                    }
+                },{user: userName, password: psw});
+            },
+            error:function(){
+                ///Error to connect JayScrum service
+                console.log('almafa')
+                connectDefer.reject();
+            }
+        },{user: userName, password: psw});
+        return connectDefer.promise;
     },
     _initializeDemoRepositories:function(context){
         JayScrum.repository = context;
@@ -277,7 +302,9 @@ $data.Class.define('JayScrum.ScrumApp', JayScrum.FrameApp, null,{
                 JayScrum.app.selectFrame('MainFrame');
             });
     }
-},null);
+},{
+    ApplicationUrl:"http://ff000501-7028-4696-9903-cad361c11de6.jaystack.net"
+});
 
 JayScrum.pushObservablesToList= function (list, rawData) {
     list([]);
@@ -287,10 +314,7 @@ JayScrum.pushObservablesToList= function (list, rawData) {
     }
 };
 
-android = true;
 if(window['android'] && window['cordova']){
-    //TODO REMOVE!!!!!
-    initApplication();return;
 	document.addEventListener("deviceready", function(){
 		initApplication();	
 		document.addEventListener("backbutton", function(e){

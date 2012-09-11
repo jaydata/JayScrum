@@ -106,69 +106,61 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
         });
     },
     _createNewRepoOrUpdateStatus:function(transactions){
-      console.log("-== 5. create or update tran");
+        console.log("-== 5. create or update tran");
         console.log(JSON.stringify(transactions));
-        $.ajax({
- //TODO application db
-            url: 'http://192.168.1.142:3000/CreateDatabase2',
-            data:JSON.stringify(transactions),
-            type:"POST",
-            contentType: 'application/json',
-            error:function (xhr, status, error) {
-                console.log(error);
-                //JayScrum.app.selectedFrame()._initializeRepositoriesFrame();
-            },
-            success:function (data, status, xhr) {
-                console.log("-== 6. create database ok");
-                console.log(data);
-                var result = JSON.parse(data);
-                console.log(result);
-                var redirect = false;
-                for(var i=0;i<result.length;i++){
-                	console.log("-== 7/0 i count: "+i+", tracked entities: "+JayScrum.app.selectedFrame().localContext.stateManager.trackedEntities.length)
-                    var repoItem = JayScrum.app.selectedFrame().data().settings().filter(function(item){return item.OrderId() == result[i].OrderId})[0];
-                    if(repoItem){
-                        if(repoItem.Status() != result[i].Status){
-                        	console.log("-== 7/1. update status")
-                            repoItem.Status(result[i].Status);
-                            var updatItem = new JayScrum.Settings.Repository({Id:repoItem.Id(), Status:''});
-                            JayScrum.app.selectedFrame().localContext.Repositories.attach(updatItem);
-                            updatItem.Status = result[i].Status;
-                            redirect = true;
+
+        $data.service(JayScrum.ScrumApp.ApplicationUrl+"/Service/$metadata", function(factory, contextType) {
+                var provisionContext = factory();
+                provisionContext.Provision(JSON.stringify(transactions))
+                    .then(function(result){
+                        console.log("-== 6. create database ok");
+                        console.log(result);
+                        var redirect = false;
+                        for(var i=0;i<result.length;i++){
+                            console.log("-== 7/0 i count: "+i+", tracked entities: "+JayScrum.app.selectedFrame().localContext.stateManager.trackedEntities.length)
+                            var repoItem = JayScrum.app.selectedFrame().data().settings().filter(function(item){return item.OrderId() == result[i].OrderId})[0];
+                            if(repoItem){
+                                if(repoItem.Status() != result[i].Status){
+                                    console.log("-== 7/1. update status")
+                                    repoItem.Status(result[i].Status);
+                                    var updatItem = new JayScrum.Settings.Repository({Id:repoItem.Id(), Status:''});
+                                    JayScrum.app.selectedFrame().localContext.Repositories.attach(updatItem);
+                                    updatItem.Status = result[i].Status;
+                                    redirect = true;
+                                }
+                            }else{
+                                console.log("-== 7/2. Add new repo: "+JSON.stringify(result[i]));
+                                if(result[i].DevPayLoad.Title){
+                                    var repo = new JayScrum.Settings.Repository({
+                                        Title: result[i].DevPayLoad.Title,
+                                        Status: result[i].Status,
+                                        OrderId:result[i].OrderId,
+                                        Url:result[i].DevPayLoad.Url ? result[i].DevPayLoad.Url : "",
+                                        UserName:result[i].DevPayLoad.UserName,
+                                        Password:result[i].DevPayLoad.Password});
+                                    console.log("###!!! new repo orderid: "+repo.OrderId);
+                                    JayScrum.app.selectedFrame().localContext.add(repo);
+                                    redirect = true;
+                                }
+                            }
                         }
-                    }else{
-                    	console.log("-== 7/2. Add new repo: "+JSON.stringify(result[i]));
-                        if(result[i].DevPayLoad.Title){
-	                        var repo = new JayScrum.Settings.Repository({
-	                            Title: result[i].DevPayLoad.Title,
-	                            Status: result[i].Status,
-	                            OrderId:result[i].OrderId,
-                                Url:result[i].DevPayLoad.Url ? result[i].DevPayLoad.Url : "",
-	                            UserName:result[i].DevPayLoad.UserName,
-	                            Password:result[i].DevPayLoad.Password});
-	                        console.log("###!!! new repo orderid: "+repo.OrderId);
-	                        JayScrum.app.selectedFrame().localContext.add(repo);
-	                        redirect = true;
-                    	}
-                    }
-                }
-                console.log("-== 8. redirect: "+redirect+" tracked entities: "+JayScrum.app.selectedFrame().localContext.stateManager.trackedEntities.length);
-                if(redirect){
-
-                    JayScrum.app.selectedFrame().localContext.saveChanges({
-                    	success:function () {
-                    		console.log("-== 9/1. save new repos");
-                    		JayScrum.app.selectedFrame()._initializeRepositoriesFrame();
-                    	}, 
-                    	error:function(error){
-                    		console.log("-== 9/2. error in save");
-                    		console.log(JSON.stringify(error));
-                    	}
-                    });
-                }
-            }
-
-        });
+                        console.log("-== 8. redirect: "+redirect+" tracked entities: "+JayScrum.app.selectedFrame().localContext.stateManager.trackedEntities.length);
+                        if(redirect){
+                            JayScrum.app.selectedFrame().localContext.saveChanges({
+                                success:function () {
+                                    console.log("-== 9/1. save new repos");
+                                    JayScrum.app.selectedFrame()._initializeRepositoriesFrame();
+                                },
+                                error:function(error){
+                                    console.log("-== 9/2. error in save");
+                                    console.log(JSON.stringify(error));
+                                }
+                            });
+                        }
+                    })
+                    .fail(function(error){console.log(error);});
+            },
+            {user: 'admin', password: 'admin'});
     },
     _getDefaultRepository: function (callBack) {
         return this.localContext.Repositories.where(function (repo) { return repo.IsDefault === true; }, null).take(1).toArray(callBack);
@@ -182,11 +174,14 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
             JayScrum.app._initializeDemoRepositories(JayScrum.app.selectedFrame().localContext);
             return;
         }
-        var url = repoSetting.Url();
+        var url = repoSetting.Url().toLowerCase();
         if(url.indexOf('http') !== 0){
             url = "http://"+repoSetting.Url().toLowerCase()+JayScrum.Frames.Repositories.ServerUrl;
         }
-        JayScrum.app._initializeRepositories(url, repoSetting.UserName, repoSetting.Password);
+        JayScrum.app._initializeRepositories(url, repoSetting.UserName(), repoSetting.Password())
+            .fail(function(){
+                JayScrum.app.selectedFrame().data().errorMsg('Failed to connect repository!');
+            });
     },
     editSetting:function(item){
         var entity = JayScrum.app.selectedFrame().localContext.Repositories.attachOrGet(item);
@@ -315,24 +310,6 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
             [{usr:item.UserName(), psw:item.Password(), dbName: item.Url(), title:item.Title()}]);
 	}
 }, {
-    ServerUrl:'.jaystack.net/JayScrum'
+    ServerUrl:'.jaystack.net'
     //ServerUrl:'http://app1.storm.jaystack.com:3000/'
 });
-
-
-
-window['cordova'] = {};
-cordova.exec = function (success, error, name, functionname, params) {
-    if (functionname == "transactions" && params.length == 0) {
-
-        success(JSON.parse('[{"OrderId":"order1", "productId":"havielofzu_nagy", "purchaseToken":"trivkrjcyozqswvsfeuhnmrs", "DevPayLoad":{"Title":"Repository","Url":"af","UserName":"asdf","Password":"sdf","IsDefault":false}},' +
-            '{"OrderId":"order2", "productId":"havielofzu_nagy", "purchaseToken":"trivkrjcyozqswvsfeuhnmrs", "DevPayLoad":{"Title":"Repository","Url":"af2","UserName":"asdf","Password":"sdf","IsDefault":false}}]'));
-        return;
-    } else if (functionname == "subscribe") {
-        success({res:"RESULT_OK", subscriptionId:'havielofzu_nagy'});
-    } else if (functionname == "transactions" && params.length != 0) {
-        success(JSON.parse('{"OrderId":"order1", "productId":"havielofzu_nagy", "purchaseToken":"", "DevPayLoad":{"Title":"Repository","Url":"af","UserName":"asdf","Password":"sdf","IsDefault":false}}'));
-    }
-//success(params[0]);
-
-}

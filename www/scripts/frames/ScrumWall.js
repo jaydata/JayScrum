@@ -165,6 +165,7 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
                 JayScrum.app.selectedFrame().data().summaryList().SprintBurndownData(r.burnDown);
                 p.resolve();
             });
+//        p.resolve();
         return p.promise;
     },
     _resetData: function(){

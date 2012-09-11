@@ -2,11 +2,24 @@ var https = require('https');
 var http = require('http');
 var Q = require('q');
 var bc = require('bcrypt');
-var token = 'ya29.AHES6ZR5k-Jx_S_8IktuS2tRBP1Q1LZfhC4EvGxdgEHytfBHDXx4h30a';
+
+var JAYSTORM_APP_ID = '';
+var JAYSTORM_PROVISION_ID = '';
+var ANDROID_APP_ID = 'com.jaystack.jayscrum';
+var ANDROID_SUBSCRIPTION_ID = 'test.jaystack.subscription_monthly';
+
+var GOOGLE_API_ACCESS_TOKEN = '';
+var GOOGLE_API_REFRESH_TOKEN_OBJECT = {
+    client_id: '',
+    client_secret: '',
+    grant_type:'refresh_token',
+    refresh_token:''
+}
+
 var provisionApp = function (provisionRequestData) {
     var provAppDef = Q.defer();
 
-    validateSubscription('com.jaystack.jayscrum', 'test.jaystack.subscription_monthly', provisionRequestData.key)
+    validateSubscription(ANDROID_APP_ID, ANDROID_SUBSCRIPTION_ID, provisionRequestData.key)
         .then(function (isValid) {
             console.log('-== Start provisioning on admin jaystack.net ==-');
             console.log('isValid: '+isValid);
@@ -110,12 +123,12 @@ var validateSubscription = function(applicationNameSpace, subscriptionId, subscr
         return reqPromise.promise;
     }
 
-    validateRequest(token)
+    validateRequest(GOOGLE_API_ACCESS_TOKEN)
         .then(function(result){
             if(result === undefined){
                 renewAccessToken()
                     .then(function(newAccessToken){
-                        validateRequest(token)
+                        validateRequest(GOOGLE_API_ACCESS_TOKEN)
                             .then(function(result2){def.resolve(result2);})
                     })
                     .fail(function(){
@@ -131,12 +144,7 @@ var validateSubscription = function(applicationNameSpace, subscriptionId, subscr
 var renewAccessToken= function(){
     console.log("-== Renew access token ==-");
     var qstring = require('querystring');
-    var postData = qstring.stringify({
-        client_id: '449285537332.apps.googleusercontent.com',
-        client_secret: 'NXYsLEtOsCQCf1iQoVHYV2tx',
-        grant_type:'refresh_token',
-        refresh_token:'1/3CkT1ie_xobqqtHTuq24nKbQZKBV6UfSATynwgFQi4M'
-    });
+    var postData = qstring.stringify(GOOGLE_API_REFRESH_TOKEN_OBJECT);
     var def = Q.defer();
     var get_options = {
         host: 'accounts.google.com',
@@ -156,8 +164,8 @@ var renewAccessToken= function(){
             });
             res.on("end", function () {
                 var apps = JSON.parse(data);
-                token = apps.access_token;
-                console.log("renew success: "+token);
+                GOOGLE_API_ACCESS_TOKEN = apps.access_token;
+                console.log("renew success: "+GOOGLE_API_ACCESS_TOKEN);
                 def.resolve();
             });
 
@@ -187,8 +195,8 @@ $data.ServiceBase.extend("ProvisionService", {
                     var repo = provisions[i].DevPayLoad;
                     var provisionRequestData = {
                         key:provisions[i].purchaseToken,                   //google or apple purchase toke
-                        appid:'ff000501-7028-4696-9903-cad361c11de6',
-                        provisionid:'0d2f89af-df0d-4b92-8c18-6e7d18abe71c',
+                        appid:JAYSTORM_APP_ID,
+                        provisionid: JAYSTORM_PROVISION_ID,
                         initdata:{
                             ApplicationDB:{
                                 Users:{

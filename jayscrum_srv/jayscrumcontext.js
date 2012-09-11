@@ -364,6 +364,10 @@ var moment = require('moment');
                                     });
 
                                     self.success(data);
+                                })
+                                .fail(function(){
+                                    console.log(arguments);
+                                    self.success([]);
                                 });
                         });
                 };

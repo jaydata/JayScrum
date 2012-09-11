@@ -63,7 +63,7 @@ function SetPasswordModel(model) {
         }
 
 
-        $data.service("http://ff000501-7028-4696-9903-cad361c11de6.jaystack.net/Service/$metadata", function(factory, contextType) {
+        $data.service(JayScrum.ScrumApp.ApplicationUrl+"/Service/$metadata", function(factory, contextType) {
                 var provisionContext = factory('admin', 'admin');
                 provisionContext.bCrypPassword(psw1)
                     .then(function(result){
