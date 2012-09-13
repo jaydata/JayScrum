@@ -6,7 +6,6 @@
  * To change this template use File | Settings | File Templates.
  */
 var Q = require('q');
-//var moment = require('moment');
 
 function updateBurndownDataList(sprint, context){
     var p = Q.defer();
@@ -15,18 +14,18 @@ function updateBurndownDataList(sprint, context){
     var sprintDays = parseInt((sprint.FinishDate.getTime()-sprint.StartDate.getTime())/(24*3600*1000));
     //var sprintDays = moment(sprint.FinishDate).diff(sprint.StartDate, 'days');
     self.SprintBurndown
-        .where(function(item){return item.SprintId == this.sprintId && item.SprintDay> this.maxDay},{sprintId:sprint.Id, maxDay:sprintDays})
+        .where(function(item){return item.SprintId == this.sprintId && item.SprintDay> this.maxDay;},{sprintId:sprint.Id, maxDay:sprintDays})
         .toArray(function(sprintBurndownData){
             if(sprintBurndownData.length>0){
                 /// remove unused days
-                sprintBurndownData.forEach(function(data){self.remove(data)});
+                sprintBurndownData.forEach(function(data){self.remove(data);});
                 p.resolve();
             }
             else{
                 /// add extra days if needed
                 self.SprintBurndown
-                    .where(function(item){return item.SprintId == this.sprintId && item.SprintDay<= this.maxDay},{sprintId:sprint.Id, maxDay:sprintDays})
-                    .orderByDescending(function(item){return item.SprintDay})
+                    .where(function(item){return item.SprintId == this.sprintId && item.SprintDay<= this.maxDay;},{sprintId:sprint.Id, maxDay:sprintDays})
+                    .orderByDescending(function(item){return item.SprintDay;})
                     .take(1)
                     .toArray(function(lastSprintDayData){
                         var lastSprintDay = 0;
@@ -66,7 +65,7 @@ function afterUpdateCreateSprint(){
                 });
             });
     };
-};
+}
 
 function updateSprintBurndownData(sprint, context){
     var p= Q.defer();
@@ -75,7 +74,7 @@ function updateSprintBurndownData(sprint, context){
     var sprintDays = parseInt((Date.now()-sprint.StartDate.getTime())/(24*3600*1000));
     //var sprintDay = moment().diff(sprint.StartDate, 'days');
     self.WorkItems
-        .where(function (wrk) {wrk.WorkItem_Sprint == this.sprintId && (wrk.Type == "Task" || wrk.Type == "Bug") && (wrk.State == "To Do" || wrk.State == "In Progress")}, {sprintId:sprint.Id})
+        .where(function (wrk) {return wrk.WorkItem_Sprint == this.sprintId && (wrk.Type == "Task" || wrk.Type == "Bug") && (wrk.State == "To Do" || wrk.State == "In Progress");}, {sprintId:sprint.Id})
         .toArray( function(wrkItems){
 
             var leftHour = wrkItems.reduce(function (previousValue, currentValue) {return previousValue + currentValue.RemainingWork;}, 0);
@@ -83,7 +82,7 @@ function updateSprintBurndownData(sprint, context){
                 .reduce(function (previousValue, currentValue) {return previousValue + currentValue.RemainingWork;}, 0);
 
             self.SprintBurndown
-                .where(function(item){return item.SprintId == this.sprint_id && ((item.SprintDay == this.sprintDay) || (item.SprintDay < this.sprintDay && (item.Left<0 || item.ToDo<0)))}, {sprint_id:sprint.Id, sprintDay:sprintDay})
+                .where(function(item){return item.SprintId == this.sprint_id && ((item.SprintDay == this.sprintDay) || (item.SprintDay < this.sprintDay && (item.Left<0 || item.ToDo<0)));}, {sprint_id:sprint.Id, sprintDay:sprintDay})
                 .toArray(function(bdData){
                     bdData.forEach(function(bdEntity) {
                         self.attach(bdEntity);
@@ -110,10 +109,10 @@ function updateBurndownData(){
         var self = this;
 
         self.Sprints
-            .where(function(item){return item.Id in this.sprint_ids},{sprint_ids:sprintIdList})
+            .where(function(item){return item.Id in this.sprint_ids;},{sprint_ids:sprintIdList})
             .toArray(function(sprintList){
 
-                var fns = sprintList.map(function(s){return updateSprintBurndownData(s, self)});
+                var fns = sprintList.map(function(s){return updateSprintBurndownData(s, self);});
                 Q.all(fns)
                     .then(function(){
                         self.saveChanges(function(){
@@ -126,7 +125,7 @@ function updateBurndownData(){
 
             });
     };
-};
+}
 
 function updateConnectedData(){
     return function(callBackHandler, workItemList){
@@ -135,18 +134,18 @@ function updateConnectedData(){
         var sprintIds = workItemList.map(function(wrkItem){return wrkItem.WorkItem_Sprint === undefined?null:wrkItem.WorkItem_Sprint; });
         var parentIds = workItemList.map(function(wrkItem){return wrkItem.WorkItem_WorkItem === undefined?null:wrkItem.WorkItem_WorkItem; });
         var fns = [];
-        fns.push(self.Projects.where(function(item){return item.Id in this.ids}, {ids:projectIds}).toArray());
-        fns.push(self.Sprints.where(function(item){return item.Id in this.ids1}, {ids1:sprintIds}).toArray());
-        fns.push(self.WorkItems.where(function(item){return item.Id in this.ids2}, {ids2:parentIds}).toArray());
+        fns.push(self.Projects.where(function(item){return item.Id in this.ids;}, {ids:projectIds}).toArray());
+        fns.push(self.Sprints.where(function(item){return item.Id in this.ids1;}, {ids1:sprintIds}).toArray());
+        fns.push(self.WorkItems.where(function(item){return item.Id in this.ids2;}, {ids2:parentIds}).toArray());
 
-        self.Projects.where(function(item){return item.Id in this.ids}, {ids:projectIds}).toArray(function(projectList){
-            self.Sprints.where(function(item){return item.Id in this.ids1}, {ids1:sprintIds}).toArray(function(sprintList){
-                self.WorkItems.where(function(item){return item.Id in this.ids2}, {ids2:parentIds}).toArray(function(parentList){
+        self.Projects.where(function(item){return item.Id in this.ids;}, {ids:projectIds}).toArray(function(projectList){
+            self.Sprints.where(function(item){return item.Id in this.ids1;}, {ids1:sprintIds}).toArray(function(sprintList){
+                self.WorkItems.where(function(item){return item.Id in this.ids2;}, {ids2:parentIds}).toArray(function(parentList){
                     for(var i = 0;i<workItemList.length;i++){
                         wrkItem = workItemList[i];
-                        var project = projectList.filter(function(item){return item.Id == wrkItem.WorkItem_Project})[0];
-                        var sprint = sprintList.filter(function(item){return item.Id == wrkItem.WorkItem_Sprint})[0];
-                        var parent = parentList.filter(function(item){return item.Id == wrkItem.WorkItem_WorkItem})[0];
+                        var project = projectList.filter(function(item){return item.Id == wrkItem.WorkItem_Project;})[0];
+                        var sprint = sprintList.filter(function(item){return item.Id == wrkItem.WorkItem_Sprint;})[0];
+                        var parent = parentList.filter(function(item){return item.Id == wrkItem.WorkItem_WorkItem;})[0];
                         if(project){ wrkItem.ProjectName = project.Name;}
                         if(sprint){ wrkItem.SprintName = sprint.Name;}
                         if(parent){ wrkItem.ParentName = parent.Title;}
@@ -165,10 +164,10 @@ function updateConnectedDataSprintChanged() {
             return wrkItem.Id;
         });
 
-        self.WorkItems.where(function (item) {return item.WorkItem_Sprint in this.ids1}, {ids1:sprintIds}).toArray(function (workItemList) {
+        self.WorkItems.where(function (item) {return item.WorkItem_Sprint in this.ids1;}, {ids1:sprintIds}).toArray(function (workItemList) {
             for (var i = 0; i < workItemList.length; i++) {
                 wrkItem = workItemList[i];
-                var sprint = sprintList.filter(function (item) {return item.Id == wrkItem.WorkItem_Sprint})[0];
+                var sprint = sprintList.filter(function (item) {return item.Id == wrkItem.WorkItem_Sprint;})[0];
                 if (sprint) {
                     self.WorkItems.attach(wrkItem);
                     wrkItem.SprintName = sprint.Name;
@@ -186,10 +185,10 @@ function updateConnectedDataProjectChanged() {
         var self = this;
         var projectIds = projectList.map(function (wrkItem) {return wrkItem.Id;});
 
-        self.WorkItems.where(function (item) {return item.WorkItem_Project in this.ids1}, {ids1:projectIds}).toArray(function (workItemList) {
+        self.WorkItems.where(function (item) {return item.WorkItem_Project in this.ids1;}, {ids1:projectIds}).toArray(function (workItemList) {
             for (var i = 0; i < workItemList.length; i++) {
                 wrkItem = workItemList[i];
-                var project = projectList.filter(function (item) {return item.Id == wrkItem.WorkItem_Project})[0];
+                var project = projectList.filter(function (item) {return item.Id == wrkItem.WorkItem_Project;})[0];
                 if (project) {
                     self.WorkItems.attach(wrkItem);
                     wrkItem.ProjectName = project.Name;
@@ -206,11 +205,11 @@ function updateConnectedDataProjectChanged() {
 function updateConnectedDataUserStoryChanged() {
     return function (callBackHandler, userStoryItemList) {
         var self = this;
-        var userStoryIds = userStoryItemList.filter(function (item){return item.Type == "UserStory"}).map(function (wrkItem) {return wrkItem.Id;});
-        self.WorkItems.where(function (item) {return item.WorkItem_WorkItem in this.ids1}, {ids1:userStoryIds}).toArray(function (workItemList) {
+        var userStoryIds = userStoryItemList.filter(function (item){return item.Type == "UserStory";}).map(function (wrkItem) {return wrkItem.Id;});
+        self.WorkItems.where(function (item) {return item.WorkItem_WorkItem in this.ids1;}, {ids1:userStoryIds}).toArray(function (workItemList) {
             for (var i = 0; i < workItemList.length; i++) {
                 wrkItem = workItemList[i];
-                var project = userStoryItemList.filter(function (item) {return item.Id == wrkItem.WorkItem_WorkItem})[0];
+                var project = userStoryItemList.filter(function (item) {return item.Id == wrkItem.WorkItem_WorkItem;})[0];
                 if (project) {
                     self.WorkItems.attach(wrkItem);
                     wrkItem.ParentName = project.Name;
@@ -237,22 +236,22 @@ exports = module.exports = function(type){
         },
         getSprintsData:$data.JayService.serviceFunction()
             .param("sprintIds", "Array")
-            .returnsArrayOf("LightSwitchApplication.SprintExtended")
+            .returnsArrayOf("jayscrum.SprintExtended")
             (function (sprintIdList) {
                 return function (success, error) {
                     console.log(arguments);
                     console.log(this);
                     var self = this;
-                    var sprints = this.context.Sprints
-                        .where(function (item) { return ((item.Id in this.sprintIds) || (item.StartDate<=this.now && item.FinishDate>=this.now)) }, { sprintIds:sprintIdList, now:new Date() })
+                    var sprints = this.Sprints
+                        .where(function (item) { return ((item.Id in this.sprintIds) || (item.StartDate<=this.now && item.FinishDate>=this.now)); }, { sprintIds:sprintIdList, now:new Date() })
                         .orderBy(function(item){return item.FinishDate;})
                         .toArray();
 
                     Q.when(sprints)
                         .then(function (sprintList) {
                             var workitemQueries = sprintList.map(function(item){
-                                return self.context.WorkItems
-                                    .where(function (item) {return item.WorkItem_Sprint == this.sprintId && item.State != "Done" && (item.Type=='Task' || item.Type == 'Bug')}, {sprintId: item.Id})
+                                return self.WorkItems
+                                    .where(function (item) {return item.WorkItem_Sprint == this.sprintId && item.State != "Done" && (item.Type=='Task' || item.Type == 'Bug');}, {sprintId: item.Id})
                                     .length();
                             });
 
@@ -261,14 +260,14 @@ exports = module.exports = function(type){
                                     var data = workitemQueries.map(function(item, index){
                                         var d = sprintList[index].initData;
                                         d.tasksLeft = item.valueOf();
-                                        return new LightSwitchApplication.SprintExtended(d);
+                                        return new jayscrum.SprintExtended(d);
                                     });
 
                                     success(data);
                                 })
                                 .fail(function(){console.log(arguments);success([]);});
                         })
-                        .fail(function(){console.log(arguments);success([]);});;
+                        .fail(function(){console.log(arguments);success([]);});
                 };
             }),
         getBurndownData:$data.JayService.serviceFunction()
@@ -280,13 +279,13 @@ exports = module.exports = function(type){
 
                     var types = ["To Do", "In Progress", "Done"];
                     var workitemQueries = types.map(function (tName) {
-                        return self.context.WorkItems
-                            .where(function (item) { return item.WorkItem_Sprint == this.sprint_id && item.State == this.typeName && (item.Type=='Task' || item.Type == 'Bug')}, {sprint_id:sprintId, typeName:tName})
+                        return self.WorkItems
+                            .where(function (item) { return item.WorkItem_Sprint == this.sprint_id && item.State == this.typeName && (item.Type=='Task' || item.Type == 'Bug');}, {sprint_id:sprintId, typeName:tName})
                             .toArray();
                     });
                     workitemQueries.push(
-                        self.context.WorkItems
-                            .where(function (item) { return item.WorkItem_Sprint == this.sprint_id && item.Type == 'UserStory' }, {sprint_id:sprintId})
+                        self.WorkItems
+                            .where(function (item) { return item.WorkItem_Sprint == this.sprint_id && item.Type == 'UserStory'; }, {sprint_id:sprintId})
                             .length()
                     );
 
@@ -302,18 +301,17 @@ exports = module.exports = function(type){
                             };
                             result.task = result.todo + result.inprogress + result.done;
 
-                            self.context.Sprints
-                                .single(function(item){return item.Id == this.sprint_id},
+                            self.Sprints
+                                .single(function(item){return item.Id == this.sprint_id;},
                                 {sprint_id:sprintId},
                                 function(sprint){
 
-                                    self.context.SprintBurndown
-                                        .where(function(item){return item.SprintId == this.sprint_id},{sprint_id:sprintId})
-                                        .orderBy(function(item){return item.SprintDay})
+                                    self.SprintBurndown
+                                        .where(function(item){return item.SprintId == this.sprint_id;},{sprint_id:sprintId})
+                                        .orderBy(function(item){return item.SprintDay;})
                                         .toArray(function(burndownData){
 
                                             var collectBurndownData = function (bdData) {
-                                                console.log('collect burndowndata!')
                                                 result.burnDown = {
                                                     startDate:sprint.StartDate,
                                                     endDate:sprint.FinishDate,
@@ -333,14 +331,14 @@ exports = module.exports = function(type){
                                                 while(result.burnDown.remainingLine.length<2){
 
                                                     result.burnDown.remainingLine.push([result.burnDown.remainingLine.length,
-                                                        result.burnDown.remainingLine.length==0
+                                                        result.burnDown.remainingLine.length===0
                                                             ? 0
                                                             : result.burnDown.remainingLine[result.burnDown.remainingLine.length-1][1]
                                                     ]);
                                                 }
                                                 while(result.burnDown.todoLine.length<2){
                                                     result.burnDown.todoLine.push([result.burnDown.todoLine.length,
-                                                        result.burnDown.todoLine.length==0
+                                                        result.burnDown.todoLine.length===0
                                                             ? 0
                                                             : result.burnDown.todoLine[result.burnDown.todoLine.length-1][1]
                                                     ]);
@@ -348,13 +346,13 @@ exports = module.exports = function(type){
                                                 success(result);
                                             };
 
-                                            if(burndownData.length == 0){
-                                                updateBurndownDataList(sprint, self.context)
+                                            if(burndownData.length === 0){
+                                                updateBurndownDataList(sprint, self)
                                                     .then(function(){
-                                                        self.context.saveChanges(function(){
-                                                            self.context.SprintBurndown
-                                                                .where(function(item){return item.SprintId == this.sprint_id},{sprint_id:sprintId})
-                                                                .orderBy(function(item){return item.SprintDay})
+                                                        self.saveChanges(function(){
+                                                            self.SprintBurndown
+                                                                .where(function(item){return item.SprintId == this.sprint_id;},{sprint_id:sprintId})
+                                                                .orderBy(function(item){return item.SprintDay;})
                                                                 .toArray(function(newBurndownData){
                                                                     collectBurndownData(newBurndownData);
                                                                 });
@@ -363,10 +361,10 @@ exports = module.exports = function(type){
                                             }else{
                                                 collectBurndownData(burndownData);
                                             }
-                                        })
+                                        });
                                 });
 
-                        }, function(error){console.log(error)});
+                        }, function(error){console.log(error);});
                 };
             })
     });

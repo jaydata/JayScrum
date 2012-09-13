@@ -3,6 +3,9 @@ var http = require('http');
 var Q = require('q');
 var bc = require('bcrypt');
 
+var JAYSTORM_ADMIN_HOST = 'admin.jaystack.net';
+var JAYSTORM_ADMIN_HOST_PORT = 3000;
+var JAYSTORM_ADMIN_PROVISION_PATH = '/provision';
 var JAYSTORM_APP_ID = '';
 var JAYSTORM_PROVISION_ID = '';
 var ANDROID_APP_ID = 'com.jaystack.jayscrum';
@@ -14,7 +17,7 @@ var GOOGLE_API_REFRESH_TOKEN_OBJECT = {
     client_secret: '',
     grant_type:'refresh_token',
     refresh_token:''
-}
+};
 
 var provisionApp = function (provisionRequestData) {
     var provAppDef = Q.defer();
@@ -26,9 +29,9 @@ var provisionApp = function (provisionRequestData) {
 
             if (isValid === true) {
                 var provisionRequestOptions = {
-                    host:'admin.jaystack.net',
-                    port:3000,
-                    path:'/provision',
+                    host:JAYSTORM_ADMIN_HOST,
+                    port:JAYSTORM_ADMIN_HOST_PORT,
+                    path:JAYSTORM_ADMIN_PROVISION_PATH,
                     method:'POST',
                     headers:{
                         'Content-Type':'application/json'
@@ -77,7 +80,7 @@ var provisionApp = function (provisionRequestData) {
                 }
             }
             else {
-                console.log('!!!! Validation error !!!!')
+                console.log('!!!! Validation error !!!!');
                 provisionRequestData.attachment.Status = "initialize";
                 provisionRequestData.attachment.DevPayLoad.Url = null;
                 provAppDef.resolve(provisionRequestData.attachment);
@@ -85,7 +88,7 @@ var provisionApp = function (provisionRequestData) {
 
         });
     return provAppDef.promise;
-}
+};
 var validateSubscription = function(applicationNameSpace, subscriptionId, subscriptionToken){
     console.log('-== Validate subscription ==-');
     console.log('appNameSpace: '+applicationNameSpace);
@@ -121,7 +124,7 @@ var validateSubscription = function(applicationNameSpace, subscriptionId, subscr
 
         }).end();
         return reqPromise.promise;
-    }
+    };
 
     validateRequest(GOOGLE_API_ACCESS_TOKEN)
         .then(function(result){
@@ -129,18 +132,16 @@ var validateSubscription = function(applicationNameSpace, subscriptionId, subscr
                 renewAccessToken()
                     .then(function(newAccessToken){
                         validateRequest(GOOGLE_API_ACCESS_TOKEN)
-                            .then(function(result2){def.resolve(result2);})
+                            .then(function(result2){def.resolve(result2);});
                     })
-                    .fail(function(){
-                        def.reject();
-                    })
+                    .fail(function(){def.reject();});
             }else{
                 def.resolve(result);
             }
         });
 
     return def.promise;
-}
+};
 var renewAccessToken= function(){
     console.log("-== Renew access token ==-");
     var qstring = require('querystring');
@@ -170,7 +171,7 @@ var renewAccessToken= function(){
             });
 
         }else{
-            console.log("!!!! renew FAILD !!!!")
+            console.log("!!!! renew FAILD !!!!");
             def.reject();
         }
 
@@ -178,7 +179,7 @@ var renewAccessToken= function(){
     req.write(postData);
     req.end();
     return def.promise;
-}
+};
 
 $data.ServiceBase.extend("ProvisionService", {
     Provision: $data.JayService.serviceFunction()
@@ -212,7 +213,7 @@ $data.ServiceBase.extend("ProvisionService", {
                 console.log("Provision database count: "+provisionFnArray.length);
                 Q.all(provisionFnArray)
                     .then(function(){
-                        var result = provisionFnArray.map(function(item){return item.valueOf()});
+                        var result = provisionFnArray.map(function(item){return item.valueOf();});
                         console.log("-== Provisioning response ==-");
                         console.log(result);
                         console.log("-== Provisioning response END ==-");
@@ -224,7 +225,7 @@ $data.ServiceBase.extend("ProvisionService", {
         .param('password', 'string')
         .returns('$data.String')
         (function(password){
-            return bc.hashSync(password, 8)
+            return bc.hashSync(password, 8);
         })
 });
 

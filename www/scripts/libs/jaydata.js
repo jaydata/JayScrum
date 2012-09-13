@@ -16486,7 +16486,8 @@ $data.Class.define('$data.MetadataLoaderClass', null, null, {
             CollectionBaseClass: 'Array',
             url: metadataUri,
             user: undefined,
-            password: undefined
+            password: undefined,
+            withCredentials: undefined
         };
 
         $data.typeSystem.extend( cnf, config || {});
@@ -16521,7 +16522,12 @@ $data.Class.define('$data.MetadataLoaderClass', null, null, {
         }
 
         var self = this;
-        self._loadXMLDoc(cnf, function (xml) {
+        self._loadXMLDoc(cnf, function (xml, response) {
+            if (response.statusCode < 200 || response.statusCode > 299) {
+                callBack.error(response);
+                return;
+            }
+
             var versionInfo = self._findVersion(xml);
             if (self.xsltRepoUrl) {
                 console.log('XSLT: ' + self.xsltRepoUrl + self._supportedODataVersionXSLT[versionInfo.version])
@@ -16530,7 +16536,12 @@ $data.Class.define('$data.MetadataLoaderClass', null, null, {
                     user: cnf.user,
                     password: cnf.password,
                     headers: cnf.headers
-                }, function (xsl) {
+                }, function (xsl, response) {
+                    if (response.statusCode < 200 || response.statusCode > 299) {
+                        callBack.error(response);
+                        return;
+                    }
+
                     self._transform(callBack, versionInfo, xml, xsl, cnf);
                 });
             } else {
@@ -16544,15 +16555,19 @@ $data.Class.define('$data.MetadataLoaderClass', null, null, {
 
     createFactoryFunc: function (ctxType, cnf) {
         var self = this;
-        return function () {
+        return function (config) {
             if (ctxType) {
-                return new ctxType({
+                var cfg = $data.typeSystem.extend({
                     name: 'oData',
                     oDataServiceHost: cnf.SerivceUri,
                     //maxDataServiceVersion: '',
                     user: cnf.user,
-                    password: cnf.password
-                });
+                    password: cnf.password,
+                    withCredentials: cnf.withCredentials
+                }, config)
+
+
+                return new ctxType(cfg);
             } else {
                 return null;
             }
@@ -16582,7 +16597,8 @@ $data.Class.define('$data.MetadataLoaderClass', null, null, {
         }
         xhttp.onreadystatechange = function () {
             if (xhttp.readyState === 4) {
-                callback(xhttp.responseXML || xhttp.responseText);
+                var response = { requestUri: cnf.metadataUri, statusCode: xhttp.status, statusText: xhttp.statusText };
+                callback(xhttp.responseXML || xhttp.responseText, response);
             }
         };
 
@@ -16775,7 +16791,7 @@ $data.Class.define('$data.MetadataLoaderClass', null, null, {
         type: 'string',
         value:
             "<xsl:stylesheet version=\"1.0\" xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" \r\n" +
-            "                xmlns:edm=\"http://schemas.microsoft.com/ado/2008/09/edm\" \r\n" +
+            "                xmlns:edm=\"@@VERSIONNS@@\" \r\n" +
             "                xmlns:m=\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\" \r\n" +
             "                xmlns:annot=\"http://schemas.microsoft.com/ado/2009/02/edm/annotation\" \r\n" +
             "                xmlns:exsl=\"http://exslt.org/common\" \r\n" +
