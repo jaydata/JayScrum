@@ -1,4 +1,4 @@
-// JayData 1.1.1
+// JayData 1.2.0
 // Dual licensed under MIT and GPL v2
 // Copyright JayStack Technologies (http://jaydata.org/licensing)
 //
@@ -625,12 +625,12 @@ $data.Class.define('$data.dbClient.DbCommand', null, null,
                                 }
                             }
                             else {
-                                console.dir(regEx);
-                                console.dir(that.SqlCommands[i]);
+                                //console.dir(regEx);
+                                //console.dir(that.SqlCommands[i]);
                             }
                         }
                         that.SqlCommands = that.SqlCommands.concat(deleteCmd);
-                        console.log(deleteCmd);
+                        //console.log(deleteCmd);
                         break;
                     case $data.storageProviders.DbCreationType.DropAllExistingTables:
                         for (var objName in existObjectInDB) {

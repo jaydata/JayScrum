@@ -102,7 +102,7 @@ $data.Class.define('JayScrum.ScrumApp', JayScrum.FrameApp, null,{
         JayScrum.app.globalData().userList(['']);
         JayScrum.stormContext.Users.toArray(function(result){
             result.forEach(function(item){
-                JayScrum.app.globalData().userList.push(item.login);
+                JayScrum.app.globalData().userList.push(item.Login);
             });
             loadPromise.resolve();
         });

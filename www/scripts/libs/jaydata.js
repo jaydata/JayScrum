@@ -1,4 +1,4 @@
-// JayData 1.1.1
+// JayData 1.2.0
 // Dual licensed under MIT and GPL v2
 // Copyright JayStack Technologies (http://jaydata.org/licensing)
 //
@@ -37,8 +37,8 @@ if (!console.error) console.error = function () { };
     /// Collection of JayData services
     ///</summary>
     $data.__namespace = true;
-    $data.version = "JayData 1.1.1";
-    $data.versionNumber = "1.1.1";
+    $data.version = "JayData 1.2.0";
+    $data.versionNumber = "1.2.0";
     $data.root = {};
 
 })($data);
@@ -7968,7 +7968,7 @@ JAYLINT = (function () {
             var t = this.resolveType(type);
             return t === Number || t === String || t === Date || t === String || t === Boolean || t === Array || t === Object ||
                 t === $data.Number || t === $data.String || t === $data.Date || t === $data.String || t === $data.Boolean || t === $data.Array || t === $data.Object ||
-                t === $data.Geography;
+                t === $data.Geography || t === $data.Guid;
         };
 
         this.resolveType = function (typeOrName) {
@@ -8004,6 +8004,7 @@ JAYLINT = (function () {
                     if (value.getType) return value.getType().fullName;
                     if (value instanceof Date) return '$data.Date';
                     if (value instanceof $data.Geography) return '$data.Geography';
+                    if (value instanceof $data.Guid) return '$data.Guid';
                     //if(value instanceof "number") return
                 default:
                     return typeof value;
@@ -8116,9 +8117,9 @@ JAYLINT = (function () {
                     } else {
                         self["create" + item.shortName] = creatorFnc;
                     }
-                } else {
-                    if (console) { console.warn("warning: short names overlap:" + item.shortName + ", Container.create" + item.shortName + " has not been updated"); }
-                };
+                }/* else {
+                    //if (console) { console.warn("warning: short names overlap:" + item.shortName + ", Container.create" + item.shortName + " has not been updated"); }
+                };*/
 
                 var typePos = classTypes.indexOf(type);
                 if (typePos == -1) {
@@ -8128,9 +8129,9 @@ JAYLINT = (function () {
                     consolidatedClassNames[typePos] = item.fullName;
                 };
 
-                if (item.fullName in classNames) {
-                    console.warn("warning:!!! This typename has already been registered:" + item.fullName);
-                };
+                /*if (item.fullName in classNames) {
+                    //console.warn("warning:!!! This typename has already been registered:" + item.fullName);
+                };*/
                 classNames[item.fullName] = typePos;
             }
 
@@ -8385,6 +8386,44 @@ $data.Geography.prototype.toJSON = function () {
         }*/
     }
 };
+$data.Guid = function Guid(value) {
+    ///<param name="value" type="string" />
+
+    this.value = value || '00000000-0000-0000-0000-000000000000';
+};
+$data.Container.registerType(['$data.Guid', 'Guid', 'guid'], $data.Guid);
+
+$data.Guid.prototype.toJSON = function () {
+    return this.value;
+};
+
+$data.Guid.prototype.valueOf = function () {
+    return this.value;
+};
+
+$data.Guid.prototype.toString = function () {
+    return this.value;
+};
+
+$data.Guid.NewGuid = function () {
+    var S4 = function () {
+        return Math.floor(
+            Math.random() * 0x10000 /* 65536 */
+        ).toString(16);
+    };
+
+    return new $data.Guid((
+        S4() + S4() + "-" +
+            S4() + "-" +
+            S4() + "-" +
+            S4() + "-" +
+            S4() + S4() + S4()
+        ));
+};
+
+$data.parseGuid = function (guid) {
+    return new $data.Guid(guid);
+};
 (function ($data) {
 
     function Edm_Boolean() { };
@@ -8421,7 +8460,7 @@ $data.Geography.prototype.toJSON = function () {
 
     function Edm_Guid() { };
     $data.Container.registerType('Edm.Guid', Edm_Guid);
-    $data.Container.mapType(Edm_Guid, $data.String);
+    $data.Container.mapType(Edm_Guid, $data.Guid);
 
     function Edm_Int16() { };
     $data.Container.registerType('Edm.Int16', Edm_Int16);
@@ -11689,7 +11728,7 @@ $data.Class.define('$data.Validation.EntityValidation', $data.Validation.EntityV
                 minLength: function (value, definedValue) { return Object.isNullOrUndefined(value) || value.length >= definedValue; },
                 maxLength: function (value, definedValue) { return Object.isNullOrUndefined(value) || value.length <= definedValue; },
                 length: function (value, definedValue) { return Object.isNullOrUndefined(value) || value.length == definedValue; },
-                regex: function (value, definedValue) { return Object.isNullOrUndefined(value) || value.match(definedValue); }
+                regex: function (value, definedValue) { return Object.isNullOrUndefined(value) || value.match(typeof value === 'string' ? new RegExp(definedValue) : definedValue) }
             },
             '$data.Date': {
                 required: function (value, definedValue) { return !Object.isNullOrUndefined(value); },
@@ -13303,7 +13342,7 @@ $data.Class.define('$data.EntityContext', null, null,
         }
         
         var readyFn = function(cancel){
-            if (cancel){
+            if (cancel === false){
                 cancelEvent = 'async';
                 changedEntities.length = 0;
             }
@@ -13335,7 +13374,7 @@ $data.Class.define('$data.EntityContext', null, null,
         };
         
         var callbackFn = function(cancel){
-            if (cancel){
+            if (cancel === false){
                 cancelEvent = 'async';
                 changedEntities.length = 0;
                 
@@ -15666,244 +15705,6 @@ $data.Class.define('$data.StorageProviderBase', null, null,
         Guard.raise("pure object");
     }
 });
-Function.prototype.toServiceOperation = function(config){
-    return new $data.FunctionImport(this, config);
-};
-
-$data.FunctionImport = function(fn, config){
-    Object.defineProperty(this, 'asFunction', { value: fn });
-    Object.getPrototypeOf(this).valueOf = function(){
-        return this.asFunction;
-    };
-    Object.getPrototypeOf(this).toString = function(){
-        return this.asFunction.toString();
-    };
-    Object.getPrototypeOf(this).call = function(){
-        return this.asFunction.call.apply(arguments[0], Array.prototype.slice.call(arguments, 1));
-    };
-    Object.getPrototypeOf(this).apply = function(scope, args){
-        return this.asFunction.apply(scope, args);
-    };
-    if (config) fn.extend(config);
-};
-
-$data.FunctionImport.prototype = {
-    toServiceOperation: function(config){
-        return new $data.FunctionImport(this.asFunction, config);
-    },
-    extend: function(extend){
-        for (var i in extend){
-            this[i] = extend[i];
-        }
-        
-        return this;
-    },
-    chain: function(before, after){
-        var fn = this;
-        
-        var ret = function(){
-            var chain = arguments.callee.chainFn;
-            var args = [];
-            if (arguments.length){
-                for (var i = 0; i < arguments.length; i++){
-                    args.push(arguments[i]);
-                }
-            }
-            var argsCount = args.length;
-            var i = 0;
-            
-            var readyFn = function(){
-                if (args[args.length - 1] && args[args.length - 1].success && typeof args[args.length - 1].success === 'function'){
-                    var fn = args[args.length - 1].success;
-                    fn.apply(this, arguments);
-                }else return arguments.length ? arguments[0] : undefined;
-            };
-            
-            var callbackFn = function(){
-                var fn = chain[i];
-                i++;
-                
-                var r = fn.apply(this, args);
-                if (typeof r === 'function'){
-                    var argsFn = arguments;
-                    args[argsCount] = (i < chain.length ? (function(){ return callbackFn.apply(this, argsFn); }) : (function(){ return readyFn.apply(this, argsFn); }));
-                    r.apply(this, args);
-                }else{
-                    if (i < chain.length){
-                        callbackFn.apply(this, arguments);
-                    }else readyFn(this, arguments);
-                }
-            }
-            
-            callbackFn();
-        };
-        
-        if (!ret.chainFn) ret.chainFn = (before || []).concat([fn].concat(after || []));
-        
-        return ret;
-    },
-    before: function(on){
-        var ret = this;
-        
-        if (!this.chainFn) ret = ret.chain();
-        ret.chainFn.unshift(on);
-            
-        return ret;
-    },
-    after: function(on){
-        var ret = this;
-        
-        if (!this.chainFn) ret = ret.chain();
-        ret.chainFn.push(on);
-            
-        return ret;
-    },
-    asResult: function(type, config){
-        return this.extend({
-            resultType: type,
-            resultCfg: config
-        });
-    },
-    returns: function(type, elementType){
-        if (typeof type === 'string')
-            type = Container.resolveType(type);
-            
-        if (typeof elementType === 'string')
-            elementType = Container.resolveType(elementType);
-
-        return this.extend({
-            returnType: type,
-            elementType: elementType
-        });
-    },
-    params: function(params){
-        /*for (var p in params){
-            if (typeof params[p] === 'string')
-                params[p] = Container.resolveType(params[p]);
-        }*/
-        
-        return this.extend({
-            params: params
-        });
-    },
-    serviceName: function(serviceName){
-        return this.extend({
-            serviceName: serviceName
-        });
-    },
-    httpMethod: function(method){
-        return this.extend({
-            method: method
-        });
-    },
-    webGet: function(){
-        return this.httpMethod('GET');
-    },
-    webInvoke: function(){
-        return this.httpMethod('POST');
-    },
-    authorize: function(roles, callback){
-        var r = {};
-        if (roles instanceof Array){
-            for (var i = 0; i < roles.length; i++){
-                if (typeof roles[i] === 'string') r[roles[i]] = true;
-            }
-        }else r = roles;
-        
-        this.roles = r;
-
-        var fn = this;
-        
-        ret = function(){
-            var pHandler = new $data.PromiseHandler();
-            var clbWrapper = pHandler.createCallback(callback);
-            var pHandlerResult = pHandler.getPromise();
-            var args = arguments;
-            
-            clbWrapper.success = clbWrapper.success.after(function(){
-                fn.apply(this, args);
-            });
-            
-            $data.Access.isAuthorized($data.Access.Execute, this.user, fn.roles, clbWrapper);
-            
-            return pHandlerResult;
-        };
-        
-        return ret;
-    },
-    toPromise: function(callback){
-        var fn = this;
-        
-        var ret = function(){
-            var pHandler = new $data.PromiseHandler();
-            var clbWrapper = pHandler.createCallback(callback);
-            var pHandlerResult = pHandler.getPromise();
-            
-            arguments[arguments.length++] = clbWrapper;
-            fn.apply(this, arguments);
-            
-            return pHandlerResult;
-        };
-        
-        return this;
-    }
-};
-
-$data.ServiceOperation = (function(){
-    var fn = arguments.callee;
-    
-    var virtualEntitySet = fn.elementType ? this.getEntitySetFromElementType(Container.resolveType(fn.elementType)) : null;
-    
-    var paramConstExpression = null;
-    if (fn.params) {
-        paramConstExpression = [];
-        for (var i = 0; i < fn.params.length; i++) {
-            //TODO: check params type
-            for (var name in fn.params[i]) {
-                paramConstExpression.push(Container.createConstantExpression(arguments[i], Container.resolveType(fn.params[i][name]), name));
-            }
-        }
-    }
-
-    var ec = Container.createEntityContextExpression(this);
-    var memberdef = this.getType().getMemberDefinition(fn.serviceName);
-    var es = Container.createServiceOperationExpression(ec,
-            Container.createMemberInfoExpression(memberdef),
-            paramConstExpression,
-            fn);
-
-    //Get callback function
-    var clb = arguments[arguments.length - 1];
-    if (typeof clb !== 'function') {
-        clb = undefined;
-    }
-
-    if (virtualEntitySet) {
-        var q = Container.createQueryable(virtualEntitySet, es);
-        if (clb) {
-            es.isTerminated = true;
-            return q._runQuery(clb);
-        }
-        return q;
-    }
-    else {
-        var returnType = Container.resolveType(fn.returnType);
-
-        var q = Container.createQueryable(this, es);
-        q.defaultType = returnType;
-
-        if (returnType === $data.Queryable) {
-            q.defaultType = Container.resolveType(fn.elementType);
-            if (clb) {
-                es.isTerminated = true;
-                return q._runQuery(clb);
-            }
-            return q;
-        }
-        es.isTerminated = true;
-        return q._runQuery(clb);
-    }
-});
 if (typeof jQuery !== 'undefined' && jQuery.ajax) {
     $data.ajax = $data.ajax || jQuery.ajax;
 }
@@ -16472,7 +16273,7 @@ $data.Class.define("$data.Authentication.AuthenticationBase", null, null, {
 
         return base64;
     }
-}, null);﻿
+}, null);
 $data.Class.define('$data.MetadataLoaderClass', null, null, {
     load: function (metadataUri, callBack, config) {
         

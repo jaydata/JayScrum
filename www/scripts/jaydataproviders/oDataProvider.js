@@ -1,4 +1,4 @@
-// JayData 1.1.1
+// JayData 1.2.0
 // Dual licensed under MIT and GPL v2
 // Copyright JayStack Technologies (http://jaydata.org/licensing)
 //
@@ -48,7 +48,7 @@ $C('$data.storageProviders.oData.oDataProvider', $data.StorageProviderBase, null
                         requestUri: that.providerConfiguration.serviceUrl + "/Delete",
                         method: 'POST'
                     }, function (d) {
-                        console.log("RESET oData database");
+                        //console.log("RESET oData database");
                         callBack.success(that.context);
                     }, function (error) {
                         callBack.success(that.context);
@@ -186,8 +186,8 @@ $C('$data.storageProviders.oData.oDataProvider', $data.StorageProviderBase, null
             this._saveRest(independentBlocks, index2, callBack);
     },
     _saveRest: function (independentBlocks, index2, callBack) {
-        batchRequests = [];
-        convertedItem = [];
+        var batchRequests = [];
+        var convertedItem = [];
         var request;
         for (var index = 0; index < independentBlocks.length; index++) {
             for (var i = 0; i < independentBlocks[index].length; i++) {
@@ -266,8 +266,8 @@ $C('$data.storageProviders.oData.oDataProvider', $data.StorageProviderBase, null
         OData.request.apply(this, requestData);
     },
     _saveBatch: function (independentBlocks, index2, callBack) {
-        batchRequests = [];
-        convertedItem = [];
+        var batchRequests = [];
+        var convertedItem = [];
         for (var index = 0; index < independentBlocks.length; index++) {
             for (var i = 0; i < independentBlocks[index].length; i++) {
                 convertedItem.push(independentBlocks[index][i].data);
@@ -356,7 +356,7 @@ $C('$data.storageProviders.oData.oDataProvider', $data.StorageProviderBase, null
         var serializableObject = {}
         item.physicalData.getType().memberDefinitions.asArray().forEach(function (memdef) {
             if (memdef.kind == $data.MemberTypes.navProperty || memdef.kind == $data.MemberTypes.complexProperty || (memdef.kind == $data.MemberTypes.property && !memdef.notMapped)) {
-                if (memdef.key === true || item.data.entityState === $data.EntityState.Added || item.data.changedProperties.some(function(def){ return def.name === memdef.name; }))
+                if (typeof memdef.concurrencyMode === 'undefined' && (memdef.key === true || item.data.entityState === $data.EntityState.Added || item.data.changedProperties.some(function(def){ return def.name === memdef.name; })))
                     serializableObject[memdef.name] = item.physicalData[memdef.name];
             }
         }, this);
@@ -366,18 +366,14 @@ $C('$data.storageProviders.oData.oDataProvider', $data.StorageProviderBase, null
         var property = item.data.getType().memberDefinitions.getPublicMappedProperties().filter(function (memDef) { return memDef.concurrencyMode === $data.ConcurrencyMode.Fixed });
         if (property && property[0]) {
             headers['If-Match'] = item.data[property[0].name];
-            item.data[property[0].name] = "";
+            //item.data[property[0].name] = "";
         }
-        //if (item.data.RowVersion || item.data.RowVersion === 0) {
-        //    headers['If-Match'] = item.data.RowVersion.toString();
-        //    item.data.RowVersion = "";
-        //}
     },
     getTraceString: function (queryable) {
         var sqlText = this._compile(queryable);
         return queryable;
     },
-    supportedDataTypes: { value: [$data.Integer, $data.String, $data.Number, $data.Blob, $data.Boolean, $data.Date, $data.Object, $data.Geography], writable: false },
+    supportedDataTypes: { value: [$data.Integer, $data.String, $data.Number, $data.Blob, $data.Boolean, $data.Date, $data.Object, $data.Geography, $data.Guid], writable: false },
 
     supportedBinaryOperators: {
         value: {
@@ -572,7 +568,8 @@ $C('$data.storageProviders.oData.oDataProvider', $data.StorageProviderBase, null
                         return new $data.Geography(geo.coordinates[0], geo.coordinates[1]);
                     }
                     return geo;
-                }
+                },
+                '$data.Guid': function (guid) { return guid ? new $data.Guid(guid) : guid; }
             },
             toDb: {
                 '$data.Entity': function (e) { return "'" + JSON.stringify(e.initData) + "'" },
@@ -589,8 +586,9 @@ $C('$data.storageProviders.oData.oDataProvider', $data.StorageProviderBase, null
                     if (geo instanceof $data.Geography)
                         return 'POINT(' + geo.longitude + ' ' + geo.latitude + ')';
                     return geo;
-                }
-            }
+                },
+                '$data.Guid': function (guid) { return guid ? ("guid'" + guid.value + "'") : guid; }
+}
         }
     },
     getEntityKeysValue: function (entity) {
