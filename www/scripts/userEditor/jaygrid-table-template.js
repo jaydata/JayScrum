@@ -9,32 +9,32 @@
 (function($data) {
     var templateList = [
         ["jay-data-grid",
-            "<div class='scroll-list pivot-default-opacity scrollable-list animate bottom45' id='settingPageScroll'>\
-                <div class='scroller-list reset'>\
-                    <div class='list detail maxlist' >\
-                        <form data-bind='submit:save'>\
-                            <div class='ohidden margint15' data-bind='visible: source' class='action-buttons'>\
-                                <span data-x-bind='text: $root.discriminatorValue'></span>\
-                                <span class='btn btn-info icon-action add fleft' href='#' data-bind='click: addNew'><span></span></span> \
-                                <input class='btn btn-success icon-action save fleft' type='submit' value='' data-bind='visible: pendingChanges' />\
-                            </div>\
-                            <table data-bind='visible: source' class='jay-data-grid metro-table margin' border='0'> \
-                                <!-- ko template: { name: 'jay-data-grid-head' } --> \
-                                <!-- /ko -->\
-                                <!-- ko template: { name: 'jay-data-grid-body' } --> \
-                                <!-- /ko -->\
-                            </table>\
-                        </form>\
+            "<form data-bind='submit:save'>\
+                <div class='scroll-list pivot-default-opacity scrollable-list animate bottom45' id='settingPageScroll'>\
+                    <div class='scroller-list reset'>\
+                        <div class='list detail maxlist' >\
+                                <div class='ohidden margint15' data-bind='visible: source' class='action-buttons'>\
+                                    <span data-x-bind='text: $root.discriminatorValue'></span>\
+                                    <span class='btn btn-info icon-action add fleft' href='#' data-bind='click: addNew'><span></span></span> \
+                                    <input class='btn btn-success icon-action save fleft' type='submit' value='' data-bind='visible: pendingChanges' />\
+                                </div>\
+                                <table data-bind='visible: source' class='jay-data-grid metro-table margin' border='0'> \
+                                    <!-- ko template: { name: 'jay-data-grid-head' } --> \
+                                    <!-- /ko -->\
+                                    <!-- ko template: { name: 'jay-data-grid-body' } --> \
+                                    <!-- /ko -->\
+                                </table>\
+                        </div>\
                     </div>\
                 </div>\
-            </div>\
-            <div id='user-actionbar' class='metro-actionbar opened'>\
-                <ul>\
-                    <li class='icon-action add'><span data-bind='click: addNew'></span></li>\
-                    <li class='icon-action save'><input class='btn btn-success icon-action save' type='submit' value='' data-bind='visible: pendingChanges' />\
-                    </li>\
-                </ul>\
-            </div>"],
+                <div id='user-actionbar' class='metro-actionbar opened'>\
+                    <ul>\
+                        <li class='icon-action add'><span data-bind='click: addNew'></span></li>\
+                        <li class='icon-action save'><input class='btn btn-success icon-action save' type='submit' value='' data-bind='visible: pendingChanges' />\
+                        </li>\
+                    </ul>\
+                </div>\
+            </form>"],
 
         ["jay-data-grid-head",
             "<thead class='jay-data-grid-columns'>\
