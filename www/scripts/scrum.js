@@ -246,46 +246,55 @@ $data.Class.define('JayScrum.ScrumApp', JayScrum.FrameApp, null,{
     _initializeRepositories:function(url, userName, psw){
         var connectDefer = Q.defer();
         console.log('!!!! Initialize repository, username: '+userName+', password: '+psw);
-        $data.service( url+"/JayScrum/$metadata", {
-            success:function(factory, contextType) {
-                JayScrum.repository = factory(userName, psw);
-                $data.service( url+"/ApplicationDB/$metadata", {
-                    success:function(usrfactory, usrcontextType){
-                        JayScrum.stormContext = usrfactory(userName, psw);
-                        JayScrum.stormContext.Users
-                            .where(function(item){return item.Login == this.loginName}, {loginName: userName})
-                            .toArray({
-                                success:function(user){
-                                    if (user && user.length > 0) {
-                                        JayScrum.app.globalData().user(user[0].asKoObservable());
-                                    } else {
-                                        // TODO remove
-                                        JayScrum.app.globalData().user((new JayScrum.stormContext.Users.createNew({Id:'administrator', Login:'administrator', FirstName:'Administrator', LastName:'!!!'})).asKoObservable());
-                                    }
-                                    JayScrum.app.selectFrame('MainFrame');
-                                    connectDefer.resolve();
+        $data.ajax({
+                url:url + "/ApplicationDB/sessionlogout",
+                success:function () {
+                    $data.service( url+"/JayScrum/$metadata", {
+                        success:function(factory, contextType) {
+                            JayScrum.repository = factory({user:userName, password:psw});
+                            $data.service( url+"/ApplicationDB/$metadata", {
+                                success:function(usrfactory, usrcontextType){
+                                    JayScrum.stormContext = usrfactory({user:userName, password:psw});
+                                    JayScrum.stormContext.Users
+                                        .where(function(item){return item.Login == this.loginName}, {loginName: userName})
+                                        .toArray({
+                                            success:function(user){
+                                                if (user && user.length > 0) {
+                                                    JayScrum.app.globalData().user(user[0].asKoObservable());
+                                                } else {
+                                                    // TODO remove
+                                                    JayScrum.app.globalData().user((new JayScrum.stormContext.Users.createNew({Id:'administrator', Login:'administrator', FirstName:'Administrator', LastName:'!!!'})).asKoObservable());
+                                                }
+                                                JayScrum.app.selectFrame('MainFrame');
+                                                connectDefer.resolve();
+                                            },
+                                            error:function(){
+                                                // get context from cache but connect to applicationdb failed
+                                                console.log("Auth failed!");
+                                                console.log(arguments);
+                                                connectDefer.reject();
+                                            }
+                                        });
                                 },
-                                error:function(){
-                                    // get context from cache but connect to applicationdb failed
-                                    console.log("Auth failed!");
-                                    console.log(arguments);
+                                error: function (){
+                                    // Error to connect Application DB
+                                    console.log('Error on connect Application DB!');
                                     connectDefer.reject();
                                 }
-                            });
-                    },
-                    error: function (){
-                        // Error to connect Application DB
-                        console.log('Error on connect Application DB!');
-                        connectDefer.reject();
-                    }
-                },{user: userName, password: psw});
-            },
-            error: function(){
-                // Error to connect JayScrum service
-                console.log('Error to connect JayScrum service!');
-                connectDefer.reject();
-            }
-        },{user: userName, password: psw});
+                            },{user: userName, password: psw});
+                        },
+                        error: function(){
+                            // Error to connect JayScrum service
+                            console.log('Error to connect JayScrum service!');
+                            connectDefer.reject();
+                        }
+                    },{user: userName, password: psw});
+                },
+                error:function () {
+                    console.log('Error to reset session!');
+                    connectDefer.reject();
+                }
+            });
         return connectDefer.promise;
     },
     _initializeDemoRepositories:function(context){

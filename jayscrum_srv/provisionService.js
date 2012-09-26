@@ -121,9 +121,11 @@ var uploadInitData = function (instanceId, groups, userName, mainCtx) {
                 appDb.saveChanges({
                     success:function () {
                         console.log("Save group success.");
+                        process.refreshCache(mainCtx.executionContext.request, mainCtx.executionContext.response, function(){
                         provisionFinish(instanceId)
                             .then(function () { defer.resolve(); })
                             .fail(function () { defer.reject(); });
+                        });
                     },
                     error:function(){
                         console.log("Save user error!", arguments);
