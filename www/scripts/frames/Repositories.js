@@ -9,6 +9,7 @@ $data.Class.define('JayScrum.Views.RepositorySettings', JayScrum.FrameView, null
     constructor:function(name, path, tplSource){
         this.templateName = name || 'repositories-template';
         this.i_scroll = null;
+        this.i_scroll_popup = null;
     },
     initializeView:function(){
         //JayScrum.app.hideLoading();
@@ -18,6 +19,10 @@ $data.Class.define('JayScrum.Views.RepositorySettings', JayScrum.FrameView, null
         if(this.i_scroll){
             this.i_scroll.destroy();
             this.i_scroll = null;
+        }
+        if (this.i_scroll_popup){
+            this.i_scroll_popup.destroy();
+            this.i_scroll_popup = null;
         }
     }
 }, null);
@@ -234,6 +239,14 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
         JayScrum.app.selectedFrame().hideActionBar();
         JayScrum.app.selectedFrame().selectedView().i_scroll.destroy();
         JayScrum.app.selectedFrame().selectedView().i_scroll = JayScrum.app.initScrollById('settingPageScroll');
+    },
+    toggleInfoBox: function () {
+        $('div#repo-info').toggleClass('opened');
+        $('div#error-msg').removeClass('opened');
+
+        if ($('div#repo-info').hasClass('opened') && JayScrum.app.selectedFrame().selectedView().i_scroll_popup == null) {
+            JayScrum.app.selectedFrame().selectedView().i_scroll_popup = JayScrum.app.initScrollById('repo-info-scroll');
+        }
     },
     saveSetting:function(item){
         $("div#settingPage input:focus").trigger('blur');

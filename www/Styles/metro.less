@@ -156,7 +156,7 @@ body:not(.android)
 
 /*#region ACTIONBAR */
 .metro-actionbar {
-	.position(absolute, auto, 0, 0, 0); .size(100%, 44px); .tacenter; opacity: 0; visibility: hidden;
+	.position(absolute, auto, 0, 0, 0); .size(100%, 44px); .tacenter; opacity: 0; .transition(0.4s); pointer-events: none;
     z-index: 100;
     background: rgba(45, 45, 45, 0.9);
     
@@ -165,7 +165,7 @@ body:not(.android)
     -webkit-transition: -webkit-transform 400ms;*/
         
     &.opened {
-        opacity: 1; visibility: visible;
+        opacity: 1; pointer-events: all;
         
         /*-webkit-transition: -webkit-transform 400ms;
         -webkit-transition-delay: 500ms;
@@ -180,14 +180,15 @@ body:not(.android)
 }
 
 #repo-info {
-    height: auto; z-index: 50;
+    height: auto; z-index: 50; background: rgba(45, 45, 45, 1); top: 44px; 
+    
+    ul { padding: 0; }
+    p  { .taleft; padding: 0 10px; }
         
     &.opened {
         .transition(); 
         -webkit-transform: translateY(-44px);
     }
-    
-    p { padding: 0 10px; }
 }
 
 .abs-right { .position(absolute, auto, 0); }

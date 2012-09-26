@@ -1269,9 +1269,21 @@
             <!--/ko-->
         </div>
         <div id="repo-info" class="metro-actionbar">
-            <ul>
-                <li><p>To be more effective buy repositories for JayScrum! With this feature you can actually do thing that you can not do without them! 
-                    Try it now by click the money icon on the bottom bar! </p></li>
+            <ul id="repo-info-scroll">
+                <li>
+                    <h1>About JayScrum</h1>
+                    <p>To be more effective buy repositories for JayScrum! With this feature you can actually do thing that you can not do without them! 
+                    Try it now by click the money icon on the bottom bar! </p>
+                    <p>To be more effective buy repositories for JayScrum! With this feature you can actually do thing that you can not do without them! 
+                    Try it now by click the money icon on the bottom bar! </p>
+                    <p>To be more effective buy repositories for JayScrum! With this feature you can actually do thing that you can not do without them! 
+                    Try it now by click the money icon on the bottom bar! </p>
+                    <p>To be more effective buy repositories for JayScrum! With this feature you can actually do thing that you can not do without them! 
+                    Try it now by click the money icon on the bottom bar! </p>
+                    <br />
+                    <p>Built on <a href="http://jaydata.org" target="_blank">JayData</a> framework.</p>
+                    <p>Copyright | JayStack.com</p>
+                </li>
             </ul>
         </div>
         <div id="settingPageActionBar" class="metro-actionbar opened">
@@ -1281,7 +1293,7 @@
                 <li class="icon-action money"><span data-bind="click: $data.buyDatabase"></span></li>
                 <li class="icon-action update"><span data-bind="click: $data.refreshSettings"></span></li>
                 <!--/ko-->
-                <li class="icon-action more abs-right"><span onclick="$('div#repo-info').toggleClass('opened'); $('div#error-msg').removeClass('opened');"></span></li>
+                <li class="icon-action more abs-right"><span data-bind="click: $data.toggleInfoBox"></span></li>
             </ul>
         </div>
 
