@@ -331,8 +331,8 @@ if(window['android'] && window['cordova']){
 }
 function initApplication(){
 	$(function () {
-		if (android) {
-			document.body.classList.add("android")
+	    if (android) {
+	        $("body").addClass("android");
 		}
 
 		JayScrum.app = new JayScrum.ScrumApp('#page');

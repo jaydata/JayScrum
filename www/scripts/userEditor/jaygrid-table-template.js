@@ -15,8 +15,6 @@
                         <div class='list detail maxlist' >\
                                 <div class='ohidden margint15' data-bind='visible: source' class='action-buttons'>\
                                     <span data-x-bind='text: $root.discriminatorValue'></span>\
-                                    <span class='btn btn-info icon-action add fleft' href='#' data-bind='click: addNew'><span></span></span> \
-                                    <input class='btn btn-success icon-action save fleft' type='submit' value='' data-bind='visible: pendingChanges' />\
                                 </div>\
                                 <table data-bind='visible: source' class='jay-data-grid metro-table margin' border='0'> \
                                     <!-- ko template: { name: 'jay-data-grid-head' } --> \
