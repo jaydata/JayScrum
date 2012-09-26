@@ -93,8 +93,8 @@ public class MainActivity extends DroidGap implements BillingController.IConfigu
 	
 	public void MonthlySubscription(InAppBillingPlugin plugin, String data){
 		this._plugin = plugin;
-		//BillingController.requestSubscription(this, "test.jaystack.subscription_monthly", true, data);
-		Log.d("InApp", "Fake subscription");
+		BillingController.requestSubscription(this, "test.jaystack.subscription_monthly", true, data);
+		/*Log.d("InApp", "Fake subscription");
 		
 		Transaction t = new Transaction("orderid"+System.currentTimeMillis(), "productId","com.jaystack.jayscrum", PurchaseState.PURCHASED, "notificationId", 1243124, data, "purchasetoken");
 		BillingDB db = new BillingDB(this);
@@ -102,7 +102,7 @@ public class MainActivity extends DroidGap implements BillingController.IConfigu
 		
 		PluginResult result = new PluginResult(PluginResult.Status.OK, "RESULT_OK");
 		result.setKeepCallback(true);
-		this._plugin.success(result, this._plugin._callbackId);
+		this._plugin.success(result, this._plugin._callbackId);*/
 	}
 	
 	

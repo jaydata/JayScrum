@@ -27,7 +27,7 @@ public class InAppBillingPlugin extends Plugin {
 			try{
 				o.put("OrderId", t.orderId);
 				o.put("ProductId", t.productId);
-				o.put("PurchaseToken", t.purchaseToken);
+				o.put("purchaseToken", t.purchaseToken);
 				if(t.developerPayload.startsWith("[")){
 					o.put("DevPayLoad", new JSONArray(t.developerPayload).getJSONObject(0));
 				}

@@ -113,8 +113,8 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
     _createNewRepoOrUpdateStatus:function(transactions){
         console.log("-== 5. create or update tran");
         console.log(JSON.stringify(transactions));
-        for (var i = 0; i < transactions++; i++) {
-            if (transactions[i].DevPayLoad.Title) {
+        for (var i = 0; i < transactions.length; i++) {
+            if (!transactions[i].DevPayLoad.Title) {
                 transactions[i].DevPayLoad.Title = transactions[i].DevPayLoad.title;
                 transactions[i].DevPayLoad.UserName = transactions[i].DevPayLoad.usr;
                 transactions[i].DevPayLoad.Password = transactions[i].DevPayLoad.psw;
@@ -172,7 +172,7 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
                             });
                         }
                     })
-                    .fail(function(error){console.log(error);});
+                    .fail(function(error){console.log(JSON.stringify(error));});
             },
             {user: 'admin', password: 'admin'});
     },
