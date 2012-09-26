@@ -6,6 +6,7 @@ var bc = require('bcrypt');
 var JAYSTORM_ADMIN_HOST = 'admin.jaystack.net';
 var JAYSTORM_ADMIN_HOST_PORT = 3000;
 var JAYSTORM_ADMIN_PROVISION_PATH = '/provision';
+var JAYSTORM_ADMIN_PROVISION_FINISH_PATH="/provisionEnd";
 var JAYSTORM_APP_ID = '';
 var JAYSTORM_PROVISION_ID = '';
 var ANDROID_APP_ID = 'com.jaystack.jayscrum';
@@ -19,7 +20,7 @@ var GOOGLE_API_REFRESH_TOKEN_OBJECT = {
     refresh_token:''
 };
 
-var provisionApp = function (provisionRequestData) {
+var provisionApp = function (provisionRequestData, groups, mainCtx) {
     var provAppDef = Q.defer();
 
     validateSubscription(ANDROID_APP_ID, ANDROID_SUBSCRIPTION_ID, provisionRequestData.key)
@@ -49,7 +50,20 @@ var provisionApp = function (provisionRequestData) {
                                 var resultData = JSON.parse(data);
                                 provisionRequestData.attachment.Status = "ready";
                                 provisionRequestData.attachment.DevPayLoad.Url = resultData.id;
-                                provAppDef.resolve(provisionRequestData.attachment);
+                                if(resultData.canWrite){
+                                    uploadInitData(resultData.id, groups, provisionRequestData.attachment.DevPayLoad.UserName, mainCtx)
+                                        .then(function(){provAppDef.resolve(provisionRequestData.attachment);})
+                                        .fail(function(){
+                                            console.log("!!!! Provisioning finish error !!!!");
+                                            provisionRequestData.attachment.Status = "initialize";
+                                            provisionRequestData.attachment.DevPayLoad.Url = null;
+                                            provAppDef.resolve(provisionRequestData.attachment);
+                                        });
+                                }else{
+                                    console.log("Already provisiond!");
+                                    provAppDef.resolve(provisionRequestData.attachment);
+                                }
+
                             });
                         } else {
                             console.log("!!!! Provisioning error !!!!");
@@ -88,6 +102,73 @@ var provisionApp = function (provisionRequestData) {
 
         });
     return provAppDef.promise;
+};
+var uploadInitData = function (instanceId, groups, userName, mainCtx) {
+    var defer = Q.defer();
+    var usr = mainCtx.executionContext.request.currentDatabaseConfig.username;
+    var psw = mainCtx.executionContext.request.currentDatabaseConfig.password;
+    var appDb = mainCtx.executionContext.request.databases.ApplicationDB(instanceId, usr, psw);
+    appDb.onReady(function () {
+        appDb.Users.where(function (item) { return item.Login == this.usr; }, {usr:userName})
+            .toArray(function (item) {
+                console.log("!!!GROUPS: "+JSON.stringify(groups));
+                console.log("!!! user: "+JSON.stringify(item));
+                var usr = item[0];
+                appDb.Users.attach(usr);
+
+                usr.Groups = groups;
+                console.log("change user: "+JSON.stringify(usr.initData));
+                appDb.saveChanges({
+                    success:function () {
+                        console.log("Save group success.");
+                        provisionFinish(instanceId)
+                            .then(function () { defer.resolve(); })
+                            .fail(function () { defer.reject(); });
+                    },
+                    error:function(){
+                        console.log("Save user error!", arguments);
+                        defer.reject();
+                    }});
+            });
+    });
+    return defer.promise;
+};
+var provisionFinish = function(instanceId){
+    console.log("Finishing provisioning.")
+    var d = Q.defer();
+
+    var provisionFinishRequestOptions = {
+        host:JAYSTORM_ADMIN_HOST,
+        port:JAYSTORM_ADMIN_HOST_PORT,
+        path:JAYSTORM_ADMIN_PROVISION_FINISH_PATH,
+        method:'POST',
+        headers:{
+            'Content-Type':'application/json'
+        }
+    };
+    var provReq = http.request(provisionFinishRequestOptions, function (res) {
+        var data = '';
+        if (res.statusCode == 200) {
+            res.on("data", function (d) {
+                data += d;
+            });
+            res.on("end", function () {
+                console.log("Provisioning end success: "+data);
+                d.resolve();
+            });
+        } else {
+            console.log("!!!! Provisioning end error !!!!");
+            d.reject();
+        }
+    });
+    provReq.on('error', function(e) {
+        console.log('!!! Provisioning end request error !!!');
+        console.log(e);
+        d.reject();
+    });
+    provReq.write(JSON.stringify({appid:JAYSTORM_APP_ID, instanceid: instanceId}));
+    provReq.end();
+    return d.promise;
 };
 var validateSubscription = function(applicationNameSpace, subscriptionId, subscriptionToken){
     console.log('-== Validate subscription ==-');
@@ -188,37 +269,55 @@ $data.ServiceBase.extend("ProvisionService", {
         ( function(provisionList){
 
             return function(success, error){
-                var self = this;
-                var provisions = JSON.parse(provisionList);
-                var provisionFnArray = [];
-                for(var i=0;i<provisions.length;i++){
-                    console.log("--==== Start provisioning database! ====--");
-                    var repo = provisions[i].DevPayLoad;
-                    var provisionRequestData = {
-                        key:provisions[i].purchaseToken,                   //google or apple purchase toke
-                        appid:JAYSTORM_APP_ID,
-                        provisionid: JAYSTORM_PROVISION_ID,
-                        initdata:{
-                            ApplicationDB:{
-                                Users:{
-                                    Login:provisions[i].DevPayLoad.UserName,
-                                    Password: bc.hashSync(provisions[i].DevPayLoad.Password, 8)
+                var usr = this.executionContext.request.currentDatabaseConfig.username;
+                var psw = this.executionContext.request.currentDatabaseConfig.password;
+                var appDb = this.executionContext.request.databases.ApplicationDB(JAYSTORM_APP_ID, usr, psw);
+                var mainCtx = this;
+                appDb.onReady(function(){
+                    appDb.Groups.filter(function(grp){return grp.Name == 'admin'})
+                        .toArray({
+                            success:function(groupList){
+                                var groups = groupList.map(function(g){return g.GroupID;});
+                                var provisions = JSON.parse(provisionList);
+                                var provisionFnArray = [];
+                                for(var i=0;i<provisions.length;i++){
+                                    console.log("--==== Start provisioning database! ====--");
+                                    var repo = provisions[i].DevPayLoad;
+                                    var provisionRequestData = {
+                                        key:provisions[i].purchaseToken,                   //google or apple purchase toke
+                                        appid:JAYSTORM_APP_ID,
+                                        provisionid: JAYSTORM_PROVISION_ID,
+                                        attachment:provisions[i]
+                                    };
+                                    if(provisions[i].DevPayLoad.UserName && provisions[i].DevPayLoad.Password){
+                                        provisionRequestData['initdata'] = {
+                                            ApplicationDB:{
+                                                Users:{
+                                                    Login:provisions[i].DevPayLoad.UserName,
+                                                    Password: bc.hashSync(provisions[i].DevPayLoad.Password, 8)
+                                                    //Groups: groups
+                                                }
+                                            }
+                                        };
+                                    }
+                                    provisionFnArray.push(provisionApp(provisionRequestData, groups, mainCtx));
                                 }
+                                console.log("New database count: "+provisionFnArray.length);
+                                Q.all(provisionFnArray)
+                                    .then(function(){
+                                        var result = provisionFnArray.map(function(item){return item.valueOf();});
+                                        console.log("-== Provisioning response ==-");
+                                        console.log(result);
+                                        console.log("-== Provisioning response END ==-");
+                                        success(JSON.stringify(result));
+                                    });
+                            },
+                            error:function(){
+                                console.log("group query error: ",arguments);
+                                error('group query error');
                             }
-                        },
-                        attachment:provisions[i]
-                    };
-                    provisionFnArray.push(provisionApp(provisionRequestData));
-                }
-                console.log("Provision database count: "+provisionFnArray.length);
-                Q.all(provisionFnArray)
-                    .then(function(){
-                        var result = provisionFnArray.map(function(item){return item.valueOf();});
-                        console.log("-== Provisioning response ==-");
-                        console.log(result);
-                        console.log("-== Provisioning response END ==-");
-                        success(JSON.stringify(result));
-                    });
+                        });
+                });
             };
         }),
     bCrypPassword: $data.JayService.serviceFunction()

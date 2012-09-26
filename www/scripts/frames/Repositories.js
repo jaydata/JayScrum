@@ -117,7 +117,7 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
             }
         }
         console.log(JSON.stringify(transactions));
-
+        console.log("-== 5.1. Request to Service metadata: "+JayScrum.ScrumApp.ApplicationUrl+"/Service/$metadata");
         $data.service(JayScrum.ScrumApp.ApplicationUrl+"/Service/$metadata", function(factory, contextType) {
                 var provisionContext = factory();
                 provisionContext.Provision(JSON.stringify(transactions))

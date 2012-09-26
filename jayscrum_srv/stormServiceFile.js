@@ -71,7 +71,7 @@ function updateSprintBurndownData(sprint, context){
     var p= Q.defer();
     var self = context;
 
-    var sprintDays = parseInt((Date.now()-sprint.StartDate.getTime())/(24*3600*1000));
+    var sprintDay = parseInt((Date.now()-sprint.StartDate.getTime())/(24*3600*1000));
     //var sprintDay = moment().diff(sprint.StartDate, 'days');
     self.WorkItems
         .where(function (wrk) {return wrk.WorkItem_Sprint == this.sprintId && (wrk.Type == "Task" || wrk.Type == "Bug") && (wrk.State == "To Do" || wrk.State == "In Progress");}, {sprintId:sprint.Id})
