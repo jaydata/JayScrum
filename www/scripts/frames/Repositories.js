@@ -192,8 +192,10 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
         if(url.indexOf('http') !== 0){
             url = "http://"+repoSetting.Url().toLowerCase()+JayScrum.Frames.Repositories.ServerUrl;
         }
+        JayScrum.app.showLoading();
         JayScrum.app._initializeRepositories(url, repoSetting.UserName(), repoSetting.Password())
             .fail(function(){
+                JayScrum.app.hideLoading();
                 JayScrum.app.selectedFrame().data().errorMsg('Failed to connect repository!');
                 if (!$('div#error-msg').hasClass('opened')) {
                     if ($('div#repo-info').hasClass('opened')) {

@@ -49,10 +49,6 @@ $data.Class.define('JayScrum.FrameApp', null, null, {
     showLoading:function () {
         JayScrum.app.loading[0].style.display = "";
         JayScrum.app.loading[0].style.opacity = 1;
-        /*JayScrum.app.loading.show();*/
-        /*JayScrum.app.loading.animate({
-            opacity:1
-        }, 0, 'ease-out');*/
     },
     hideLoading:function () {
         JayScrum.app.loading.animate({

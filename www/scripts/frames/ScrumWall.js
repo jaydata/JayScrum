@@ -459,36 +459,22 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
             default:
                 this.pinnedQueryParam = { sprintId:initData.Id };
                 this.toDoListQuery = JayScrum.repository.WorkItems
-                    .where(function (item) {
-                        return  item.WorkItem_Sprint == this.sprintId && item.State == 'To Do' && (item.Type == "Task" || item.Type == 'Bug');
-                    }, this.pinnedQueryParam)
-                    .orderByDescending(function (item) {
-                        return item.Priority;
-                    })
+                    .where(function (item) {return  item.WorkItem_Sprint == this.sprintId && item.State == 'To Do' && (item.Type == "Task" || item.Type == 'Bug');}, this.pinnedQueryParam)
+                    .orderBy(function (item) {return item.Priority;})
                     .take(this.listLoadSize);
                 this.inProgressListQuery = JayScrum.repository.WorkItems
-                    .where(function (item) {
-                        return item.WorkItem_Sprint == this.sprintId && item.State == 'In Progress' && (item.Type == "Task" || item.Type == 'Bug');
-                    }, this.pinnedQueryParam)
-                    .orderByDescending(function (item) {
-                        return item.Priority;
-                    })
+                    .where(function (item) { return item.WorkItem_Sprint == this.sprintId && item.State == 'In Progress' && (item.Type == "Task" || item.Type == 'Bug');}, this.pinnedQueryParam)
+                    .orderBy(function (item) { return item.AssignedTo;})
+                    .orderBy(function (item) { return item.Priority;})
                     .take(this.listLoadSize);
                 this.doneListQuery = JayScrum.repository.WorkItems
-                    .where(function (item) {
-                        return item.WorkItem_Sprint == this.sprintId && item.State == 'Done' && (item.Type == "Task" || item.Type == 'Bug');
-                    }, this.pinnedQueryParam)
-                    .orderByDescending(function (item) {
-                        return item.Priority;
-                    })
+                    .where(function (item) { return item.WorkItem_Sprint == this.sprintId && item.State == 'Done' && (item.Type == "Task" || item.Type == 'Bug'); }, this.pinnedQueryParam)
+                    .orderByDescending(function (item) { return item.ChangedDate;})
+                    .orderBy(function(item){return item.AssignedTo;})
                     .take(this.listLoadSize);
                 this.recentlyChangedListQuery = JayScrum.repository.WorkItems
-                    .where(function (item) {
-                        return item.WorkItem_Sprint == this.sprintId && item.ChangedDate >= moment().add('days', -1).utc().toDate() && (item.Type == "Task" || item.Type == 'Bug');
-                    }, this.pinnedQueryParam)
-                    .orderByDescending(function (item) {
-                        return item.ChangedDate
-                    })
+                    .where(function (item) { return item.WorkItem_Sprint == this.sprintId && item.ChangedDate >= moment().add('days', -1).utc().toDate() && (item.Type == "Task" || item.Type == 'Bug'); }, this.pinnedQueryParam)
+                    .orderByDescending(function (item) { return item.ChangedDate })
                     .take(this.listLoadSize);
                 this.data().currentSprint(initData);
                 this.data().name = initData.Name;

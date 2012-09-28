@@ -283,9 +283,9 @@ $data.Class.define('JayScrum.ScrumApp', JayScrum.FrameApp, null,{
                                 }
                             },{user: userName, password: psw});
                         },
-                        error: function(){
+                        error: function(error){
                             // Error to connect JayScrum service
-                            console.log('Error to connect JayScrum service!');
+                            console.log('Error to connect JayScrum service!'+JSON.stringify(error));
                             connectDefer.reject();
                         }
                     },{user: userName, password: psw});
