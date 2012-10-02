@@ -312,7 +312,7 @@ $data.Class.define('JayScrum.ScrumApp', JayScrum.FrameApp, null,{
             });
     }
 },{
-    ApplicationUrl:"http://9f797534-0d07-446d-8aec-692834df5fa6.jaystack.net"
+    ApplicationUrl:"http://5b3f422f-d7b9-4825-9199-e4d809eab7d4.jaystack.net"
 });
 
 JayScrum.pushObservablesToList= function (list, rawData) {

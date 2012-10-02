@@ -263,7 +263,7 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
             wrkItem.RemainingWork(0);
             currentLista = JayScrum.app.selectedFrame().data().doneList();
         } else if (wrkItem.State() == 'To Do') {
-            wrkItem.Reason(wrkItem.Id() == 0 ? 'New task' : 'Work stopped');
+            wrkItem.Reason(wrkItem.Id() === null ? 'New task' : 'Work stopped');
             currentLista = JayScrum.app.selectedFrame().data().todoList();
         }
         //save parentName

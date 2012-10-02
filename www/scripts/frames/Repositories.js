@@ -184,6 +184,7 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
     },
     connectTo:function (repoSetting) {
         JayScrum.app.globalData().repositoryName(repoSetting.Title());
+        //Repository Id is -1, if it is local storage
         if(repoSetting.Id() === -1){
             JayScrum.app._initializeDemoRepositories(JayScrum.app.selectedFrame().localContext);
             return;
@@ -342,5 +343,4 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
 	}
 }, {
     ServerUrl:'.jaystack.net'
-    //ServerUrl:'http://app1.storm.jaystack.com:3000/'
 });

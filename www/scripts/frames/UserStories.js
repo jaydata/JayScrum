@@ -291,7 +291,7 @@ $data.Class.define('JayScrum.Frames.UserStories', JayScrum.Frame, null, {
             wrkItem.Reason('Work finished');
             wrkItem.RemainingWork(null);
         } else if (wrkItem.State() == 'To Do') {
-            wrkItem.Reason(wrkItem.Id() == 0 ? 'New task' : 'Work stopped');
+            wrkItem.Reason(wrkItem.Id() === null ? 'New task' : 'Work stopped');
         }
         //save parentName
         var us = JayScrum.app.globalData().userStoryList().filter(function (item) { return item.Id() == wrkItem.WorkItem_WorkItem() })[0];
@@ -312,7 +312,7 @@ $data.Class.define('JayScrum.Frames.UserStories', JayScrum.Frame, null, {
         wrkItem.ChangedBy(JayScrum.app.globalData().user().Login());
         wrkItem.ChangedDate(new Date());
 
-        if (wrkItem.Id() === 0) {
+        if (wrkItem.Id() === null) {
             JayScrum.repository.WorkItems.add(wrkItem);
         }
 
