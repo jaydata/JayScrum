@@ -353,7 +353,7 @@ $data.Class.define('$data.dbClient.DbCommand', null, null,
 
         return connection;
     },
-    supportedDataTypes: { value: [$data.Integer, $data.String, $data.Number, $data.Blob, $data.Boolean, $data.Date], writable: false },
+    supportedDataTypes: { value: [$data.Integer, $data.String, $data.Number, $data.Blob, $data.Boolean, $data.Date, $data.Guid], writable: false },
     fieldConverter: {
         value: {
             fromDb: {
@@ -362,7 +362,8 @@ $data.Class.define('$data.dbClient.DbCommand', null, null,
                 "$data.Date": function (dbData) { return new Date(dbData); },
                 "$data.String": function (text) { return text; },
                 "$data.Boolean": function (b) { return b === 1 ? true : false; },
-                "$data.Blob": function (blob) { return blob; }
+                "$data.Blob": function (blob) { return blob; },
+                "$data.Guid": function (g) { return g ? $data.parseGuid(g) : g; }
             },
             toDb: {
                 "$data.Integer": function (number) { return number; },
@@ -371,6 +372,7 @@ $data.Class.define('$data.dbClient.DbCommand', null, null,
                 "$data.String": function (text) { return text; },
                 "$data.Boolean": function (b) { return b ? 1 : 0; },
                 "$data.Blob": function (blob) { return blob; },
+                "$data.Guid": function (g) { return g ? g.value : g; },
                 "$data.Object": function(value){if(value === null){return null;} throw 'Not supported exception';}
             }
         }
@@ -488,9 +490,19 @@ $data.Class.define('$data.dbClient.DbCommand', null, null,
     },
 
     buildDbType_modifyInstanceDefinition: function (instanceDefinition, storageModel) {
-        var buildDbType_copyPropertyDefinition = function (propertyDefinition) {
-            var cPropertyDef = JSON.parse(JSON.stringify(propertyDefinition));
+        var buildDbType_copyPropertyDefinition = function (propertyDefinition, refProp) {
+            var cPropertyDef;
+            if (refProp) {
+                cPropertyDef = JSON.parse(JSON.stringify(instanceDefinition[refProp]));
+                cPropertyDef.kind = propertyDefinition.kind;
+                cPropertyDef.name = propertyDefinition.name;
+                cPropertyDef.notMapped = false;
+            } else {
+                cPropertyDef = JSON.parse(JSON.stringify(propertyDefinition));
+            }
+
             cPropertyDef.dataType = Container.resolveType(propertyDefinition.dataType);
+            cPropertyDef.type = cPropertyDef.dataType;
             cPropertyDef.key = false;
             cPropertyDef.computed = false;
             return cPropertyDef;
@@ -520,7 +532,7 @@ $data.Class.define('$data.dbClient.DbCommand', null, null,
 
                 foreignType.memberDefinitions.getPublicMappedProperties().filter(function (d) { return d.key }).forEach(function (d) {
                     if (addToEntityDef) {
-                        instanceDefinition[foreignPropName + '__' + d.name] = buildDbType_copyPropertyDefinition(d);
+                        instanceDefinition[foreignPropName + '__' + d.name] = buildDbType_copyPropertyDefinition(d, foreignPropName);
                     }
                     association.ReferentialConstraint.push(buildDbType_createConstrain(foreignType, dataType, d.name, foreignPropName));
                 }, this);
@@ -967,7 +979,7 @@ $data.Class.define('$data.dbClient.DbCommand', null, null,
         this.build = function () {
 
             switch (Container.resolveType(this.fld.dataType)) {
-                case $data.String: case "text": case "string": this.buildFieldNameAndType("TEXT"); break;
+                case $data.String: case $data.Guid: case "text": case "string": this.buildFieldNameAndType("TEXT"); break;
                 case $data.Boolean: case $data.Integer: case "bool": case "boolean": case "int": case "integer": this.buildFieldNameAndType("INTEGER"); break;
                 case $data.Number: case $data.Date: case "number": case "datetime": case "date": this.buildFieldNameAndType("REAL"); break;
                 case $data.Blob: case "blob": this.buildFieldNameAndType("BLOB"); break;
@@ -1845,6 +1857,10 @@ $C('$data.sqLite.SqlProjectionCompiler', $data.Expressions.EntityExpressionVisit
     VisitProjectionExpression: function (expression, builder) {
         this.hasProjection = true;
         this.Visit(expression.selector, builder);
+
+        if (expression.selector && expression.selector.expression instanceof $data.Expressions.ObjectLiteralExpression) {
+            builder.modelBinderConfig['$type'] = expression.projectionAs || builder.modelBinderConfig['$type'] || $data.Object;
+        }
     },
     VisitParametricQueryExpression: function (expression, builder) {
         if (expression.expression instanceof $data.Expressions.EntityExpression) {

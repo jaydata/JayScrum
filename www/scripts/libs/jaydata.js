@@ -8406,6 +8406,7 @@ $data.Guid.prototype.toString = function () {
 };
 
 $data.Guid.NewGuid = function () {
+    ///<description>a performant guid generator with high chance of doubling</description>
     var S4 = function () {
         return Math.floor(
             Math.random() * 0x10000 /* 65536 */
@@ -8424,7 +8425,52 @@ $data.Guid.NewGuid = function () {
 $data.parseGuid = function (guid) {
     return new $data.Guid(guid);
 };
-(function ($data) {
+
+(function () {
+    /*!
+    Math.uuid.js (v1.4)
+    http://www.broofa.com
+    mailto:robert@broofa.com
+    
+    Copyright (c) 2010 Robert Kieffer
+    Dual licensed under the MIT and GPL licenses.
+    */
+
+    var CHARS = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'.split('');
+
+    $data.createGuid = function (guidString) {
+        if (guidString) {
+            return new $data.Guid(guidString);
+        };
+
+        var len;
+        var chars = CHARS, uuid = [], i;
+        var radix = chars.length;
+
+        if (len) {
+            // Compact form
+            for (i = 0; i < len; i++) uuid[i] = chars[0 | Math.random() * radix];
+        } else {
+            // rfc4122, version 4 form
+            var r;
+
+            // rfc4122 requires these characters
+            uuid[8] = uuid[13] = uuid[18] = uuid[23] = '-';
+            uuid[14] = '4';
+
+            // Fill in random data.  At i==19 set the high bits of clock sequence as
+            // per rfc4122, sec. 4.1.5
+            for (i = 0; i < 36; i++) {
+                if (!uuid[i]) {
+                    r = 0 | Math.random() * 16;
+                    uuid[i] = chars[(i == 19) ? (r & 0x3) | 0x8 : r];
+                }
+            }
+        }
+
+        return $data.parseGuid(uuid.join(''));
+    };
+})();(function ($data) {
 
     function Edm_Boolean() { };
     $data.Container.registerType('Edm.Boolean', Edm_Boolean);
@@ -11197,7 +11243,9 @@ $C('$data.Expressions.EntityExpression', $data.Expressions.ExpressionNode, null,
         var source = this.Visit(expression.source, context);
         var selector = this.Visit(expression.selector, context);
         if (source !== expression.source || selector !== expression.selector) {
-            return Container.createProjectionExpression(source, selector, expression.params, expression.instance);
+            var expr = Container.createProjectionExpression(source, selector, expression.params, expression.instance);
+            expr.projectionAs = expression.projectionAs;
+            return expr;
         }
         return expression;
     },
@@ -11553,7 +11601,9 @@ $C('$data.Expressions.QueryExpressionCreator', $data.Expressions.EntityExpressio
         context.frameType = expression.getType();
         var selector = this.Visit(expression.selector, context);
         if (source !== expression.source || selector !== expression.selector) {
-            return Container.createProjectionExpression(source, selector, expression.params, expression.instance);
+            var expr = Container.createProjectionExpression(source, selector, expression.params, expression.instance);
+            expr.projectionAs = expression.projectionAs;
+            return expr;
         }
         return expression;
     },
@@ -11728,7 +11778,12 @@ $data.Class.define('$data.Validation.EntityValidation', $data.Validation.EntityV
                 minLength: function (value, definedValue) { return Object.isNullOrUndefined(value) || value.length >= definedValue; },
                 maxLength: function (value, definedValue) { return Object.isNullOrUndefined(value) || value.length <= definedValue; },
                 length: function (value, definedValue) { return Object.isNullOrUndefined(value) || value.length == definedValue; },
-                regex: function (value, definedValue) { return Object.isNullOrUndefined(value) || value.match(typeof value === 'string' ? new RegExp(definedValue) : definedValue) }
+                regex: function (value, definedValue) {
+                    return Object.isNullOrUndefined(value) ||
+                        value.match(typeof definedValue === 'string'
+                            ? new RegExp((definedValue.indexOf('/') === 0 && definedValue.lastIndexOf('/') === (definedValue.length - 1)) ? definedValue.slice(1, -1) : definedValue)
+                            : definedValue)
+                }
             },
             '$data.Date': {
                 required: function (value, definedValue) { return !Object.isNullOrUndefined(value); },
@@ -11746,6 +11801,10 @@ $data.Class.define('$data.Validation.EntityValidation', $data.Validation.EntityV
                 length: function (value, definedValue) { return Object.isNullOrUndefined(value) || value.length == definedValue; }
             },
             '$data.Object': {
+                required: function (value, definedValue) { return !Object.isNullOrUndefined(value); },
+                customValidator: function (value, definedValue) { return Object.isNullOrUndefined(value) || typeof definedValue == "function" ? definedValue(value) : true; }
+            },
+            '$data.Guid': {
                 required: function (value, definedValue) { return !Object.isNullOrUndefined(value); },
                 customValidator: function (value, definedValue) { return Object.isNullOrUndefined(value) || typeof definedValue == "function" ? definedValue(value) : true; }
             }
@@ -12395,6 +12454,7 @@ $data.Class.define('$data.StorageModel', null, null, {
     PhysicalTypeName: {},
     EventHandlers: {},
     TableName: {},
+    TableOptions: { value: undefined },
     ComplexTypes: {},
     Associations: {},
     EntitySetReference: {}
@@ -12553,6 +12613,7 @@ $data.Class.define('$data.EntityContext', null, null,
             var sm = this[storageModel.ItemName];
             sm.name = storageModel.ItemName;
             sm.tableName = storageModel.TableName;
+            sm.tableOptions = storageModel.TableOptions;
             sm.eventHandlers = storageModel.EventHandlers;
             this._entitySetReferences[storageModel.LogicalType.name] = sm;
 
@@ -12574,6 +12635,7 @@ $data.Class.define('$data.EntityContext', null, null,
                 if (itemResolvedDataType && itemResolvedDataType.isAssignableTo && itemResolvedDataType.isAssignableTo($data.EntitySet)) {
                     var storageModel = new $data.StorageModel();
                     storageModel.TableName = item.tableName || item.name;
+                    storageModel.TableOptions = item.tableOptions;
                     storageModel.ItemName = item.name;
                     storageModel.LogicalType = Container.resolveType(item.elementType);
                     storageModel.LogicalTypeName = storageModel.LogicalType.name;
@@ -13185,6 +13247,7 @@ $data.Class.define('$data.EntityContext', null, null,
                                             if (value instanceof Array) {
                                                 if (value.indexOf(entityCachedItem.data) == -1) {
                                                     value.push(entityCachedItem.data);
+                                                    data[navPropertyName] = value;
                                                 }
                                             } else {
                                                 if (typeof intellisense === 'undefined') {
@@ -14230,7 +14293,7 @@ $data.Class.define('$data.Queryable', null, null,
         return this.filter(predicate, params);
     },
 
-    map: function (projection, thisArg) {
+    map: function (projection, thisArg, mappedTo) {
 		///	<summary>Map specifies the shape or type of each returned element. You can specify whether your results will consist of complete Person objects, just one member, a subset of members, or some completely different result type based on a computation or new object creation. When map produces something other than a copy of the source element, the operation is called a projection. The use of projections to transform data is a powerful capability of JavaScript Language Query expressions.</summary>
         ///	<param name="projection" type="Function">A projection expression</param>
         ///	<param name="thisArg" type="Object">The query parameters</param>
@@ -14269,13 +14332,21 @@ $data.Class.define('$data.Queryable', null, null,
         this._checkOperation('map');
         var codeExpression = Container.createCodeExpression(projection, thisArg);
         var exp = Container.createProjectionExpression(this.expression, codeExpression);
+
+        if (mappedTo === 'default')
+            exp.projectionAs = this.defaultType;
+        else if (mappedTo)
+            exp.projectionAs = Container.resolveType(mappedTo);
+        else
+            exp.projectionAs = $data.Object;
+
         var q = Container.createQueryable(this, exp);
         return q;
     },
-    select: function (projection, thisArg) {
+    select: function (projection, thisArg, mappedTo) {
 		///<summary>Select is a convenience alias for C# developers. Use map instead.</summary>
 		///<returns type="$data.Queryable" />
-        return this.map(projection, thisArg);
+        return this.map(projection, thisArg, mappedTo);
     },
 
     length: function (onResult) {
@@ -14889,6 +14960,11 @@ $data.Class.defineEx('$data.EntitySet',
         ///     <param name="collectionName" type="String">Name of the EntitySet</param>
         /// </signature>
         this.createNew = this[elementType.name] = this.elementType = this.defaultType = elementType;
+        var self = this;
+        context['createAdd' + elementType.name] = function (initData) {
+            var entity  = new elementType(initData);
+            return self.add(entity);
+        }
         this.stateManager = new $data.EntityStateManager(this);
 
         this.collectionName = collectionName;
@@ -14907,7 +14983,7 @@ $data.Class.defineEx('$data.EntitySet',
         return this.single("it." + key.name + " == this.value", { value: keyValue }, cb);
     },
 
-    addNew: function(item, ncb) {
+    addNew: function(item, cb) {
         var callback = $data.typeSystem.createCallbackSetting(cb);
         var _item = new this.createNew(item);
         this.entityContext.saveChanges(cb);
@@ -14971,6 +15047,7 @@ $data.Class.defineEx('$data.EntitySet',
         data.changedProperties = undefined;
         data.context = this.entityContext;
         this._trackEntity(data);
+        return data;
     },
     remove: function (entity) {
         /// <signature>
@@ -15851,7 +15928,7 @@ $C('$data.modelBinder.ModelBinderConfigCompiler', $data.Expressions.EntityExpres
         if (projVisitor.projectionExpression) {
             this.Visit(projVisitor.projectionExpression, builder);
         } else {
-            this.DefaultSelection(builder);
+            this.DefaultSelection(builder, this._query.defaultType, this._includes);
         }
     },
     _defaultModelBinder: function (expression) {
@@ -15954,14 +16031,14 @@ $C('$data.modelBinder.ModelBinderConfigCompiler', $data.Expressions.EntityExpres
             }
         }, this);
     },
-    DefaultSelection: function (builder) {
+    DefaultSelection: function (builder, type, includes) {
         //no projection, get all item from entitySet
-        builder.modelBinderConfig['$type'] = this._query.defaultType;
+        builder.modelBinderConfig['$type'] = type;
 
-        var storageModel = this._query.context._storageModel.getStorageModel(this._query.defaultType);
-        this._addPropertyToModelBinderConfig(this._query.defaultType, builder);
-        if (this._includes) {
-            this._includes.forEach(function (include) {
+        var storageModel = this._query.context._storageModel.getStorageModel(type);
+        this._addPropertyToModelBinderConfig(type, builder);
+        if (includes) {
+            includes.forEach(function (include) {
                 var includes = include.name.split('.');
                 var association = null;
                 var tmpStorageModel = storageModel;
@@ -15996,19 +16073,45 @@ $C('$data.modelBinder.ModelBinderConfigCompiler', $data.Expressions.EntityExpres
     VisitProjectionExpression: function (expression, builder) {
         this.hasProjection = true;
         this.Visit(expression.selector, builder);
+
+        if (expression.selector && expression.selector.expression instanceof $data.Expressions.ObjectLiteralExpression) {
+            builder.modelBinderConfig['$type'] = expression.projectionAs || builder.modelBinderConfig['$type'] || $data.Object;
+        }
     },
     VisitParametricQueryExpression: function (expression, builder) {
-        if (expression.expression instanceof $data.Expressions.EntityExpression) {
-            this.VisitEntityAsProjection(expression.expression, builder);
+        if (expression.expression instanceof $data.Expressions.EntityExpression || expression.expression instanceof $data.Expressions.EntitySetExpression) {
+            this.VisitEntityAsProjection(expression, builder);
         } else {
             this.Visit(expression.expression, builder);
         }
 
     },
     VisitEntityAsProjection: function (expression, builder) {
-        this.Visit(expression.source, builder);
-        builder.modelBinderConfig['$type'] = expression.entityType;
-        this._addPropertyToModelBinderConfig(expression.entityType, builder);
+        this.mapping = '';
+        this.Visit(expression.expression, builder);
+        var includes;
+        if (this.mapping && this._includes instanceof Array) {
+            includes = this._includes.filter(function (inc) {
+                return inc.name.indexOf(this.mapping + '.') === 0
+            }, this);
+            includes = includes.map(function (inc) {
+                return { name: inc.name.replace(this.mapping + '.', ''), type: inc.type };
+            }, this);
+
+            if (includes.length > 0)
+                console.warn('WARN: include for mapped properties is not supported!');
+        }
+
+        if (expression.expression instanceof $data.Expressions.EntityExpression) {
+            this.DefaultSelection(builder, expression.expression.entityType/*, includes*/)
+        } else if (expression.expression instanceof $data.Expressions.EntitySetExpression) {
+            builder.modelBinderConfig.$type = $data.Array;
+            builder.modelBinderConfig.$item = {};
+            builder.selectModelBinderProperty('$item');
+            this.DefaultSelection(builder, expression.expression.elementType /*, includes*/)
+            builder.popModelBinderProperty();
+        }
+
     },
 
     VisitEntityFieldExpression: function (expression, builder) {
@@ -16073,6 +16176,9 @@ $C('$data.modelBinder.ModelBinderConfigCompiler', $data.Expressions.EntityExpres
                 builder.modelBinderConfig['$selector'] = 'json:' + expression.associationInfo.FromPropertyName;
             }
         }
+
+        if (this.mapping && this.mapping.length > 0) { this.mapping += '.'; }
+        this.mapping += expression.associationInfo.FromPropertyName;
     },
     VisitObjectLiteralExpression: function (expression, builder) {
         builder.modelBinderConfig['$type'] = $data.Object;
@@ -16082,8 +16188,8 @@ $C('$data.modelBinder.ModelBinderConfigCompiler', $data.Expressions.EntityExpres
     },
     VisitObjectFieldExpression: function (expression, builder) {
         builder.selectModelBinderProperty(expression.fieldName);
-        if (expression.expression instanceof $data.Expressions.EntityExpression) {
-            this.VisitEntityAsProjection(expression.expression, builder);
+        if (expression.expression instanceof $data.Expressions.EntityExpression || expression.expression instanceof $data.Expressions.EntitySetExpression) {
+            this.VisitEntityAsProjection(expression, builder);
         } else {
             this.Visit(expression.expression, builder);
         }
