@@ -211,10 +211,14 @@ $data.Class.define('JayScrum.ScrumApp', JayScrum.FrameApp, null,{
                     scroll2 = null;
                 }
                 scroll2 = JayScrum.app.initScrollById("swipeview-inside-2", null, null, false);
+
+                /*if ($("div.metro-loading").get(0).style.opacity == "1") {
+                    setTimeout(function () {
+                        JayScrum.app.hideLoading();
+                    }, 0);
+                }*/
             });
             gallery.goToPage(currentIndex);
-
-
         }
         return gallery;
     },

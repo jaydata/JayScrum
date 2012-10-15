@@ -127,7 +127,7 @@
         if (itemCommands.length > 0) {
             var meta = {
                 isVirtual : true,
-                name: 'controls',
+                name: '',
                 type: 'itemCommands',
                 itemCommands: itemCommands
             };
@@ -540,7 +540,7 @@
                             item.viewModel = {};
                             item.data = {};
                             if (index == i) {
-                                item.colspan = 2;
+                                item.colspan = 5;
                                 item.templateName = template;
                                 item.data = data;
                                 item.viewModel = vm;

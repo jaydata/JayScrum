@@ -47,17 +47,11 @@ $data.Class.define('JayScrum.Views.UserStorySelected', JayScrum.FrameView, null,
     },
     initializeView:function(){
         JayScrum.app.hideLoading();
-        $("h1.main-header").addClass("animate");
 
-        var swipeviewUs = $("div#swipeview-inside-us"),
-            title = swipeviewUs.prev(),
-            minusHeight = title.height() + 15;
-
-        swipeviewUs.css('top', minusHeight);
         var self = this;
         setTimeout(function () {
-            self.i_scroll = JayScrum.app.initScrollById('swipeview-inside-us', null, null, true);
-        }, 750);
+            self.i_scroll = JayScrum.app.initScrollById('swipeview-inside-1', null, null, true);
+        }, 350);
     },
     tearDownView: function(){
         if(this.i_scroll !== null){

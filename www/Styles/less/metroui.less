@@ -224,7 +224,7 @@ body[theme=white] .detail .tile-small {
     {
         font-size: 16px;
         
-        &:first-child   { width: 100px; max-width: 100px; }
+        &:first-child   { width: 20px; max-width: 20px; }
         &:nth-child(2)  { .tacenter; }
         &:nth-child(3)  { .tacenter; }
     }
@@ -232,23 +232,27 @@ body[theme=white] .detail .tile-small {
     thead th    { .tolower;  padding: 10px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.3); .tacenter; }
     tbody tr td  
     {
-        padding: 10px 0 5px; .taleft;
+        padding: 10px 0 5px; .taleft; max-width: 80px !important;
+        
+        &:first-child { width: 20px; }
+        
+        > span {
+            .iblock;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 90%;
+        }
         
         input[type="text"] { width: 85%; max-width: 100px; }
         
-        .icon-action { margin: 0 0 0 5px; }
+        .icon-action { margin: 0 0 8px 5px; }
     }
     
     tr.subrow 
     {
-        
-        
         td 
         {
-            &:first-child  { .hide; }
-            &:nth-child(2) { padding: 10px 20px; border-bottom: 1px solid rgba(255, 255, 255, .3); }
-            &:last-child   { .hide; }
-            
             .control 
             {
                 margin: 2px 0 10px;

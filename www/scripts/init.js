@@ -49,6 +49,14 @@ $("span.chbox-icon").live(eventName, function () {
     $(this).prev().trigger(eventName);
     $(this).toggleClass('checked');
 });
+$("div.slider-action.prev").live(eventName, function () {
+    //JayScrum.app.showLoading();
+    JayScrum.app.selectedFrame().selectedView().swipeView.prev();
+});
+$("div.slider-action.next").live(eventName, function () {
+    //JayScrum.app.showLoading();
+    JayScrum.app.selectedFrame().selectedView().swipeView.next();
+});
 
 // FONT
 $("div.field.fonts div.field").live(eventName, function () {
@@ -137,6 +145,5 @@ function initDateFieldsById(containerId) {
         date = moment($self.next('.field-date-value').val()).format("YYYY-MM-DD");
         $self.val(date);
         $self.next('.field-date-value').attr('type','date');
-        console.log(date);
     });
 }

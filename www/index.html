@@ -16,7 +16,7 @@
 
     <link rel="stylesheet" href="Styles/metro.css" type="text/css" />
 </head>
-<body accent="blue" theme="black" font="segoewp" onorientationchange="setupScroll()">
+<body accent="blue" theme="black" font="segoewp">
     <div id="page">
         <div class="metro-loading">
             <h1>JayScrum</h1>
@@ -319,6 +319,7 @@
                 <span data-bind="click: $root.selectedFrame().onCancelWorkItem"></span>
             </div>
             <div id="wrapper-detailed" class="scroll-out">
+                <div class="slider-action prev"><</div>
                 <div id="swipeview" class="scroller-in">
                     <div class="list maxlist">
                         <div id="swipeview-slider">
@@ -361,6 +362,7 @@
                         </div>
                     </div>
                 </div>
+                <div class="slider-action next">></div>
             </div>
         </div>
         <div class="metro-actionbar detail-view opened" data-bind="with: $data.data().selectedWorkItemActive">
@@ -685,14 +687,13 @@
             <div class="icon-action back topleft absolute">
                 <span data-bind="click: $root.selectedFrame().onCancelUserStory"></span>
             </div>
-            <div id="wrapper-detailed" class="scroll-out top30">
+            <div id="wrapper-detailed" class="scroll-out">
                 <div id="swipeview" class="scroller-in">
                     <div class="list maxlist">
                         <div class="pivot-content">
                             <div class="item task" data-bind="attr: { 'class': 'item task ' + State() }">
-                                <div id="swipeview-inside-us">
+                                <div id="swipeview-inside-1" class="top15">
                                     <div class="tolower">
-
                                         <!-- ko template: { name: 'workItemSelector-template', data: $data }-->
                                         <!-- /ko-->
 

@@ -54,8 +54,6 @@ $data.Class.define('JayScrum.Views.TaskSelect', JayScrum.FrameView, null, {
     initializeView:function(){
         JayScrum.app.hideLoading();
 
-        $("h1.main-header").addClass("animate");
-        $("div.metro-actionbar.detail-view").addClass("opened");
         this.swipeView = JayScrum.app.initSwipeviewById("swipeview", JayScrum.app.selectedFrame().activeList, JayScrum.app.selectedFrame().data().selectedWorkItemActive().Id());
     },
     tearDownView:function(){
