@@ -169,7 +169,7 @@ $data.Class.define('JayScrum.Frames.UserStories', JayScrum.Frame, null, {
         JayScrum.repository.WorkItems
             .where(function (item) { return item.Type == "UserStory" && item.WorkItem_Sprint == null })
 
-            .orderByDescending(function(item){return item.Priority;})
+            .orderBy(function(item){return item.Priority;})
             .orderBy(function(item){return item.Title;})
             .skip(JayScrum.app.selectedFrame().data().userStoryList().length)
             .take(7)
@@ -183,7 +183,7 @@ $data.Class.define('JayScrum.Frames.UserStories', JayScrum.Frame, null, {
     onIndependentUserStoryListPullDown: function (scroller) {
         JayScrum.repository.WorkItems
             .where(function (item) { return item.Type == "UserStory" && item.WorkItem_Sprint == null })
-            .orderByDescending(function(item){return item.Priority;})
+            .orderBy(function(item){return item.Priority;})
             .orderBy(function(item){return item.Title;})
             .take(7)
             .toArray(function (userStoryResult) {
@@ -197,7 +197,7 @@ $data.Class.define('JayScrum.Frames.UserStories', JayScrum.Frame, null, {
 
         JayScrum.repository.WorkItems
             .where(function (item) { return item.Type == "UserStory" && item.WorkItem_Sprint == this.sprintId }, { sprintId: currentList.sprintId })
-            .orderByDescending(function(item){return item.Priority;})
+            .orderBy(function(item){return item.Priority;})
             .orderBy(function(item){return item.Title;})
             .skip(currentList.list().length)
             .take(7)
@@ -214,7 +214,7 @@ $data.Class.define('JayScrum.Frames.UserStories', JayScrum.Frame, null, {
 
         JayScrum.repository.WorkItems
             .where(function (item) { return item.Type == "UserStory" && item.WorkItem_Sprint == this.sprintId }, { sprintId: currentList.sprintId })
-            .orderByDescending(function(item){return item.Priority;})
+            .orderBy(function(item){return item.Priority;})
             .orderBy(function(item){return item.Title;})
             .take(7)
             .toArray(function (usList) {

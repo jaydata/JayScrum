@@ -68,7 +68,7 @@ function SetPasswordModel(model) {
                 provisionContext.bCrypPassword(psw1)
                     .then(function (result) {
                         console.log(user);
-                        JayScrum.stormContext.Groups.filter(function (group) { return group.Name == 'admin'; })
+                        JayScrum.stormContext.Groups.filter(function (group) { return group.Name == 'scrum'; })
                             .toArray({
                                 success:function (groups) {
                                     var usr = JayScrum.stormContext.Users.attachOrGet(user);
