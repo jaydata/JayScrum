@@ -98,7 +98,7 @@ $data.Class.define('JayScrum.Frames.UserStories', JayScrum.Frame, null, {
         var loadingPromise = Q.defer();
         JayScrum.repository.WorkItems
             .where(function (item) { return item.Type == "UserStory" && item.WorkItem_Sprint == null })
-            .orderByDescending(function(item){return item.Priority;})
+            .orderBy(function(item){return item.Priority;})
             .orderBy(function(item){return item.Title;})
             .take(7)
             .toArray(function (userStoryResult) {
@@ -134,7 +134,7 @@ $data.Class.define('JayScrum.Frames.UserStories', JayScrum.Frame, null, {
 
         JayScrum.repository.WorkItems
             .where(function (item) { return item.Type == "UserStory" && item.WorkItem_Sprint == this.sprintId }, { sprintId: sprintData.Id })
-            .orderByDescending(function(item){return item.Priority;})
+            .orderBy(function(item){return item.Priority;})
             .orderBy(function(item){return item.Title;})
             .take(7)
             .toArray(function (usList) {
