@@ -464,7 +464,7 @@
 
 
                     }
-                ].concat(viewModel.itemCommands || []);
+                ].concat(viewModel.showControls || []);
 
 
                 var cols = [];

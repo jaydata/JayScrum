@@ -27,9 +27,9 @@
                 </div>\
                 <div id='user-actionbar' class='metro-actionbar opened'>\
                     <ul>\
+                        <li class='icon-action edit'><span data-bind='click: addNew'></span></li>\
                         <li class='icon-action add'><span data-bind='click: addNew'></span></li>\
-                        <li class='icon-action save'><input class='btn btn-success icon-action save' type='submit' value='' data-bind='visible: pendingChanges' />\
-                        </li>\
+                        <li class='icon-action save'><input class='btn btn-success icon-action save' type='submit' value='' data-bind='visible: pendingChanges' /></li>\
                     </ul>\
                 </div>\
             </form>"],
@@ -50,7 +50,7 @@
                 <!-- /ko -->\
             </tr>\
             <tr class='subrow' data-bind='foreach: getControlCells'>\
-                <td data-bind='attr: { colspan: 4 }, template: { name: templateName, data: viewModel }'></td>\
+                <td data-bind='attr: { colspan: colspan, \"data-template\": templateName }, template: { name: templateName, data: viewModel }'></td>\
             </tr>"
         ],
 

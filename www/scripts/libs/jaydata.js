@@ -7967,7 +7967,7 @@ JAYLINT = (function () {
         this.isPrimitiveType = function(type) {
             var t = this.resolveType(type);
             return t === Number || t === String || t === Date || t === String || t === Boolean || t === Array || t === Object ||
-                t === $data.Number || t === $data.String || t === $data.Date || t === $data.String || t === $data.Boolean || t === $data.Array || t === $data.Object ||
+                t === $data.Number || t === $data.Integer || t === $data.Date || t === $data.String || t === $data.Boolean || t === $data.Array || t === $data.Object ||
                 t === $data.Geography || t === $data.Guid;
         };
 
@@ -8221,9 +8221,15 @@ $data.defaultErrorCallback = function () {
         console.dir(arguments);
     else
         console.log(arguments);*/
-    if (arguments[arguments.length - 1] && typeof arguments[arguments.length - 1].reject === 'function'){
+    if (arguments[arguments.length - 1] && typeof arguments[arguments.length - 1].reject === 'function') {
         arguments[arguments.length - 1].reject.apply(arguments[arguments.length - 1], arguments);
-    }else Guard.raise(new Exception("DEFAULT ERROR CALLBACK!", "DefaultError", arguments));
+    } else {
+        if (arguments[0] instanceof Error) {
+            Guard.raise(arguments[0]);
+        } else {
+            Guard.raise(new Exception("DEFAULT ERROR CALLBACK!", "DefaultError", arguments));
+        }
+    }
 };
 $data.defaultSuccessCallback = function () { /*console.log('DEFAULT SUCCES CALLBACK');*/ };
 $data.defaultNotifyCallback = function () { /*console.log('DEFAULT NOTIFY CALLBACK');*/ };
@@ -8389,7 +8395,11 @@ $data.Geography.prototype.toJSON = function () {
 $data.Guid = function Guid(value) {
     ///<param name="value" type="string" />
 
-    this.value = value || '00000000-0000-0000-0000-000000000000';
+    if (value === undefined || (typeof value === 'string' && /^[a-zA-z0-9]{8}-[a-zA-z0-9]{4}-[a-zA-z0-9]{4}-[a-zA-z0-9]{4}-[a-zA-z0-9]{12}$/.test(value))) {
+        this.value = value || '00000000-0000-0000-0000-000000000000';
+    } else {
+        throw Guard.raise(new Exception('TypeError: ', 'value not convertable to $data.Guid', value));
+    }
 };
 $data.Container.registerType(['$data.Guid', 'Guid', 'guid'], $data.Guid);
 
@@ -8406,20 +8416,7 @@ $data.Guid.prototype.toString = function () {
 };
 
 $data.Guid.NewGuid = function () {
-    ///<description>a performant guid generator with high chance of doubling</description>
-    var S4 = function () {
-        return Math.floor(
-            Math.random() * 0x10000 /* 65536 */
-        ).toString(16);
-    };
-
-    return new $data.Guid((
-        S4() + S4() + "-" +
-            S4() + "-" +
-            S4() + "-" +
-            S4() + "-" +
-            S4() + S4() + S4()
-        ));
+    return $data.createGuid();
 };
 
 $data.parseGuid = function (guid) {
@@ -8675,8 +8672,7 @@ $data.Class.define("$data.Expressions.ExpressionType", null, null, {}, {
     Skip: "Skip",
     OrderBy: "OrderBy",
     OrderByDescending: "OrderByDescending",
-    Include: "Include",
-    Count: "Count"
+    Include: "Include"
 });
 
 $data.BinaryOperator = function () {
@@ -12284,6 +12280,7 @@ $data.Entity = Entity = $data.Class.define("$data.Entity", null, null, {
         /// <param name="value" />
 
         //if (origValue == value) return;
+        value = this.typeConversion(memberDefinition, value);
         var eventData = null;
         if (memberDefinition.monitorChanges != false && (this._propertyChanging || this._propertyChanged || "instancePropertyChanged" in this.constructor)) {
             var origValue = this[memberDefinition.name];
@@ -12336,6 +12333,52 @@ $data.Entity = Entity = $data.Class.define("$data.Entity", null, null, {
                 this.constructor["instancePropertyChanged"].fire(eventData, this);
             }
         }
+    },
+    typeConversion: function (memberDefinition, value) {
+        var convertedValue = value;
+        if (typeof value === 'string') {
+            switch (Container.resolveName(memberDefinition.type)) {
+                case '$data.Guid':
+                    convertedValue = $data.parseGuid(value);
+                    break;
+                case '$data.Integer':
+                    convertedValue = parseInt(value);
+                    if (isNaN(convertedValue))
+                        throw Guard.raise(new Exception('TypeError: ', 'value not convertable to $data.Integer', [memberDefinition, value]));
+                    break;
+                case '$data.Number':
+                    convertedValue = parseFloat(value);
+                    if (isNaN(convertedValue))
+                        throw Guard.raise(new Exception('TypeError: ', 'value not convertable to $data.Number', [memberDefinition, value]));
+                    break;
+                case '$data.Date':
+                    convertedValue = new Date(value);
+                    if (isNaN(convertedValue.valueOf()))
+                        throw Guard.raise(new Exception('TypeError: ', 'value not convertable to $data.Date', [memberDefinition, value]));
+                    break;
+                case '$data.Boolean':
+                    switch (value.toLowerCase()) {
+                        case 'true': 
+                            convertedValue = true;
+                            break;
+                        case 'false': 
+                            convertedValue = false;
+                            break;
+                        default:
+                            throw Guard.raise(new Exception('TypeError: ', 'value not convertable to $data.Boolean', [memberDefinition, value]));
+                    }
+                    break;
+                case '$data.Object':
+                    try {
+                        convertedValue = JSON.parse(value);
+                    } catch (e) {
+                        throw Guard.raise(new Exception('TypeError: ', e.toString(), [memberDefinition, value]));
+                    }
+                    break;
+            }
+        }
+
+        return convertedValue;
     },
 
     // protected
@@ -13990,16 +14033,30 @@ $data.Class.define('$data.QueryProvider', null, null,
         this.cache = {};
     },
 
+    deepExtend: function(o, r){
+        for (var i in r){
+            if (o.hasOwnProperty(i)){
+                if (typeof r[i] === 'object'){
+                    if (Array.isArray(r[i])){
+                        for (var j = 0; j < r[i].length; j++){
+                            if (o[i].indexOf(r[i][j]) < 0){
+                                o[i].push(r[i][j]);
+                            }
+                        }
+                    }else this.deepExtend(o[i], r[i]);
+                }
+            }else{
+                o[i] = r[i];
+            }
+        }
+    },
+
     call: function (data, meta) {
         if (!Object.getOwnPropertyNames(meta).length) {
             return data;
         }
         var data = data;
-		if (meta.$type){
-			var type = Container.resolveName(meta.$type);
-            var converter = this.context.storageProvider.fieldConverter.fromDb[type];
-			var result = converter ? converter() : new (Container.resolveType(meta.$type))(); //Container['create' + Container.resolveType(meta.$type).name]();
-		}
+        var result;
 
         if (meta.$selector){
 			var metaSelector = meta.$selector;
@@ -14051,6 +14108,28 @@ $data.Class.define('$data.QueryProvider', null, null,
 				return data;
 			}
         }
+        
+        if (meta.$type) {
+            var resolvedType = Container.resolveType(meta.$type);
+            var isPrimitive = false;
+            if (!meta.$source && !meta.$value && resolvedType !== $data.Array && resolvedType !== $data.Object && !resolvedType.isAssignableTo)
+                isPrimitive = true;
+            if (resolvedType === $data.Object || resolvedType === $data.Array){
+                var keys = Object.keys(meta);
+                if (keys.length == 1 || (keys.length == 2 && meta.$selector)) isPrimitive = true;
+            }
+
+            var type = Container.resolveName(meta.$type);
+            var converter = this.context.storageProvider.fieldConverter.fromDb[type];
+            if (isPrimitive) {
+                if (data != undefined && converter)
+                    return converter(data);
+                else
+                    return data;
+            } else {
+                result = converter ? converter() : new (Container.resolveType(meta.$type))(); //Container['create' + Container.resolveType(meta.$type).name]();
+            }
+        }
 
 		if (meta.$value){
 			if (typeof meta.$value === 'function'){
@@ -14066,10 +14145,60 @@ $data.Class.define('$data.QueryProvider', null, null,
                 var converter = this.context.storageProvider.fieldConverter.fromDb[type];
                 result = converter ? converter(data[meta.$source]) : new (Container.resolveType(meta.$type))(data[meta.$source]); //Container['create' + Container.resolveType(meta.$type).name](data[meta.$source]);
             }else result = (meta.$source.split(':')[0] == 'attr' && data.getAttribute) ? data.getAttribute(meta.$source.split(':')[1]) : (meta.$source == 'textContent' && !data[meta.$source] ? $(data).text() : data[meta.$source]);
-        }else if (meta.$item){
-            for (var i = 0; i < data.length; i++){
-                var r = this.call(data[i], meta.$item);
-                result.push(r);
+        } else if (meta.$item) {
+            var keycache;
+            if (meta.$item.$keys) keycache = [];
+            
+            if (Array.isArray(data)) {
+                for (var i = 0; i < data.length; i++) {
+                    var key = '';
+                    if (meta.$keys) for (var j = 0; j < meta.$keys.length; j++) { key += (meta.$type + '_' + meta.$keys[j] + '#' + data[i][meta.$keys[j]]); }
+                    var r = this.call(data[i], meta.$item);
+                    if (key){
+                        if (this.cache[key]){
+                            result = this.cache[key];
+                            if (result.indexOf(r) < 0){
+                                result.push(r);
+                            }
+                        }else{
+                            this.cache[key] = result;
+                            result.push(r);
+                        }
+                    }else{
+                        var key = '';
+                        if (meta.$item.$keys) for (var j = 0; j < meta.$item.$keys.length; j++) { key += (meta.$type + '_' + meta.$item.$keys[j] + '#' + data[i][meta.$item.$keys[j]]); }
+                        if (keycache){
+                            if (keycache.indexOf(key) < 0){
+                                result.push(r);
+                                keycache.push(key);
+                            }
+                        }else result.push(r);
+                    }
+                }
+            } else {
+                var key = '';
+                if (meta.$keys) for (var j = 0; j < meta.$keys.length; j++) { key += (meta.$type + '_' + meta.$keys[j] + '#' + data[meta.$keys[j]]); }
+                var r = this.call(data, meta.$item);
+                if (key){
+                    if (this.cache[key]){
+                        result = this.cache[key];
+                        if (result.indexOf(r) < 0){
+                            result.push(r);
+                        }
+                    }else{
+                        this.cache[key] = result;
+                        result.push(r);
+                    }
+                }else{
+                    var key = '';
+                    if (meta.$item.$keys) for (var j = 0; j < meta.$item.$keys.length; j++) { key += (meta.$type + '_' + meta.$item.$keys[j] + '#' + data[meta.$item.$keys[j]]); }
+                    if (keycache){
+                        if (keycache.indexOf(key) < 0){
+                            result.push(r);
+                            keycache.push(key);
+                        }
+                    }else result.push(r);
+                }
             }
         }else{
             var key = '';
@@ -14093,7 +14222,28 @@ $data.Class.define('$data.QueryProvider', null, null,
                     result = this.cache[key];
                     for (var j in meta){
                         if (j.indexOf('$') < 0){
-                            if (meta[j].$item) { result[j].push(this.call(data, meta[j].$item)); }
+                            if (meta[j].$item) {
+                                if (meta[j].$item.$keys){
+                                    var key = '';
+                                    for (var k = 0; k < meta[j].$item.$keys.length; k++) { key += (meta[j].$item.$type + '_' + meta[j].$item.$keys[k] + '#' + data[meta[j].$item.$keys[k]]); }
+                                    var r = this.call(data, meta[j].$item);
+                                    if (!this.cache[key]){
+                                        this.cache[key] = r;
+                                        result[j].push(r);
+                                    }else{
+                                        if (result[j].indexOf(this.cache[key]) < 0){
+                                            result[j].push(this.cache[key]);
+                                        }
+                                    }
+                                }else{
+                                    result[j].push(this.call(data, meta[j].$item));
+                                }
+                            }else{
+                                if (typeof meta[j] === 'object'){
+                                    var r = this.call(data, meta[j]);
+                                    this.deepExtend(result[j], r);
+                                }
+                            }
                         }
                     }
                 }
@@ -14859,6 +15009,29 @@ $data.Class.define('$data.Queryable', null, null,
         return Container.createQueryable(this, takeExp);
     },
     removeAll: function (onResult) {
+        ///	<summary>Delete the query result and returns the number of deleted entities in a query as the callback parameter.</summary>
+        ///	<param name="onResult" type="Function">A callback function</param>
+        ///	<returns type="$data.Promise" />
+        ///	<signature>
+        ///		<summary>Delete the query result and returns the number of deleted entities in a query as the callback parameter.</summary>
+        ///		<param name="onResult" type="Function">
+        ///			The callback function to handle the result.
+        ///		</param>
+        ///		<returns type="$data.Promise" />
+        ///	</signature>
+        ///	<signature>
+        ///		<summary>Delete the query result and returns the number of deleted entities in a query as the callback parameter.</summary>
+        ///		<param name="onResult" type="Object">
+        ///			Object of callback functions to handle success and error. &#10;
+        ///			Example: { success: function(result) { ... }, error: function() { alert("Something went wrong..."); } }
+        ///		</param>
+        ///		<returns type="$data.Promise" />
+        ///		<example>
+        ///			Delete all People who are younger than 18 years old. &#10;
+        ///			Persons.filter( function( p ){ return p.Age &#60; 18; } ).removeAll( function( result ) { console.dir(result); } );
+        ///		</example>
+        ///	</signature>
+
         this._checkOperation('batchDelete');
         var pHandler = new $data.PromiseHandler();
         var cbWrapper = pHandler.createCallback(onResult);
@@ -16593,7 +16766,7 @@ $data.Class.define('$data.MetadataLoaderClass', null, null, {
         }
     },
     _findVersion: function (metadata) {
-        if ("getElementsByTagName" in metadata){
+        if (typeof metadata === 'object' && "getElementsByTagName" in metadata){
             var version = 'http://schemas.microsoft.com/ado/2008/09/edm';
             var item = metadata.getElementsByTagName('Schema');
             if (item)

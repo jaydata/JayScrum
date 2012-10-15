@@ -1348,10 +1348,11 @@
                 <h1 class="title">users</h1>
             </div>
             <div data-bind="jayGrid: { source: $data.data().collection,
-                                    fields: ['Login', 'Password','Enabled'] }">
+                                       fields: [{name:'Password', '$displayName':' '},'FirstName', 'LastName',  'Login'],
+                                       defaultValues: { 'Groups': ['NTA2ZDViOTBiYWE3YWJjMTBkMDAwMDBk']}}">
 
                 <div type="text/html" data-name-template="Password-editor" class="hide">
-                    <a href="#">&nbsp;</a>
+                    <!--<a href="#">&nbsp;</a>-->
                 </div>
                 <div type="text/html" data-name-template="Password-display" class="hide">
                     <span class="icon-action edit mini"><span data-bind="click: $data.showControls.bind({}, 'setPasswordUI', SetPasswordModel, $data)"></span></span>
