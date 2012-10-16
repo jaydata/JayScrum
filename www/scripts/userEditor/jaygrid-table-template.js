@@ -27,9 +27,8 @@
                 </div>\
                 <div id='user-actionbar' class='metro-actionbar opened'>\
                     <ul>\
-                        <li class='icon-action edit'><span data-bind='click: addNew'></span></li>\
                         <li class='icon-action add'><span data-bind='click: addNew'></span></li>\
-                        <li class='icon-action save'><input class='btn btn-success icon-action save' type='submit' value='' data-bind='visible: pendingChanges' /></li>\
+                        <li class='icon-action save' data-bind='visible: pendingChanges'><input class='btn btn-success icon-action save' type='submit' value='' /></li>\
                     </ul>\
                 </div>\
             </form>"],
