@@ -141,7 +141,6 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
         var p = Q.defer();
         JayScrum.repository.getBurndownData(JayScrum.app.selectedFrame().data().currentSprint().Id)
             .then(function(r){
-                console.log(r);
                 JayScrum.app.selectedFrame().data().summaryList().BackLogItemCountInSprint(r.userStory);
                 JayScrum.app.selectedFrame().data().summaryList().SprintAllTaskCount(r.task);
 
@@ -512,11 +511,13 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
                 .then(function(){JayScrum.app.selectedFrame().selectedView().initializeView()});
         }
     },
-
     onChangeMyTasksFilter: function(){
         JayScrum.app.showLoading();
         JayScrum.app.selectedFrame().data().myTasks(!JayScrum.app.selectedFrame().data().myTasks());
         this._loadData()
             .then(function(){JayScrum.app.hideLoading()});
+    },
+    onShowToolbar: function () {
+        $("div.metro-actionbar").toggleClass("opened");
     }
 }, null);

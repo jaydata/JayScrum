@@ -370,13 +370,18 @@ hr.soften {
 	.tile {
 		display: block;
 		width: 106px; height: 107px;
-		margin: 4px;
-		border: none !important;
+        margin: 4px;
+        
+        // BIGGER TILES
+        /*border: none !important;
+		width: 150px; height: 150px;
+		margin: 5px;*/
+		
 		float: left;
 		clear: none;
 		color: #fff;
 		
-		> span { 
+		> span {
 			.show; .size(100%, 100%);
 			
 			&:hover { cursor: pointer; }
@@ -385,6 +390,19 @@ hr.soften {
 		        &.middle {
 			        .show; .size(100%, 50px, 50px); .position(absolute, 50%); margin-top: -25px; .font-size(37); .tacenter;
 		        }
+		        
+		        // BIGGER TILES
+		        /*
+		        &.text {
+			        .position(absolute, auto, auto, 12px, 12px); .font-size(18); line-height: 14px;
+		        }
+		        &.number {
+			        .position(absolute, 12px, 12px); .font-size(18); line-height: 14px;
+		        }
+		        &.b-right {
+		            .position(absolute, auto, 12px, 12px); .font-size(18); line-height: 14px;
+		        }
+		        */
 		        &.text {
 			        .position(absolute, auto, auto, 7px, 7px); .font-size(13); line-height: 13px;
 		        }
@@ -394,6 +412,7 @@ hr.soften {
 		        &.b-right {
 		            .position(absolute, auto, 7px, 7px); .font-size(14); line-height: 14px;
 		        }
+		        
 		        color: #fff;
 		    }
 		}
@@ -403,7 +422,12 @@ hr.soften {
 		display: block;
 		width: 220px; height: 107px;
 		margin: 4px;
-		border: none !important;
+		
+		// BIGGER TILES
+        /*border: none !important;
+		width: 310px; height: 150px;
+		margin: 5px;*/
+		
 		float: left;
 		
 		span {

@@ -31,7 +31,6 @@
 	
 	.icon-action {
 	    &.topleft { .fleft; }
-	    &.main-top-right    { .position(relative, -5px); }    
 	}
 	
 	.metro-pivot {
@@ -90,7 +89,6 @@
     
     .icon-action {
 	    &.topleft           { .fleft; }
-	    &.main-top-right    { .position(relative, -5px); }
 	}
 	
 	#wrapper {
@@ -104,8 +102,6 @@
 	                .scroll-list {
 	                    .position(absolute, 50px, auto, 50px); .size(@metro-column - 10);
 	                
-	                    /*> div:nth-child(2) { right: 5px !important; }*/
-	                	            
 	                    .scroller-list { .reset-p; }
 	                }
 	            }
@@ -158,6 +154,17 @@
             .reset-p;
         }
     }
+    
+    .metro-table 
+    {
+        tbody tr td 
+        {
+            input[type="text"]
+            {
+                max-width: 90%; width: auto;
+            }
+        }    
+    }
 }
 /*#endregion iPad Portrait */
 
@@ -178,25 +185,11 @@
 	    
 	    h1 {
 	        line-height: 45px; font-size: 38px;
-	        
-	        /*&.default {
-                -webkit-transform: translate3d(200px, 0, 0);
-                opacity: 0;
-                
-                -webkit-transition: opacity 800ms, -webkit-transform 800ms ease-out;
-	        }
-	        
-	        /*&.animate {
-	            -webkit-transition-delay: 1000ms;
-                -webkit-transform: translate3d(0, 0, 0);    
-                opacity: 1;
-	        }*/
 	    }
 	}
 	
 	.icon-action {
 	    &.topleft           { .fleft; }
-	    &.main-top-right    { .position(relative, -5px); }
 	}
 	
 	#wrapper {
@@ -249,6 +242,17 @@
             .reset-p;
         }
     }
+    
+    .metro-table 
+    {
+        tbody tr td 
+        {
+            input[type="text"]
+            {
+                max-width: 90%; width: auto;
+            }
+        }    
+    }
 }
 /*#endregion  Screen (768+) */
     
@@ -266,6 +270,8 @@
         .mauto; max-width: 768px;
         
         .maxlist { max-width: 768px; .mauto; }
+        
+        > .icon-action { margin-left: 0; }
     }
 }
 /*#endregion Screen (1024+) */

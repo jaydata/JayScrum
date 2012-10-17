@@ -16,7 +16,7 @@
 
     <link rel="stylesheet" href="Styles/metro.css" type="text/css" />
 </head>
-<body accent="blue" theme="black" font="segoewp">
+<body accent="blue" theme="black" font="segoeuilight">
     <div id="page">
         <div class="metro-loading">
             <h1>JayScrum</h1>
@@ -49,19 +49,19 @@
                             </span>
                         </li>
                         <!-- /ko -->
-                        <li class="tile">
+                        <li class="tile wide">
                             <span data-bind="click: $data.onProjectListShow">
                                 <span class="middle icon icon-57 projects"></span>
                                 <span class="text">Projects</span>
                             </span>
                         </li>
-                        <li class="tile">
+                        <li class="tile wide">
                             <span data-bind="click: $data.onSprintListShow">
                                 <span class="middle icon icon-57 sprints"></span>
                                 <span class="text">Sprints</span>
                             </span>
                         </li>
-                        <li class="tile">
+                        <li class="tile wide">
                             <span data-bind="click: $data.onUserStoryListShow">
                                 <span class="middle icon icon-57 us"></span>
                                 <span class="text">User Stories</span>
@@ -99,19 +99,9 @@
             <h1 class="title pivot-default animate" data-bind="text: $root.selectedFrame().data().name">
             </h1>
         </div>
-        <div class="icon-action main-top-right add">
-            <span data-bind="click: $root.selectedFrame().onAddWorkItem"></span>
+        <div class="icon-action main-top-right more">
+            <span data-bind="click: $root.selectedFrame().onShowToolbar"></span>
         </div>
-        <!--ko ifnot: $data.data().myTasks-->
-        <div class="icon-action main-top-right pin">
-            <span data-bind="click: $root.selectedFrame().onChangeMyTasksFilter"></span>
-        </div>
-        <!--/ko-->
-        <!--ko if: $data.data().myTasks-->
-        <div class="icon-action main-top-right unpin">
-            <span data-bind="click: $root.selectedFrame().onChangeMyTasksFilter"></span>
-        </div>
-        <!--/ko-->
         <div id="wrapper" class="metro-pivot reset">
             <div id="scroller">
                 <div class="pivot-list">
@@ -322,6 +312,17 @@
                 </div>
             </div>
         </div>
+        <div class="metro-actionbar">
+            <ul>
+                <li class="icon-action add"><span data-bind="click: $root.selectedFrame().onAddWorkItem"></span></li>
+                <!-- ko ifnot: $data.data().myTasks -->
+                <li class="icon-action user"><span data-bind="click: $root.selectedFrame().onChangeMyTasksFilter"></span></li>
+                <!-- /ko -->
+                <!-- ko if: $data.data().myTasks -->
+                <li class="icon-action list"><span data-bind="click: $root.selectedFrame().onChangeMyTasksFilter"></span></li>
+                <!-- /ko -->
+            </ul>
+        </div>
     </script>
     <script type="text/html" id="taskSelectView-template">
         <div class="detail maxw768">
@@ -329,7 +330,7 @@
                 <span data-bind="click: $root.selectedFrame().onCancelWorkItem"></span>
             </div>
             <div id="wrapper-detailed" class="scroll-out">
-                <div class="slider-action prev"><</div>
+                <div class="slider-action prev">‹</div>
                 <div id="swipeview" class="scroller-in">
                     <div class="list maxlist">
                         <div id="swipeview-slider">
@@ -372,7 +373,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="slider-action next">></div>
+                <div class="slider-action next">›</div>
             </div>
         </div>
         <div class="metro-actionbar detail-view opened" data-bind="with: $data.data().selectedWorkItemActive">
@@ -1224,9 +1225,11 @@
                                 </div>
 
                                 <div class="field">
-                                    <div><span data-bind="text:  $parent.data().isRegistration()?'db name':'url'"></span>
+                                    <div><span data-bind="text:  $parent.data().isRegistration() ? 'db name' : 'url'"></span>
                                     </div>
-                                    <input class="medium accent-bg" type="text" data-bind="value: Url, valueUpdate:['afterkeydown','propertychange','input'], attr:{'placeholder': $parent.data().isRegistration()?'Databse name':'Databse name or full URL'}" />
+                                    <!--<input class="medium accent-bg" type="text" data-bind="value: Url, valueUpdate:['afterkeydown','propertychange','input'], attr:{'placeholder': $parent.data().isRegistration()?'Databse name':'Databse name or full URL'}" />-->
+
+                                    <textarea class="medium accent-bg" type="text" data-bind="value: Url, valueUpdate:['afterkeydown','propertychange','input'], attr:{'placeholder': $parent.data().isRegistration()?'Databse name':'Databse name or full URL'}"></textarea>
                                 </div>
 
                                 <div class="field">
@@ -1366,7 +1369,7 @@
                     <!--<a href="#">&nbsp;</a>-->
                 </div>
                 <div type="text/html" data-name-template="Password-display" class="hide">
-                    <span class="icon-action edit mini"><span data-bind="click: $data.showControls.bind({}, 'setPasswordUI', SetPasswordModel, $data)"></span></span>
+                    <span class="icon-action lock mini"><span data-bind="click: $data.showControls.bind({}, 'setPasswordUI', SetPasswordModel, $data)"></span></span>
                 </div>
             </div>
         </div>
