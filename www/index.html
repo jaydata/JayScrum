@@ -102,6 +102,16 @@
         <div class="icon-action main-top-right add">
             <span data-bind="click: $root.selectedFrame().onAddWorkItem"></span>
         </div>
+        <!--ko ifnot: $data.data().myTasks-->
+        <div class="icon-action main-top-right pin">
+            <span data-bind="click: $root.selectedFrame().onChangeMyTasksFilter"></span>
+        </div>
+        <!--/ko-->
+        <!--ko if: $data.data().myTasks-->
+        <div class="icon-action main-top-right unpin">
+            <span data-bind="click: $root.selectedFrame().onChangeMyTasksFilter"></span>
+        </div>
+        <!--/ko-->
         <div id="wrapper" class="metro-pivot reset">
             <div id="scroller">
                 <div class="pivot-list">
