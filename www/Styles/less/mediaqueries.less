@@ -144,7 +144,6 @@
 
 /*#region iPad Portrait */
 @media only screen and (max-width: 768px) and (min-width: 768px) and (orientation:portrait){
-   
     #metro-tiles-scroll {
         top: 0;
                 
@@ -165,6 +164,8 @@
             }
         }    
     }
+    
+    .slider-action { width: 100px; }
 }
 /*#endregion iPad Portrait */
 
@@ -251,13 +252,16 @@
             {
                 max-width: 90%; width: auto;
             }
-        }    
+        }
     }
+    
+    #wrapper-detailed   { .ovisible; }
+    .slider-action      { .fixed; width: 150px; }
 }
 /*#endregion  Screen (768+) */
     
 /*#region Screen (1024+) */
-@media only screen and (min-width:1025px) {
+@media only screen and (min-width:1024px) {
 	h1 { .font-size(45); }
 		
 	#settingPage {

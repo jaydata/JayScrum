@@ -165,19 +165,14 @@ div#swipeview-inside-1, div#swipeview-inside-2, div#swipeview-inside-0 {
 
 .swipeview-slider { .relative; }
 
-.slider-action    { .hide; }
-
-body.android 
+.slider-action
 {
-     .slider-action 
-     {
-        .show; .position(absolute, 0, auto, 0, auto); .size(50px); .pointer; color: rgba(255, 255, 255, 0.3);
-        z-index: 4500; font-size: 150px;
-        .dbox; .dbox-center;
+    .position(absolute, 0, auto, 0, auto); .size(50px); .pointer; color: rgba(255, 255, 255, 0.3);
+    z-index: 4500; font-size: 150px;
+    .dbox; .dbox-center;
     
-        &.prev { left: 0; text-indent: -10px; }
-        &.next { right: 0; text-indent: 10px; }
-    }
+    &.prev { left: 0; text-indent: -10px; }
+    &.next { right: 0; text-indent: 10px; }
 }
 
 /*#endregion SWIPEVIEW */

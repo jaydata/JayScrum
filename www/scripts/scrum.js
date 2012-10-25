@@ -238,7 +238,8 @@ $data.Class.define('JayScrum.ScrumApp', JayScrum.FrameApp, null,{
                 vScrollbar:false,
                 useTransition:true,
                 lockDirection:true,
-                handleClick:false
+                handleClick: false,
+                minDistance: 100
             });
             vScroll.scrollToPage(scrollToPage, 0, 0);
             if (window.outerWidth >= scrollerWidth) {
