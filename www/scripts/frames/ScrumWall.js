@@ -355,7 +355,7 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
     onRecentlyChangedListPullUp: function (scroller) {
         JayScrum.app.selectedFrame().recentlyChangedListQuery
             .orderByDescending(function (item) { return item.ChangedDate })
-            .take(this.listLoadSize)
+            .take(JayScrum.app.selectedFrame().listLoadSize)
             .skip(JayScrum.app.selectedFrame().data().recentlyChangedTasks().length)
             .toArray(function (workItemsResult) {
                 JayScrum.app.selectedFrame().data().recentlyChangedTasks(JayScrum.app.selectedFrame().data().recentlyChangedTasks().concat(
@@ -367,7 +367,7 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
     onToDoListPullUp: function (scroller) {
         JayScrum.app.selectedFrame().toDoListQuery
             .orderBy(function (item) {return item.Priority;})
-            .take(this.listLoadSize)
+            .take(JayScrum.app.selectedFrame().listLoadSize)
             .skip(JayScrum.app.selectedFrame().data().todoList().length)
             .toArray(function (workItemsResult) {
                 JayScrum.app.selectedFrame().data().todoList(JayScrum.app.selectedFrame().data().todoList().concat(
@@ -380,7 +380,7 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
         JayScrum.app.selectedFrame().inProgressListQuery
             .orderBy(function (item) { return item.AssignedTo;})
             .orderBy(function (item) { return item.Priority;})
-            .take(this.listLoadSize)
+            .take(JayScrum.app.selectedFrame().listLoadSize)
             .skip(JayScrum.app.selectedFrame().data().inProgList().length)
             .toArray(function (workItemsResult) {
                 JayScrum.app.selectedFrame().data().inProgList(JayScrum.app.selectedFrame().data().inProgList().concat(
@@ -393,7 +393,7 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
         JayScrum.app.selectedFrame().doneListQuery
             .orderByDescending(function (item) { return item.ChangedDate;})
             .orderBy(function(item){return item.AssignedTo;})
-            .take(this.listLoadSize)
+            .take(JayScrum.app.selectedFrame().listLoadSize)
             .skip(JayScrum.app.selectedFrame().data().doneList().length)
             .toArray(function (workItemsResult) {
                 JayScrum.app.selectedFrame().data().doneList(JayScrum.app.selectedFrame().data().doneList().concat(
@@ -407,11 +407,11 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
     onRecentlyChangedListPullDown: function (scroller) {
         var loadingPromise = Q.defer();
         var q = JayScrum.app.selectedFrame().recentlyChangedListQuery;
-        if(this.data().myTasks()){
+        if(JayScrum.app.selectedFrame().data().myTasks()){
             q = q.filter(function(item){return /*item.AssignedTo == '' || */item.AssignedTo == this.currentUser;}, {currentUser:JayScrum.app.globalData().user().Login()});
         }
         q.orderByDescending(function (item) { return item.ChangedDate })
-        .take(this.listLoadSize)
+        .take(JayScrum.app.selectedFrame().listLoadSize)
         .toArray(function (workItemsResult) {
             JayScrum.pushObservablesToList(JayScrum.app.selectedFrame().data().recentlyChangedTasks, workItemsResult);
             if(scroller){scroller.refresh();}
@@ -422,11 +422,11 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
     onToDoListPullDown: function (scroller) {
         var loadingPromise = Q.defer();
         var q = JayScrum.app.selectedFrame().toDoListQuery;
-        if(this.data().myTasks()){
+        if(JayScrum.app.selectedFrame().data().myTasks()){
             q = q.filter(function(item){return /*item.AssignedTo == '' || */item.AssignedTo == this.currentUser;}, {currentUser:JayScrum.app.globalData().user().Login()});
         }
         q.orderBy(function (item) {return item.Priority;})
-        .take(this.listLoadSize)
+        .take(JayScrum.app.selectedFrame().listLoadSize)
         .toArray(function (workItemsResult) {
             JayScrum.pushObservablesToList(JayScrum.app.selectedFrame().data().todoList, workItemsResult);
             if(scroller){scroller.refresh();}
@@ -437,12 +437,12 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
     onInProgressListPullDown: function (scroller) {
         var loadingPromise = Q.defer();
         var q = JayScrum.app.selectedFrame().inProgressListQuery;
-        if(this.data().myTasks()){
+        if(JayScrum.app.selectedFrame().data().myTasks()){
             q = q.filter(function(item){return /*item.AssignedTo == '' || */item.AssignedTo == this.currentUser;}, {currentUser:JayScrum.app.globalData().user().Login()});
         }
         q.orderBy(function (item) { return item.AssignedTo;})
         .orderBy(function (item) { return item.Priority;})
-        .take(this.listLoadSize)
+        .take(JayScrum.app.selectedFrame().listLoadSize)
         .toArray(function (workItemsResult) {
             JayScrum.pushObservablesToList(JayScrum.app.selectedFrame().data().inProgList, workItemsResult);
             if(scroller){scroller.refresh();}
@@ -453,12 +453,12 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
     onDoneListPullDown: function (scroller) {
         var loadingPromise = Q.defer();
         var q = JayScrum.app.selectedFrame().doneListQuery;
-        if(this.data().myTasks()){
+        if(JayScrum.app.selectedFrame().data().myTasks()){
             q = q.filter(function(item){return /*item.AssignedTo == '' || */item.AssignedTo == this.currentUser;}, {currentUser:JayScrum.app.globalData().user().Login()});
         }
         q.orderByDescending(function (item) { return item.ChangedDate;})
         .orderBy(function(item){return item.AssignedTo;})
-        .take(this.listLoadSize)
+        .take(JayScrum.app.selectedFrame().listLoadSize)
         .toArray(function (workItemsResult) {
             JayScrum.pushObservablesToList(JayScrum.app.selectedFrame().data().doneList, workItemsResult);
             if(scroller){scroller.refresh();}
