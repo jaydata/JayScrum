@@ -1,4 +1,4 @@
-// JayData 1.2.0
+// JayData 1.2.3
 // Dual licensed under MIT and GPL v2
 // Copyright JayStack Technologies (http://jaydata.org/licensing)
 //
@@ -11,11 +11,23 @@
 //     Zoltán Gyebrovszki
 //
 // More info: http://jaydata.org
+
 (function (global) {
     if (typeof window === "undefined") {
         window = this;
     }
-    $data = window["$data"] || (window["$data"] = {});
+    //$data = window["$data"] || (window["$data"] = {});
+    $data = window["$data"] || (window["$data"] = (function _data_handler() {
+        //console.log("@@@@", this);
+        if (this instanceof _data_handler) {
+            //console.log(
+            var type = _data_handler["implementation"].apply(this, arguments);
+            return new type(arguments[1]);
+        } else {
+
+            return _data_handler["implementation"].apply(this, arguments)
+        }
+    }));
 })(this);
 
 if (typeof console === 'undefined') {
@@ -37,8 +49,8 @@ if (!console.error) console.error = function () { };
     /// Collection of JayData services
     ///</summary>
     $data.__namespace = true;
-    $data.version = "JayData 1.2.0";
-    $data.versionNumber = "1.2.0";
+    $data.version = "JayData 1.2.3";
+    $data.versionNumber = "1.2.3";
     $data.root = {};
 
 })($data);
@@ -7600,7 +7612,13 @@ JAYLINT = (function () {
 
         root[shortClassName] = this.classNames[className] = classFunction;
         //classFunction.toJSON = classToJSON;
-
+        var baseCount = classFunction.baseTypes.length;
+        for (var i = 0; i < baseCount; i++) {
+            var b = classFunction.baseTypes[i];
+            if ("inheritedTypeProcessor" in b) {
+                b.inheritedTypeProcessor(classFunction);
+            }
+        }
         //classFunction.prototype.constructor = instanceDefinition.constructor;
         //classFunction.constructor = instanceDefinition.constructor;
         //classFunction.toJSON = function () { return classFunction.memberDefinitions.filter( function(md) { return md; };
@@ -8491,7 +8509,7 @@ $data.parseGuid = function (guid) {
 
     function Edm_Decimal() { };
     $data.Container.registerType('Edm.Decimal', Edm_Decimal);
-    $data.Container.mapType(Edm_Decimal, $data.Number);
+    $data.Container.mapType(Edm_Decimal, $data.String);
 
     function Edm_Single() { };
     $data.Container.registerType('Edm.Single', Edm_Single);
@@ -9766,7 +9784,7 @@ $C("$data.Expressions.GlobalContextProcessor", $data.Expressions.ParameterProces
 
     canResolve: function (paramExpression) {
         ///<param name="paramExpression" type="$data.Expressions.ParameterExpression" />
-        return paramExpression.nodeType == $data.Expressions.ExpressionType.Parameter &&
+        return paramExpression.nodeType == $data.Expressions.ExpressionType.Parameter && this.global && typeof this.global === 'object' &&
                paramExpression.name in this.global;
     },
 
@@ -9786,13 +9804,14 @@ $C("$data.Expressions.ConstantValueResolver", $data.Expressions.ParameterProcess
     constructor: function (paramsObject, global) {
         ///<param name="global" type="object" />
         this.globalResolver = Container.createGlobalContextProcessor(global);
+        this.paramResolver = Container.createGlobalContextProcessor(paramsObject);
         this.paramsObject = paramsObject;
     },
 
     canResolve: function (paramExpression) {
         ///<param name="paramExpression" type="$data.Expressions.ParameterExpression" />
         return (paramExpression.nodeType == $data.Expressions.ExpressionType.This && this.paramsObject) 
-                    ? true : this.globalResolver.canResolve(paramExpression);
+                    ? true : (this.paramResolver.canResolve(paramExpression) || this.globalResolver.canResolve(paramExpression));
     },
 
     resolve: function (paramExpression) {
@@ -9801,7 +9820,7 @@ $C("$data.Expressions.ConstantValueResolver", $data.Expressions.ParameterProcess
         if (paramExpression.nodeType == $data.Expressions.ExpressionType.This) {
             return Container.createConstantExpression(this.paramsObject, typeof this.paramsObject, 'this');
         }
-        return this.globalResolver.resolve(paramExpression);
+        return this.paramResolver.canResolve(paramExpression) ? this.paramResolver.resolve(paramExpression) : this.globalResolver.resolve(paramExpression);
     }
 
 });$C("$data.Expressions.LocalContextProcessor", $data.Expressions.GlobalContextProcessor, null, {
@@ -12336,7 +12355,7 @@ $data.Entity = Entity = $data.Class.define("$data.Entity", null, null, {
     },
     typeConversion: function (memberDefinition, value) {
         var convertedValue = value;
-        if (typeof value === 'string') {
+        if (typeof value === 'string' && !memberDefinition.concurrencyMode) {
             switch (Container.resolveName(memberDefinition.type)) {
                 case '$data.Guid':
                     convertedValue = $data.parseGuid(value);
@@ -12458,7 +12477,9 @@ $data.Entity = Entity = $data.Class.define("$data.Entity", null, null, {
         notMapped: true,
         enumerable: false
     },
-    entityState: { dataType: "integer", storeOnObject: true, monitorChanges: false, notMapped: true, enumerable: false }/*,
+
+    entityState: { dataType: "integer", storeOnObject: true, monitorChanges: false, notMapped: true, enumerable: false },
+    /*
     toJSON: function () {
         if (this.context) {
             var itemType = this.getType();
@@ -12478,12 +12499,339 @@ $data.Entity = Entity = $data.Class.define("$data.Entity", null, null, {
         }
         return this;
     }   */
+    //,
+  
+    //onReady: function (callback) {
+    //    this.__onReadyList = this.__onReadyList || [];
+    //    this.__onReadyList.push(callback);
+    //},
+
+
+    promiseWrapper: function (action, store, options) {
+
+        var self = this;
+        var pHandler = new $data.PromiseHandler();
+        var deferred = pHandler.deferred;
+        var pHandlerResult = pHandler.getPromise();
+        try {
+            var contextFactory = $data.Entity.getDefaultItemStoreFactory(self, store, options);
+            var context = contextFactory();
+            context.onReady(function () {
+                var result = action(context);
+                context.saveChanges({
+                    success: function () {
+                        deferred.resolve(result);
+                    },
+                    error: function (err) {
+                        deferred.reject(err);
+                    }
+                });
+            });
+            //var set = context.getEntitySetFromElementType(entity.getType());
+            
+        } catch (error) {
+            deferred.reject(error);
+        }
+        //deferred.resolve("!");
+
+        return pHandlerResult;
+    },
+
+    remove: function (store, options, callback) {
+        var self = this;
+        return self.promiseWrapper(function (context) {
+            context.remove(self);
+            return self;
+        });
+    },
+
+
+
+    save: function(store, options) {
+        var self = this;
+        return self.promiseWrapper(function (context) {
+           var key = self.getType().memberDefinitions.getKeyProperties()[0];
+            //return context.add(self);
+           if (self[key.name]) {
+               context.attach(self, true);
+               return self;
+
+           } else {
+               return context.add(self);
+           }
+        }, store, options);
+    }
+ 
 }, {
     //create get_[property] and set_[property] functions for properties
     __setPropertyfunctions: { value: true, notMapped: true, enumerable: false, storeOnObject: true },
     //copy public properties to current instance
-    __copyPropertiesToInstance: { value: false, notMapped: true, enumerable: false, storeOnObject: true }
+    __copyPropertiesToInstance: { value: false, notMapped: true, enumerable: false, storeOnObject: true },
+     
+    defaultItemStoreFactory: { value: undefined },
+    
+
+    inheritedTypeProcessor: function (type) {
+
+        function findById (set, keyValue) {
+
+            //var callback = $data.typeSystem.createCallbackSetting(cb);
+            //todo multifield key support
+            var key = set.defaultType.memberDefinitions.getKeyProperties()[0];
+            if ("filter" in set.entityContext.storageProvider.supportedSetOperations) {
+                return set.filter("it." + key.name + " == this.value", { value: keyValue });
+            } else {
+                return {
+                    toArray: function (cb) {
+                        console.log(set);
+                        var pHandler = new $data.PromiseHandler();
+                        var deferred = pHandler.deferred;
+                        var promise = pHandler.getPromise();
+                        set.toArray({
+                            success: function (items) {
+                                console.log("!");
+                                for (var i = 0; i < items.length; i++) {
+                                    if (items[i][key.name] === keyValue) {
+                                        //deferred.resolve(items[i]);
+                                        cb.success(items[i]);
+                                        return items[i];
+                                    }
+                                }
+                                cb.error(new Error("unknown id"));
+                                //deferred.reject(new Error("unknown id"));
+                            },
+                            error: function (error) {
+                                console.log("error");
+                                cb.error(error);
+                                //console.log(error);
+                                //deferred.reject(error);
+                            }
+                        });
+
+                    }
+                }
+                
+            }
+
+        };
+
+        type.get = function (key, store, options) {
+            var result = new Type({ Id: key });
+            result.defaultItemStore = store;
+            result.refresh();
+        },
+
+        type.removeAll = function (store, options) {
+
+            var self = this;
+            var pHandler = new $data.PromiseHandler();
+            var deferred = pHandler.deferred;
+            var pHandlerResult = pHandler.getPromise();
+            try {
+                var contextFactory = $data.Entity.getDefaultItemStoreFactory(type, store, options);
+                var context = contextFactory();
+                context.onReady(function () {
+                    console.dir(self._changedProperties);
+                    var set = context.getEntitySetFromElementType(type);
+                    //var result = action(context);
+                    set.toArray({
+                        success: function (items) {
+                            items.forEach(function (item) {
+                                context.remove(item);
+                            });
+                            context.saveChanges({
+                                success: function () {
+                                    deferred.resolve(items);
+                                },
+                                error: function (err) {
+                                    deferred.reject(err);
+                                }
+                            });
+                        },
+                        error: function (err) {
+                            deferred.reject(err);
+                        }
+                    });
+                });
+            } catch (error) {
+                deferred.reject(error);
+            }
+            //deferred.resolve("!");
+
+            return pHandlerResult;
+        },
+        type.readAll = function (store, options) {
+            //return the entity
+            //refresh when ready
+            var pHandler = new $data.PromiseHandler();
+            var deferred = pHandler.deferred;
+            var promise = pHandler.getPromise();
+            var storeFactory = $data.Entity.getDefaultItemStoreFactory(type, store, options);
+            var store = storeFactory();
+            store.onReady(function () {
+                var set = store.getEntitySetFromElementType(type);
+                set.toArray({
+                    success: function (items) {
+                        console.log("readl all running");
+                        //callback(items, null);
+                        deferred.resolve(items);
+                    },
+                    error: function (err) {
+                        //callback(null, err);
+                        deferred.reject(err);
+                    }
+                });
+            });
+            //var keyFields
+            return promise;
+        };
+
+        type.read = function (key, store, options) {
+            //return the entity
+            //refresh when ready
+            var pHandler = new $data.PromiseHandler();
+            var deferred = pHandler.deferred;
+            var promise = pHandler.getPromise();
+            var storeFactory = $data.Entity.getDefaultItemStoreFactory(type, store, options);
+            var store = storeFactory();
+            store.onReady(function () {
+                var set = store.getEntitySetFromElementType(type);
+                var itemsQuery = findById(set, key);
+                itemsQuery.toArray({
+                    success: function (items) {
+                        //callback(items, null);
+                        if (items.length < 1) {
+                            deferred.reject(new Error("Not items found by that key"));
+                        } else {
+                            if (items.length === 1) {
+                                deferred.resolve(items[0]);
+                            } else {
+                                deferred.resolve(items);
+                            }
+                        }
+                    },
+                    error: function (err) {
+                        //callback(null, err);
+                        deferred.reject(err);
+                    }
+                });
+            });
+            //var keyFields
+            return promise;
+        };
+
+        type.save = function ( initData, store, options) {
+            var instance = new type(initData);
+            return instance.save();
+        };
+
+        type.remove = function (key, store, options) {
+            var entityPk = type.memberDefinitions.getKeyProperties();
+            var obj = {};
+            obj[entityPk[0].name] = key;
+            var inst = new type(obj);
+            return inst.remove();
+        };
+        type.itemCount = function () {
+
+        }
+    },
+
+    getDefaultItemStoreFactory: function (instanceOrType, store, options) {
+
+        //function resolveStoreName(store, options) {
+        //    if (!store) {
+        //        var type = ("function" === typeof instanceOrType) ? instanceOrType : instanceOrType.getType();
+        //        var typeName = $data.Container.resolveName(type) + "_items";
+        //        var typeName = typeName.replace(".", "_");
+        //        store = "local:" + typeName;
+        //    } else {
+        //        var splitStore = store.split(":");
+        //        if (splitStore.length < 2) {
+        //            //if 
+        //        }
+        //    }
+        //}
+
+        var type = ("function" === typeof instanceOrType) ? instanceOrType : instanceOrType.getType();
+        var typeName = $data.Container.resolveName(type) + "_items";
+        var typeName = typeName.replace(".", "_");
+        store = "local:" + typeName;
+
+        //provider = 'indexedDb';
+        var provider = 'local';
+
+        var inMemoryType = $data.EntityContext.extend(typeName, {
+            'Items': { type: $data.EntitySet, elementType: type }
+        });
+
+        var factory = function () {
+            return new inMemoryType({ name: provider, databaseName: typeName });
+        }
+        return factory;
+    }
 });
+
+
+
+
+$data.__nameCache = {};
+
+$data.define = function (name, definition) {
+    if (!definition) {
+        throw new Error("json object type is not supported yet");
+    }
+    var _def = {};
+    var hasKey = false;
+    var keyFields = [];
+    Object.keys(definition).forEach(function (fieldName) {
+        if (Object.hasOwnProperty(definition[fieldName],"type")) {
+            var propDef = definition[fieldName]; 
+            _def[fieldName] = propDef;
+            if (propDef.key) {
+                keyFields.push(propDef);
+            }
+
+        } else {
+            _def[fieldName] = { type: definition[fieldName] };
+        }
+    });
+
+    if (keyFields.length < 1) {
+        var keyProp;
+        switch (true) {
+            case "id" in _def: 
+                keyProp = "id";
+                break;
+            case "Id" in _def:
+                keyProp = "Id"
+                break;
+            case "ID" in _def:
+                keyProp = "ID"
+                break;
+        }
+        if (keyProp) {
+            _def[keyProp].key = true;
+            var propTypeName = $data.Container.resolveName(_def[keyProp].type);
+            _def[keyProp].computed = true;
+            //if ("$data.Number" === propTypeName || "$data.Integer" === propTypeName) {
+            //}
+        } else {
+            _def.Id = { type: "int", key: true, computed: true }
+        }
+    }
+
+
+    var entityType = $data.Entity.extend(name, _def);
+    $data.__nameCache[name] = entityType;
+    return entityType;
+}
+
+$data.implementation = function (name) {
+    console.dir(this);
+    var result = $data.__nameCache[name];
+    return result;
+}
 
 $data.Class.define('$data.StorageModel', null, null, {
     constructor: function () {
@@ -12532,6 +12880,24 @@ $data.Class.define('$data.EntityContext', null, null,
     constructor: function (storageProviderCfg){
         /// <description>Provides facilities for querying and working with entity data as objects.</description>
         ///<param name="storageProviderCfg" type="Object">Storage provider specific configuration object.</param>
+
+        if ("string" === typeof storageProviderCfg) {
+            if (0 === storageProviderCfg.indexOf("http")) {
+                storageProviderCfg = {
+                    name: "oData",
+                    oDataServiceHost: storageProviderCfg
+                }
+            } else {
+                storageProviderCfg = {
+                    name: "sqLite",
+                    databaseName: storageProviderCfg
+                }
+            }
+        }
+
+        if ("provider" in storageProviderCfg) {
+            storageProviderCfg.name = storageProviderCfg.provider;
+        }
 
         //Initialize properties
         this.lazyLoad = false;
@@ -13842,7 +14208,7 @@ $data.Class.define('$data.EntityContext', null, null,
         var tempOperation = $data.EntityContext.generateServiceOperation({ serviceName: functionName, returnType: $data.Queryable, elementType: this[returnEntitySet].elementType, params: params });
         return tempOperation.apply(this, arg);
     },
-    attach: function (entity) {
+    attach: function (entity, keepChanges) {
         /// <summary>
         ///     Attaches an entity to its matching entity set.
         /// </summary>
@@ -13853,7 +14219,7 @@ $data.Class.define('$data.EntityContext', null, null,
             entity = entity.getEntity();
         }
         var entitySet = this.getEntitySetFromElementType(entity.getType());
-        return entitySet.attach(entity);
+        return entitySet.attach(entity, keepChanges);
     },
     attachOrGet: function (entity) {
         /// <summary>
@@ -13868,6 +14234,20 @@ $data.Class.define('$data.EntityContext', null, null,
         var entitySet = this.getEntitySetFromElementType(entity.getType());
         return entitySet.attachOrGet(entity);
     },
+
+    addMany: function(entities) {
+        /// <summary>
+        ///     Adds several entities to their matching entity set.
+        /// </summary>
+        /// <param name="entity" type="Array" />
+        /// <returns type="Array">Returns the added entities.</returns>
+        var self = this;
+        entities.forEach(function (entity) {
+            self.add(entity);
+        });
+        return entities;
+    },
+
     add: function (entity) {
         /// <summary>
         ///     Adds a new entity to its matching entity set.
@@ -14034,6 +14414,10 @@ $data.Class.define('$data.QueryProvider', null, null,
     },
 
     deepExtend: function(o, r){
+        if (o === null || o === undefined){
+            o = r;
+            return;
+        }
         for (var i in r){
             if (o.hasOwnProperty(i)){
                 if (typeof r[i] === 'object'){
@@ -14166,8 +14550,14 @@ $data.Class.define('$data.QueryProvider', null, null,
                         }
                     }else{
                         var key = '';
-                        if (meta.$item.$keys) for (var j = 0; j < meta.$item.$keys.length; j++) { key += (meta.$type + '_' + meta.$item.$keys[j] + '#' + data[i][meta.$item.$keys[j]]); }
-                        if (keycache){
+                        if (meta.$item.$keys) for (var j = 0; j < meta.$item.$keys.length; j++) {
+                            if (typeof data[i][meta.$item.$keys[j]] === 'undefined'){
+                                key = undefined;
+                                break;
+                            }
+                            key += (meta.$type + '_' + meta.$item.$keys[j] + '#' + data[i][meta.$item.$keys[j]]);
+                        }
+                        if (keycache && key){
                             if (keycache.indexOf(key) < 0){
                                 result.push(r);
                                 keycache.push(key);
@@ -14191,8 +14581,14 @@ $data.Class.define('$data.QueryProvider', null, null,
                     }
                 }else{
                     var key = '';
-                    if (meta.$item.$keys) for (var j = 0; j < meta.$item.$keys.length; j++) { key += (meta.$type + '_' + meta.$item.$keys[j] + '#' + data[meta.$item.$keys[j]]); }
-                    if (keycache){
+                    if (meta.$item.$keys) for (var j = 0; j < meta.$item.$keys.length; j++) {
+                        if (typeof data[meta.$item.$keys[j]] === 'undefined'){
+                            key = undefined;
+                            break;
+                        }
+                        key += (meta.$type + '_' + meta.$item.$keys[j] + '#' + data[meta.$item.$keys[j]]);
+                    }
+                    if (keycache && key){
                         if (keycache.indexOf(key) < 0){
                             result.push(r);
                             keycache.push(key);
@@ -15222,6 +15618,15 @@ $data.Class.defineEx('$data.EntitySet',
         this._trackEntity(data);
         return data;
     },
+
+    addMany: function(entities) {
+        var result = [];
+        var self = this;
+        entities.forEach(function (entity) {
+            result.push(self.add(entity));
+        });
+        return result;
+    },
     remove: function (entity) {
         /// <signature>
         ///     <summary>Creates a typed entity and marks it as Deleted.</summary>
@@ -15257,7 +15662,7 @@ $data.Class.defineEx('$data.EntitySet',
         data.changedProperties = undefined;
         this._trackEntity(data);
     },
-    attach: function (entity) {
+    attach: function (entity, keepChanges) {
         /// <signature>
         ///     <summary>Creates a typed entity and adds to the Context with Unchanged state.</summary>
         ///     <param name="entity" type="Object">The init parameters whish is based on Entity</param>
@@ -15301,9 +15706,11 @@ $data.Class.defineEx('$data.EntitySet',
                 Guard.raise(new Exception("Context already contains this entity!!!"));
             }
         }
-
-        data.entityState = $data.EntityState.Unchanged;
-        data.changedProperties = undefined;
+        if (!keepChanges) {
+            console.log("dropping changes");
+            data.entityState = $data.EntityState.Unchanged;
+            data.changedProperties = undefined;
+        }
         data.context = this.entityContext;
         this._trackEntity(data);
     },
@@ -15578,7 +15985,7 @@ Exception.prototype._getStackTrace = function () {
     //}
     return callstack.join("\n\r");	 */
 };
-$data.StorageProviderLoader = {
+$data.Class.define('$data.StorageProviderLoaderBase', null, null, {
     isSupported: function (providerName) {
         switch (providerName) {
             case 'indexedDb':
@@ -15588,64 +15995,51 @@ $data.StorageProviderLoader = {
             case 'webSql':
             case 'sqLite':
                 return 'openDatabase' in window;
+            case 'LocalStore':
+                return 'localStorage' in window;
+            case 'sqLite':
+                return 'openDatabase' in window;
+            case 'mongoDB':
+                return $data.mongoDBDriver;
             default:
                 return true;
         }
     },
-    npmModules: {        
-        'indexedDb': 'jaydata-indexeddb',
-        'InMemory': 'jaydata-inmemory',
-        'mongoDB': 'jaydata-mongodb',
-        'oData': 'jaydata-odata',
-        'sqLite': 'jaydata-sqlite',
-        'webSql': 'jaydata-sqlite',
-        'storm': 'jaydata-storm'
+    scriptLoadTimeout: { type: 'int', value: 1000 },
+    scriptLoadInterval: { type: 'int', value: 50 },
+    npmModules: {
+        value: {
+            'indexedDb': 'jaydata-indexeddb',
+            'InMemory': 'jaydata-inmemory',
+            'LocalStore': 'jaydata-inmemory',
+            'mongoDB': 'jaydata-mongodb',
+            'oData': 'jaydata-odata',
+            'sqLite': 'jaydata-sqlite',
+            'webSql': 'jaydata-sqlite',
+            'storm': 'jaydata-storm'
+        }
+    },
+    ProviderNames: {
+        value: {
+            'indexedDb': 'IndexedDb',
+            'InMemory': 'InMemory',
+            'LocalStore': 'InMemory',
+            'oData': 'oData',
+            'sqLite': 'SqLite',
+            'webSql': 'SqLite',
+            'storm': 'Storm'
+        }
     },
     load: function (providerList, callback) {
-        function getUrl(providerName) {
-            switch (providerName) {
-                case 'storm':
-                    providerName = 'Storm';
-                    break;
-            }
-            var jaydataScriptMin = document.querySelector('script[src$="jaydata.min.js"]');
-	    var jaydataScript = document.querySelector('script[src$="jaydata.js"]');
-            if (jaydataScriptMin) return jaydataScriptMin.src.substring(0, jaydataScriptMin.src.lastIndexOf('/') + 1) + 'jaydataproviders/' + providerName + 'Provider.min.js';
-            else if (jaydataScript) return jaydataScript.src.substring(0, jaydataScript.src.lastIndexOf('/') + 1) + 'jaydataproviders/' + providerName + 'Provider.js';
-            else return 'jaydataproviders/' + providerName + 'Provider.js';
-        };
-
-        function loadScript(url, callback) {
-            if (!url)
-                callback(false);
-
-            function getHttpRequest() {
-                if (window.XMLHttpRequest)
-                    return new XMLHttpRequest();
-                else if (window.ActiveXObject)
-                    return new ActiveXObject("MsXml2.XmlHttp");
-            }
-
-            var oXmlHttp = getHttpRequest();
-            oXmlHttp.onreadystatechange = function () {
-                if (oXmlHttp.readyState == 4) {
-                    if (oXmlHttp.status == 200 || oXmlHttp.status == 304) {
-                        eval.call(window, oXmlHttp.responseText);
-                        if (typeof callback === 'function')
-                            callback(true);
-                    } else {
-                        if (typeof callback === 'function') {
-                            callback(false);
-                        }
-                    }
-                }
-            }
-            oXmlHttp.open('GET', url, true);
-            oXmlHttp.send(null);
-        };
-
-
+        callback = $data.typeSystem.createCallbackSetting(callback);
         var currentProvider = providerList.shift();
+
+        while (currentProvider && !this.isSupported(currentProvider)) {
+            currentProvider = providerList.shift();
+        }
+
+        if (!currentProvider)
+            callback.error();
 
         if ($data.RegisteredStorageProviders) {
             var provider = $data.RegisteredStorageProviders[currentProvider];
@@ -15655,46 +16049,115 @@ $data.StorageProviderLoader = {
             }
         }
 
-        if (!this.isSupported(provider)) {
-            this.load(providerList, callback);
-            return;
-        }
-
-        if (typeof module !== 'undefined' && typeof require !== 'undefined') {
+        if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
             // NodeJS
-            var provider = null;
-            try {
-                require(this.npmModules[currentProvider]);
-                provider = $data.RegisteredStorageProviders[currentProvider];
-            } catch (e) {
-            }
-            if (provider) {
-                var provider = $data.RegisteredStorageProviders[currentProvider];
-                callback.success(provider);
-            } else if (providerList.length > 0) {
-                this.load(providerList, callback);
-            } else {
-                callback.error();
+            this.loadNpmModule(currentProvider, providerList, callback);
+        } else {
+            this.loadProvider(currentProvider, providerList, callback);
+        }
+    },
+    loadProvider: function (currentProvider, providerList, callback) {
+        var self = this;
+        var mappedName = $data.StorageProviderLoader.ProviderNames[currentProvider] || currentProvider;
+        if (mappedName) {
+            var url = this.getUrl(mappedName);
+
+            var loader = this.loadScript;
+            if (document && document.createElement) {
+                loader = this.loadScriptElement;
             }
 
-            return;
+            loader.call(this, url, currentProvider, function (successful) {
+                var provider = $data.RegisteredStorageProviders[currentProvider];
+                if (successful && provider) {
+                    callback.success(provider);
+                } else if (providerList.length > 0) {
+                    self.load(providerList, callback);
+                } else {
+                    callback.error();
+                }
+            });
+        }
+    },
+    getUrl: function (providerName) {
+        var jaydataScriptMin = document.querySelector('script[src$="jaydata.min.js"]');
+        var jaydataScript = document.querySelector('script[src$="jaydata.js"]');
+        if (jaydataScriptMin) return jaydataScriptMin.src.substring(0, jaydataScriptMin.src.lastIndexOf('/') + 1) + 'jaydataproviders/' + providerName + 'Provider.min.js';
+        else if (jaydataScript) return jaydataScript.src.substring(0, jaydataScript.src.lastIndexOf('/') + 1) + 'jaydataproviders/' + providerName + 'Provider.js';
+        else return 'jaydataproviders/' + providerName + 'Provider.js';
+    },
+    loadScript: function (url, currentProvider, callback) {
+        if (!url)
+            callback(false);
+
+        function getHttpRequest() {
+            if (window.XMLHttpRequest)
+                return new XMLHttpRequest();
+            else if (window.ActiveXObject)
+                return new ActiveXObject("MsXml2.XmlHttp");
         }
 
-        var url = getUrl(currentProvider);
-
-        loadScript(url, function (successful) {
-            var provider = $data.RegisteredStorageProviders[currentProvider];
-            if (successful && provider) {
-                var provider = $data.RegisteredStorageProviders[currentProvider];
-                callback.success(provider);
-            } else if (providerList.length > 0) {
-                this.load(providerList, callback);
-            } else {
-                callback.error();
+        var oXmlHttp = getHttpRequest();
+        oXmlHttp.onreadystatechange = function () {
+            if (oXmlHttp.readyState == 4) {
+                if (oXmlHttp.status == 200 || oXmlHttp.status == 304) {
+                    eval.call(window, oXmlHttp.responseText);
+                    if (typeof callback === 'function')
+                        callback(true);
+                } else {
+                    if (typeof callback === 'function') {
+                        callback(false);
+                    }
+                }
             }
-        });
+        }
+        oXmlHttp.open('GET', url, true);
+        oXmlHttp.send(null);
+    },
+    loadScriptElement: function (url, currentProvider, callback) {
+        var head = document.getElementsByTagName('head')[0] || document.documentElement;
+
+        var script = document.createElement('script');
+        script.type = 'text/javascript';
+        script.src = url;
+        head.appendChild(script);
+
+        var loadInterval = this.scriptLoadInterval || 50;
+        var iteration = this.scriptLoadTimeout / loadInterval;
+        function watcher() {
+            var provider = $data.RegisteredStorageProviders[currentProvider];
+            if (provider) {
+                callback(true);
+            } else {
+                iteration--;
+                if (iteration > 0) {
+                    setTimeout(watcher, loadInterval);
+                } else {
+                    callback(false);
+                }
+            }
+        }
+        setTimeout(watcher, loadInterval);
+    },
+
+    loadNpmModule: function (currentProvider, providerList, callback) {
+        var provider = null;
+        try {
+            require(this.npmModules[currentProvider]);
+            provider = $data.RegisteredStorageProviders[currentProvider];
+        } catch (e) { }
+
+        if (provider) {
+            callback.success(provider);
+        } else if (providerList.length > 0) {
+            this.load(providerList, callback);
+        } else {
+            callback.error();
+        }
     }
-}
+});
+
+$data.StorageProviderLoader = new $data.StorageProviderLoaderBase();
 $data.storageProviders = {
     DbCreationType: {
         Merge: 10,
@@ -15932,7 +16395,9 @@ $data.Class.define('$data.StorageProviderBase', null, null,
     }
 },
 {
+    onRegisterProvider: { value: new $data.Event() },
     registerProvider: function (name, provider) {
+        this.onRegisterProvider.fire({ name: name, provider: provider }, this);
         $data.RegisteredStorageProviders = $data.RegisteredStorageProviders || [];
         $data.RegisteredStorageProviders[name] = provider;
     },
@@ -15950,7 +16415,38 @@ $data.Class.define('$data.StorageProviderBase', null, null,
         get: function () { return true; },
         set: function () { }
     }
-});$data.Base.extend('$data.EntityWrapper', {
+});
+
+(function () {
+    var localProviders = ['webSql', 'indexedDb', 'LocalStore'];
+
+    for (var i = 0; i < localProviders.length; i++) {
+        var providerName = localProviders[i];
+
+        if ($data.StorageProviderLoader.isSupported(providerName)) {
+            var moduleName = $data.StorageProviderLoader.npmModules[providerName];
+            $data.StorageProviderLoader.npmModules['local'] = moduleName;
+
+            var mappedName = $data.StorageProviderLoader.ProviderNames[providerName];
+            $data.StorageProviderLoader.ProviderNames['local'] = mappedName;
+
+            $data.RegisteredStorageProviders = $data.RegisteredStorageProviders || [];
+            var provider = $data.RegisteredStorageProviders[providerName];
+            if (!provider) {
+                $data.StorageProviderBase.onRegisterProvider.attach(function (sender, providerData) {
+                    if (providerData.name === providerName) {
+                        $data.StorageProviderBase.registerProvider("local", providerData.provider);
+                    }
+                });
+            } else {
+                $data.StorageProviderBase.registerProvider("local", provider);
+            }
+            break;
+        }
+    }
+})();
+
+$data.Base.extend('$data.EntityWrapper', {
     getEntity: function () {
         Guard.raise("pure object");
     }
@@ -16127,13 +16623,22 @@ $C('$data.modelBinder.ModelBinderConfigCompiler', $data.Expressions.EntityExpres
                     if (!storageModel && this._query.context.storageProvider.supportedDataTypes.indexOf(Container.resolveType(prop.dataType)) < 0) {
                         //complex type
                         builder.selectModelBinderProperty(prop.name);
-                        builder.modelBinderConfig['$type'] = Container.resolveType(prop.dataType);
+                        var type = Container.resolveType(prop.dataType);
+                        builder.modelBinderConfig['$type'] = type;
                         if (this._isoDataProvider) {
                             builder.modelBinderConfig['$selector'] = ['json:' + prop.name + '.results', 'json:' + prop.name];
                         } else {
                             builder.modelBinderConfig['$selector'] = 'json:' + prop.name;
                         }
-                        this._addPropertyToModelBinderConfig(Container.resolveType(prop.dataType), builder);
+                        if (type === $data.Array && prop.elementType) {
+                            builder.selectModelBinderProperty('$item');
+                            var arrayElementType = Container.resolveType(prop.elementType);
+                            builder.modelBinderConfig['$type'] = arrayElementType;
+                            this._addPropertyToModelBinderConfig(arrayElementType, builder);
+                            builder.popModelBinderProperty();
+                        } else {
+                            this._addPropertyToModelBinderConfig(type, builder);
+                        }
                         builder.popModelBinderProperty();
                     } else {
                         if (prop.key) {
@@ -16444,13 +16949,15 @@ $data.Class.define("$data.Authentication.AuthenticationBase", null, null, {
             return;
         var _this = this;
 
-        if (cfg.url && this.Authenticated) {
-            var andChar = '?';
-            if (cfg.url.indexOf(andChar) > 0)
-                andChar = '&';
+        if (cfg.url.indexOf('access_token=') === -1) {
+            if (cfg.url && this.Authenticated) {
+                var andChar = '?';
+                if (cfg.url.indexOf(andChar) > 0)
+                    andChar = '&';
 
-            if (this.configuration.access_token)
-                cfg.url = cfg.url + andChar + 'access_token=' + this.configuration.access_token;
+                if (this.configuration.access_token)
+                    cfg.url = cfg.url + andChar + 'access_token=' + this.configuration.access_token;
+            }
         }
 
         $data.ajax(cfg);
@@ -16580,8 +17087,8 @@ $data.Class.define('$data.MetadataLoaderClass', null, null, {
 
         if (metadataUri in this.factoryCache) {
 
-            console.log("served from cache");
-            console.dir(this.factoryCache[metadataUri]);
+            /*console.log("served from cache");
+            console.dir(this.factoryCache[metadataUri]);*/
             callBack.success.apply({}, this.factoryCache[metadataUri]);
             return;
         }
@@ -17137,6 +17644,40 @@ $data.Class.define('$data.MetadataLoaderClass', null, null, {
 });
 
 $data.MetadataLoader = new $data.MetadataLoaderClass();
-$data.service = function(serviceUri, cb, config) {
+$data.service = function (serviceUri, cb, config) {
     $data.MetadataLoader.load(serviceUri, cb, config);
-}
+};
+﻿(function ($data) {
+    if (typeof jQuery !== 'undefined') {
+        $data.Class.define('$data.Deferred', $data.PromiseHandlerBase, null, {
+            constructor: function () {
+                this.deferred = new $.Deferred();
+            },
+            deferred: {},
+            createCallback: function (callBack) {
+                callBack = $data.typeSystem.createCallbackSetting(callBack);
+                var self = this;
+
+                return cbWrapper = {
+                    success: function () {
+                        callBack.success.apply(self.deferred, arguments);
+                        self.deferred.resolve.apply(self.deferred, arguments);
+                    },
+                    error: function () {
+                        Array.prototype.push.call(arguments, self.deferred);
+                        callBack.error.apply(self.deferred, arguments);
+                    },
+                    notify: function () {
+                        callBack.notify.apply(self.deferred, arguments);
+                        self.deferred.notify.apply(self.deferred, arguments);
+                    }
+                };
+            },
+            getPromise: function () {
+                return this.deferred.promise();
+            }
+        }, null);
+
+        $data.PromiseHandler = $data.Deferred;
+    }
+})($data);
