@@ -46,13 +46,15 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
         });
 
     },
-    _resetData: function(){
-        this.data().settings.removeAll();
+    _resetData: function () {
+        if (this.data().settings() !== null) {
+            this.data().settings.removeAll();
+        }
         this.data().errorMsg(null);
     },
     _handleDefaultRepo:function (result) {
         if (result && result.length > 0) {
-            JayScrum.app.selectedFrame().connectTo(result[0]);
+            JayScrum.app.selectedFrame().connectTo(result[0].asKoObservable());
         }
         else {
             JayScrum.app.selectedFrame().localContext.Sprints.length(function (sprintCount) {
