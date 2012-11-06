@@ -50,11 +50,9 @@ $("span.chbox-icon").live(eventName, function () {
     $(this).toggleClass('checked');
 });
 $("div.slider-action.prev").live(eventName, function () {
-    //JayScrum.app.showLoading();
     JayScrum.app.selectedFrame().selectedView().swipeView.prev();
 });
 $("div.slider-action.next").live(eventName, function () {
-    //JayScrum.app.showLoading();
     JayScrum.app.selectedFrame().selectedView().swipeView.next();
 });
 

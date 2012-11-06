@@ -9,11 +9,11 @@ var debug = true,
         this.bounce = true;
         this.lockDirection = true;
         this.checkDOMChanges = checkDomChanges;
-        this.onScrollStart = function () {
+        /*this.onScrollStart = function () {
             if ($('input:focus, select:focus, textarea:focus').length > 0) {
                 $(':focus').blur();
             }
-        };
+        };*/
         this.onScrollMove = function () {
             if (this.y < 0 && this.y < this.maxScrollY - 100 && !this.addNewItem) {
                 $(this.scroller).find("div.scroll-up").addClass("flip");

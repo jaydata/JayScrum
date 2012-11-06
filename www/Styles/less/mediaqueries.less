@@ -256,7 +256,12 @@
     }
     
     #wrapper-detailed   { .ovisible; }
-    .slider-action      { .fixed; width: 150px; }
+    .slider-action       
+    {
+        .fixed; width: 150px; .transition(0.3s, background);
+    
+        &:hover { background: rgba(255, 255, 255, 0.1); }    
+    }
 }
 /*#endregion  Screen (768+) */
     

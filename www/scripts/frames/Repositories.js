@@ -12,7 +12,7 @@ $data.Class.define('JayScrum.Views.RepositorySettings', JayScrum.FrameView, null
         this.i_scroll_popup = null;
     },
     initializeView:function(){
-        //JayScrum.app.hideLoading();
+        JayScrum.app.hideLoading();
         this.i_scroll = JayScrum.app.initScrollById('settingPageScroll');
     },
     tearDownView:function(){
@@ -84,7 +84,7 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
 
             JayScrum.app.hideLoading();
 
-            if(JayScrum.app.selectedFrame().data().isSupportedPurchase()){
+            if (JayScrum.app.selectedFrame().data().isSupportedPurchase()) {
             	console.log('-== 3. Call cordova transactions');
                 cordova.exec(function(transactions){
                 		console.log('-== 4. Load transactions: '+JSON.stringify(transactions));
