@@ -38,9 +38,8 @@
                         <!-- ko foreach: $data.data().activeSprintList -->
                         <li data-bind="attr: { 'class': $parent.isPinnedSprint($data) ? 'wide pinned' : 'wide' }, click: $parent.onTaskListShow">
                             <span>
-                                <span class="day" data-bind="text: moment(FinishDate).diff(moment(), 'days') + ' days left'">
-                                </span>
-                                <span class="b-right" data-bind="text: Name"></span>
+                                <span class="day" data-bind="text: Name"></span>
+                                <span class="b-right" data-bind="text: moment(FinishDate).diff(moment(), 'days') + ' days left'"></span>
                                 <span class="text" data-bind="text: tasksLeft+' task left'"></span>
                                 <!--<span class="number">scrumwall</span>-->
                                 <!--ko if: $parent.isPinnedSprint($data)-->
@@ -99,7 +98,7 @@
             <h1 class="title pivot-default animate" data-bind="text: $root.selectedFrame().data().name">
             </h1>
         </div>
-        <div class="icon-action main-top-right more">
+        <div class="icon-action main-top-right more-circle">
             <span data-bind="click: $root.selectedFrame().onShowToolbar"></span>
         </div>
         <div id="wrapper" class="metro-pivot reset">

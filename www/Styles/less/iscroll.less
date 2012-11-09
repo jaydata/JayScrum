@@ -180,13 +180,22 @@ div#swipeview-inside-1, div#swipeview-inside-2, div#swipeview-inside-0 {
 /*#region SCROLLBAR */
 .iscrollbarV {
     .position(absolute, 2px, 1px, 7px);
-	width: 8px; z-index: 100;
+	width: 5px; z-index: 100;
 	
     div {
         position: absolute; width: 100%; z-index: 100;
 
-	    .opacity(0.4); .rounded(4px);
+	    .opacity(0.25); .rounded(4px);
 	    background: #fff; border: none;
+    }
+}
+
+#wrapper #scroller .pivot-list .scroll-list
+{
+    .iscrollbarV div { .opacity(0); }
+    
+    &:hover {
+        .iscrollbarV div { .opacity(0.25); }
     }
 }
 /*#endregion SCROLLBAR */
