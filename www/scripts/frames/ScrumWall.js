@@ -106,10 +106,13 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
             summaryList: ko.observable({
                 BackLogItemCountInSprint: ko.observable(0),
                 SprintAllTaskCount: ko.observable(0),
+                SprintAllTaskRemainingWork: ko.observable(0),
                 SprintToDoTaskCount: ko.observable(0),
+                SprintToDoTaskRemainingWork: ko.observable(0),
                 SprintInProgTaskCount: ko.observable(0),
                 SprintInProgTaskRemainingWork: ko.observable(0),
                 SprintDoneTaskCount: ko.observable(0),
+                SprintDoneTaskRemainingWork: ko.observable(0),
                 SprintBurndownData: ko.observable()
             }),
             selectedWorkItem: ko.observable(),
@@ -143,11 +146,13 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
             .then(function (r) {
                 JayScrum.app.selectedFrame().data().summaryList().BackLogItemCountInSprint(r.userStory);
                 JayScrum.app.selectedFrame().data().summaryList().SprintAllTaskCount(r.task);
-
+                JayScrum.app.selectedFrame().data().summaryList().SprintAllTaskRemainingWork(r.todo_hour + r.inprogress_hour + r.done_hour);
                 JayScrum.app.selectedFrame().data().summaryList().SprintToDoTaskCount(r.todo);
+                JayScrum.app.selectedFrame().data().summaryList().SprintToDoTaskRemainingWork(r.todo_hour);
                 JayScrum.app.selectedFrame().data().summaryList().SprintInProgTaskCount(r.inprogress);
                 JayScrum.app.selectedFrame().data().summaryList().SprintInProgTaskRemainingWork(r.inprogress_hour);
                 JayScrum.app.selectedFrame().data().summaryList().SprintDoneTaskCount(r.done);
+                JayScrum.app.selectedFrame().data().summaryList().SprintDoneTaskRemainingWork(r.done_hour);
                 JayScrum.app.selectedFrame().data().summaryList().SprintBurndownData(r.burnDown);
                 p.resolve();
             });
