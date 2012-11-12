@@ -315,6 +315,25 @@ $data.Class.define('JayScrum.ScrumApp', JayScrum.FrameApp, null,{
                 }
                 JayScrum.app.selectFrame('MainFrame');
             });
+    },
+    _getFullUrl: function (shortUrl, userName, psw) {
+        var connectDefer = Q.defer();
+        console.log("Get full url, short URL: " + shortUrl);
+        $data.service(JayScrum.ScrumApp.ApplicationUrl + "/JayScrum/$metadata", {
+            success: function (factory, contextType) {
+                var ctx = factory({ user: userName, password: psw });
+                ctx.UrlCutterItems
+                .single(function (item) { return item.ShortName == this.url }, { url: shortUrl }, function (url) {
+                    connectDefer.resolve(url.Instance_Id);
+                });
+            },
+            error: function () {
+                console.log("Error to connect main JayScrumDb");
+                connectDefer.reject();
+            }
+        }, { user: userName, password: psw });
+        
+        return connectDefer.promise;
     }
 },{
     ApplicationUrl:"http://720007a3-c93e-4410-af6d-16efcc5d3d91.jaystack.net"
@@ -327,7 +346,7 @@ JayScrum.pushObservablesToList= function (list, rawData) {
         list.push(obs);
     }
 };
-
+window['android'] = true;
 if(window['android'] && window['cordova']){
 	document.addEventListener("deviceready", function(){
 		initApplication();	

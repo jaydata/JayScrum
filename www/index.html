@@ -1225,18 +1225,21 @@
                                 </div>
 
                                 <div class="field">
-                                    <div><span>Title</span></div>
+                                    <div><span data-bind="text: $parent.data().isRegistration()?'Add a name for your repository':'Title'">Title</span></div>
                                     <input class="medium accent-bg" type="text" data-bind="value: Title, valueUpdate:['afterkeydown','propertychange','input']" />
                                 </div>
-
+                                <!--ko ifnot: $parent.data().isRegistration-->
                                 <div class="field">
                                     <div><span data-bind="text:  $parent.data().isRegistration() ? 'db name' : 'url'"></span>
                                     </div>
-                                    <!--<input class="medium accent-bg" type="text" data-bind="value: Url, valueUpdate:['afterkeydown','propertychange','input'], attr:{'placeholder': $parent.data().isRegistration()?'Databse name':'Databse name or full URL'}" />-->
-
                                     <textarea class="medium accent-bg" type="text" data-bind="value: Url, valueUpdate:['afterkeydown','propertychange','input'], attr:{'placeholder': $parent.data().isRegistration()?'Databse name':'Databse name or full URL'}"></textarea>
                                 </div>
-
+                                <!--/ko-->
+                                <!--ko if: $parent.data().isRegistration-->
+                                <div class="field">
+                                    <div><span>Add an admin user</span></div>
+                                </div>
+                                <!--/ko-->
                                 <div class="field">
                                     <div><span>Username</span></div>
                                     <input class="medium accent-bg" type="text" data-bind="value: UserName, valueUpdate:['afterkeydown','propertychange','input']" />
@@ -1246,7 +1249,7 @@
                                     <div><span>Password</span></div>
                                     <input class="medium accent-bg" type="password" data-bind="value: Password, valueUpdate:['afterkeydown','propertychange','input']" />
                                 </div>
-
+                                <!--ko ifnot: $parent.data().isRegistration-->
                                 <div class="field">
                                     <div><span class="metro-checkbox-label">Default repository</span></div>
                                     <div class="metro-checkbox accent-bg">
@@ -1254,7 +1257,7 @@
                                         <label for="isDefault"></label>
                                     </div>
                                 </div>
-
+                                 <!--/ko-->
                                 <div class="split2">
                                     <!--ko ifnot: $parent.data().isRegistration-->
                                     <span class="btn-metro btn-large margin10_0" data-bind="click: $parent.saveSetting">
@@ -1263,12 +1266,6 @@
                                     <!--ko if: $parent.data().isRegistration-->
                                     <span class="btn-metro btn-large margin10_0" data-bind="click: $parent.subscriptionDatabase">
                                         Subscription</span>
-									<!--<span class="btn-metro btn-large margin10_0" data-bind="click: $parent.buyManagendClick">
-                                        Buy (unmanaged)</span>
-                                    <span class="btn-metro btn-large margin10_0" data-bind="click: $parent.buyUnManagendClick">
-                                        Buy (managed)</span>
-									<span class="btn-metro btn-large margin10_0" data-bind="click: $parent.getTransactionsClick">
-                                        transactions</span>-->
                                     <!--/ko-->
                                     <span class="btn-metro btn-large margin10_0" data-bind="click: $parent.cancelSetting">Cancel</span>
                                 </div>

@@ -191,11 +191,25 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
             JayScrum.app._initializeDemoRepositories(JayScrum.app.selectedFrame().localContext);
             return;
         }
-        var url = repoSetting.Url().toLowerCase();
-        if(url.indexOf('http') !== 0){
-            url = "http://"+repoSetting.Url().toLowerCase()+JayScrum.Frames.Repositories.ServerUrl;
-        }
         JayScrum.app.showLoading();
+        var url = repoSetting.RealUrl() || repoSetting.Url().toLowerCase();
+        //If url is only 4 char, it is a smart url and must resolve it
+        if (url.length == 4) {
+            JayScrum.app._getFullUrl(url, repoSetting.UserName(), repoSetting.Password())
+            .then(function (realUrl) {
+                console.log("Resolved url: " + url);
+                JayScrum.app.selectedFrame().localContext.attach(repoSetting);
+                repoSetting.RealUrl(realUrl);
+                JayScrum.app.selectedFrame().localContext.saveChanges(function () {
+                    JayScrum.app.selectedFrame().connectTo(repoSetting);
+                });
+            });
+            return;
+        }
+        if(url.indexOf('http') !== 0){
+            url = "http://"+url.toLowerCase()+JayScrum.Frames.Repositories.ServerUrl;
+        }
+        
         JayScrum.app._initializeRepositories(url, repoSetting.UserName(), repoSetting.Password())
             .fail(function(){
                 JayScrum.app.hideLoading();
