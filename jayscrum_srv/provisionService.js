@@ -345,7 +345,7 @@ $data.ServiceBase.extend("ProvisionService", {
                                                 smartUrlFns.push(fn);
                                             });
                                             console.log("smartRequest: ", smartUrlFns.length);
-                                            Q.all(smartUrlFns[0])
+                                            Q.all(smartUrlFns)
                                               .then(function () {
                                                   var addFns = [];
                                                   for (var i = 0; i < smartUrlFns.length; i++) {
@@ -353,35 +353,37 @@ $data.ServiceBase.extend("ProvisionService", {
                                                       console.log("value of: ", smartUrlFnValues);
                                                       if (smartUrlFnValues.length < 1) {
                                                           var url = result[i].DevPayLoad.Url;
-                                                          var payLoad = result[i].DevPayLoad;
-                                                          var addFn = function () {
-                                                              var addSmartUrlQ = Q.defer();
-                                                              (function () {
-                                                                  var generateSmartUrlQ = Q.defer();
-                                                                  var generateFn = function () {
-                                                                      var sUrl = randomString();
-                                                                      scrumDb.UrlCutterItems.filter(function (item) { return item.ShortName == this.alias; }, { alias: sUrl }).length()
-                                                                        .then(function (v) {
-                                                                            if (v == 0) { generateSmartUrlQ.resolve(sUrl); }
-                                                                            else { console.log("regeneratie smrt url"); generateFn(); }
+                                                          if (url) {
+                                                              var payLoad = result[i].DevPayLoad;
+                                                              var addFn = function () {
+                                                                  var addSmartUrlQ = Q.defer();
+                                                                  (function () {
+                                                                      var generateSmartUrlQ = Q.defer();
+                                                                      var generateFn = function () {
+                                                                          var sUrl = randomString();
+                                                                          scrumDb.UrlCutterItems.filter(function (item) { return item.ShortName == this.alias; }, { alias: sUrl }).length()
+                                                                            .then(function (v) {
+                                                                                if (v == 0) { generateSmartUrlQ.resolve(sUrl); }
+                                                                                else { console.log("regeneratie smrt url"); generateFn(); }
+                                                                            });
+                                                                      }
+                                                                      generateFn();
+                                                                      return generateSmartUrlQ.promise;
+                                                                  })()
+                                                                    .then(function (sUrl) {
+                                                                        console.log("Add new smartUrl, instanceId: ", url, "shortName: ", sUrl);
+                                                                        scrumDb.UrlCutterItems.add(new scrumDb.UrlCutterItems.createNew({ Instance_Id: url, ShortName: sUrl }));
+                                                                        payLoad.Url = sUrl;
+                                                                        scrumDb.saveChanges({
+                                                                            success: function () { addSmartUrlQ.resolve(); },
+                                                                            error: function () { addSmartUrlQ.fail(arguments); }
                                                                         });
-                                                                  }
-                                                                  generateFn();
-                                                                  return generateSmartUrlQ.promise;
-                                                              })()
-                                                                .then(function (sUrl) {
-                                                                    console.log("Add new smartUrl, instanceId: ", url, "shortName: ", sUrl);
-                                                                    scrumDb.UrlCutterItems.add(new scrumDb.UrlCutterItems.createNew({ Instance_Id: url, ShortName: sUrl }));
-                                                                    payLoad.Url = sUrl;
-                                                                    scrumDb.saveChanges({
-                                                                        success: function () { addSmartUrlQ.resolve(); },
-                                                                        error: function () { addSmartUrlQ.fail(arguments); }
-                                                                    });
-                                                                })
-                                                                .fail(function () { console.log("Smart url generation faild: ", arguments); });
-                                                              return addSmartUrlQ.promise;
-                                                          };
-                                                          addFns.push(addFn());
+                                                                    })
+                                                                    .fail(function () { console.log("Smart url generation faild: ", arguments); });
+                                                                  return addSmartUrlQ.promise;
+                                                              };
+                                                              addFns.push(addFn());
+                                                          }
                                                       } else {
                                                           console.log("smartUrl already exists: ", smartUrlFnValues[0].ShortName);
                                                           result[i].DevPayLoad.Url = smartUrlFnValues[0].ShortName;
