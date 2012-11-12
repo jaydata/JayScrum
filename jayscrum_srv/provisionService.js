@@ -276,7 +276,16 @@ var renewAccessToken = function () {
     req.end();
     return def.promise;
 };
-
+var randomString = function () {
+    var chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz";
+    var string_length = 4;
+    var randomstring = '';
+    for (var i = 0; i < string_length; i++) {
+        var rnum = Math.floor(Math.random() * chars.length);
+        randomstring += chars.substring(rnum, rnum + 1);
+    }
+    return randomstring;
+}
 $data.ServiceBase.extend("ProvisionService", {
     Provision: $data.JayService.serviceFunction()
         .param('provisionList', 'string')
@@ -287,7 +296,9 @@ $data.ServiceBase.extend("ProvisionService", {
                 var usr = this.executionContext.request.currentDatabaseConfig.username;
                 var psw = this.executionContext.request.currentDatabaseConfig.password;
                 var appDb = this.executionContext.request.databases.ApplicationDB(JAYSTORM_APP_ID, usr, psw);
+                var scrumDb = this.executionContext.request.databases.jayscrum(JAYSTORM_APP_ID, usr, psw);
                 var mainCtx = this;
+
                 appDb.onReady(function () {
                     appDb.Groups.filter(function (grp) { return grp.Name == 'scrum' })
                         .toArray({
@@ -323,9 +334,72 @@ $data.ServiceBase.extend("ProvisionService", {
                                     .then(function () {
                                         var result = provisionFnArray.map(function (item) { return item.valueOf(); });
                                         console.log("-== Provisioning response ==-");
-                                        console.log(result);
-                                        console.log("-== Provisioning response END ==-");
-                                        success(JSON.stringify(result));
+
+                                        //console.log("scrumDb: ",JAYSTORM_APP_ID,usr,psw, scrumDb);
+                                        scrumDb.onReady(function () {
+                                            var smartUrlFns = [];
+                                            result.forEach(function (repo) {
+                                                var repoId = repo.DevPayLoad.Url;
+                                                console.log("Check smartUrl: ", repoId);
+                                                var fn = scrumDb.UrlCutterItems.filter(function (item) { return item.Instance_Id == this.id }, { id: repoId }).toArray();
+                                                smartUrlFns.push(fn);
+                                            });
+                                            console.log("smartRequest: ", smartUrlFns.length);
+                                            Q.all(smartUrlFns[0])
+                                              .then(function () {
+                                                  var addFns = [];
+                                                  for (var i = 0; i < smartUrlFns.length; i++) {
+                                                      var smartUrlFnValues = smartUrlFns[i].valueOf();
+                                                      console.log("value of: ", smartUrlFnValues);
+                                                      if (smartUrlFnValues.length < 1) {
+                                                          var url = result[i].DevPayLoad.Url;
+                                                          var payLoad = result[i].DevPayLoad;
+                                                          var addFn = function () {
+                                                              var addSmartUrlQ = Q.defer();
+                                                              (function () {
+                                                                  var generateSmartUrlQ = Q.defer();
+                                                                  var generateFn = function () {
+                                                                      var sUrl = randomString();
+                                                                      scrumDb.UrlCutterItems.filter(function (item) { return item.ShortName == this.alias; }, { alias: sUrl }).length()
+                                                                        .then(function (v) {
+                                                                            if (v == 0) { generateSmartUrlQ.resolve(sUrl); }
+                                                                            else { console.log("regeneratie smrt url"); generateFn(); }
+                                                                        });
+                                                                  }
+                                                                  generateFn();
+                                                                  return generateSmartUrlQ.promise;
+                                                              })()
+                                                                .then(function (sUrl) {
+                                                                    console.log("Add new smartUrl, instanceId: ", url, "shortName: ", sUrl);
+                                                                    scrumDb.UrlCutterItems.add(new scrumDb.UrlCutterItems.createNew({ Instance_Id: url, ShortName: sUrl }));
+                                                                    payLoad.Url = sUrl;
+                                                                    scrumDb.saveChanges({
+                                                                        success: function () { addSmartUrlQ.resolve(); },
+                                                                        error: function () { addSmartUrlQ.fail(arguments); }
+                                                                    });
+                                                                })
+                                                                .fail(function () { console.log("Smart url generation faild: ", arguments); });
+                                                              return addSmartUrlQ.promise;
+                                                          };
+                                                          addFns.push(addFn());
+                                                      } else {
+                                                          console.log("smartUrl already exists: ", smartUrlFnValues[0].ShortName);
+                                                          result[i].DevPayLoad.Url = smartUrlFnValues[0].ShortName;
+                                                      }
+                                                  }
+                                                  console.log("addFns: ", addFns.length);
+                                                  Q.all(addFns)
+                                                    .then(function () {
+                                                        console.log("ALL OK");
+                                                        console.log(result);
+                                                        success(JSON.stringify(result));
+                                                    })
+                                                    .fail(function () { console.log("!!!Smart URL SAVE FAILD", arguments); });
+                                              })
+                                              .fail(function () {
+                                                  console.log("!!!Smart URL FAILD", arguments);
+                                              });
+                                        });
                                     });
                             },
                             error: function () {

@@ -346,7 +346,7 @@ JayScrum.pushObservablesToList= function (list, rawData) {
         list.push(obs);
     }
 };
-window['android'] = true;
+//window['android'] = true;
 if(window['android'] && window['cordova']){
 	document.addEventListener("deviceready", function(){
 		initApplication();	
