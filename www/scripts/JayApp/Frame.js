@@ -4,12 +4,13 @@ $data.Class.define('JayScrum.Frame', null, null, {
         this.metaData = new JayScrum.FrameMetadata('jayAppMetaDefault', { name:'FrameMeta' });
         this.defaultViewName = 'defaultView';
         this.selectedView = ko.observable();
+        this.selectedViewName = ko.observable();
     },
     name:{ dataType:$data.String },
     data:{ dataType:$data.Object },
     views:{ dataType:$data.Object},
     metaViews:{ dataType:$data.Object},
-    selectedView:{ dataType:$data.Object },
+    selectedView: { dataType: $data.Object },
     selectedMetaView:{ dataType:$data.Object },
     frameApp:{dataType:'JayScrum.FrameApp'},
     registerChildFrame:function (frame) {
@@ -44,6 +45,7 @@ $data.Class.define('JayScrum.Frame', null, null, {
         }
         this.selectedView().tearDownView();
         this.selectedView(this.views[name]);
+        this.selectedViewName(name);
         this.views[name].initializeView();
     },
     selectMetaView:function (name) {
@@ -56,7 +58,7 @@ $data.Class.define('JayScrum.Frame', null, null, {
         this.frameApp = app;
     },
     onFrameChangingTo:function (newFrameData, oldFrameData, frame, disableResetData) {
-        if(newFrameData.frameName !== oldFrameData.frameName && !disableResetData){
+        if((!oldFrameData || (oldFrameData && newFrameData.frameName !== oldFrameData.frameName)) && !disableResetData){
             JayScrum.app.showLoading();
             this._resetData();
         }

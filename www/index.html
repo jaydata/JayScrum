@@ -95,8 +95,7 @@
             <span data-bind="click: $root.backView"></span>
         </div>
         <div class="main-header" data-bind="attr: { 'class': 'main-header not-main-page' }">
-            <h1 class="title pivot-default animate" data-bind="text: $root.selectedFrame().data().name">
-            </h1>
+            <h1 class="title pivot-default animate" data-bind="text: $root.selectedFrame().data().name"></h1>
         </div>
         <div class="icon-action main-top-right more-circle">
             <span data-bind="click: $root.selectedFrame().onShowToolbar"></span>
@@ -111,8 +110,7 @@
                                 <div class="list" data-bind="foreach: $data.data().recentlyChangedTasks">
                                     <div class="item task list-item" data-bind="attr: { 'class': 'item task list-item ' + State() + ' ' + IsBlocked() }">
                                         <!-- ko if: Title -->
-                                        <h2 class="title margintop tolower" data-isinrecentlychangedlist="true" data-bind="text: Title, click: $root.selectedFrame().onSelectWorkItem">
-                                        </h2>
+                                        <h2 class="title margintop tolower" data-isinrecentlychangedlist="true" data-bind="text: Title, click: $root.selectedFrame().onSelectWorkItem"></h2>
                                         <!-- /ko -->
 
                                         <!-- ko if: ParentName -->
@@ -120,8 +118,7 @@
                                         <!-- /ko -->
 
                                         <!-- ko if: ProjectName -->
-                                        <span class="small inactive tolower iblock" data-bind="text: 'Project: ' + ProjectName()">
-                                        </span>
+                                        <span class="small inactive tolower iblock" data-bind="text: 'Project: ' + ProjectName()"></span>
                                         <!-- /ko -->
 
                                         <div class="inactive tolower">
@@ -134,8 +131,7 @@
                                             <!-- /ko -->
 
                                             <!-- ko if: ChangedDate -->
-                                            | <span class="small" data-bind="text: moment(ChangedDate()).format('MM/DD/YY')">
-                                            </span>
+                                            | <span class="small" data-bind="text: moment(ChangedDate()).format('MM/DD/YY')"></span>
                                             <!-- /ko -->
                                         </div>
                                     </div>
@@ -175,8 +171,7 @@
                                             <!-- /ko -->
 
                                             <!-- ko if: Priority -->
-                                            | <span class="small" data-bind="text: 'prior: ' + Priority()">
-                                            </span>
+                                            | <span class="small" data-bind="text: 'prior: ' + Priority()"></span>
                                             <!-- /ko -->
                                         </div>
                                     </div>
@@ -198,7 +193,7 @@
                                             <!-- ko if: Title -->
                                             <h2 class="title margintop tolower" data-bind="text: Title, click: $root.selectedFrame().onSelectWorkItem"></h2>
                                             <!-- /ko -->
-                                            
+
                                             <!-- ko if: AssignedTo -->
                                             <h4 class="title accent-color" data-bind="text: AssignedTo"></h4>
                                             <!-- /ko -->
@@ -213,8 +208,7 @@
                                                 <!-- /ko -->
 
                                                 <!-- ko if: Priority -->
-                                                <span class="small" data-bind="text: 'prior: ' + Priority()">
-                                                </span>
+                                                <span class="small" data-bind="text: 'prior: ' + Priority()"></span>
                                                 <!-- /ko -->
                                             </div>
                                         </div>
@@ -234,8 +228,7 @@
                                 <div class="list" data-bind="foreach: $data.data().doneList">
                                     <div class="item task list-item" data-bind="attr: { 'class': 'item task list-item ' + IsBlocked() }">
                                         <!-- ko if: Title -->
-                                        <h2 class="title margintop tolower" data-bind="text: Title, click: $root.selectedFrame().onSelectWorkItem">
-                                        </h2>
+                                        <h2 class="title margintop tolower" data-bind="text: Title, click: $root.selectedFrame().onSelectWorkItem"></h2>
                                         <!-- /ko -->
 
                                         <!-- ko if: ParentName -->
@@ -243,8 +236,7 @@
                                         <!-- /ko -->
 
                                         <!-- ko if: ProjectName -->
-                                        <span class="small inactive tolower iblock" data-bind="text: 'Project: ' + ProjectName()">
-                                        </span>
+                                        <span class="small inactive tolower iblock" data-bind="text: 'Project: ' + ProjectName()"></span>
                                         <!-- /ko -->
 
                                         <div class="inactive tolower">
@@ -253,8 +245,7 @@
                                             <!-- /ko -->
 
                                             <!-- ko if: ChangedDate -->
-                                            | <span class="small" data-bind="text: moment(ChangedDate()).format('MM/DD/YY')">
-                                            </span>
+                                            | <span class="small" data-bind="text: moment(ChangedDate()).format('MM/DD/YY')"></span>
                                             <!-- /ko -->
                                         </div>
                                     </div>
@@ -297,8 +288,7 @@
                                                 <li class="In Progress accent-border left">
                                                     <h2>In Progress</h2>
                                                     <p>
-                                                        <span data-bind="text: SprintInProgTaskCount"></span>/ <span data-bind="text: SprintInProgTaskRemainingWork">
-                                                        </span>h
+                                                        <span data-bind="text: SprintInProgTaskCount"></span>/ <span data-bind="text: SprintInProgTaskRemainingWork"></span>h
                                                     </p>
                                                 </li>
                                                 <li class="Done accent-border left">
@@ -383,12 +373,9 @@
         </div>
         <div class="metro-actionbar detail-view opened" data-bind="with: $data.data().selectedWorkItemActive">
             <ul>
-                <li class="icon-action edit"><span data-bind="click: $root.selectedFrame().onEditWorkItem">
-                </span></li>
-                <li class="icon-action update"><span data-bind="click: $root.selectedFrame().onUpdateWorkItem">
-                </span></li>
-                <li class="icon-action delete"><span data-bind="click: $root.selectedFrame().onDeleteWorkItem">
-                </span></li>
+                <li class="icon-action edit"><span data-bind="click: $root.selectedFrame().onEditWorkItem"></span></li>
+                <li class="icon-action update"><span data-bind="click: $root.selectedFrame().onUpdateWorkItem"></span></li>
+                <li class="icon-action delete"><span data-bind="click: $root.selectedFrame().onDeleteWorkItem"></span></li>
             </ul>
         </div>
     </script>
@@ -410,7 +397,7 @@
                 <li class="icon-action save"><span data-bind="click: $root.selectedFrame().onSaveWorkItem"></span></li>
             </ul>
         </div>
-        <div id="error-msg" class="metro-actionbar"  style="height: 88px; z-index: 50; color: Red;" data-bind="with: $data.data().selectedWorkItemActive">
+        <div id="error-msg" class="metro-actionbar" style="height: 88px; z-index: 50; color: Red;" data-bind="with: $data.data().selectedWorkItemActive">
             <ul data-bind="foreach: $data.ValidationErrors">
                 <li data-bind="text:$data.PropertyDefinition.name + ':' + $data.Message"></li>
             </ul>
@@ -485,8 +472,7 @@
                                     <div><span>Assigned To</span></div>
                                     <select class="medium accent-bg with-icon" data-bind="options: $root.globalData().userList, value: AssignedTo">
                                     </select>
-                                    <span class="icon-action update fright" data-bind="click: $root.onRefreshUserList"><span>
-                                    </span></span>
+                                    <span class="icon-action update fright" data-bind="click: $root.onRefreshUserList"><span></span></span>
                                 </div>
 
                                 <div class="field">
@@ -603,7 +589,7 @@
             </div>
         </div>
         <!-- /ko -->
-        
+
         <!-- ko if: Effort -->
         <div class="field">
             <div class="tile-small effort"></div>
@@ -671,8 +657,7 @@
         <div class="list" data-bind="foreach: $data">
             <div class="item task list-item" data-bind="attr: { 'class': 'item task list-item ' + State() + ' ' + IsBlocked() }">
                 <!-- ko if: Title -->
-                <h2 class="title margintop tolower" data-bind="text: Title, click: $root.selectedFrame().onSelectUserStory">
-                </h2>
+                <h2 class="title margintop tolower" data-bind="text: Title, click: $root.selectedFrame().onSelectUserStory"></h2>
                 <!-- /ko -->
 
                 <!-- ko if: ProjectName -->
@@ -746,8 +731,7 @@
                                                     <!-- /ko -->
 
                                                     <!-- ko if: ProjectName -->
-                                                    <span class="small inactive iblock" data-bind="text: 'Project: ' + ProjectName()">
-                                                    </span>
+                                                    <span class="small inactive iblock" data-bind="text: 'Project: ' + ProjectName()"></span>
                                                     <!-- /ko -->
 
                                                     <div class="inactive">
@@ -782,12 +766,9 @@
         </div>
         <div class="metro-actionbar detail-view opened" data-bind="with: $data.data().selectedUserStory">
             <ul>
-                <li class="icon-action edit"><span data-bind="click: $root.selectedFrame().onEditUserStory">
-                </span></li>
-                <li class="icon-action update"><span data-bind="click: $root.selectedFrame().onUpdateUserStory">
-                </span></li>
-                <li class="icon-action delete"><span data-bind="click: $root.selectedFrame().onDeleteUserStory">
-                </span></li>
+                <li class="icon-action edit"><span data-bind="click: $root.selectedFrame().onEditUserStory"></span></li>
+                <li class="icon-action update"><span data-bind="click: $root.selectedFrame().onUpdateUserStory"></span></li>
+                <li class="icon-action delete"><span data-bind="click: $root.selectedFrame().onDeleteUserStory"></span></li>
             </ul>
         </div>
     </script>
@@ -849,8 +830,7 @@
                                     <div class="item task list-item relative reset-p clear">
                                         <h2 class="title margintop tolower accent-color">
                                             <span class="value" data-bind="text: Name, click: $parent.onSelectSprint"></span>
-                                            <span class="icon-action edit fright" data-bind="click: $parent.onEditSprint"><span>
-                                            </span></span>
+                                            <span class="icon-action edit fright" data-bind="click: $parent.onEditSprint"><span></span></span>
 
                                             <!-- ko if: $data.isPinned() -->
                                             <span class="icon-action unpin fright" title="Click to unpin from dashboard"><span
@@ -869,8 +849,10 @@
                                 </div>
                                 <!-- /ko -->
                                 <!-- ko if: $data.data().sprintList().length == 0 -->
-                                <p class="hint-text clear">There is no Sprint created in your Application yet. To create
-                                    a new Sprint click the button at the bottom of the screen!</p>
+                                <p class="hint-text clear">
+                                    There is no Sprint created in your Application yet. To create
+                                    a new Sprint click the button at the bottom of the screen!
+                                </p>
                                 <!-- /ko -->
                             </div>
                         </div>
@@ -955,8 +937,7 @@
                                     <div class="item task list-item clear">
                                         <h2 class="title margintop tolower accent-color">
                                             <span data-bind="text: Name, click: $parent.onSelectProject"></span>
-                                            <span class="icon-action edit fright" data-bind="click: $parent.onEditProject"><span>
-                                            </span></span>
+                                            <span class="icon-action edit fright" data-bind="click: $parent.onEditProject"><span></span></span>
                                         </h2>
 
                                         <p data-bind="text: Description"></p>
@@ -965,8 +946,10 @@
                                 <!-- /ko -->
 
                                 <!-- ko if: $data.data().projectList().length == 0 -->
-                                <p class="hint-text clear">There is no Project created in your Application yet. To create
-                                    a new Project click the button at the bottom of the screen!</p>
+                                <p class="hint-text clear">
+                                    There is no Project created in your Application yet. To create
+                                    a new Project click the button at the bottom of the screen!
+                                </p>
                                 <!-- /ko -->
                             </div>
                         </div>
@@ -1175,6 +1158,109 @@
             </div>
         </div>
     </script>
+   
+    <script type="text/html" id="repositories-welcome">
+        <div class="hint-screen">
+            <div class="container">
+                <h1>Welcome to JayScrum!</h1>
+                <p>
+                    In this Agile focused Application you can manage your team's current sprint with
+                    it's user stories, tasks, users and so on. To get started you have to create
+                    a Repository for your Application where everything will be stored. You don't have
+                    to
+                    do any configuration or more, just create your first database and get started now!
+                </p>
+
+                <div class="tacenter">
+                    <span class="btn-metro btn-large" data-bind="click: $data.getDemoDb">Create demo database</span>
+                    <span class="btn-metro btn-large" data-bind="click: $data.addSetting">Connect database</span>
+                    <span class="btn-metro btn-large" data-bind="click: $data.buyDatabase">Buy database</span>
+                </div>
+            </div>
+        </div>
+    </script>
+    <script type="text/html" id="repositories-addsetting">
+        <div id="settingPage">
+            <div class="main-header">
+                <h1 class="title">add connection</h1>
+            </div>
+            <div class="detail edit reset-p" data-bind="with: $data.data().selectedSetting">
+                <div class="tolower item reset-m">
+                    <div class="field hide">
+                        <div><span>Id</span></div>
+                        <input class="medium accent-bg" type="number" readonly="true" data-bind="value: Id" />
+                    </div>
+
+                    <div class="field">
+                        <div><span data-bind="text: $parent.data().isRegistration()?'Add a name for your repository':'Title'">Title</span></div>
+                        <input class="medium accent-bg" type="text" data-bind="value: Title, valueUpdate:['afterkeydown','propertychange','input']" />
+                    </div>
+                    <div class="field">
+                        <div>
+                            <span>url</span>
+                        </div>
+                        <textarea class="medium accent-bg" type="text" data-bind="value: Url, valueUpdate:['afterkeydown','propertychange','input'], attr:{'placeholder': 'Databse name or full URL'}"></textarea>
+                    </div>
+                    <div class="field">
+                        <div><span>Username</span></div>
+                        <input class="medium accent-bg" type="text" data-bind="value: UserName, valueUpdate:['afterkeydown','propertychange','input']" />
+                    </div>
+
+                    <div class="field">
+                        <div><span>Password</span></div>
+                        <input class="medium accent-bg" type="password" data-bind="value: Password, valueUpdate:['afterkeydown','propertychange','input']" />
+                    </div>
+                    <div class="field">
+                        <div><span class="metro-checkbox-label">Default repository</span></div>
+                        <div class="metro-checkbox accent-bg">
+                            <input type="checkbox" value="None" id="Checkbox1" name="check" data-bind="checked: IsDefault" />
+                            <label for="isDefault"></label>
+                        </div>
+                    </div>
+                    <div class="split2">
+                        <span class="btn-metro btn-large margin10_0" data-bind="click: $parent.saveSetting">Save</span>
+                        <span class="btn-metro btn-large margin10_0" data-bind="click: $parent.cancelSetting">Cancel</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </script>
+    <script type="text/html" id="repositories-addsubscription">
+        <div id="settingPage">
+            <div class="main-header">
+                <h1 class="title">subscription databse</h1>
+            </div>
+            <div class="detail edit reset-p" data-bind="with: $data.data().selectedSetting">
+                <div class="tolower item reset-m">
+                    <div class="field hide">
+                        <div><span>Id</span></div>
+                        <input class="medium accent-bg" type="number" readonly="true" data-bind="value: Id" />
+                    </div>
+
+                    <div class="field">
+                        <div><span>Add a name for your repository</span></div>
+                        <input class="medium accent-bg" type="text" data-bind="value: Title, valueUpdate:['afterkeydown','propertychange','input']" />
+                    </div>
+                    <div class="field">
+                        <div><span>Add an admin user</span></div>
+                    </div>
+                    <div class="field">
+                        <div><span>Username</span></div>
+                        <input class="medium accent-bg" type="text" data-bind="value: UserName, valueUpdate:['afterkeydown','propertychange','input']" />
+                    </div>
+
+                    <div class="field">
+                        <div><span>Password</span></div>
+                        <input class="medium accent-bg" type="password" data-bind="value: Password, valueUpdate:['afterkeydown','propertychange','input']" />
+                    </div>
+                    <div class="split2">
+                        <span class="btn-metro btn-large margin10_0" data-bind="click: $parent.subscriptionDatabase">Subscription</span>
+                        <span class="btn-metro btn-large margin10_0" data-bind="click: $parent.cancelSetting">Cancel</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </script>
     <script type="text/html" id="repositories-template">
         <div id="settingPage">
             <div class="icon-action back topleft">
@@ -1194,6 +1280,7 @@
                                 <!--ko ifnot: $data.Status() == 'static' || $data.Status() == 'ready'-->
                                 <h2 class="noclick" data-bind="text: Title"></h2>
                                 <!-- /ko -->
+                                <span data-bind="text:$data.Url"></span> 
                                 <span data-bind="text:$data.Status"></span>
                                 <div class="actions fright">
                                     <!--ko if: $data.Status() == 'static' || $data.Status() == 'ready'-->
@@ -1216,61 +1303,6 @@
                                 </div>
                             </li>
                         </ul>
-
-                        <div id="settings-edit" class="detail edit reset-p" data-bind="with: $data.data().selectedSetting">
-                            <div class="tolower item reset-m">
-                                <div class="field hide">
-                                    <div><span>Id</span></div>
-                                    <input class="medium accent-bg" type="number" readonly="true" data-bind="value: Id" />
-                                </div>
-
-                                <div class="field">
-                                    <div><span data-bind="text: $parent.data().isRegistration()?'Add a name for your repository':'Title'">Title</span></div>
-                                    <input class="medium accent-bg" type="text" data-bind="value: Title, valueUpdate:['afterkeydown','propertychange','input']" />
-                                </div>
-                                <!--ko ifnot: $parent.data().isRegistration-->
-                                <div class="field">
-                                    <div><span data-bind="text:  $parent.data().isRegistration() ? 'db name' : 'url'"></span>
-                                    </div>
-                                    <textarea class="medium accent-bg" type="text" data-bind="value: Url, valueUpdate:['afterkeydown','propertychange','input'], attr:{'placeholder': $parent.data().isRegistration()?'Databse name':'Databse name or full URL'}"></textarea>
-                                </div>
-                                <!--/ko-->
-                                <!--ko if: $parent.data().isRegistration-->
-                                <div class="field">
-                                    <div><span>Add an admin user</span></div>
-                                </div>
-                                <!--/ko-->
-                                <div class="field">
-                                    <div><span>Username</span></div>
-                                    <input class="medium accent-bg" type="text" data-bind="value: UserName, valueUpdate:['afterkeydown','propertychange','input']" />
-                                </div>
-
-                                <div class="field">
-                                    <div><span>Password</span></div>
-                                    <input class="medium accent-bg" type="password" data-bind="value: Password, valueUpdate:['afterkeydown','propertychange','input']" />
-                                </div>
-                                <!--ko ifnot: $parent.data().isRegistration-->
-                                <div class="field">
-                                    <div><span class="metro-checkbox-label">Default repository</span></div>
-                                    <div class="metro-checkbox accent-bg">
-                                        <input type="checkbox" value="None" id="isDefault" name="check" data-bind="checked: IsDefault" />
-                                        <label for="isDefault"></label>
-                                    </div>
-                                </div>
-                                 <!--/ko-->
-                                <div class="split2">
-                                    <!--ko ifnot: $parent.data().isRegistration-->
-                                    <span class="btn-metro btn-large margin10_0" data-bind="click: $parent.saveSetting">
-                                        Save</span>
-                                    <!--/ko-->
-                                    <!--ko if: $parent.data().isRegistration-->
-                                    <span class="btn-metro btn-large margin10_0" data-bind="click: $parent.subscriptionDatabase">
-                                        Subscription</span>
-                                    <!--/ko-->
-                                    <span class="btn-metro btn-large margin10_0" data-bind="click: $parent.cancelSetting">Cancel</span>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -1288,9 +1320,11 @@
                     <h1>About JayScrum</h1>
                     <p>Spice up your daily stand-up meetings and take Scrum to the next level! Support your agile teamwork with the latest cutting edge technology. JayScrum offers you a cross-platform solution with a gorgeous interface that allows you and your team members to create projects, file and priorize user stories, own up tasks, then allocate them to user stories or entire projects. Kick off sprints for a given time interval and monitor the performance of your team members.</p>
                     <p>Give us your feedback!</p>
-                    <p>Got a comment, suggestion or frustration?<br/>
-                        Let us know and help make JayScrum better.<br/>
-                        Customer service: <a href="mailto:jayscrum@jaystack.com">jayscrum@jaystack.com</a></p>
+                    <p>
+                        Got a comment, suggestion or frustration?<br />
+                        Let us know and help make JayScrum better.<br />
+                        Customer service: <a href="mailto:jayscrum@jaystack.com">jayscrum@jaystack.com</a>
+                    </p>
                     <p>JaySrum v 1.0 </p>
                     <br />
                     <p>Built on <b>JayData</b> framework (<a href="http://jaydata.org" target="_blank">http://jaydata.org</a>)</p>
@@ -1309,29 +1343,32 @@
                 <li class="icon-action more abs-right"><span data-bind="click: $data.toggleInfoBox"></span></li>
             </ul>
         </div>
-
-        <!-- ko if: $data.data().settings() != null -->
-        <!-- ko if: $data.data().settings().length < 1 -->
-        <div class="hint-screen">
-            <div class="container">
-                <h1>Welcome to JayScrum!</h1>
-                <p>
-                    In this Agile focused Application you can manage your team's current sprint with
-                    it's user stories, tasks, users and so on. To get started you have to create
-                    a Repository for your Application where everything will be stored. You don't have
-                    to
-                    do any configuration or more, just create your first database and get started now!
-                </p>
-
-                <div class="tacenter">
-                    <span class="btn-metro btn-large" data-bind="click: $data.addSetting">Create database</span>
-                </div>
-            </div>
-        </div>
-        <!-- /ko -->
-        <!-- /ko -->
     </script>
-
+    <script type="text/html" id="repositories-subscription">
+        <div id="settingPage">
+            <div class="icon-action back topleft">
+                <span data-bind="click: $root.backView"></span>
+            </div>
+            <div class="main-header">
+                <h1 class="title">subscription new databse</h1>
+            </div>
+            <!--ko ifnot: $data.data().subscriptionState() == 'finish'-->
+            <p>Creating your repository please wait and drink a coffee :)</p>
+            <!--ko if: $data.data().subscriptionState() == 'appStore'-->
+            <span>1/3</span>
+            <!--/ko-->
+            <!--ko ifnot: $data.data().subscriptionState() == 'appStore'-->
+            <span>2/3</span>
+            <!--/ko-->
+            <!--/ko-->
+            <!--ko if: $data.data().subscriptionState() == 'finish'-->
+            <p>Your repository has been created. Create users and invite your team through this address <b data-bind="text: $data.data().selectedSetting().Url()"></b></p>
+            <!--ko with:$data.data().selectedSetting-->
+            <span class="btn-metro btn-large" data-bind="click: $parent.connectTo" >Connect repositories</span>
+            <!--/ko-->
+            <!--/ko-->
+        </div>
+    </script>
 
     <script type="text/html" id="setPasswordUI">
         <form data-bind="submit: savePassword">

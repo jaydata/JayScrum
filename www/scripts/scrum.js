@@ -248,7 +248,8 @@ $data.Class.define('JayScrum.ScrumApp', JayScrum.FrameApp, null,{
         }
         return vScroll;
     },
-    _initializeRepositories:function(url, userName, psw){
+    _initializeRepositories: function (url, userName, psw) {
+        JayScrum.app.framePath([]);
         var connectDefer = Q.defer();
         console.log('!!!! Initialize repository, username: '+userName+', password: '+psw);
         $data.ajax({
@@ -302,7 +303,8 @@ $data.Class.define('JayScrum.ScrumApp', JayScrum.FrameApp, null,{
             });
         return connectDefer.promise;
     },
-    _initializeDemoRepositories:function(context){
+    _initializeDemoRepositories: function (context) {
+        JayScrum.app.framePath([]);
         JayScrum.repository = context;
         JayScrum.stormContext = context;
         JayScrum.stormContext.Users
@@ -319,9 +321,13 @@ $data.Class.define('JayScrum.ScrumApp', JayScrum.FrameApp, null,{
     _getFullUrl: function (shortUrl, userName, psw) {
         var connectDefer = Q.defer();
         console.log("Get full url, short URL: " + shortUrl);
+        console.log("Request: " + JayScrum.ScrumApp.ApplicationUrl + "/JayScrum/$metadata");
+        console.log("user: " + userName + " psw: " + psw);
         $data.service(JayScrum.ScrumApp.ApplicationUrl + "/JayScrum/$metadata", {
             success: function (factory, contextType) {
+                console.log("itt");
                 var ctx = factory({ user: userName, password: psw });
+                console.log("itt2");
                 ctx.UrlCutterItems
                 .single(function (item) { return item.ShortName == this.url }, { url: shortUrl }, function (url) {
                     connectDefer.resolve(url.Instance_Id);
@@ -329,6 +335,7 @@ $data.Class.define('JayScrum.ScrumApp', JayScrum.FrameApp, null,{
             },
             error: function () {
                 console.log("Error to connect main JayScrumDb");
+                console.log(JSON.stringify(arguments));
                 connectDefer.reject();
             }
         }, { user: userName, password: psw });
@@ -346,8 +353,8 @@ JayScrum.pushObservablesToList= function (list, rawData) {
         list.push(obs);
     }
 };
-//window['android'] = true;
-if(window['android'] && window['cordova']){
+window['android'] = true;//TODO remove this and THIS
+if(window['android'] && window['cordova']&& false){
 	document.addEventListener("deviceready", function(){
 		initApplication();	
 		document.addEventListener("backbutton", function(e){

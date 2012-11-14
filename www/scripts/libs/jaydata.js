@@ -12583,13 +12583,11 @@ $data.Entity = Entity = $data.Class.define("$data.Entity", null, null, {
             } else {
                 return {
                     toArray: function (cb) {
-                        console.log(set);
                         var pHandler = new $data.PromiseHandler();
                         var deferred = pHandler.deferred;
                         var promise = pHandler.getPromise();
                         set.toArray({
                             success: function (items) {
-                                console.log("!");
                                 for (var i = 0; i < items.length; i++) {
                                     if (items[i][key.name] === keyValue) {
                                         //deferred.resolve(items[i]);
@@ -12601,7 +12599,6 @@ $data.Entity = Entity = $data.Class.define("$data.Entity", null, null, {
                                 //deferred.reject(new Error("unknown id"));
                             },
                             error: function (error) {
-                                console.log("error");
                                 cb.error(error);
                                 //console.log(error);
                                 //deferred.reject(error);
@@ -12631,7 +12628,6 @@ $data.Entity = Entity = $data.Class.define("$data.Entity", null, null, {
                 var contextFactory = $data.Entity.getDefaultItemStoreFactory(type, store, options);
                 var context = contextFactory();
                 context.onReady(function () {
-                    console.dir(self._changedProperties);
                     var set = context.getEntitySetFromElementType(type);
                     //var result = action(context);
                     set.toArray({
@@ -12672,7 +12668,6 @@ $data.Entity = Entity = $data.Class.define("$data.Entity", null, null, {
                 var set = store.getEntitySetFromElementType(type);
                 set.toArray({
                     success: function (items) {
-                        console.log("readl all running");
                         //callback(items, null);
                         deferred.resolve(items);
                     },
@@ -12734,6 +12729,64 @@ $data.Entity = Entity = $data.Class.define("$data.Entity", null, null, {
         };
         type.itemCount = function () {
 
+        };
+
+        type.filter = function (predicate, thisArgs, store, options) {
+            var pHandler = new $data.PromiseHandler();
+            var deferred = pHandler.deferred;
+            var promise = pHandler.getPromise();
+            var storeFactory = $data.Entity.getDefaultItemStoreFactory(type, store, options);
+            var store = storeFactory();
+            store.onReady(function () {
+                var set = store.getEntitySetFromElementType(type);
+                set.toArray({
+                    success: function (items) {
+                        deferred.resolve(items.filter(predicate, thisArgs));
+                    },
+                    error: function (err) {
+                        //callback(null, err);
+                        deferred.reject(err);
+                    }
+                });
+            });
+            return promise;
+        };
+
+        type.first = function (predicate, thisArgs, store, options) {
+            var pHandler = new $data.PromiseHandler();
+            var deferred = pHandler.deferred;
+            var promise = pHandler.getPromise();
+            var storeFactory = $data.Entity.getDefaultItemStoreFactory(type, store, options);
+            var store = storeFactory();
+            store.onReady(function () {
+                var set = store.getEntitySetFromElementType(type);
+                set.toArray({
+                    success: function (items) {
+                        deferred.resolve(items.filter(predicate, thisArgs)[0]);
+                    },
+                    error: function (err) {
+                        //callback(null, err);
+                        deferred.reject(err);
+                    }
+                });
+            });
+            return promise;
+        };
+
+        if (typeof String.prototype.startsWith !== 'function') {
+            String.prototype.startsWith = function (str) {
+                return this.indexOf(str) === 0;
+            };
+        }
+        if (typeof String.prototype.endsWith !== 'function') {
+            String.prototype.endsWith = function (str) {
+                return this.slice(-str.length) === str;
+            };
+        }
+        if (typeof String.prototype.contains !== 'function') {
+            String.prototype.contains = function (str) {
+                return this.indexOf(str) >= 0;
+            };
         }
     },
 
@@ -12828,7 +12881,6 @@ $data.define = function (name, definition) {
 }
 
 $data.implementation = function (name) {
-    console.dir(this);
     var result = $data.__nameCache[name];
     return result;
 }
@@ -15707,7 +15759,6 @@ $data.Class.defineEx('$data.EntitySet',
             }
         }
         if (!keepChanges) {
-            console.log("dropping changes");
             data.entityState = $data.EntityState.Unchanged;
             data.changedProperties = undefined;
         }
@@ -15989,14 +16040,14 @@ $data.Class.define('$data.StorageProviderLoaderBase', null, null, {
     isSupported: function (providerName) {
         switch (providerName) {
             case 'indexedDb':
-                return window.indexedDB || window.webkitIndexedDB || window.mozIndexedDB || window.msIndexedDB;
+                return window.indexedDB || window.webkitIndexedDB || window.mozIndexedDB || (window.msIndexedDB && !(/^file:/.test(window.location.href)));
             case 'storm':
                 return 'XMLHttpRequest' in window;
             case 'webSql':
             case 'sqLite':
                 return 'openDatabase' in window;
             case 'LocalStore':
-                return 'localStorage' in window;
+                return 'localStorage' in window && window.localStorage ? true : false;
             case 'sqLite':
                 return 'openDatabase' in window;
             case 'mongoDB':
@@ -17647,7 +17698,7 @@ $data.MetadataLoader = new $data.MetadataLoaderClass();
 $data.service = function (serviceUri, cb, config) {
     $data.MetadataLoader.load(serviceUri, cb, config);
 };
-﻿(function ($data) {
+(function ($data) {
     if (typeof jQuery !== 'undefined') {
         $data.Class.define('$data.Deferred', $data.PromiseHandlerBase, null, {
             constructor: function () {

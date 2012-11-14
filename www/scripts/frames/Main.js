@@ -77,7 +77,7 @@ $data.Class.define('JayScrum.Frames.Main', JayScrum.Frame, null, {
         JayScrum.app.selectFrame('ThemeSettings');
     },
     onRepositorySettingShow:function(item){
-        JayScrum.app.selectFrame('Repositories');
+        JayScrum.app.selectFrame('Repositories', 'settings');
     },
     onUserSettingShow:function(item){
         JayScrum.app.selectFrame('Users');
