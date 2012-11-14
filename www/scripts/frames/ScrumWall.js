@@ -125,15 +125,18 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
 
     _loadData: function () {
         var loadingPromise = Q.defer();
-        JayScrum.app.selectedFrame().onRecentlyChangedListPullDown(JayScrum.app.selectedFrame().selectedView().recChange_iScroll)
+        JayScrum.app.onRefreshUserList()
             .then(function () {
-                JayScrum.app.selectedFrame().onToDoListPullDown(JayScrum.app.selectedFrame().selectedView().todo_iScroll)
+                JayScrum.app.selectedFrame().onRecentlyChangedListPullDown(JayScrum.app.selectedFrame().selectedView().recChange_iScroll)
                     .then(function () {
-                        JayScrum.app.selectedFrame().onInProgressListPullDown(JayScrum.app.selectedFrame().selectedView().inProgress_iScroll)
+                        JayScrum.app.selectedFrame().onToDoListPullDown(JayScrum.app.selectedFrame().selectedView().todo_iScroll)
                             .then(function () {
-                                JayScrum.app.selectedFrame().onDoneListPullDown(JayScrum.app.selectedFrame().selectedView().done_iScroll)
+                                JayScrum.app.selectedFrame().onInProgressListPullDown(JayScrum.app.selectedFrame().selectedView().inProgress_iScroll)
                                     .then(function () {
-                                        loadingPromise.resolve();
+                                        JayScrum.app.selectedFrame().onDoneListPullDown(JayScrum.app.selectedFrame().selectedView().done_iScroll)
+                                            .then(function () {
+                                                loadingPromise.resolve();
+                                            });
                                     });
                             });
                     });

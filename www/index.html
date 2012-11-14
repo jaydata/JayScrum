@@ -127,7 +127,7 @@
                                             <!-- /ko -->
 
                                             <!-- ko if: ChangedBy -->
-                                            <span class="small accent-color" data-bind="text: ChangedBy"></span>
+                                            <span class="small accent-color" data-bind="text: $root.globalData().userFullNames()[ChangedBy()]"></span>
                                             <!-- /ko -->
 
                                             <!-- ko if: ChangedDate -->
@@ -167,7 +167,7 @@
                                             <!-- /ko -->
 
                                             <!-- ko if: AssignedTo -->
-                                            <span class="small accent-color" data-bind="text: AssignedTo"></span>
+                                            <span class="small accent-color" data-bind="text: $root.globalData().userFullNames()[AssignedTo()]"></span>
                                             <!-- /ko -->
 
                                             <!-- ko if: Priority -->
@@ -195,7 +195,7 @@
                                             <!-- /ko -->
 
                                             <!-- ko if: AssignedTo -->
-                                            <h4 class="title accent-color" data-bind="text: AssignedTo"></h4>
+                                            <h4 class="title accent-color" data-bind="text: $root.globalData().userFullNames()[AssignedTo()]"></h4>
                                             <!-- /ko -->
 
                                             <!-- ko if: ProjectName -->
@@ -241,7 +241,7 @@
 
                                         <div class="inactive tolower">
                                             <!-- ko if: AssignedTo -->
-                                            <span class="small accent-color" data-bind="text: AssignedTo"></span>
+                                            <span class="small accent-color" data-bind="text: $root.globalData().userFullNames()[AssignedTo()]"></span>
                                             <!-- /ko -->
 
                                             <!-- ko if: ChangedDate -->
@@ -470,7 +470,7 @@
 
                                 <div class="field">
                                     <div><span>Assigned To</span></div>
-                                    <select class="medium accent-bg with-icon" data-bind="options: $root.globalData().userList, value: AssignedTo">
+                                    <select class="medium accent-bg with-icon" data-bind="options: $root.globalData().userList, optionsText:function(item){return item?JayScrum.app.globalData().userFullNames()[item]+' ('+item+')':'';}, value: AssignedTo">
                                     </select>
                                     <span class="icon-action update fright" data-bind="click: $root.onRefreshUserList"><span></span></span>
                                 </div>
@@ -566,7 +566,7 @@
         <div class="field">
             <div class="tile-small user"></div>
             <div>
-                <span>Assigned To</span><span class="medium accent-color" data-bind="text: AssignedTo"></span>
+                <span>Assigned To</span><span class="medium accent-color" data-bind="text: $root.globalData().userFullNames()[AssignedTo()]"></span>
             </div>
         </div>
         <!-- /ko -->
