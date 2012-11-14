@@ -360,7 +360,7 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
     onRecentlyChangedListPullUp: function (scroller) {
         var q = JayScrum.app.selectedFrame().recentlyChangedListQuery;
         if (JayScrum.app.selectedFrame().data().myTasks()) {
-            q = q.filter(function (item) { return /*item.AssignedTo == '' || */item.AssignedTo == this.currentUser; }, { currentUser: JayScrum.app.globalData().user().Login() });
+            q = q.filter(function (item) { return item.AssignedTo == '' || item.AssignedTo == this.currentUser; }, { currentUser: JayScrum.app.globalData().user().Login() });
         }
         q.orderByDescending(function (item) { return item.ChangedDate })
             .take(JayScrum.app.selectedFrame().listLoadSize)
@@ -375,7 +375,7 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
     onToDoListPullUp: function (scroller) {
         var q = JayScrum.app.selectedFrame().toDoListQuery;
         if (JayScrum.app.selectedFrame().data().myTasks()) {
-            q = q.filter(function (item) { return /*item.AssignedTo == '' || */item.AssignedTo == this.currentUser; }, { currentUser: JayScrum.app.globalData().user().Login() });
+            q = q.filter(function (item) { return item.AssignedTo == '' || item.AssignedTo == this.currentUser; }, { currentUser: JayScrum.app.globalData().user().Login() });
         }
         q.orderBy(function (item) { return item.Priority; })
             .take(JayScrum.app.selectedFrame().listLoadSize)
@@ -390,7 +390,7 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
     onInProgressListPullUp: function (scroller) {
         var q = JayScrum.app.selectedFrame().inProgressListQuery;
         if (JayScrum.app.selectedFrame().data().myTasks()) {
-            q = q.filter(function (item) { return /*item.AssignedTo == '' || */item.AssignedTo == this.currentUser; }, { currentUser: JayScrum.app.globalData().user().Login() });
+            q = q.filter(function (item) { return item.AssignedTo == '' || item.AssignedTo == this.currentUser; }, { currentUser: JayScrum.app.globalData().user().Login() });
         }
         q.orderBy(function (item) { return item.AssignedTo; })
             .orderBy(function (item) { return item.Priority; })
@@ -406,7 +406,7 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
     onDoneListPullUp: function (scroller) {
         var q = JayScrum.app.selectedFrame().doneListQuery;
         if (JayScrum.app.selectedFrame().data().myTasks()) {
-            q = q.filter(function (item) { return /*item.AssignedTo == '' || */item.AssignedTo == this.currentUser; }, { currentUser: JayScrum.app.globalData().user().Login() });
+            q = q.filter(function (item) { return item.AssignedTo == '' || item.AssignedTo == this.currentUser; }, { currentUser: JayScrum.app.globalData().user().Login() });
         }
         q.orderByDescending(function (item) { return item.ChangedDate; })
             .orderBy(function (item) { return item.AssignedTo; })
@@ -425,7 +425,7 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
         var loadingPromise = Q.defer();
         var q = JayScrum.app.selectedFrame().recentlyChangedListQuery;
         if (JayScrum.app.selectedFrame().data().myTasks()) {
-            q = q.filter(function (item) { return /*item.AssignedTo == '' || */item.AssignedTo == this.currentUser; }, { currentUser: JayScrum.app.globalData().user().Login() });
+            q = q.filter(function (item) { return item.AssignedTo == '' || item.AssignedTo == this.currentUser; }, { currentUser: JayScrum.app.globalData().user().Login() });
         }
         q.orderByDescending(function (item) { return item.ChangedDate })
         .take(JayScrum.app.selectedFrame().listLoadSize)
@@ -440,7 +440,7 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
         var loadingPromise = Q.defer();
         var q = JayScrum.app.selectedFrame().toDoListQuery;
         if (JayScrum.app.selectedFrame().data().myTasks()) {
-            q = q.filter(function (item) { return /*item.AssignedTo == '' || */item.AssignedTo == this.currentUser; }, { currentUser: JayScrum.app.globalData().user().Login() });
+            q = q.filter(function (item) { return item.AssignedTo == '' || item.AssignedTo == this.currentUser; }, { currentUser: JayScrum.app.globalData().user().Login() });
         }
         q.orderBy(function (item) { return item.Priority; })
         .take(JayScrum.app.selectedFrame().listLoadSize)
@@ -455,7 +455,7 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
         var loadingPromise = Q.defer();
         var q = JayScrum.app.selectedFrame().inProgressListQuery;
         if (JayScrum.app.selectedFrame().data().myTasks()) {
-            q = q.filter(function (item) { return /*item.AssignedTo == '' || */item.AssignedTo == this.currentUser; }, { currentUser: JayScrum.app.globalData().user().Login() });
+            q = q.filter(function (item) { return item.AssignedTo == '' || item.AssignedTo == this.currentUser; }, { currentUser: JayScrum.app.globalData().user().Login() });
         }
         q.orderBy(function (item) { return item.AssignedTo; })
         .orderBy(function (item) { return item.Priority; })
@@ -471,7 +471,7 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
         var loadingPromise = Q.defer();
         var q = JayScrum.app.selectedFrame().doneListQuery;
         if (JayScrum.app.selectedFrame().data().myTasks()) {
-            q = q.filter(function (item) { return /*item.AssignedTo == '' || */item.AssignedTo == this.currentUser; }, { currentUser: JayScrum.app.globalData().user().Login() });
+            q = q.filter(function (item) { return item.AssignedTo == '' || item.AssignedTo == this.currentUser; }, { currentUser: JayScrum.app.globalData().user().Login() });
         }
         q.orderByDescending(function (item) { return item.ChangedDate; })
         .orderBy(function (item) { return item.AssignedTo; })
