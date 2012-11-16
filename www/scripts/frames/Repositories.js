@@ -119,7 +119,7 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
             settings: ko.observableArray(),
             errorMsg: ko.observable(),
             isRegistration: ko.observable(false),
-            isSupportedPurchase: ko.observable(android),
+            isSupportedPurchase: ko.observable(window['android']),
             subscriptionState: ko.observable()
         });
 
@@ -287,7 +287,7 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
             return;
         }
         JayScrum.app.showLoading();
-        var url = repoSetting.RealUrl() || repoSetting.Url().toLowerCase();
+        var url = repoSetting.RealUrl() || repoSetting.Url();
         //If url is only 4 char, it is a smart url and must resolve it
         if (url.length == 4) {
             JayScrum.app._getFullUrl(url, 'admin', 'admin')
@@ -301,6 +301,7 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
             });
             return;
         }
+        url = url.toLowerCase();
         if (url.indexOf('http') !== 0) {
             url = "http://" + url.toLowerCase() + JayScrum.Frames.Repositories.ServerUrl;
         }
@@ -436,7 +437,8 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
     _successSubscriptionRequest: function (result) {
         if (result !== "RESULT_OK") {
             console.log('-== 92/1. error subscribe');
-            JayScrum.app.selectedFrame()._cordovaFailCallback();
+            //TODO: RESULT_USER_CANCELED
+            JayScrum.app.selectedFrame()._cordovaFailCallback(result);
             return;
         }
         JayScrum.app.selectedFrame().data().subscriptionState('storm');
@@ -490,18 +492,19 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
     ServerUrl: '.jaystack.net',
     SubscriptionState: { AppStore: 'appstore', Storm: 'storm', End: "finish" }
 });
-window['cordova'] = {};
-cordova.exec = function (success, error, a, fn, params) {
-    switch (fn) {
-        case 'transactions':
-            setTimeout(function () { success([JSON.parse('{"DevPayLoad":{"dbName":"alma","psw":"jelszo","title":"Repository","usr":"korte","Title":"Repository","UserName":"korte","Password":"jelszo","OrderId":"1389551147345499"},"purchaseToken":"trivkrjcyozqswvsfeuhnmrs","ProductId":"test.jaystack.subscription_monthly","OrderId":"1389551147345499"}')]) }, 1000);
-            //setTimeout(function () { success([]) }, 1000);
-            return;
-            break;
-        case 'subscribe':
-            setTimeout(function () { params[0].OrderId = "1389551147345499"; success("RESULT_OK") }, 1000);
-            return;
-            break;
-    }
-    error();
-};
+
+//window['cordova'] = {};
+//cordova.exec = function (success, error, a, fn, params) {
+//    switch (fn) {
+//        case 'transactions':
+//            setTimeout(function () { success([JSON.parse('{"DevPayLoad":{"dbName":"alma","psw":"jelszo","title":"Repository","usr":"korte","Title":"Repository","UserName":"korte","Password":"jelszo","OrderId":"1389551147345499"},"purchaseToken":"trivkrjcyozqswvsfeuhnmrs","ProductId":"test.jaystack.subscription_monthly","OrderId":"1389551147345499"}')]) }, 1000);
+//            //setTimeout(function () { success([]) }, 1000);
+//            return;
+//            break;
+//        case 'subscribe':
+//            setTimeout(function () { params[0].OrderId = "1389551147345499"; success("RESULT_OK") }, 1000);
+//            return;
+//            break;
+//    }
+//    error();
+//};

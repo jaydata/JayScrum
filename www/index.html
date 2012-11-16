@@ -15,6 +15,21 @@
     <link rel="shortcut icon" href="Images/icons/favicon.ico" type="image/x-icon" />
 
     <link rel="stylesheet" href="Styles/metro.css" type="text/css" />
+    
+    <script type="text/javascript" src="scripts/libs/zeptojs.min.js"></script>
+    <script type="text/javascript" src="scripts/libs/q.js"></script>
+    <!--<script type="text/javascript" src="scripts/cordova-2.2.0.js"></script>-->
+    <script type="text/javascript">
+        var jqReady = Q.defer();
+        var pgReady = Q.defer();
+        if (window['cordova']) {
+            document.addEventListener("deviceready", pgReady.resolve, false);
+        } else {
+            pgReady.resolve();
+        }
+
+        $(function () { jqReady.resolve(); });
+    </script>
 </head>
 <body accent="blue" theme="black" font="segoeuilight">
     <div id="page">
@@ -1416,22 +1431,21 @@
     <!-- #endregion TEMPLATES -->
 
     <script type="text/javascript" src="scripts/libs/moment.js"></script>
-    <script type="text/javascript" src="scripts/libs/zeptojs.min.js"></script>
-    <script type="text/javascript" src="scripts/libs/q.js"></script>
+
     <script type="text/javascript" src="scripts/libs/knockout-2.1.0.debug.js"></script>
+    
     <script type="text/javascript" src="scripts/libs/datajs-1.0.3-patched.js"></script>
     <script type="text/javascript" src="scripts/libs/jaydata.js"></script>
-
     <script type="text/javascript" src="scripts/jaydataproviders/SqLiteProvider.js"></script>
     <script type="text/javascript" src="scripts/jaydataproviders/oDataProvider.js"></script>
-
     <script type="text/javascript" src="scripts/jaydatamodules/knockout.js"></script>
     <script type="text/javascript" src="scripts/jaydatamodules/qDeferred.js"></script>
+
+
 
     <script type="text/javascript" src="scripts/JayApp/FrameView.js"></script>
     <script type="text/javascript" src="scripts/JayApp/Frame.js"></script>
     <script type="text/javascript" src="scripts/JayApp/FrameApp.js"></script>
-
     <script type="text/javascript" src="scripts/frames/Main.js"></script>
     <script type="text/javascript" src="scripts/frames/ScrumWall.js"></script>
     <script type="text/javascript" src="scripts/frames/Repositories.js"></script>
@@ -1440,20 +1454,18 @@
     <script type="text/javascript" src="scripts/frames/Projects.js"></script>
     <script type="text/javascript" src="scripts/frames/UserStories.js"></script>
     <script type="text/javascript" src="scripts/frames/Sprints.js"></script>
-
     <script type="text/javascript" src="scripts/RepositoryContext.js"></script>
-    <!--<script type="text/javascript" src="scripts/IScroll/iscroll.min.js"></script>-->
     <script type="text/javascript" src="scripts/IScroll/iscroll.js"></script>
     <script type="text/javascript" src="scripts/IScroll/swipeview.js"></script>
     <script type="text/javascript" src="scripts/libs/mobiscroll-2.0.2.custom.min.js"></script>
-
-    <script type="text/javascript" src="scripts/init.js"></script>
-    <script type="text/javascript" src="scripts/scrum.js"></script>
-
     <script type="text/javascript" src="scripts/flotr2/flotr2.js"></script>
     <script type="text/javascript" src="scripts/burndown.js"></script>
     <script type="text/javascript" src="scripts/userEditor/jaygrid-table-template.js"></script>
     <script type="text/javascript" src="scripts/userEditor/jaygrid.js"></script>
+    
+    <script type="text/javascript" src="scripts/init.js"></script>
+    <script type="text/javascript" src="scripts/scrum.js"></script>
+
 
     <script type="text/html" id="jayAppMenu">
         <div>

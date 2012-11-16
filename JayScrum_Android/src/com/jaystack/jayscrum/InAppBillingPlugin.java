@@ -14,7 +14,7 @@ import org.json.JSONObject;
 
 import android.util.Log;
 
-import com.phonegap.api.Plugin;
+import org.apache.cordova.api.*;
 
 public class InAppBillingPlugin extends Plugin {
 

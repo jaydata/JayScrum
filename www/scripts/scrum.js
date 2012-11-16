@@ -1,58 +1,3 @@
-var debug = true,
-    iScrollOptions = function (fn, fn2, checkDomChanges) {
-        this.useTransition = true;
-        this.hScroll = false;
-        this.vScroll = true;
-        this.fixedScrollbar = false;
-        this.hideScrollbar = false;
-        this.scrollbarClass = "iscrollbar";
-        this.bounce = true;
-        this.lockDirection = true;
-        this.checkDOMChanges = checkDomChanges;
-        /*this.onScrollStart = function () {
-            if ($('input:focus, select:focus, textarea:focus').length > 0) {
-                $(':focus').blur();
-            }
-        };*/
-        this.onScrollMove = function () {
-            if (this.y < 0 && this.y < this.maxScrollY - 100 && !this.addNewItem) {
-                $(this.scroller).find("div.scroll-up").addClass("flip");
-                $(this.scroller).find("div.scroll-up span.pullUpLabel").html("Release to refresh");
-                this.addNewItem = true;
-            } else if (this.y > 0 && this.y > this.maxScrollY - 200 && !this.clearList) {
-                $(this.scroller).find("div.scroll-down").addClass("flip");
-                $(this.scroller).find("div.scroll-down span.pullDownLabel").html("Release to refresh");
-                this.clearList = true;
-            }
-        };
-        this.onScrollEnd = function () {
-            if (this.addNewItem) {
-                $(this.scroller).find("div.scroll-up").removeClass("flip");
-                $(this.scroller).find("div.scroll-up span.pullUpLabel").html("Pull up to load more");
-
-                this.addNewItem = undefined;
-
-                if (this.options.refreshFunction) {
-                    this.options.refreshFunction(this);
-                }
-            }
-
-            if (this.clearList) {
-                $(this.scroller).find("div.scroll-down").removeClass("flip");
-                $(this.scroller).find("div.scroll-down span.pullDownLabel").html("Pull down to refresh");
-
-                this.clearList = undefined;
-
-                if (this.options.clearFunction) {
-                    this.options.clearFunction(this);
-                }
-            }
-        };
-        this.refreshFunction = fn;
-        this.clearFunction = fn2;
-    };
-
-
 $data.Class.define('JayScrum.ScrumApp', JayScrum.FrameApp, null, {
     constructor: function () {
         this.registerFrame(new JayScrum.Frames.Main('MainFrame'));
@@ -101,7 +46,7 @@ $data.Class.define('JayScrum.ScrumApp', JayScrum.FrameApp, null, {
     onRefreshUserList: function () {
         var loadPromise = Q.defer();
         JayScrum.app.globalData().userList(['']);
-        JayScrum.stormContext.Users.toArray(function (result) {
+        JayScrum.stormContext.Users.orderBy("it.Login").toArray(function (result) {
             var fullNameCache = {};
             result.forEach(function (item) {
                 JayScrum.app.globalData().userList.push(item.Login);
@@ -132,7 +77,7 @@ $data.Class.define('JayScrum.ScrumApp', JayScrum.FrameApp, null, {
         var i_scroll = null,
             transition = $("div#" + id);
 
-        i_scroll = new iScroll(id, new iScrollOptions(fn, fn2, checkDomChanges));
+        i_scroll = new iScroll(id, new JayScrum.ScrumApp.iScrollOptions(fn, fn2, checkDomChanges));
         transition.addClass("animate").parent().find('h1.pivot-default').addClass("animate");
 
         // pull up to load more
@@ -332,9 +277,8 @@ $data.Class.define('JayScrum.ScrumApp', JayScrum.FrameApp, null, {
         console.log("user: " + userName + " psw: " + psw);
         $data.service(JayScrum.ScrumApp.ApplicationUrl + "/JayScrum/$metadata", {
             success: function (factory, contextType) {
-                console.log("itt");
                 var ctx = factory({ user: userName, password: psw });
-                console.log("itt2");
+                
                 ctx.UrlCutterItems
                 .single(function (item) { return item.ShortName == this.url }, { url: shortUrl }, function (url) {
                     connectDefer.resolve(url.Instance_Id);
@@ -350,7 +294,59 @@ $data.Class.define('JayScrum.ScrumApp', JayScrum.FrameApp, null, {
         return connectDefer.promise;
     }
 }, {
-    ApplicationUrl: "http://720007a3-c93e-4410-af6d-16efcc5d3d91.jaystack.net"
+    ApplicationUrl: "http://720007a3-c93e-4410-af6d-16efcc5d3d91.jaystack.net",
+    iScrollOptions: function (fn, fn2, checkDomChanges) {
+        this.useTransition = true;
+        this.hScroll = false;
+        this.vScroll = true;
+        this.fixedScrollbar = false;
+        this.hideScrollbar = false;
+        this.scrollbarClass = "iscrollbar";
+        this.bounce = true;
+        this.lockDirection = true;
+        this.checkDOMChanges = checkDomChanges;
+        /*this.onScrollStart = function () {
+            if ($('input:focus, select:focus, textarea:focus').length > 0) {
+                $(':focus').blur();
+            }
+        };*/
+        this.onScrollMove = function () {
+            if (this.y < 0 && this.y < this.maxScrollY - 100 && !this.addNewItem) {
+                $(this.scroller).find("div.scroll-up").addClass("flip");
+                $(this.scroller).find("div.scroll-up span.pullUpLabel").html("Release to refresh");
+                this.addNewItem = true;
+            } else if (this.y > 0 && this.y > this.maxScrollY - 200 && !this.clearList) {
+                $(this.scroller).find("div.scroll-down").addClass("flip");
+                $(this.scroller).find("div.scroll-down span.pullDownLabel").html("Release to refresh");
+                this.clearList = true;
+            }
+        };
+        this.onScrollEnd = function () {
+            if (this.addNewItem) {
+                $(this.scroller).find("div.scroll-up").removeClass("flip");
+                $(this.scroller).find("div.scroll-up span.pullUpLabel").html("Pull up to load more");
+
+                this.addNewItem = undefined;
+
+                if (this.options.refreshFunction) {
+                    this.options.refreshFunction(this);
+                }
+            }
+
+            if (this.clearList) {
+                $(this.scroller).find("div.scroll-down").removeClass("flip");
+                $(this.scroller).find("div.scroll-down span.pullDownLabel").html("Pull down to refresh");
+
+                this.clearList = undefined;
+
+                if (this.options.clearFunction) {
+                    this.options.clearFunction(this);
+                }
+            }
+        };
+        this.refreshFunction = fn;
+        this.clearFunction = fn2;
+    }
 });
 
 JayScrum.pushObservablesToList = function (list, rawData) {
@@ -360,22 +356,49 @@ JayScrum.pushObservablesToList = function (list, rawData) {
         list.push(obs);
     }
 };
-window['android'] = true;//TODO remove this and THIS
-if (window['android'] && window['cordova'] && false) {
-    document.addEventListener("deviceready", function () {
-        initApplication();
+
+Q.all([jqReady.promise, pgReady.promise])
+.then(function () {
+    console.log("!!!init");
+    initEnvironment(window);
+    console.log("!!!env init");
+    if (window['android']) {
+        console.log("!!!backbtn");
         document.addEventListener("backbutton", function (e) {
             if (JayScrum.app.framePath().length > 1) {
                 JayScrum.app.backView();
-            } else {
+            }
+            else {
                 e.preventDefault();
                 navigator.app.exitApp();
             }
         }, false);
-    }, false);
-} else {
+    }
     initApplication();
-}
+});
+
+/*$(function () {
+    if (window['cordova']) {
+        document.addEventListener("deviceready", function () {
+            initEnvironment(window);
+            initApplication();
+            if (window['android']) {
+                document.addEventListener("backbutton", function (e) {
+                    if (JayScrum.app.framePath().length > 1) {
+                        JayScrum.app.backView();
+                    }
+                    else {
+                        e.preventDefault();
+                        navigator.app.exitApp();
+                    }
+                }, false);
+            }
+        }, false);
+    } else {
+        initEnvironment(window);
+        initApplication();
+    }
+});*/
 function initApplication() {
     $(function () {
         if (android) {
