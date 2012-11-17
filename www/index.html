@@ -1,4 +1,4 @@
-ï»¿<!DOCTYPE>
+<!DOCTYPE>
 <html>
 <head>
     <title>JayScrum</title>
@@ -18,6 +18,8 @@
     
     <script type="text/javascript" src="scripts/libs/zeptojs.min.js"></script>
     <script type="text/javascript" src="scripts/libs/q.js"></script>
+    
+    <script type="text/javascript" src="cordova_mock.js"></script>
     <!--<script type="text/javascript" src="scripts/cordova-2.2.0.js"></script>-->
     <script type="text/javascript">
         var jqReady = Q.defer();
@@ -340,7 +342,7 @@
                 <span data-bind="click: $root.selectedFrame().onCancelWorkItem"></span>
             </div>
             <div id="wrapper-detailed" class="scroll-out">
-                <div class="slider-action prev">â€¹</div>
+                <div class="slider-action prev">‹</div>
                 <div id="swipeview" class="scroller-in">
                     <div class="list maxlist">
                         <div id="swipeview-slider">
@@ -383,7 +385,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="slider-action next">â€º</div>
+                <div class="slider-action next">›</div>
             </div>
         </div>
         <div class="metro-actionbar detail-view opened" data-bind="with: $data.data().selectedWorkItemActive">
@@ -1175,7 +1177,7 @@
     </script>
    
     <script type="text/html" id="repositories-welcome">
-        <div class="hint-screen">
+        <div class="hint-screen" id="hintScreenScroller">
             <div class="container">
                 <h1>Welcome to JayScrum!</h1>
                 <p>
@@ -1197,9 +1199,9 @@
     <script type="text/html" id="repositories-addsetting">
         <div id="settingPage">
             <div class="main-header">
-                <h1 class="title">add connection</h1>
+                <h1 class="title">add online repository</h1>
             </div>
-            <div class="detail edit reset-p" data-bind="with: $data.data().selectedSetting">
+            <div id="addSettingScroller" class="edit reset-p" data-bind="with: $data.data().selectedSetting">
                 <div class="tolower item reset-m">
                     <div class="field hide">
                         <div><span>Id</span></div>
@@ -1207,14 +1209,14 @@
                     </div>
 
                     <div class="field">
-                        <div><span data-bind="text: $parent.data().isRegistration()?'Add a name for your repository':'Title'">Title</span></div>
+                        <div><span data-bind="text: Id()?'edit repository name':'add repository name'"></span></div>
                         <input class="medium accent-bg" type="text" data-bind="value: Title, valueUpdate:['afterkeydown','propertychange','input']" />
                     </div>
                     <div class="field">
                         <div>
-                            <span>url</span>
+                            <span>add repository url</span>
                         </div>
-                        <textarea class="medium accent-bg" type="text" data-bind="value: Url, valueUpdate:['afterkeydown','propertychange','input'], attr:{'placeholder': 'Databse name or full URL'}"></textarea>
+                        <textarea class="medium accent-bg" type="text" data-bind="value: Url, valueUpdate:['afterkeydown','propertychange','input'], attr:{'placeholder': 'Online repository name or full URL'}"></textarea>
                     </div>
                     <div class="field">
                         <div><span>Username</span></div>
@@ -1226,7 +1228,7 @@
                         <input class="medium accent-bg" type="password" data-bind="value: Password, valueUpdate:['afterkeydown','propertychange','input']" />
                     </div>
                     <div class="field">
-                        <div><span class="metro-checkbox-label">Default repository</span></div>
+                        <div><span class="metro-checkbox-label">Set as default repository</span></div>
                         <div class="metro-checkbox accent-bg">
                             <input type="checkbox" value="None" id="Checkbox1" name="check" data-bind="checked: IsDefault" />
                             <label for="isDefault"></label>
@@ -1243,9 +1245,9 @@
     <script type="text/html" id="repositories-addsubscription">
         <div id="settingPage">
             <div class="main-header">
-                <h1 class="title">subscription databse</h1>
+                <h1 class="title">Buy online repository</h1>
             </div>
-            <div class="detail edit reset-p" data-bind="with: $data.data().selectedSetting">
+            <div id="addSubscriptionScroller" class="edit reset-p" data-bind="with: $data.data().selectedSetting">
                 <div class="tolower item reset-m">
                     <div class="field hide">
                         <div><span>Id</span></div>
@@ -1253,23 +1255,23 @@
                     </div>
 
                     <div class="field">
-                        <div><span>Add a name for your repository</span></div>
+                        <div><span>add name for your repository</span></div>
                         <input class="medium accent-bg" type="text" data-bind="value: Title, valueUpdate:['afterkeydown','propertychange','input']" />
                     </div>
                     <div class="field">
-                        <div><span>Add an admin user</span></div>
+                        <div><span>add repository owner admin user</span></div>
                     </div>
                     <div class="field">
-                        <div><span>Username</span></div>
+                        <div><span>Admin user name</span></div>
                         <input class="medium accent-bg" type="text" data-bind="value: UserName, valueUpdate:['afterkeydown','propertychange','input']" />
                     </div>
 
                     <div class="field">
-                        <div><span>Password</span></div>
+                        <div><span>Admin user password</span></div>
                         <input class="medium accent-bg" type="password" data-bind="value: Password, valueUpdate:['afterkeydown','propertychange','input']" />
                     </div>
                     <div class="split2">
-                        <span class="btn-metro btn-large margin10_0" data-bind="click: $parent.subscriptionDatabase">Subscription</span>
+                        <span class="btn-metro btn-large margin10_0" data-bind="click: $parent.subscriptionDatabase">buy subscription</span>
                         <span class="btn-metro btn-large margin10_0" data-bind="click: $parent.cancelSetting">Cancel</span>
                     </div>
                 </div>
@@ -1333,18 +1335,14 @@
             <ul id="repo-info-scroll">
                 <li>
                     <h1>About JayScrum</h1>
-                    <p>Spice up your daily stand-up meetings and take Scrum to the next level! Support your agile teamwork with the latest cutting edge technology. JayScrum offers you a cross-platform solution with a gorgeous interface that allows you and your team members to create projects, file and priorize user stories, own up tasks, then allocate them to user stories or entire projects. Kick off sprints for a given time interval and monitor the performance of your team members.</p>
-                    <p>Give us your feedback!</p>
-                    <p>
-                        Got a comment, suggestion or frustration?<br />
-                        Let us know and help make JayScrum better.<br />
-                        Customer service: <a href="mailto:jayscrum@jaystack.com">jayscrum@jaystack.com</a>
-                    </p>
-                    <p>JaySrum v 1.0 </p>
+                    <p>Version: JayScrum 1.0 </p><br />
+                    <p>JayScrum is an agile Project Management tool, that enables you to make your Scrum-methodology-based daily routine enjoyable. JayScrum turns your daily standup meetings something you and your team will look forward to, all that with an intuitive and beautifully designed application.  Through this application you can manage Projects, Backlogs, Tasks, Bugs, and Impediments.</p>
+                    <p>If you have any suggestions that could help us make JayScrum even better or more to your liking, or if you are facing any support issues with your application or with your online repository, please contact us <a href="mailto:jayscrum@jaystack.com"></a>via e-mail.</a></p>
                     <br />
-                    <p>Built on <b>JayData</b> framework (<a href="http://jaydata.org" target="_blank">http://jaydata.org</a>)</p>
-                    <p>Copyright: <b>JayStack Technologies</b> (<a href="http://jaystack.com" target="_blank">http://jaystack.com</a>)</p>
-                    <p><b>Privacy policy</b> I <b>Terms of service</b> (<a href="http://jaystack.com/jayscrum">http://jaystack.com/jayscrum</a>)</p>
+                    <p>Application framework: </br><b>JayData</b> (<a href="http://jaydata.org" target="_blank">http://jaydata.org</a>)</p>
+                    <p>Application built on: </br> <b>JayStorm </b>(<a href="http://jaydata.org" target="_blank">http://jaystack.com</a>)</p>
+                    <p>Copyright:</br> <b>JayStack Technologies</b> (<a href="http://jaystack.com" target="_blank">http://jaystack.com</a>)</p><br />
+                    <p><b><a href="http://jaystack.com/company/privacy_policy">Privacy policy</a></b> I <a href="http://jaystack.com/company/terms_of_service">Terms of service</a></p>
                 </li>
             </ul>
         </div>
@@ -1365,19 +1363,22 @@
                 <span data-bind="click: $root.backView"></span>
             </div>
             <div class="main-header">
-                <h1 class="title">subscription new databse</h1>
+                <h1 class="title">Creating new repository</h1>
             </div>
             <!--ko ifnot: $data.data().subscriptionState() == 'finish'-->
-            <p>Creating your repository please wait and drink a coffee :)</p>
+            <h3>Repository creation is in progress</h3>
+            <span> It may take a few minutes please wait patiently or have a nice cup of coffee :)</br></span>
             <!--ko if: $data.data().subscriptionState() == 'appStore'-->
-            <span>1/3</span>
+            <span>Creation in progress (step 1/3)</span>
             <!--/ko-->
             <!--ko ifnot: $data.data().subscriptionState() == 'appStore'-->
-            <span>2/3</span>
+            <span>Creation in progress (step 2/3)</span>
             <!--/ko-->
             <!--/ko-->
             <!--ko if: $data.data().subscriptionState() == 'finish'-->
-            <p>Your repository has been created. Create users and invite your team through this address <b data-bind="text: $data.data().selectedSetting().Url()"></b></p>
+            <h3>successfull repository creation</h3>
+            <span>Your repository has been created sucessfully. <b>Your repository url is:</b><b data-bind="text: $data.data().selectedSetting().Url()"></b>Now you only have to connect to your repository, create users and invite your team members.</br></span>
+            <h3>Repository creation has failed</h3><p>Please try it later, or contact us</p>
             <!--ko with:$data.data().selectedSetting-->
             <span class="btn-metro btn-large" data-bind="click: $parent.connectTo" >Connect repositories</span>
             <!--/ko-->

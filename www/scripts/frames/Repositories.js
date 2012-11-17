@@ -8,11 +8,17 @@
 $data.Class.define('JayScrum.Views.RepositoryWelcome', JayScrum.FrameView, null, {
     constructor: function (name, path, tplSource) {
         this.templateName = name || 'repositories-welcome';
+        this.i_scroll = null;
     },
     initializeView: function () {
         JayScrum.app.hideLoading();
+        this.i_scroll = JayScrum.app.initScrollById('hintScreenScroller');
     },
     tearDownView: function () {
+        if (this.i_scroll) {
+            this.i_scroll.destroy();
+            this.i_scroll = null;
+        }
     }
 }, null);
 $data.Class.define('JayScrum.Views.RepositorySettings', JayScrum.FrameView, null, {
@@ -61,20 +67,15 @@ $data.Class.define('JayScrum.Views.RepositoryAddSetting', JayScrum.FrameView, nu
     constructor: function (name, path, tplSource) {
         this.templateName = name || 'repositories-addsetting';
         this.i_scroll = null;
-        this.i_scroll_popup = null;
     },
     initializeView: function () {
         JayScrum.app.hideLoading();
-        //this.i_scroll = JayScrum.app.initScrollById('settingPageScroll');
+        this.i_scroll = JayScrum.app.initScrollById('addSettingScroller');
     },
     tearDownView: function () {
         if (this.i_scroll) {
             this.i_scroll.destroy();
             this.i_scroll = null;
-        }
-        if (this.i_scroll_popup) {
-            this.i_scroll_popup.destroy();
-            this.i_scroll_popup = null;
         }
     }
 }, null);
@@ -82,21 +83,17 @@ $data.Class.define('JayScrum.Views.RepositoryAddSubscription', JayScrum.FrameVie
     constructor: function (name, path, tplSource) {
         this.templateName = name || 'repositories-addsubscription';
         this.i_scroll = null;
-        this.i_scroll_popup = null;
     },
     initializeView: function () {
         JayScrum.app.hideLoading();
-        //this.i_scroll = JayScrum.app.initScrollById('settingPageScroll');
+        this.i_scroll = JayScrum.app.initScrollById('addSubscriptionScroller');
     },
     tearDownView: function () {
         if (this.i_scroll) {
             this.i_scroll.destroy();
             this.i_scroll = null;
         }
-        if (this.i_scroll_popup) {
-            this.i_scroll_popup.destroy();
-            this.i_scroll_popup = null;
-        }
+      
     }
 }, null);
 $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
@@ -450,19 +447,23 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
             var oId = JayScrum.app.selectedFrame().data().selectedSetting().OrderId();
             var tran = transactions.filter(function (t) { return t.OrderId == oId; })[0];
             tran.DevPayLoad = JayScrum.app.selectedFrame().data().selectedSetting().innerInstance.initData;
-            JayScrum.app.selectedFrame()._sendProvisionReq([tran])
-            .then(function (result) {
-                var payload = result[0].DevPayLoad;
-                payload.Status = 'ready';
-                var newItem = new JayScrum.Settings.Repository(payload);
-                JayScrum.app.selectedFrame().localContext.Repositories.add(newItem);
-                JayScrum.app.selectedFrame().data().selectedSetting(newItem.asKoObservable());
-                JayScrum.app.selectedFrame().localContext.saveChanges(function () {
-                    JayScrum.app.selectedFrame().data().subscriptionState('finish');
-                });
-                console.log("result: ", result);
-            })
-            .fail(function (error) { console.log(error);});
+
+
+            //JayScrum.app.selectedFrame()._sendProvisionReq([tran])
+            //.then(function (result) {
+            //    var payload = result[0].DevPayLoad;
+            //    payload.Status = 'ready';
+            //    var newItem = new JayScrum.Settings.Repository(payload);
+            //    JayScrum.app.selectedFrame().localContext.Repositories.add(newItem);
+            //    JayScrum.app.selectedFrame().data().selectedSetting(newItem.asKoObservable());
+            //    JayScrum.app.selectedFrame().localContext.saveChanges(function () {
+            //        JayScrum.app.selectedFrame().data().subscriptionState('finish');
+            //    });
+            //    console.log("result: ", result);
+            //})
+            //.fail(function (error) { console.log(error);});
+
+            setTimeout(function () { JayScrum.app.selectedFrame().data().subscriptionState('finish'); }, 2000);
         },
         JayScrum.app.selectedFrame()._cordovaFailCallback,
         "InAppBilling",
@@ -492,19 +493,3 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
     ServerUrl: '.jaystack.net',
     SubscriptionState: { AppStore: 'appstore', Storm: 'storm', End: "finish" }
 });
-
-//window['cordova'] = {};
-//cordova.exec = function (success, error, a, fn, params) {
-//    switch (fn) {
-//        case 'transactions':
-//            setTimeout(function () { success([JSON.parse('{"DevPayLoad":{"dbName":"alma","psw":"jelszo","title":"Repository","usr":"korte","Title":"Repository","UserName":"korte","Password":"jelszo","OrderId":"1389551147345499"},"purchaseToken":"trivkrjcyozqswvsfeuhnmrs","ProductId":"test.jaystack.subscription_monthly","OrderId":"1389551147345499"}')]) }, 1000);
-//            //setTimeout(function () { success([]) }, 1000);
-//            return;
-//            break;
-//        case 'subscribe':
-//            setTimeout(function () { params[0].OrderId = "1389551147345499"; success("RESULT_OK") }, 1000);
-//            return;
-//            break;
-//    }
-//    error();
-//};
