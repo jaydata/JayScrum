@@ -22,11 +22,11 @@ var GOOGLE_API_REFRESH_TOKEN_OBJECT = {
 
 var provisionApp = function (provisionRequestData, groups, mainCtx) {
     var provAppDef = Q.defer();
-
+    console.log("   --===  provisionApp method call   ===--");
     validateSubscription(ANDROID_APP_ID, ANDROID_SUBSCRIPTION_ID, provisionRequestData.key)
         .then(function (isValid) {
-            console.log('-== Start provisioning on admin jaystack.net ==-');
-            console.log('isValid: ' + isValid);
+            console.log('       validation subscription finished');
+            console.log('       isValid: ' + isValid);
 
             if (isValid === true) {
                 var provisionRequestOptions = {
@@ -46,7 +46,7 @@ var provisionApp = function (provisionRequestData, groups, mainCtx) {
                                 data += d;
                             });
                             res.on("end", function () {
-                                console.log("Provisioning success: " + data);
+                                console.log("       Provisioning success: " + data);
                                 var resultData = JSON.parse(data);
                                 provisionRequestData.attachment.Status = "ready";
                                 provisionRequestData.attachment.DevPayLoad.Url = resultData.id;
@@ -54,19 +54,21 @@ var provisionApp = function (provisionRequestData, groups, mainCtx) {
                                     uploadInitData(resultData.id, groups, provisionRequestData.attachment.DevPayLoad.UserName, mainCtx)
                                         .then(function () { provAppDef.resolve(provisionRequestData.attachment); })
                                         .fail(function () {
-                                            console.log("!!!! Provisioning finish error !!!!");
+                                            console.log("       !!!upload init data error");
+                                            console.log(arguments);
                                             provisionRequestData.attachment.Status = "initialize";
                                             provisionRequestData.attachment.DevPayLoad.Url = null;
                                             provAppDef.resolve(provisionRequestData.attachment);
                                         });
                                 } else {
-                                    console.log("Already provisiond!");
+                                    console.log("       Already provisiond!");
                                     provAppDef.resolve(provisionRequestData.attachment);
                                 }
 
                             });
                         } else {
                             console.log("!!!! Provisioning error !!!!");
+                            console.log("   !!!!Response status: ", res.statusCode);
                             provisionRequestData.attachment.Status = "initialize";
                             provisionRequestData.attachment.DevPayLoad.Url = null;
                             provAppDef.resolve(provisionRequestData.attachment);
@@ -80,9 +82,9 @@ var provisionApp = function (provisionRequestData, groups, mainCtx) {
                         provisionRequestData.attachment.DevPayLoad.Url = null;
                         provAppDef.resolve(provisionRequestData.attachment);
                     });
-                    console.log(JSON.stringify(provisionRequestData));
                     //TODO removed
-                    provisionRequestData.key = 'g89_' + provisionRequestData.key;
+                    provisionRequestData.key = 'g2_' + provisionRequestData.key;
+                    console.log("       provision request data: ", JSON.stringify(provisionRequestData));
                     provReq.write(JSON.stringify(provisionRequestData));
                     provReq.end();
                 } catch (ex) {
@@ -99,7 +101,10 @@ var provisionApp = function (provisionRequestData, groups, mainCtx) {
                 provisionRequestData.attachment.DevPayLoad.Url = null;
                 provAppDef.resolve(provisionRequestData.attachment);
             }
-
+        })
+        .fail(function () {
+            console.log("       validate subscription method call faild: ", arguments);
+            provAppDef.fail(arguments);
         });
     return provAppDef.promise;
 };
@@ -108,16 +113,18 @@ var uploadInitData = function (instanceId, groups, userName, mainCtx) {
     var usr = mainCtx.executionContext.request.currentDatabaseConfig.username;
     var psw = mainCtx.executionContext.request.currentDatabaseConfig.password;
     var appDb = mainCtx.executionContext.request.databases.ApplicationDB(instanceId, usr, psw);
-    console.log('!!!Instance id: ' + instanceId);
-    console.log('!!!Login name: ' + usr);
-    console.log('!!!Login psw: ' + psw);
-    console.log('!!!user name: ' + userName);
+    console.log("       --===  uploadInitData method call   ===--");
+    console.log('           Instance id: ' + instanceId);
+    console.log('           Login name: ' + usr);
+    console.log('           Login psw: ' + psw);
+    console.log('           user name: ' + userName);
     // console.log(appDb);
     appDb.onReady(function () {
+        console.log("           provisioned appDb is Ready");
         appDb.Users.where(function (item) { return item.Login == this.usr || item.Login == 'admin'; }, { usr: userName })
             .toArray(function (userList) {
-                console.log("!!!GROUPS: " + JSON.stringify(groups));
-                console.log("!!! user: " + JSON.stringify(userList));
+                console.log("           groups to add: " + JSON.stringify(groups));
+                console.log("           user list: " + JSON.stringify(userList));
                 var usr = userList.filter(function (u) { return u.Login == userName; })[0];
                 var admin = userList.filter(function (u) { return u.Login == 'admin'; })[0];
                 appDb.Users.attach(usr);
@@ -125,14 +132,15 @@ var uploadInitData = function (instanceId, groups, userName, mainCtx) {
 
                 //set new user groups
                 usr.Groups = groups;
-                console.log("change user: " + JSON.stringify(usr.initData));
+                console.log("           changed user: " + JSON.stringify(usr.initData));
 
                 //set admin password to user password
                 admin.Password = usr.Password;
+                console.log("           changed admin: " + JSON.stringify(admin.initData));
 
                 appDb.saveChanges({
                     success: function () {
-                        console.log("Save group success.");
+                        console.log("           Save group success.");
                         process.refreshCache(mainCtx.executionContext.request, mainCtx.executionContext.response, function () {
                             provisionFinish(instanceId)
                                 .then(function () { defer.resolve(); })
@@ -140,8 +148,8 @@ var uploadInitData = function (instanceId, groups, userName, mainCtx) {
                         });
                     },
                     error: function () {
-                        console.log("Save user error!", arguments);
-                        defer.reject();
+                        console.log("           Save user error!", arguments);
+                        defer.reject(arguments);
                     }
                 });
             });
@@ -149,7 +157,7 @@ var uploadInitData = function (instanceId, groups, userName, mainCtx) {
     return defer.promise;
 };
 var provisionFinish = function (instanceId) {
-    console.log("Finishing provisioning.")
+    console.log("       --===  provisionFinish method call   ===--");
     var d = Q.defer();
 
     var provisionFinishRequestOptions = {
@@ -168,7 +176,7 @@ var provisionFinish = function (instanceId) {
                 data += d;
             });
             res.on("end", function () {
-                console.log("Provisioning end success: " + data);
+                console.log("           Provisioning end success: " + data);
                 d.resolve();
             });
         } else {
@@ -181,24 +189,27 @@ var provisionFinish = function (instanceId) {
         console.log(e);
         d.reject();
     });
-    provReq.write(JSON.stringify({ appid: JAYSTORM_APP_ID, instanceid: instanceId }));
+    console.log("           provisionFinishRequestOption: ", provisionFinishRequestOptions);
+    var postData = JSON.stringify({ appid: JAYSTORM_APP_ID, instanceid: instanceId });
+    console.log("           postData: ", postData);
+    provReq.write(postData);
     provReq.end();
     return d.promise;
 };
-var validateSubscription = function (applicationNameSpace, subscriptionId, subscriptionToken) {
+var validateSubscription = function(applicationNameSpace, subscriptionId, subscriptionToken){
     console.log('-== Validate subscription ==-');
-    console.log('appNameSpace: ' + applicationNameSpace);
-    console.log('subscription Id: ' + subscriptionId);
-    console.log('subscription token: ' + subscriptionToken);
+    console.log('appNameSpace: '+applicationNameSpace);
+    console.log('subscription Id: '+subscriptionId);
+    console.log('subscription token: '+subscriptionToken);
     var def = Q.defer();
-    var validateRequest = function (accessToken) {
+    var validateRequest = function(accessToken){
         var get_options = {
             host: 'www.googleapis.com',
             port: 443,
-            path: '/androidpublisher/v1/applications/' + applicationNameSpace + '/subscriptions/' + subscriptionId + '/purchases/' + subscriptionToken + '?access_token=' + accessToken,
+            path: '/androidpublisher/v1/applications/'+applicationNameSpace+'/subscriptions/'+subscriptionId+'/purchases/'+subscriptionToken+'?access_token='+accessToken,
             method: 'GET'
         };
-        console.log('Validation path: ' + get_options.path);
+        console.log('Validation path: '+get_options.path);
         var reqPromise = Q.defer();
         https.request(get_options, function (res) {
             res.setEncoding('utf8');
@@ -212,9 +223,9 @@ var validateSubscription = function (applicationNameSpace, subscriptionId, subsc
                     console.log(apps);
                     console.log(apps.validUntilTimestampMsec);
                     console.log(Date.now().valueOf());
-                    reqPromise.resolve(Date.now().valueOf() < apps.validUntilTimestampMsec);
+                    reqPromise.resolve(Date.now().valueOf()<apps.validUntilTimestampMsec);
                 });
-            } else {
+            }else{
                 reqPromise.resolve(undefined);
             }
 
@@ -223,22 +234,22 @@ var validateSubscription = function (applicationNameSpace, subscriptionId, subsc
     };
 
     validateRequest(GOOGLE_API_ACCESS_TOKEN)
-        .then(function (result) {
-            if (result === undefined) {
+        .then(function(result){
+            if(result === undefined){
                 renewAccessToken()
-                    .then(function (newAccessToken) {
+                    .then(function(newAccessToken){
                         validateRequest(GOOGLE_API_ACCESS_TOKEN)
-                            .then(function (result2) { def.resolve(result2); });
+                            .then(function(result2){def.resolve(result2);});
                     })
-                    .fail(function () { def.reject(); });
-            } else {
+                    .fail(function(){def.reject();});
+            }else{
                 def.resolve(result);
             }
         });
 
     return def.promise;
 };
-var renewAccessToken = function () {
+var renewAccessToken= function(){
     console.log("-== Renew access token ==-");
     var qstring = require('querystring');
     var postData = qstring.stringify(GOOGLE_API_REFRESH_TOKEN_OBJECT);
@@ -248,7 +259,7 @@ var renewAccessToken = function () {
         port: 443,
         path: '/o/oauth2/token',
         method: 'POST',
-        headers: {
+        headers:{
             'Content-Type': 'application/x-www-form-urlencoded',
             'Content-Length': postData.length
         }
@@ -262,11 +273,11 @@ var renewAccessToken = function () {
             res.on("end", function () {
                 var apps = JSON.parse(data);
                 GOOGLE_API_ACCESS_TOKEN = apps.access_token;
-                console.log("renew success: " + GOOGLE_API_ACCESS_TOKEN);
+                console.log("renew success: "+GOOGLE_API_ACCESS_TOKEN);
                 def.resolve();
             });
 
-        } else {
+        }else{
             console.log("!!!! renew FAILD !!!!");
             def.reject();
         }
@@ -277,37 +288,42 @@ var renewAccessToken = function () {
     return def.promise;
 };
 var randomString = function () {
-    var chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz";
-    var string_length = 4;
-    var randomstring = '';
-    for (var i = 0; i < string_length; i++) {
-        var rnum = Math.floor(Math.random() * chars.length);
-        randomstring += chars.substring(rnum, rnum + 1);
-    }
-    return randomstring;
+	var chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz";
+	var string_length = 4;
+	var randomstring = '';
+	for (var i=0; i<string_length; i++) {
+		var rnum = Math.floor(Math.random() * chars.length);
+		randomstring += chars.substring(rnum,rnum+1);
+	}
+	return randomstring;
 }
 $data.ServiceBase.extend("ProvisionService", {
     Provision: $data.JayService.serviceFunction()
         .param('provisionList', 'string')
         .returns('$data.Object')
         (function (provisionList) {
-
             return function (success, error) {
                 var usr = this.executionContext.request.currentDatabaseConfig.username;
                 var psw = this.executionContext.request.currentDatabaseConfig.password;
                 var appDb = this.executionContext.request.databases.ApplicationDB(JAYSTORM_APP_ID, usr, psw);
                 var scrumDb = this.executionContext.request.databases.jayscrum(JAYSTORM_APP_ID, usr, psw);
                 var mainCtx = this;
-
+                console.log("--===  ProvisioningService method call   ===--");
+                console.log("       usr: " + usr);
+                console.log("       psw: " + psw);
+                console.log("       appDbIsNull: ", appDb ? "false" : true);
+                console.log("       scrumDbIsNull: ", appDb ? "false" : true);
                 appDb.onReady(function () {
+                    console.log("   appDb is Ready");
                     appDb.Groups.filter(function (grp) { return grp.Name == 'scrum' })
                         .toArray({
                             success: function (groupList) {
                                 var groups = groupList.map(function (g) { return g.GroupID; });
+                                console.log("   'scrum' group ids: " + groups);
                                 var provisions = JSON.parse(provisionList);
                                 var provisionFnArray = [];
+                                console.log("   provisionList: " + provisionList);
                                 for (var i = 0; i < provisions.length; i++) {
-                                    console.log("--==== Start provisioning database! ====--");
                                     var repo = provisions[i].DevPayLoad;
                                     var provisionRequestData = {
                                         key: provisions[i].purchaseToken,                   //google or apple purchase toke
@@ -327,30 +343,34 @@ $data.ServiceBase.extend("ProvisionService", {
                                             }
                                         };
                                     }
+                                    console.log("   provisionRequestData: ", provisionRequestData);
                                     provisionFnArray.push(provisionApp(provisionRequestData, groups, mainCtx));
                                 }
-                                console.log("New database count: " + provisionFnArray.length);
+                                console.log("   provisioning database count: " + provisionFnArray.length);
                                 Q.all(provisionFnArray)
                                     .then(function () {
+                                        console.log("   all provision finished");
                                         var result = provisionFnArray.map(function (item) { return item.valueOf(); });
-                                        console.log("-== Provisioning response ==-");
+                                        console.log("   -== Provisioning response ==-");
 
                                         //console.log("scrumDb: ",JAYSTORM_APP_ID,usr,psw, scrumDb);
                                         scrumDb.onReady(function () {
+                                            console.log("   scrumDb is Ready");
                                             var smartUrlFns = [];
                                             result.forEach(function (repo) {
                                                 var repoId = repo.DevPayLoad.Url;
-                                                console.log("Check smartUrl: ", repoId);
+                                                console.log("   check smartUrl: ", repoId);
                                                 var fn = scrumDb.UrlCutterItems.filter(function (item) { return item.Instance_Id == this.id }, { id: repoId }).toArray();
                                                 smartUrlFns.push(fn);
                                             });
-                                            console.log("smartRequest: ", smartUrlFns.length);
+                                            console.log("   smart URL requests length: ", smartUrlFns.length);
                                             Q.all(smartUrlFns)
                                               .then(function () {
+                                                  console.log(" smartUrl requests finished");
                                                   var addFns = [];
                                                   for (var i = 0; i < smartUrlFns.length; i++) {
                                                       var smartUrlFnValues = smartUrlFns[i].valueOf();
-                                                      console.log("value of: ", smartUrlFnValues);
+                                                      console.log("    value of: ", smartUrlFnValues);
                                                       if (smartUrlFnValues.length < 1) {
                                                           var url = result[i].DevPayLoad.Url;
                                                           if (url) {
@@ -362,44 +382,45 @@ $data.ServiceBase.extend("ProvisionService", {
                                                                       var generateFn = function () {
                                                                           var sUrl = randomString();
                                                                           scrumDb.UrlCutterItems.filter(function (item) { return item.ShortName == this.alias; }, { alias: sUrl }).length()
-                                                                            .then(function (v) {
-                                                                                if (v == 0) { generateSmartUrlQ.resolve(sUrl); }
-                                                                                else { console.log("regeneratie smrt url"); generateFn(); }
-                                                                            });
+                                                              .then(function (v) {
+                                                                  if (v == 0) { generateSmartUrlQ.resolve(sUrl); }
+                                                                  else { console.log("regeneratie smrt url"); generateFn(); }
+                                                              });
                                                                       }
                                                                       generateFn();
                                                                       return generateSmartUrlQ.promise;
                                                                   })()
-                                                                    .then(function (sUrl) {
-                                                                        console.log("Add new smartUrl, instanceId: ", url, "shortName: ", sUrl);
-                                                                        scrumDb.UrlCutterItems.add(new scrumDb.UrlCutterItems.createNew({ Instance_Id: url, ShortName: sUrl }));
-                                                                        payLoad.Url = sUrl;
-                                                                        scrumDb.saveChanges({
-                                                                            success: function () { addSmartUrlQ.resolve(); },
-                                                                            error: function () { addSmartUrlQ.fail(arguments); }
-                                                                        });
-                                                                    })
-                                                                    .fail(function () { console.log("Smart url generation faild: ", arguments); });
+                                                          .then(function (sUrl) {
+                                                              console.log("Add new smartUrl, instanceId: ", url, "shortName: ", sUrl);
+                                                              scrumDb.UrlCutterItems.add(new scrumDb.UrlCutterItems.createNew({ Instance_Id: url, ShortName: sUrl }));
+                                                              payLoad.Url = sUrl;
+                                                              scrumDb.saveChanges({
+                                                                  success: function () { addSmartUrlQ.resolve(); },
+                                                                  error: function () { addSmartUrlQ.fail(arguments); }
+                                                              });
+                                                          })
+                                                          .fail(function () { console.log("Smart url generation faild: ", arguments); });
                                                                   return addSmartUrlQ.promise;
                                                               };
                                                               addFns.push(addFn());
                                                           }
                                                       } else {
-                                                          console.log("smartUrl already exists: ", smartUrlFnValues[0].ShortName);
+                                                          console.log("    smartUrl already exists: ", smartUrlFnValues[0].ShortName);
                                                           result[i].DevPayLoad.Url = smartUrlFnValues[0].ShortName;
                                                       }
                                                   }
                                                   console.log("addFns: ", addFns.length);
                                                   Q.all(addFns)
-                                                    .then(function () {
-                                                        console.log("ALL OK");
-                                                        console.log(result);
-                                                        success(JSON.stringify(result));
-                                                    })
-                                                    .fail(function () { console.log("!!!Smart URL SAVE FAILD", arguments); });
+                                                  .then(function () {
+                                                      console.log("ALL OK");
+                                                      console.log(result);
+                                                      success(JSON.stringify(result));
+                                                  })
+                                                  .fail(function () { console.log("!!!Smart URL SAVE FAILD", arguments); error('!!!Smart URL SAVE FAILD'); });
                                               })
                                               .fail(function () {
                                                   console.log("!!!Smart URL FAILD", arguments);
+                                                  error('!!!Smart URL FAILD');
                                               });
                                         });
                                     });
