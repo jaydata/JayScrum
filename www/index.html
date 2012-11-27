@@ -1,4 +1,4 @@
-<!DOCTYPE>
+ï»¿<!DOCTYPE>
 <html>
 <head>
     <title>JayScrum</title>
@@ -342,7 +342,7 @@
                 <span data-bind="click: $root.selectedFrame().onCancelWorkItem"></span>
             </div>
             <div id="wrapper-detailed" class="scroll-out">
-                <div class="slider-action prev">‹</div>
+                <div class="slider-action prev">â€¹</div>
                 <div id="swipeview" class="scroller-in">
                     <div class="list maxlist">
                         <div id="swipeview-slider">
@@ -385,7 +385,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="slider-action next">›</div>
+                <div class="slider-action next">â€º</div>
             </div>
         </div>
         <div class="metro-actionbar detail-view opened" data-bind="with: $data.data().selectedWorkItemActive">
@@ -529,7 +529,7 @@
         <h1 class="accent-color" data-bind="text: Title"></h1>
 
         <!-- ko if: Description -->
-        <p class="description clear" data-bind="html: Description"></p>
+        <p class="description clear" data-bind="text: Description"></p>
         <!-- /ko -->
 
         <!-- ko if: ProjectName -->
@@ -1198,45 +1198,54 @@
     </script>
     <script type="text/html" id="repositories-addsetting">
         <div id="settingPage">
-            <div class="main-header">
+            <div class="icon-action back topleft">
+                <span data-bind="click: $root.backView"></span>
+            </div>
+
+            <div class="main-header with-back">
                 <h1 class="title">add online repository</h1>
             </div>
-            <div id="addSettingScroller" class="edit reset-p" data-bind="with: $data.data().selectedSetting">
-                <div class="tolower item reset-m">
-                    <div class="field hide">
-                        <div><span>Id</span></div>
-                        <input class="medium accent-bg" type="number" readonly="true" data-bind="value: Id" />
-                    </div>
 
-                    <div class="field">
-                        <div><span data-bind="text: Id()?'edit repository name':'add repository name'"></span></div>
-                        <input class="medium accent-bg" type="text" data-bind="value: Title, valueUpdate:['afterkeydown','propertychange','input']" />
-                    </div>
-                    <div class="field">
-                        <div>
-                            <span>add repository url</span>
-                        </div>
-                        <textarea class="medium accent-bg" type="text" data-bind="value: Url, valueUpdate:['afterkeydown','propertychange','input'], attr:{'placeholder': 'Online repository name or full URL'}"></textarea>
-                    </div>
-                    <div class="field">
-                        <div><span>Username</span></div>
-                        <input class="medium accent-bg" type="text" data-bind="value: UserName, valueUpdate:['afterkeydown','propertychange','input']" />
-                    </div>
+            <div class="scroll-list pivot-default-opacity scrollable-list" id="addSettingScroller">
+                <div class="scroller-list">
+                    <div class="edit detail reset-p" data-bind="with: $data.data().selectedSetting">
+                        <div class="tolower item reset-m">
+                            <div class="field hide">
+                                <div><span>Id</span></div>
+                                <input class="medium accent-bg" type="number" readonly="true" data-bind="value: Id" />
+                            </div>
 
-                    <div class="field">
-                        <div><span>Password</span></div>
-                        <input class="medium accent-bg" type="password" data-bind="value: Password, valueUpdate:['afterkeydown','propertychange','input']" />
-                    </div>
-                    <div class="field">
-                        <div><span class="metro-checkbox-label">Set as default repository</span></div>
-                        <div class="metro-checkbox accent-bg">
-                            <input type="checkbox" value="None" id="Checkbox1" name="check" data-bind="checked: IsDefault" />
-                            <label for="isDefault"></label>
+                            <div class="field">
+                                <div><span data-bind="text: Id()?'edit repository name':'add repository name'"></span></div>
+                                <input class="medium accent-bg" type="text" data-bind="value: Title, valueUpdate:['afterkeydown','propertychange','input']" />
+                            </div>
+                            <div class="field">
+                                <div>
+                                    <span>add repository url</span>
+                                </div>
+                                <textarea class="medium accent-bg" type="text" data-bind="value: Url, valueUpdate:['afterkeydown','propertychange','input'], attr:{'placeholder': 'Online repository name or full URL'}"></textarea>
+                            </div>
+                            <div class="field">
+                                <div><span>Username</span></div>
+                                <input class="medium accent-bg" type="text" data-bind="value: UserName, valueUpdate:['afterkeydown','propertychange','input']" />
+                            </div>
+
+                            <div class="field">
+                                <div><span>Password</span></div>
+                                <input class="medium accent-bg" type="password" data-bind="value: Password, valueUpdate:['afterkeydown','propertychange','input']" />
+                            </div>
+                            <div class="field">
+                                <div><span class="metro-checkbox-label">Set as default repository</span></div>
+                                <div class="metro-checkbox accent-bg">
+                                    <input type="checkbox" value="None" id="Checkbox1" name="check" data-bind="checked: IsDefault" />
+                                    <label for="isDefault"></label>
+                                </div>
+                            </div>
+                            <div class="split2">
+                                <span class="btn-metro btn-large margin10_0" data-bind="click: $parent.saveSetting">Save</span>
+                                <span class="btn-metro btn-large margin10_0" data-bind="click: $parent.cancelSetting">Cancel</span>
+                            </div>
                         </div>
-                    </div>
-                    <div class="split2">
-                        <span class="btn-metro btn-large margin10_0" data-bind="click: $parent.saveSetting">Save</span>
-                        <span class="btn-metro btn-large margin10_0" data-bind="click: $parent.cancelSetting">Cancel</span>
                     </div>
                 </div>
             </div>
@@ -1244,35 +1253,39 @@
     </script>
     <script type="text/html" id="repositories-addsubscription">
         <div id="settingPage">
-            <div class="main-header">
+            <div class="icon-action back topleft">
+                <span data-bind="click: $root.backView"></span>
+            </div>
+
+            <div class="main-header with-back">
                 <h1 class="title">Buy online repository</h1>
             </div>
-            <div id="addSubscriptionScroller" class="edit reset-p" data-bind="with: $data.data().selectedSetting">
-                <div class="tolower item reset-m">
-                    <div class="field hide">
-                        <div><span>Id</span></div>
-                        <input class="medium accent-bg" type="number" readonly="true" data-bind="value: Id" />
-                    </div>
 
-                    <div class="field">
-                        <div><span>add name for your repository</span></div>
-                        <input class="medium accent-bg" type="text" data-bind="value: Title, valueUpdate:['afterkeydown','propertychange','input']" />
-                    </div>
-                    <div class="field">
-                        <div><span>add repository owner admin user</span></div>
-                    </div>
-                    <div class="field">
-                        <div><span>Admin user name</span></div>
-                        <input class="medium accent-bg" type="text" data-bind="value: UserName, valueUpdate:['afterkeydown','propertychange','input']" />
-                    </div>
-
-                    <div class="field">
-                        <div><span>Admin user password</span></div>
-                        <input class="medium accent-bg" type="password" data-bind="value: Password, valueUpdate:['afterkeydown','propertychange','input']" />
-                    </div>
-                    <div class="split2">
-                        <span class="btn-metro btn-large margin10_0" data-bind="click: $parent.subscriptionDatabase">buy subscription</span>
-                        <span class="btn-metro btn-large margin10_0" data-bind="click: $parent.cancelSetting">Cancel</span>
+            <div class="scroll-list pivot-default-opacity scrollable-list" id="addSubscriptionScroller">
+                <div class="scroller-list">
+                    <div class="edit detail reset-p" data-bind="with: $data.data().selectedSetting">
+                        <div class="tolower item reset-m">
+                            <div class="field hide">
+                                <div><span>Id</span></div>
+                                <input class="medium accent-bg" type="number" readonly="true" data-bind="value: Id" />
+                            </div>
+                            <div class="field">
+                                <div><span>repository name</span></div>
+                                <input class="medium accent-bg" type="text" data-bind="value: Title, valueUpdate:['afterkeydown','propertychange','input']" />
+                            </div>
+                            <div class="field">
+                                <div><span>admin user name</span></div>
+                                <input class="medium accent-bg" type="text" data-bind="value: UserName, valueUpdate:['afterkeydown','propertychange','input']" />
+                            </div>
+                            <div class="field">
+                                <div><span>admin user password</span></div>
+                                <input class="medium accent-bg" type="password" data-bind="value: Password, valueUpdate:['afterkeydown','propertychange','input']" />
+                            </div>
+                            <div class="split2">
+                                <span class="btn-metro btn-large margin10_0" data-bind="click: $parent.subscriptionDatabase">buy subscription</span>
+                                <span class="btn-metro btn-large margin10_0" data-bind="click: $parent.cancelSetting">Cancel</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1292,13 +1305,13 @@
                         <ul id="setting-list" class="setting-list" data-bind="foreach: $data.data().settings">
                             <li>
                                 <!--ko if: $data.Status() == 'static' || $data.Status() == 'ready'-->
-                                <h2 data-bind="text: Title, click: $parent.connectTo"></h2>
+                                <h2 class="accent-color" data-bind="text: Title, click: $parent.connectTo"></h2>
                                 <!-- /ko -->
                                 <!--ko ifnot: $data.Status() == 'static' || $data.Status() == 'ready'-->
                                 <h2 class="noclick" data-bind="text: Title"></h2>
                                 <!-- /ko -->
-                                <span data-bind="text:$data.Url"></span> 
-                                <span data-bind="text:$data.Status"></span>
+                                <span class="to-ellipsis small-info" data-bind="text: 'url: ' + $data.Url()"></span> 
+                                <!--<span data-bind="text:$data.Status"></span>-->
                                 <div class="actions fright">
                                     <!--ko if: $data.Status() == 'static' || $data.Status() == 'ready'-->
                                     <span class="icon-action connect" data-bind="click: $parent.connectTo"><span></span></span>
@@ -1362,30 +1375,43 @@
             <div class="icon-action back topleft">
                 <span data-bind="click: $root.backView"></span>
             </div>
-            <div class="main-header">
+            <div class="main-header with-back">
                 <h1 class="title">Creating new repository</h1>
             </div>
-            <!--ko ifnot: $data.data().subscriptionState() == 'finish'-->
-            <h3>Repository creation is in progress</h3>
-            <span> It may take a few minutes please wait patiently or have a nice cup of coffee :)</br></span>
-            <!--ko if: $data.data().subscriptionState() == 'appStore'-->
-            <span>Creation in progress (step 1/3)</span>
-            <!--/ko-->
-            <!--ko ifnot: $data.data().subscriptionState() == 'appStore'-->
-            <span>Creation in progress (step 2/3)</span>
-            <!--/ko-->
-            <!--/ko-->
-            <!--ko if: $data.data().subscriptionState() == 'finish'-->
-            <h3>successfull repository creation</h3>
-            <span>Your repository has been created sucessfully. <b>Your repository url is:</b><b data-bind="text: $data.data().selectedSetting().Url()"></b>Now you only have to connect to your repository, create users and invite your team members.</br></span>
-            <h3>Repository creation has failed</h3><p>Please try it later, or contact us</p>
-            <!--ko with:$data.data().selectedSetting-->
-            <span class="btn-metro btn-large" data-bind="click: $parent.connectTo" >Connect repositories</span>
-            <!--/ko-->
-            <!--/ko-->
+
+            <div class="scroll-list pivot-default-opacity scrollable-list" id="addSettingScroller">
+                <div class="scroller-list">
+                    <!--ko ifnot: $data.data().subscriptionState() == 'finish'-->
+                        <h3>Repository creation is in progress</h3>
+                        <p>It may take a few minutes please wait patiently or have a nice cup of coffee :)</p>
+                        
+                        <!--ko if: $data.data().subscriptionState() == 'appStore'-->
+                        <p>Creation in progress (step 1/3)</p>
+                        <!--/ko-->
+                        <!--ko ifnot: $data.data().subscriptionState() == 'appStore'-->
+                        <p>Creation in progress (step 2/3)</p>
+                        <!--/ko-->
+
+                        <span class="ui-icon spin"></span>
+                    <!--/ko-->
+
+                    <!--ko if: $data.data().subscriptionState() == 'finish'-->
+                        <h3>successfull repository creation</h3>
+                        <p>Your repository has been created sucessfully! <br />
+                        Your repository url is: <b data-bind="text: $data.data().selectedSetting().Url()">http://testurl.com</b></p>
+                        <p>Now you only have to connect to your repository, create users and invite your team members to get started!</p>
+
+                        <h3>Repository creation has failed!</h3>
+                        <p>Please try it later, or contact us!</p>
+
+                        <!--ko with:$data.data().selectedSetting-->
+                        <p class="btn-metro btn-large" data-bind="click: $parent.connectTo" >Connect repositories</p>
+                        <!--/ko-->
+                    <!--/ko-->
+                </div>
+            </div>
         </div>
     </script>
-
     <script type="text/html" id="setPasswordUI">
         <form data-bind="submit: savePassword">
             <div>
@@ -1407,7 +1433,6 @@
             </div>
         </form>
     </script>
-
     <script type="text/html" id="usersPage-template">
         <div class="maxw768" id="settingPage">
             <div class="icon-action back topleft">

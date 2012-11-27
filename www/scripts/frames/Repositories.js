@@ -50,7 +50,7 @@ $data.Class.define('JayScrum.Views.RepositorySubscription', JayScrum.FrameView, 
     },
     initializeView: function () {
         JayScrum.app.hideLoading();
-        //this.i_scroll = JayScrum.app.initScrollById('settingPageScroll');
+        this.i_scroll = JayScrum.app.initScrollById('addSettingScroller');
     },
     tearDownView: function () {
         if (this.i_scroll) {
