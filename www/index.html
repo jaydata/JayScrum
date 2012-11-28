@@ -951,7 +951,7 @@
                                 <!-- ko if: $data.data().projectList().length > 0 -->
                                 <div class="list project-list" data-bind="foreach: $data.data().projectList">
 
-                                    <div class="item task list-item clear">
+                                    <div class="item task list-item reset-p clear">
                                         <h2 class="title margintop tolower accent-color">
                                             <span data-bind="text: Name, click: $parent.onSelectProject"></span>
                                             <span class="icon-action edit fright" data-bind="click: $parent.onEditProject"><span></span></span>
@@ -1198,8 +1198,8 @@
     </script>
     <script type="text/html" id="repositories-addsetting">
         <div id="settingPage">
-            <div class="icon-action back topleft">
-                <span data-bind="click: $root.backView"></span>
+            <div class="icon-action back topleft" data-bind="with: $data.data().selectedSetting">
+                <span data-bind="click: $parent.cancelSetting"></span>
             </div>
 
             <div class="main-header with-back">
@@ -1253,8 +1253,8 @@
     </script>
     <script type="text/html" id="repositories-addsubscription">
         <div id="settingPage">
-            <div class="icon-action back topleft">
-                <span data-bind="click: $root.backView"></span>
+            <div class="icon-action back topleft" data-bind="with: $data.data().selectedSetting">
+                <span data-bind="click: $parent.cancelSetting"></span>
             </div>
 
             <div class="main-header with-back">
@@ -1296,7 +1296,7 @@
             <div class="icon-action back topleft">
                 <span data-bind="click: $root.backView"></span>
             </div>
-            <div class="main-header">
+            <div class="main-header with-back">
                 <h1 class="title">repositories</h1>
             </div>
             <div class="scroll-list pivot-default-opacity scrollable-list animate bottom45" id="settingPageScroll">
@@ -1305,13 +1305,15 @@
                         <ul id="setting-list" class="setting-list" data-bind="foreach: $data.data().settings">
                             <li>
                                 <!--ko if: $data.Status() == 'static' || $data.Status() == 'ready'-->
-                                <h2 class="accent-color" data-bind="text: Title, click: $parent.connectTo"></h2>
+                                    <h2 class="accent-color" data-bind="text: Title, click: $parent.connectTo"></h2>
                                 <!-- /ko -->
                                 <!--ko ifnot: $data.Status() == 'static' || $data.Status() == 'ready'-->
-                                <h2 class="noclick" data-bind="text: Title"></h2>
+                                    <h2 class="noclick" data-bind="text: Title"></h2>
+                                    <span data-bind="text:'status: ' + $data.Status()"></span><br />
                                 <!-- /ko -->
+
                                 <span class="to-ellipsis small-info" data-bind="text: 'url: ' + $data.Url()"></span> 
-                                <!--<span data-bind="text:$data.Status"></span>-->
+                                
                                 <div class="actions fright">
                                     <!--ko if: $data.Status() == 'static' || $data.Status() == 'ready'-->
                                     <span class="icon-action connect" data-bind="click: $parent.connectTo"><span></span></span>
@@ -1325,9 +1327,11 @@
                                     <!--ko if: $data.Status() == 'ready'-->
                                     <span class="icon-action nomoney" data-bind="click: $parent.unSubscriptionDatabase"><span></span></span>
                                     <!--/ko-->
-                                    <!--ko ifnot: $data.Status() == 'ready'-->
-                                    <span class="icon-action update" data-bind="click: $parent.refreshSettings"><span></span></span>
-                                    <!--/ko-->
+                                    
+                                    <!--ko2 ifnot: $data.Status() == 'ready'-->
+                                    <!--<span class="icon-action update" data-bind="click: $parent.refreshSettings"><span></span></span>-->
+                                    <!--/ko2-->
+
                                     <!--/ko-->
                                     <!--/ko-->
                                 </div>
@@ -1347,7 +1351,10 @@
         <div id="repo-info" class="metro-actionbar">
             <ul id="repo-info-scroll">
                 <li>
-                    <h1>About JayScrum</h1>
+                    <div class="icon-action back topleft">
+                        <span data-bind="click: $data.toggleInfoBox"></span>
+                    </div>
+                    <h1 class="title-left">About JayScrum</h1>
                     <p>Version: JayScrum 1.0 </p><br />
                     <p>JayScrum is an agile Project Management tool, that enables you to make your Scrum-methodology-based daily routine enjoyable. JayScrum turns your daily standup meetings something you and your team will look forward to, all that with an intuitive and beautifully designed application.  Through this application you can manage Projects, Backlogs, Tasks, Bugs, and Impediments.</p>
                     <p>If you have any suggestions that could help us make JayScrum even better or more to your liking, or if you are facing any support issues with your application or with your online repository, please contact us <a href="mailto:jayscrum@jaystack.com"></a>via e-mail.</a></p>
@@ -1364,10 +1371,17 @@
                 <li class="icon-action add"><span data-bind="click: $data.addSetting"></span></li>
                 <!--ko if: $data.data().isSupportedPurchase-->
                 <li class="icon-action money"><span data-bind="click: $data.buyDatabase"></span></li>
-                <li class="icon-action update"><span data-bind="click: $data.refreshSettings"></span></li>
+                <li class="icon-action update last"><span data-bind="click: $data.refreshSettings"></span></li>
                 <!--/ko-->
-                <li class="icon-action more abs-right"><span data-bind="click: $data.toggleInfoBox"></span></li>
+                <li class="icon-action question abs-right"><span data-bind="click: $data.toggleInfoBox"></span></li>
             </ul>
+        </div>
+        <div class="floating-box">
+            <span class="icon-mini fright">x</span>
+            <h3>Need help?</h3> 
+            <p><span class="icon-action add"><span>&nbsp;</span></span> Add/Connect to a repository</p>
+            <p><span class="icon-action money"><span>&nbsp;</span></span> Buy a repository</p>
+            <p>If you need help please <a href="mailto:support@jaystack.com">contact us</a>!</p>
         </div>
     </script>
     <script type="text/html" id="repositories-subscription">
@@ -1382,7 +1396,7 @@
             <div class="scroll-list pivot-default-opacity scrollable-list" id="addSettingScroller">
                 <div class="scroller-list">
                     <!--ko ifnot: $data.data().subscriptionState() == 'finish'-->
-                        <h3>Repository creation is in progress</h3>
+                        <h3 class="accent-color"><span class="ui-icon spin inline mini"></span> Repository creation is in progress</h3>
                         <p>It may take a few minutes please wait patiently or have a nice cup of coffee :)</p>
                         
                         <!--ko if: $data.data().subscriptionState() == 'appStore'-->
@@ -1391,17 +1405,15 @@
                         <!--ko ifnot: $data.data().subscriptionState() == 'appStore'-->
                         <p>Creation in progress (step 2/3)</p>
                         <!--/ko-->
-
-                        <span class="ui-icon spin"></span>
                     <!--/ko-->
 
                     <!--ko if: $data.data().subscriptionState() == 'finish'-->
-                        <h3>successfull repository creation</h3>
+                        <h3 class="accent-color"><span class="icon-action good mini"><span></span></span> successfull repository creation</h3>
                         <p>Your repository has been created sucessfully! <br />
                         Your repository url is: <b data-bind="text: $data.data().selectedSetting().Url()">http://testurl.com</b></p>
                         <p>Now you only have to connect to your repository, create users and invite your team members to get started!</p>
 
-                        <h3>Repository creation has failed!</h3>
+                        <h3 class="accent-color"><span class="icon-action wrong mini"><span></span></span>Repository creation has failed!</h3>
                         <p>Please try it later, or contact us!</p>
 
                         <!--ko with:$data.data().selectedSetting-->

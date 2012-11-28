@@ -29,7 +29,13 @@ $data.Class.define('JayScrum.Views.RepositorySettings', JayScrum.FrameView, null
     },
     initializeView: function () {
         JayScrum.app.hideLoading();
-        this.i_scroll = JayScrum.app.initScrollById('settingPageScroll');
+        this.i_scroll = JayScrum.app.initScrollById('settingPageScroll', null, null, false, true);
+
+        if (android) {
+            setTimeout(function () {
+                $("div.floating-box").addClass("visible");
+            }, 3000);
+        }
     },
     tearDownView: function () {
         if (this.i_scroll) {
@@ -407,8 +413,9 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
                     JayScrum.app.selectedFrame().selectView('settings');
                 }
             }
-
         });
+
+        this.i_scroll = JayScrum.app.initScrollById('settingPageScroll', null, null, false, true);
     },
     showActionBar: function () {
         $('div#settingPageActionBar').addClass("opened");
@@ -418,9 +425,8 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
         $('div#error-msg').removeClass('opened');
         $("div#repo-info").removeClass('opened');
     },
+
     //InApp purchase
-
-
     subscriptionDatabase: function (item) {
         JayScrum.app.selectedFrame().data().subscriptionState('appStore');
         JayScrum.app.selectedFrame().selectView('subscription');

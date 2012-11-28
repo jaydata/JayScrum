@@ -12,8 +12,10 @@ function initEnvironment(wnd) {
     wnd.loading = $("div.metro-loading");
     wnd.scrollToRefresh = null;
     wnd.appStarted = false;
-    console.log('IsAndroid: ', android?'true':'false');
-    console.log('IsAndroid1: ', window['android']?'true':'false');
+
+    /*console.log('IsAndroid: ', android?'true':'false');
+    console.log('IsAndroid1: ', window['android']?'true':'false');*/
+
     wnd.setupScroll = function () {
         //var page = document.getElementById('page');
         if (ios) {
@@ -55,6 +57,9 @@ function initEnvironment(wnd) {
     });
     $("div.slider-action.next").live(eventName, function () {
         JayScrum.app.selectedFrame().selectedView().swipeView.next();
+    });
+    $("div.floating-box").live(eventName, function () {
+        $(this).removeClass("visible");
     });
 
     // FONT
@@ -130,7 +135,6 @@ function initEnvironment(wnd) {
             setSetting('settings', jsonSettings);
         }
     }
-
 
     wnd.initDateFieldsById = function (containerId) {
         return;

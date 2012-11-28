@@ -35,6 +35,7 @@ h5              { margin: 5px 0; }
 p               { margin: 0 0 4px; line-height: 21px; }
 span.small      { font-size: 13px !important; .size(100%, auto, 20px); }
 span.medium     { font-size: 18px !important; }
+body p          { font-size: 16px; }
 
 .uslist .pivot-default  { text-indent: 10px; }
 h1.pivot-default        { pointer-events: none; }
@@ -81,12 +82,12 @@ h2.title                { .font-size(22px); }
 	    .show; .maxsize(inherit, inherit); .ovisible_; .mauto; .reset-p; .tacenter;
 	        
 	    h1 { .ohidden; }
-	    
+
 	    .subtitle { .relative; }
 	}
 	
 	&.with-back {
-        .maxsize(83%, 52px); 
+        .maxsize(79%, 52px); 
 	}
     
     h1 {
@@ -187,7 +188,12 @@ body:not(.android)
     ul {
         .iblock; .reset-m; .size(auto, 100%); padding: 7px 0 0 0; 
         
-        li { line-height: 25px; .fleft; }
+        li  
+        {
+            line-height: 25px; .fleft;
+            
+            &.last { margin-right: 0; }
+        }
     }
 }
 
@@ -284,6 +290,23 @@ body:not(.android)
     @hb-width: 200px;
     
     .position(absolute, -35px, auto, auto, 50%); .size(@hb-width, 30px, 30px); margin-left: -@hb-width / 2;
+}
+
+.title-left { .taleft; text-indent: 10px; }
+
+.floating-box
+{
+    .opacity(0); .position(absolute, auto, 50%, 0); margin-right: -130px; .transition(0.4s);
+    background: #24A0DA; border: 1px solid darken(rgba(45, 45, 45, 0.9), 10%);
+    padding: 10px; max-width: 260px; z-index: 5;
+    
+    &.visible { bottom: 65px; .opacity(1); }
+    
+    h3, p { text-transform: none; }
+    h3 { margin: 0 0 10px; }
+    p  { .clear;margin: 0; font-size: 16px; line-height: 22px; }
+    a  { color: #fff !important; .tdunder; }
+    .icon-action { .scale(0.85); margin: 0 5px 0 0; .fleft; .position(relative, -3px); }
 }
 /*#endregion HINTS */
 
