@@ -281,20 +281,23 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
         wrkItem.ChangedBy(JayScrum.app.globalData().user().Login());
         //wrkItem.IsBlocked(wrkItem.IsBlocked()==='true'?true:false);
 
+        
         JayScrum.app.selectedFrame().data().todoList.remove(function (item) { return item.Id() == wrkItem.Id() });
         JayScrum.app.selectedFrame().data().inProgList.remove(function (item) { return item.Id() == wrkItem.Id() });
         JayScrum.app.selectedFrame().data().doneList.remove(function (item) { return item.Id() == wrkItem.Id() });
-        switch (wrkItem.State()) {
-            case 'To Do':
-                JayScrum.app.selectedFrame().data().todoList.push(wrkItem);
-                break;
-            case 'In Progress':
-                JayScrum.app.selectedFrame().data().inProgList.push(wrkItem);
-                break;
-            case 'Done':
-                JayScrum.app.selectedFrame().data().doneList.push(wrkItem);
-                break;
-            default: break;
+        if (wrkItem.Type() == 'Task' || wrkItem.Type() == 'Bug') {
+            switch (wrkItem.State()) {
+                case 'To Do':
+                    JayScrum.app.selectedFrame().data().todoList.push(wrkItem);
+                    break;
+                case 'In Progress':
+                    JayScrum.app.selectedFrame().data().inProgList.push(wrkItem);
+                    break;
+                case 'Done':
+                    JayScrum.app.selectedFrame().data().doneList.push(wrkItem);
+                    break;
+                default: break;
+            }
         }
         JayScrum.repository.saveChanges(function (error) {
             JayScrum.app.backView();

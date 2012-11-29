@@ -150,6 +150,7 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
         }
     },
     getDemoDb: function () {
+        JayScrum.app.showLoading();
         InstallLocalDemoDb(JayScrum.app.selectedFrame().localContext)
         .then(function () {
             JayScrum.app.globalData().repositoryName('Demo local db');
@@ -428,20 +429,26 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
 
     //InApp purchase
     subscriptionDatabase: function (item) {
-        JayScrum.app.selectedFrame().data().subscriptionState('appStore');
-        JayScrum.app.selectedFrame().selectView('subscription');
-        console.log('-== 91. subscribe db: ' + JSON.stringify(item.innerInstance));
-        cordova.exec(JayScrum.app.selectedFrame()._successSubscriptionRequest,
-            JayScrum.app.selectedFrame()._cordovaFailCallback,
-            "InAppBilling",
-            "subscribe",
-            [item.innerInstance]);
+        JayScrum.app.selectedFrame().data().errorMsg("");
+        if (item.UserName() && item.Password()) {
+            JayScrum.app.selectedFrame().data().subscriptionState('appStore');
+            JayScrum.app.selectedFrame().selectView('subscription');
+            console.log('-== 91. subscribe db: ' + JSON.stringify(item.innerInstance));
+            cordova.exec(JayScrum.app.selectedFrame()._successSubscriptionRequest,
+                JayScrum.app.selectedFrame()._cordovaFailCallback,
+                "InAppBilling",
+                "subscribe",
+                [item.innerInstance]);
+        } else {
+            JayScrum.app.selectedFrame().data().errorMsg("You must set UserName and Password field!");
+        }
     },
     _successSubscriptionRequest: function (result) {
         if (result !== "RESULT_OK") {
             console.log('-== 92/1. error subscribe');
             //TODO: RESULT_USER_CANCELED
-            JayScrum.app.selectedFrame()._cordovaFailCallback(result);
+            //JayScrum.app.selectedFrame()._cordovaFailCallback(result);
+            JayScrum.app.selectedFrame().data().subscriptionState('faild');
             return;
         }
         JayScrum.app.selectedFrame().data().subscriptionState('storm');
@@ -455,7 +462,7 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
                 var oId = JayScrum.app.selectedFrame().data().selectedSetting().OrderId();
                 var tran = transactions.filter(function (t) { return t.OrderId == oId; })[0];
                 //TODO: remove before publish
-                if (getTranCount < 2) {
+                if (getTranCount < 5) {
                     tran = undefined;
                 }
                 //transaction is not ready at AppStore, wait and retry 3 times
@@ -464,7 +471,8 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
                         getTranCount = getTranCount + 1;
                         setTimeout(getTranFn, 3000);
                     } else {
-                        JayScrum.app.selectedFrame()._cordovaFailCallback("Google inapp payment transaction faild!");
+                        //JayScrum.app.selectedFrame()._cordovaFailCallback("Google inapp payment transaction faild!");
+                        JayScrum.app.selectedFrame().data().subscriptionState('faild');
                     }
                 } else {
                     tran.DevPayLoad = JayScrum.app.selectedFrame().data().selectedSetting().innerInstance.initData;
@@ -482,10 +490,15 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
                     //    });
                     //    console.log("result: ", result);
                     //})
-                    //.fail(function (error) { console.log(error);});
+                    //.fail(function (error) { console.log(error);JayScrum.app.selectedFrame().data().subscriptionState('faild');});
 
                     //TODO: remove before publish
-                    setTimeout(function () { JayScrum.app.selectedFrame().data().subscriptionState('finish'); }, 2000);
+                    setTimeout(function () {
+                        var n = new JayScrum.Settings.Repository(tran.DevPayLoad);
+                        n.Url = "7h2m";
+                        JayScrum.app.selectedFrame().data().selectedSetting(n.asKoObservable());
+                        JayScrum.app.selectedFrame().data().subscriptionState('finish');
+                    }, 2000);
                 }
             },
             JayScrum.app.selectedFrame()._cordovaFailCallback,
