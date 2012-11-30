@@ -201,7 +201,6 @@ $data.Class.define('JayScrum.ScrumApp', JayScrum.FrameApp, null, {
         return vScroll;
     },
     _initializeRepositories: function (url, userName, psw) {
-        JayScrum.app.framePath([]);
         var connectDefer = Q.defer();
         console.log('!!!! Initialize repository, username: ' + userName + ', password: ' + psw);
         $data.ajax({
@@ -223,6 +222,7 @@ $data.Class.define('JayScrum.ScrumApp', JayScrum.FrameApp, null, {
                                                 // TODO remove
                                                 JayScrum.app.globalData().user((new JayScrum.stormContext.Users.createNew({ Id: 'administrator', Login: 'administrator', FirstName: 'Administrator', LastName: '!!!' })).asKoObservable());
                                             }
+                                            JayScrum.app.framePath([]);
                                             JayScrum.app.selectFrame('MainFrame');
                                             connectDefer.resolve();
                                         },
@@ -256,7 +256,6 @@ $data.Class.define('JayScrum.ScrumApp', JayScrum.FrameApp, null, {
         return connectDefer.promise;
     },
     _initializeDemoRepositories: function (context) {
-        JayScrum.app.framePath([]);
         JayScrum.repository = context;
         JayScrum.stormContext = context;
         JayScrum.stormContext.Users
@@ -267,6 +266,7 @@ $data.Class.define('JayScrum.ScrumApp', JayScrum.FrameApp, null, {
                 } else {
                     JayScrum.app.globalData().user((new JayScrum.stormContext.Users.createNew({ Id: '1', Login: 'testUser', FirstName: 'test', LastName: 'user' })).asKoObservable());
                 }
+                JayScrum.app.framePath([]);
                 JayScrum.app.selectFrame('MainFrame');
             });
     },
