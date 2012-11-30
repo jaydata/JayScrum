@@ -1206,7 +1206,7 @@
                 <h1 class="title">add online repository</h1>
             </div>
 
-            <div class="scroll-list pivot-default-opacity scrollable-list" id="addSettingScroller">
+            <div class="scroll-list scrollable-list" id="addSettingScroller">
                 <div class="scroller-list">
                     <div class="edit detail reset-p" data-bind="with: $data.data().selectedSetting">
                         <div class="tolower item reset-m">
@@ -1214,7 +1214,6 @@
                                 <div><span>Id</span></div>
                                 <input class="medium accent-bg" type="number" readonly="true" data-bind="value: Id" />
                             </div>
-
                             <div class="field">
                                 <div><span data-bind="text: Id()?'edit repository name':'add repository name'"></span></div>
                                 <input class="medium accent-bg" type="text" data-bind="value: Title, valueUpdate:['afterkeydown','propertychange','input']" />

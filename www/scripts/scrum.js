@@ -297,6 +297,7 @@ $data.Class.define('JayScrum.ScrumApp', JayScrum.FrameApp, null, {
     ApplicationUrl: "http://720007a3-c93e-4410-af6d-16efcc5d3d91.jaystack.net",
     iScrollOptions: function (fn, fn2, checkDomChanges) {
         this.useTransition = true;
+        this.useTransform = !$.os.android;
         this.hScroll = false;
         this.vScroll = true;
         this.fixedScrollbar = false;
@@ -305,11 +306,21 @@ $data.Class.define('JayScrum.ScrumApp', JayScrum.FrameApp, null, {
         this.bounce = true;
         this.lockDirection = true;
         this.checkDOMChanges = checkDomChanges;
+
         /*this.onScrollStart = function () {
-            if ($('input:focus, select:focus, textarea:focus').length > 0) {
-                $(':focus').blur();
+            if (android) {
+                if ($('input:focus, select:focus, textarea:focus').length > 0) {
+
+                }
+                $(":focus").each(function () {
+                    $(this).css("background", "red");
+                    $(this).blur();
+                });
+
+                //$(':focus').blur();
             }
         };*/
+
         this.onScrollMove = function () {
             if (this.y < 0 && this.y < this.maxScrollY - 100 && !this.addNewItem) {
                 $(this.scroller).find("div.scroll-up").addClass("flip");

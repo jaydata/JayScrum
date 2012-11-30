@@ -76,7 +76,7 @@ $data.Class.define('JayScrum.Views.RepositoryAddSetting', JayScrum.FrameView, nu
     },
     initializeView: function () {
         JayScrum.app.hideLoading();
-        this.i_scroll = JayScrum.app.initScrollById('addSettingScroller');
+        //this.i_scroll = JayScrum.app.initScrollById('addSettingScroller');
     },
     tearDownView: function () {
         if (this.i_scroll) {

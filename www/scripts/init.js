@@ -1,6 +1,6 @@
 function initEnvironment(wnd) {
     $data.ajax = wnd.$.ajax;
-    document.addEventListener('touchmove', function (e) { e.preventDefault(); }, false);
+    //document.addEventListener('touchmove', function (e) { e.preventDefault(); }, false);
 
     wnd.ua = navigator.userAgent.toLowerCase();
     wnd.iphone = ~ua.indexOf('iphone') || ~ua.indexOf('ipod');
