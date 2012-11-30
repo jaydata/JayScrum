@@ -111,10 +111,7 @@ $data.Class.define('JayScrum.Frames.Sprints', JayScrum.Frame, null, {
 
         $(".field-date-value").each(function(){
             var date = $(this).val();
-            console.log(date, moment(date).format("YYYY-MM-DD"))
-
             $(this).val(moment(date).format("YYYY-MM-DD"));
-
             $(this).scroller({
                 preset: 'date',
                 display: 'modal',
@@ -139,8 +136,8 @@ $data.Class.define('JayScrum.Frames.Sprints', JayScrum.Frame, null, {
         JayScrum.app.visibleLoadingScreen(true);
 
         var sprint = sprintItem.innerInstance;
-        sprint.StartDate = new Date(moment(sprint.StartDate).valueOf());
-        sprint.FinishDate = new Date(moment(sprint.FinishDate).valueOf());
+        sprint.StartDate = new Date(moment(sprint.StartDate).startOf("day").valueOf());
+        sprint.FinishDate = new Date(moment(sprint.FinishDate).endOf("day").valueOf());
         JayScrum.repository.saveChanges(function () {
             JayScrum.app.selectedFrame().onCancelSprint();
         });
