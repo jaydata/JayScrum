@@ -1209,7 +1209,7 @@
                 <h1 class="title">add online repository</h1>
             </div>
 
-            <div class="scroll-list pivot-default-opacity scrollable-list" id="addSettingScroller">
+            <div class="scroll-list scrollable-list" id="addSettingScroller">
                 <div class="scroller-list">
                     <div class="edit detail reset-p" data-bind="with: $data.data().selectedSetting">
                         <div class="tolower item reset-m">
@@ -1217,7 +1217,6 @@
                                 <div><span>Id</span></div>
                                 <input class="medium accent-bg" type="number" readonly="true" data-bind="value: Id" />
                             </div>
-
                             <div class="field">
                                 <div><span data-bind="text: Id()?'edit repository name':'add repository name'"></span></div>
                                 <input class="medium accent-bg" type="text" data-bind="value: Title, valueUpdate:['afterkeydown','propertychange','input']" />
@@ -1551,6 +1550,18 @@
     <script type="text/html" id="alma">
         <div data-bind="text:$data.data().name">alma</div>
     </script>
+
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-30304727-7']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+		var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+		ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+		var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
 
 </body>
 </html>
