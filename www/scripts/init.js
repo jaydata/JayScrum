@@ -61,6 +61,16 @@ function initEnvironment(wnd) {
     $("div.floating-box").live(eventName, function () {
         $(this).removeClass("visible");
     });
+    /*$(".phonegap-link").live(eventName, function (e) {
+        e.preventDefault();
+
+        if (navigator) {
+            navigator.app.loadUrl($(this).attr("href"), { openExternal: true });
+
+            console.log("phonegap link: " + $(this).attr("href"));
+            alert(1);
+        }
+    });*/
 
     // FONT
     $("div.field.fonts div.field").live(eventName, function () {
