@@ -27,13 +27,15 @@ $data.Class.define('JayScrum.Views.SprintEdit', JayScrum.FrameView, null, {
     },
     initializeView:function(){
         $("h1.main-header").addClass("animate");
-        this.i_scroll = JayScrum.app.initScrollById("transition-iteration-edit");
+        //this.i_scroll = JayScrum.app.initScrollById("transition-iteration-edit");
         initDateFieldsById('transition-iteration-edit');
         $("div.metro-actionbar.detail-view-edit").addClass("opened");
     },
-    tearDownView:function(){
-        this.i_scroll.destroy();
-        this.i_scroll = null;
+    tearDownView: function () {
+        if (this.i_scroll) {
+            this.i_scroll.destroy();
+            this.i_scroll = null;
+        }
     }
 }, null);
 $data.Class.define('JayScrum.Frames.Sprints', JayScrum.Frame, null, {

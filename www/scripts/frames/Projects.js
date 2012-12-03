@@ -15,9 +15,11 @@ $data.Class.define('JayScrum.Views.Projects', JayScrum.FrameView, null, {
         $("h1.main-header").addClass("animate");
         this.i_scroll = JayScrum.app.initScrollById("transition-projects");
     },
-    tearDownView:function(){
-        this.i_scroll.destroy();
-        this.i_scroll = null;
+    tearDownView: function () {
+        if (this.i_scroll) {
+            this.i_scroll.destroy();
+            this.i_scroll = null;
+        }
     }
 }, null);
 $data.Class.define('JayScrum.Views.ProjectSelect', JayScrum.FrameView, null, {
@@ -30,9 +32,11 @@ $data.Class.define('JayScrum.Views.ProjectSelect', JayScrum.FrameView, null, {
         $("h1.main-header").addClass("animate");
         this.i_scroll = JayScrum.app.initScrollById("transition-projects");
     },
-    tearDownView:function(){
-        this.i_scroll.destroy();
-        this.i_scroll = null;
+    tearDownView: function () {
+        if (this.i_scroll) {
+            this.i_scroll.destroy();
+            this.i_scroll = null;
+        }
     }
 }, null);
 $data.Class.define('JayScrum.Views.ProjectEdit', JayScrum.FrameView, null, {
@@ -43,12 +47,14 @@ $data.Class.define('JayScrum.Views.ProjectEdit', JayScrum.FrameView, null, {
     initializeView:function(){
         JayScrum.app.hideLoading();
         $("h1.main-header").addClass("animate");
-        this.i_scroll = JayScrum.app.initScrollById("transition-projects");
+        //this.i_scroll = JayScrum.app.initScrollById("transition-projects");
         $("div.metro-actionbar.detail-view-edit").addClass("opened");
     },
-    tearDownView:function(){
-        this.i_scroll.destroy();
-        this.i_scroll = null;
+    tearDownView: function () {
+        if (this.i_scroll) {
+            this.i_scroll.destroy();
+            this.i_scroll = null;
+        }
     }
 }, null);
 $data.Class.define('JayScrum.Frames.Projects', JayScrum.Frame, null, {

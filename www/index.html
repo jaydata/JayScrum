@@ -895,7 +895,7 @@
                 <h1 class="title">Sprint data</h1>
             </div>
             <div class="detail edit" data-bind="with: $data.data().selectedSprint">
-                <div id="transition-iteration-edit" class="scroll-out pivot-default-opacity">
+                <div id="transition-iteration-edit" class="scroll-out">
                     <div class="scroll-in">
                         <div class="list">
                             <div class="pivot-content">
@@ -940,13 +940,13 @@
             <div class="icon-action back topleft">
                 <span data-bind="click: $root.backView"></span>
             </div>
-            <div class="main-header" data-bind="attr: { 'class': 'main-header not-main-page' }">
+            <div class="main-header with-back not-main-page">
                 <h1 class="title" data-bind="text: $root.selectedFrame().data().name"></h1>
             </div>
             <div class="metro-pivot wrapper-container reset">
                 <div class="pivot-list">
                     <div class="pivot uslist">
-                        <div class="scroll-list scrollable-list bottom45 pivot-default-opacity" id="transition-projects">
+                        <div class="scroll-list scrollable-list bottom45" id="transition-projects">
                             <div class="scroller-list maxlist">
                                 <!-- ko if: $data.data().projectList().length > 0 -->
                                 <div class="list project-list" data-bind="foreach: $data.data().projectList">
@@ -990,11 +990,11 @@
             <div class="icon-action back topleft" data-bind="with: $data.data().selectedProject">
                 <span data-bind="click: $parent.onCancelProject"></span>
             </div>
-            <div class="main-header">
+            <div class="main-header with-back">
                 <h1 class="title">Project data</h1>
             </div>
             <div class="detail edit" data-bind="with: $data.data().selectedProject">
-                <div id="transition-projects" class="scroll-out pivot-default-opacity">
+                <div id="transition-projects" class="scroll-out">
                     <div class="scroll-in">
                         <div class="list">
                             <div class="pivot-content">
@@ -1033,7 +1033,7 @@
             <div class="icon-action back topleft">
                 <span data-bind="click: $root.backView"></span>
             </div>
-            <div class="main-header" data-bind="attr: { 'class': 'main-header not-main-page' }">
+            <div class="main-header with-back not-main-page">
                 <h1 class="title" data-bind="text: $data.data().selectedProject().Name"></h1>
             </div>
             <div class="metro-pivot wrapper-container reset">
@@ -1260,7 +1260,7 @@
                 <h1 class="title">Buy online repository</h1>
             </div>
 
-            <div class="scroll-list pivot-default-opacity scrollable-list" id="addSubscriptionScroller">
+            <div class="scroll-list scrollable-list" id="addSubscriptionScroller">
                 <div class="scroller-list">
                     <div class="edit detail reset-p" data-bind="with: $data.data().selectedSetting">
                         <div class="tolower item reset-m">

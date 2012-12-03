@@ -92,14 +92,13 @@ $data.Class.define('JayScrum.Views.RepositoryAddSubscription', JayScrum.FrameVie
     },
     initializeView: function () {
         JayScrum.app.hideLoading();
-        this.i_scroll = JayScrum.app.initScrollById('addSubscriptionScroller');
+        //this.i_scroll = JayScrum.app.initScrollById('addSubscriptionScroller');
     },
     tearDownView: function () {
         if (this.i_scroll) {
             this.i_scroll.destroy();
             this.i_scroll = null;
         }
-      
     }
 }, null);
 $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {

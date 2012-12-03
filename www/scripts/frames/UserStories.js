@@ -70,11 +70,13 @@ $data.Class.define('JayScrum.Views.UserStoryEditor', JayScrum.FrameView, null, {
         $("h1.main-header").addClass("animate");
         var swipeHeight = $("div.detail-edit-fix-header h1").height();
         $("div#wrapper-detailed-edit").css('top', swipeHeight);
-        this.i_scroll = JayScrum.app.initScrollById('wrapper-detailed-edit');
+        //this.i_scroll = JayScrum.app.initScrollById('wrapper-detailed-edit');
     },
-    tearDownView: function(){
-        this.i_scroll.destroy();
-        this.i_scroll = null;
+    tearDownView: function () {
+        if (this.i_scroll) {
+            this.i_scroll.destroy();
+            this.i_scroll = null;
+        }
     }
 }, null);
 $data.Class.define('JayScrum.Frames.UserStories', JayScrum.Frame, null, {
