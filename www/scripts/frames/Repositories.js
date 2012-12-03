@@ -33,6 +33,7 @@ $data.Class.define('JayScrum.Views.RepositorySettings', JayScrum.FrameView, null
 
         if (android) {
             setTimeout(function () {
+                $("div#error-msg").removeClass("opened");
                 $("div.floating-box").addClass("visible");
             }, 3000);
         }

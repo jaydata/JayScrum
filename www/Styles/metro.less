@@ -296,7 +296,7 @@ body:not(.android)
 
 .floating-box
 {
-    .opacity(0); .position(absolute, auto, 50%, 0); margin-right: -130px; .transition(0.4s);
+    .opacity(0); .position(absolute, auto, 50%, 0); margin-right: -130px; .transition(0.4s); .rounded(10px);
     background: #24A0DA; border: 1px solid darken(rgba(45, 45, 45, 0.9), 10%);
     padding: 10px; max-width: 260px; z-index: 5;
     
@@ -307,6 +307,20 @@ body:not(.android)
     p  { .clear;margin: 0; font-size: 16px; line-height: 22px; }
     a  { color: #fff !important; .tdunder; }
     .icon-action { .scale(0.85); margin: 0 5px 0 0; .fleft; .position(relative, -3px); }
+    
+    .tail-down
+    {
+        .position(absolute, auto, auto, -13px, 50%); margin-left: -15px;    
+    }
+}
+
+.tail-down {
+    width: 0;  height: 0; 
+	
+	@axis: 15px;
+	border-left: @axis solid transparent;
+	border-right: @axis solid transparent;
+	border-top: @axis solid #24A0DA;
 }
 /*#endregion HINTS */
 
