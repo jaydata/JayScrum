@@ -147,6 +147,7 @@
     &.scrollable-list {
         .position(absolute, 50px, auto, 0); .size(100%);
         overflow-y: scroll;
+        -webkit-overflow-scrolling: touch;
         
         &.bottom45 { bottom: 45px !important; }
     }
@@ -177,7 +178,7 @@ div#swipeview-inside-1, div#swipeview-inside-2, div#swipeview-inside-0 {
 
 /*#endregion SWIPEVIEW */
 
-/*#region SCROLLBAR */
+/*#region SCROLLBARS */
 .iscrollbarV {
     .position(absolute, 2px, 1px, 7px);
 	width: 5px; z-index: 100;
@@ -198,7 +199,21 @@ div#swipeview-inside-1, div#swipeview-inside-2, div#swipeview-inside-0 {
         .iscrollbarV div { .opacity(0.25); }
     }
 }
-/*#endregion SCROLLBAR */
+
+::-webkit-scrollbar {
+    width: 5px;
+    background: transparent;
+}
+ 
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+ 
+::-webkit-scrollbar-thumb {
+	background: rgba(255, 255, 255, 0.25);
+	.rounded(4px);
+}
+/*#endregion SCROLLBARS */
 
 .of-touch 
 {
