@@ -83,7 +83,7 @@ var provisionApp = function (provisionRequestData, groups, mainCtx) {
                         provAppDef.resolve(provisionRequestData.attachment);
                     });
                     //TODO removed
-                    provisionRequestData.key = 'g2_' + provisionRequestData.key;
+                    provisionRequestData.key = 'g9_' + provisionRequestData.key;
                     console.log("       provision request data: ", JSON.stringify(provisionRequestData));
                     provReq.write(JSON.stringify(provisionRequestData));
                     provReq.end();
@@ -196,20 +196,20 @@ var provisionFinish = function (instanceId) {
     provReq.end();
     return d.promise;
 };
-var validateSubscription = function(applicationNameSpace, subscriptionId, subscriptionToken){
+var validateSubscription = function (applicationNameSpace, subscriptionId, subscriptionToken) {
     console.log('-== Validate subscription ==-');
-    console.log('appNameSpace: '+applicationNameSpace);
-    console.log('subscription Id: '+subscriptionId);
-    console.log('subscription token: '+subscriptionToken);
+    console.log('appNameSpace: ' + applicationNameSpace);
+    console.log('subscription Id: ' + subscriptionId);
+    console.log('subscription token: ' + subscriptionToken);
     var def = Q.defer();
-    var validateRequest = function(accessToken){
+    var validateRequest = function (accessToken) {
         var get_options = {
             host: 'www.googleapis.com',
             port: 443,
-            path: '/androidpublisher/v1/applications/'+applicationNameSpace+'/subscriptions/'+subscriptionId+'/purchases/'+subscriptionToken+'?access_token='+accessToken,
+            path: '/androidpublisher/v1/applications/' + applicationNameSpace + '/subscriptions/' + subscriptionId + '/purchases/' + subscriptionToken + '?access_token=' + accessToken,
             method: 'GET'
         };
-        console.log('Validation path: '+get_options.path);
+        console.log('Validation path: ' + get_options.path);
         var reqPromise = Q.defer();
         https.request(get_options, function (res) {
             res.setEncoding('utf8');
@@ -223,9 +223,9 @@ var validateSubscription = function(applicationNameSpace, subscriptionId, subscr
                     console.log(apps);
                     console.log(apps.validUntilTimestampMsec);
                     console.log(Date.now().valueOf());
-                    reqPromise.resolve(Date.now().valueOf()<apps.validUntilTimestampMsec);
+                    reqPromise.resolve(Date.now().valueOf() < apps.validUntilTimestampMsec);
                 });
-            }else{
+            } else {
                 reqPromise.resolve(undefined);
             }
 
@@ -234,22 +234,22 @@ var validateSubscription = function(applicationNameSpace, subscriptionId, subscr
     };
 
     validateRequest(GOOGLE_API_ACCESS_TOKEN)
-        .then(function(result){
-            if(result === undefined){
+        .then(function (result) {
+            if (result === undefined) {
                 renewAccessToken()
-                    .then(function(newAccessToken){
+                    .then(function (newAccessToken) {
                         validateRequest(GOOGLE_API_ACCESS_TOKEN)
-                            .then(function(result2){def.resolve(result2);});
+                            .then(function (result2) { def.resolve(result2); });
                     })
-                    .fail(function(){def.reject();});
-            }else{
+                    .fail(function () { def.reject(); });
+            } else {
                 def.resolve(result);
             }
         });
 
     return def.promise;
 };
-var renewAccessToken= function(){
+var renewAccessToken = function () {
     console.log("-== Renew access token ==-");
     var qstring = require('querystring');
     var postData = qstring.stringify(GOOGLE_API_REFRESH_TOKEN_OBJECT);
@@ -259,7 +259,7 @@ var renewAccessToken= function(){
         port: 443,
         path: '/o/oauth2/token',
         method: 'POST',
-        headers:{
+        headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
             'Content-Length': postData.length
         }
@@ -273,11 +273,11 @@ var renewAccessToken= function(){
             res.on("end", function () {
                 var apps = JSON.parse(data);
                 GOOGLE_API_ACCESS_TOKEN = apps.access_token;
-                console.log("renew success: "+GOOGLE_API_ACCESS_TOKEN);
+                console.log("renew success: " + GOOGLE_API_ACCESS_TOKEN);
                 def.resolve();
             });
 
-        }else{
+        } else {
             console.log("!!!! renew FAILD !!!!");
             def.reject();
         }
@@ -288,14 +288,14 @@ var renewAccessToken= function(){
     return def.promise;
 };
 var randomString = function () {
-	var chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz";
-	var string_length = 4;
-	var randomstring = '';
-	for (var i=0; i<string_length; i++) {
-		var rnum = Math.floor(Math.random() * chars.length);
-		randomstring += chars.substring(rnum,rnum+1);
-	}
-	return randomstring;
+    var chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz";
+    var string_length = 4;
+    var randomstring = '';
+    for (var i = 0; i < string_length; i++) {
+        var rnum = Math.floor(Math.random() * chars.length);
+        randomstring += chars.substring(rnum, rnum + 1);
+    }
+    return randomstring;
 }
 $data.ServiceBase.extend("ProvisionService", {
     Provision: $data.JayService.serviceFunction()
