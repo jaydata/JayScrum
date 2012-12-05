@@ -1,5 +1,14 @@
 input.accent-bg, textarea.accent-bg, select.accent-bg, input, textarea, select {
-    &:focus { background: white !important; color: Black !important; outline: none; }
+    &:focus  
+    {
+        background: white !important; 
+        color: Black !important; 
+        outline-style: hidden !important; 
+        outline-color: transparent !important;
+        outline: none !important;
+        -webkit-tap-highlight-color: rgba(255, 255, 255, 0) !important;
+        /*-webkit-user-modify: read-write-plaintext-only !important;*/
+    }
 }
 
 input[type=text], input[type=password], input[type=number], input[type=date], input[type=datetime], textarea, select {
@@ -12,7 +21,7 @@ input[type=text], input[type=password], input[type=number], input[type=date], in
 	
 	&::-webkit-input-placeholder { line-height: 1; position: relative; top: 3px; }
 }
-		    
+
 textarea {
 	.size(100%, 250px);
 }

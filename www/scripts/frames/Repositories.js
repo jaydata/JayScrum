@@ -77,7 +77,9 @@ $data.Class.define('JayScrum.Views.RepositoryAddSetting', JayScrum.FrameView, nu
     },
     initializeView: function () {
         JayScrum.app.hideLoading();
-        //this.i_scroll = JayScrum.app.initScrollById('addSettingScroller');
+        if (android23) {
+            this.i_scroll = JayScrum.app.initScrollById('addSettingScroller');
+        }
     },
     tearDownView: function () {
         if (this.i_scroll) {
@@ -93,7 +95,9 @@ $data.Class.define('JayScrum.Views.RepositoryAddSubscription', JayScrum.FrameVie
     },
     initializeView: function () {
         JayScrum.app.hideLoading();
-        //this.i_scroll = JayScrum.app.initScrollById('addSubscriptionScroller');
+        if (android23) {
+            this.i_scroll = JayScrum.app.initScrollById('addSubscriptionScroller');
+        }
     },
     tearDownView: function () {
         if (this.i_scroll) {

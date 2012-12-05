@@ -306,21 +306,13 @@ $data.Class.define('JayScrum.ScrumApp', JayScrum.FrameApp, null, {
         this.bounce = true;
         this.lockDirection = true;
         this.checkDOMChanges = checkDomChanges;
-
-        /*this.onScrollStart = function () {
-            if (android) {
-                if ($('input:focus, select:focus, textarea:focus').length > 0) {
-
-                }
+        this.onScrollStart = function () {
+            if (android && $(':focus').length > 0) {
                 $(":focus").each(function () {
-                    $(this).css("background", "red");
                     $(this).blur();
                 });
-
-                //$(':focus').blur();
             }
-        };*/
-
+        };
         this.onScrollMove = function () {
             if (this.y < 0 && this.y < this.maxScrollY - 100 && !this.addNewItem) {
                 $(this.scroller).find("div.scroll-up").addClass("flip");

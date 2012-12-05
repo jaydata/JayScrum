@@ -27,7 +27,9 @@ $data.Class.define('JayScrum.Views.SprintEdit', JayScrum.FrameView, null, {
     },
     initializeView:function(){
         $("h1.main-header").addClass("animate");
-        //this.i_scroll = JayScrum.app.initScrollById("transition-iteration-edit");
+        if (android23) {
+            this.i_scroll = JayScrum.app.initScrollById("transition-iteration-edit");
+        }
         initDateFieldsById('transition-iteration-edit');
         $("div.metro-actionbar.detail-view-edit").addClass("opened");
     },

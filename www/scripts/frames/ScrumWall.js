@@ -79,7 +79,10 @@ $data.Class.define('JayScrum.Views.TaskEdit', JayScrum.FrameView, null, {
         $("h1.main-header").addClass("animate");
         //var swipeHeight = $("div.detail-edit-fix-header h1").height();
         //$("div#wrapper-detailed-edit").css('top', swipeHeight);
-        //self.i_scroll = JayScrum.app.initScrollById('wrapper-detailed-edit', null, null, true);
+
+        if (android23) {
+            self.i_scroll = JayScrum.app.initScrollById('wrapper-detailed-edit', null, null, true);
+        }
     },
     tearDownView: function () {
         if (this.i_scroll) {

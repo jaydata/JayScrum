@@ -78,7 +78,7 @@ public class MainActivity extends DroidGap implements BillingController.IConfigu
 			PluginResult result = new PluginResult(PluginResult.Status.OK, response.toString());
 			result.setKeepCallback(true);
 			this._plugin.success(result, this._plugin._callbackId);
-		}catch(NullPointerException ex){
+		} catch(NullPointerException ex){
 			Log.e("InApp", "ex.getMessage()");
 		}
 	};

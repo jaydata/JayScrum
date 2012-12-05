@@ -47,7 +47,9 @@ $data.Class.define('JayScrum.Views.ProjectEdit', JayScrum.FrameView, null, {
     initializeView:function(){
         JayScrum.app.hideLoading();
         $("h1.main-header").addClass("animate");
-        //this.i_scroll = JayScrum.app.initScrollById("transition-projects");
+        if (android23) {
+            this.i_scroll = JayScrum.app.initScrollById("transition-projects");
+        }
         $("div.metro-actionbar.detail-view-edit").addClass("opened");
     },
     tearDownView: function () {

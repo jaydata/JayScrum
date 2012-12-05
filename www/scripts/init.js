@@ -1,17 +1,26 @@
 function initEnvironment(wnd) {
     $data.ajax = wnd.$.ajax;
-    //document.addEventListener('touchmove', function (e) { e.preventDefault(); }, false);
 
     wnd.ua = navigator.userAgent.toLowerCase();
     wnd.iphone = ~ua.indexOf('iphone') || ~ua.indexOf('ipod');
     wnd.ipad = ~ua.indexOf('ipad');
     wnd.ios = iphone || ipad;
     wnd.android = ua.indexOf('android') >= 0;
+    wnd.android23 = android && $.os.version.indexOf("2.3") > -1;
     wnd.isIE = ua.indexOf('msie');
     wnd.eventName = !(/mobile/gi).test(navigator.appVersion) ? "click" : "tap";
     wnd.loading = $("div.metro-loading");
     wnd.scrollToRefresh = null;
     wnd.appStarted = false;
+
+    //document.addEventListener('touchmove', function (e) { e.preventDefault(); }, false);
+    document.addEventListener('touchmove', function (e) {
+        if (android && $(':focus').length > 0) {
+            $(":focus").each(function () {
+                $(this).blur();
+            });
+        }
+    }, false);
 
     /*console.log('IsAndroid: ', android?'true':'false');
     console.log('IsAndroid1: ', window['android']?'true':'false');*/
@@ -61,6 +70,18 @@ function initEnvironment(wnd) {
     $("div.floating-box").live(eventName, function () {
         $(this).removeClass("visible");
     });
+    /*$("div").live('scroll', function () {
+        console.log('scroll');
+    });
+    $("div").live('onscroll', function () {
+        console.log('scroll');
+    });
+    $("input").live('blur', function () {
+        console.log('blur');
+    });
+    $("div").scroll(function () {
+        console.log('scroll - no live');
+    });*/
     /*$(".phonegap-link").live(eventName, function (e) {
         e.preventDefault();
 

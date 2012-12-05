@@ -130,23 +130,24 @@
 
 /*#region SCROLL LIST */
 .scroll-list {
-	.relative; .show; .fleft; .size(100%, 95%);
-	overflow: auto; z-index: 1;
+	/*.relative;*/ /*.show; .fleft;*/ .size(100%, auto);
+	/*overflow: hidden;*/ z-index: 1;
 	
 	.scroller-list {
 	    .absolute; .size(100%); padding: 0 10px !important;
-	    z-index: 1;
+	    /*z-index: 1;*/
 	    
 	    .list {
-	        .reset-mp; .size(100%);
+	        /*.reset-mp; .size(100%);*/
         }
 	    
 	    p.inactive { line-height: 60px; }
     }
     
     &.scrollable-list {
-        .position(absolute, 50px, auto, 0); .size(100%);
+        .position(absolute, 50px, auto, 0);
         overflow-y: scroll;
+        overflow-x: hidden;
         -webkit-overflow-scrolling: touch;
         
         &.bottom45 { bottom: 45px !important; }
@@ -201,8 +202,11 @@ div#swipeview-inside-1, div#swipeview-inside-2, div#swipeview-inside-0 {
 }
 
 ::-webkit-scrollbar {
-    width: 5px;
+    width: 5px; 
     background: transparent;
+    
+    /* HTC scrolling sluggy fix */
+    display: none;
 }
  
 ::-webkit-scrollbar-track {
