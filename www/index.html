@@ -1180,20 +1180,21 @@
         <div class="hint-screen" id="hintScreenScroller">
             <div class="container">
                 <h1>Welcome to JayScrum!</h1>
-                <p>
-                    In this Agile focused Application you can manage your team's current sprint with
-                    it's user stories, tasks, users and so on. To get started you have to create
-                    a Repository for your Application where everything will be stored. You don't have
-                    to
-                    do any configuration or more, just create your first database and get started now!
+                <p> 
+                                    In this Agile Application you can manage your team's current sprint, complete with user stories, tasks, the works.
+                                    To get started you have to create a Repository for your Application where everything will be stored.            
+                                    If you would like to try this app, click and Create a local demo database and get started now!
+                                    If you would like to have your own online repository click Subscribe for an online repository button.
+                                    If your team already has an online repository click Connect to online repository and setup your connection. 
+
                 </p>
 
                 <div class="tacenter">
-                    <span class="btn-metro btn-large" data-bind="click: $data.getDemoDb">Create demo database</span>
-                    <span class="btn-metro btn-large" data-bind="click: $data.addSetting">Connect database</span>
+                    <span class="btn-metro btn-large" data-bind="click: $data.getDemoDb">Create local demo database</span>
+                    <span class="btn-metro btn-large" data-bind="click: $data.addSetting">Connect to repository</span>
                     <!--ko if: $data.data().isSupportedPurchase-->
-                    <span class="btn-metro btn-large" data-bind="click: $data.buyDatabase">Buy database</span>
-                    <span class="btn-metro btn-large" data-bind="click: $data._goToRepository">Go to my repository</span>
+                    <span class="btn-metro btn-large" data-bind="click: $data.buyDatabase">Subscribe for an online repository</span>
+                    <span class="btn-metro btn-large" data-bind="click: $data._goToRepository">My repo</span>
                     <!--/ko-->
                 </div>
             </div>
