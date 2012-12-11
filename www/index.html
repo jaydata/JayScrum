@@ -439,37 +439,11 @@
                                 </div>
 
                                 <div class="field">
-                                    <div><span>Type</span></div>
-                                    <select class="medium accent-bg" onchange="JayScrum.app.selectedFrame().selectedView().i_scroll.refresh();"
-                                        data-bind="options: $root.globalData().typeOptionValues, value: Type">
+                                    <div><span>Assigned To</span></div>
+                                    <select class="medium accent-bg with-icon" data-bind="options: $root.globalData().userList, optionsText:function(item){return item?JayScrum.app.globalData().userFullNames()[item]+' ('+item+')':'';}, value: AssignedTo">
                                     </select>
+                                    <span class="icon-action update fright" data-bind="click: $root.onRefreshUserList"><span></span></span>
                                 </div>
-
-                                <div class="field">
-                                    <div><span>Project</span></div>
-                                    <select class="medium accent-bg with-icon" data-bind="options: $root.globalData().projectList, optionsText: 'Name', optionsValue: 'Id', value: WorkItem_Project">
-                                    </select>
-                                    <span class="icon-action update fright" data-bind="click: $root.onRefreshProjectList">
-                                        <span></span></span>
-                                </div>
-
-                                <div class="field">
-                                    <div><span>Sprint</span></div>
-                                    <select class="medium accent-bg with-icon" data-bind="options: $root.globalData().sprintList, optionsText: 'Name', optionsValue: 'Id', value: WorkItem_Sprint">
-                                    </select>
-                                    <span class="icon-action update fright" data-bind="click: $root.onRefreshSprintListForDropDown">
-                                        <span></span></span>
-                                </div>
-
-                                <!-- ko if: Type() == 'Task' -->
-                                <div class="field">
-                                    <div><span>User story</span></div>
-                                    <select class="medium accent-bg with-icon" data-bind="options: $root.globalData().userStoryList, optionsText: 'Title', optionsValue: 'Id', value: WorkItem_WorkItem">
-                                    </select>
-                                    <span class="icon-action update fright" data-bind="click: $root.onRefreshUserStoryList">
-                                        <span></span></span>
-                                </div>
-                                <!-- /ko -->
 
                                 <div class="field">
                                     <div><span>State</span></div>
@@ -478,18 +452,10 @@
                                 </div>
 
                                 <div class="field">
-                                    <div><span class="metro-checkbox-label">Blocked</span></div>
-                                    <div class="metro-checkbox accent-bg">
-                                        <input type="checkbox" id="Blocked" value="None" name="check" class="medium accent-bg" data-bind="checked: IsBlocked" />
-                                        <label for="Blocked"></label>
-                                    </div>
-                                </div>
-
-                                <div class="field">
-                                    <div><span>Assigned To</span></div>
-                                    <select class="medium accent-bg with-icon" data-bind="options: $root.globalData().userList, optionsText:function(item){return item?JayScrum.app.globalData().userFullNames()[item]+' ('+item+')':'';}, value: AssignedTo">
+                                    <div><span>Type</span></div>
+                                    <select class="medium accent-bg" onchange="JayScrum.app.selectedFrame().selectedView().i_scroll.refresh();"
+                                        data-bind="options: $root.globalData().typeOptionValues, value: Type">
                                     </select>
-                                    <span class="icon-action update fright" data-bind="click: $root.onRefreshUserList"><span></span></span>
                                 </div>
 
                                 <div class="field">
@@ -515,6 +481,37 @@
                                     <input class="medium accent-bg" type="number" min="0" step="1" pattern="[0-9]" data-bind="value: BusinessValue" />
                                 </div>
                                 <!-- /ko -->
+
+                                <!-- ko if: Type() == 'Task' -->
+                                <div class="field">
+                                    <div><span>User story</span></div>
+                                    <select class="medium accent-bg with-icon" data-bind="options: $root.globalData().userStoryList, optionsText: 'Title', optionsValue: 'Id', value: WorkItem_WorkItem">
+                                    </select>
+                                    <span class="icon-action update fright" data-bind="click: $root.onRefreshUserStoryList"><span></span></span>
+                                </div>
+                                <!-- /ko -->
+
+                                <div class="field">
+                                    <div><span>Sprint</span></div>
+                                    <select class="medium accent-bg with-icon" data-bind="options: $root.globalData().sprintList, optionsText: 'Name', optionsValue: 'Id', value: WorkItem_Sprint">
+                                    </select>
+                                    <span class="icon-action update fright" data-bind="click: $root.onRefreshSprintListForDropDown"><span></span></span>
+                                </div>
+
+                                <div class="field">
+                                    <div><span>Project</span></div>
+                                    <select class="medium accent-bg with-icon" data-bind="options: $root.globalData().projectList, optionsText: 'Name', optionsValue: 'Id', value: WorkItem_Project">
+                                    </select>
+                                    <span class="icon-action update fright" data-bind="click: $root.onRefreshProjectList"><span></span></span>
+                                </div>
+
+                                <div class="field">
+                                    <div><span class="metro-checkbox-label">Blocked</span></div>
+                                    <div class="metro-checkbox accent-bg">
+                                        <input type="checkbox" id="Blocked" value="None" name="check" class="medium accent-bg" data-bind="checked: IsBlocked" />
+                                        <label for="Blocked"></label>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
