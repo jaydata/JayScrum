@@ -108,8 +108,8 @@ h2.title                { .font-size(22px); }
 }
 input.icon-action:active    { .opacity(0.7); .scale(0.85); }
 
-#wrapper .pivot-list .item h2:active   { .opacity(0.2); }
-.setting-list h2:not(.noclick):active  { .opacity(0.2); }
+#wrapper .pivot-list .item h2:active   { .opacity(0.45); }
+.setting-list h2:not(.noclick):active  { .opacity(0.45); }
 .setting-list h2.noclick:hover         { cursor: default !important; }
 .noclick { color: #838383; }
 
@@ -117,11 +117,11 @@ h2 {
     &.title {
         span:not(.icon-action) 
         {
-            &:active { .opacity(0.2); }
+            &:active { .opacity(0.45); }
         }
     }
 
-    span.value:active { .opacity(0.2); } 
+    span.value:active { .opacity(0.45); } 
 }
 /*#endregion ONCLICK/HOVER STATES */
 
@@ -136,6 +136,13 @@ h2 {
 body:not(.android)
 {
     #metro-tiles .metro-tiles li {
+        .transition(0.2s);
+        
+        &:active { .scale(0.85); }
+    }
+    
+    div.tile 
+    {
         .transition(0.2s);
         
         &:active { .scale(0.85); }
@@ -266,15 +273,18 @@ body:not(.android)
 /*#region HINTS */
 .hint-screen 
 {
-    .position(absolute, 0, 0, 0, 0);
-    background: black;  z-index: 4500;
+    .relative; .mauto; max-width: 768px; height: 100%; 
+    z-index: 4500;
+    
+    background: url("@{img-folder}/promo_bg.png") top right black no-repeat;
+    /*background-size: 100%;*/
     
     h1 { line-height: 37px; margin-bottom: 15px; }
     
     .container 
     {
-        .mauto;
-        padding: 20px; max-width: 768px;
+        /*.mauto; max-width: 768px;*/
+        padding: 20px; 
     }
     
     .btn-metro { max-width: 450px; margin-top: 25px; }

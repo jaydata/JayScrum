@@ -77,7 +77,7 @@ $data.Class.define('JayScrum.Views.RepositoryAddSetting', JayScrum.FrameView, nu
     },
     initializeView: function () {
         JayScrum.app.hideLoading();
-        if (android23) {
+        if (android23 || android && !window['cordova']) {
             this.i_scroll = JayScrum.app.initScrollById('addSettingScroller');
         }
     },
@@ -95,7 +95,8 @@ $data.Class.define('JayScrum.Views.RepositoryAddSubscription', JayScrum.FrameVie
     },
     initializeView: function () {
         JayScrum.app.hideLoading();
-        if (android23) {
+
+        if (android23 || android && !window['cordova']) {
             this.i_scroll = JayScrum.app.initScrollById('addSubscriptionScroller');
         }
     },

@@ -75,22 +75,65 @@
 			    padding-top: 5px; margin-top: 35px;
 			}
 		
-			.icon { height: 62px !important; top: 41% !important; }
+			.icon { height: 57px !important; top: 41% !important; }
 	    
 		    .icon-57 {
-		        background: url("@{img-folder}/icon_57x57.png") no-repeat center center;
-		        height: 57px !important;
 		        &.middle { margin-top: -25px !important; }
-		        
-		        &.settings  { background-position: center /*0px;-*/ -397px; }
-		        &.repos     { background-position: center /*-57px;*/ -456px }
-		        &.sprints   { background-position: center -114px; }
-		        &.projects  { background-position: center -171px; }
-		        &.users     { background-position: center -228px; }
-		        &.us        { background-position: center /*-285px;*/ -513px;}
 		    }
 	    }
     }
+}
+
+div.tile 
+{
+    #metro > .tile; .relative; .box;
+	
+	&.wide { #metro > .tilewide; }
+	
+	&.orange        { background: #dd9616; border: 1px solid lighten(#dd9616, 10%); }
+	&.darkorange    { background: #e76321; border: 1px solid lighten(#e76321, 10%); }
+	&.purple        { background: #69349c; border: 1px solid lighten(#69349c, 10%);  }
+	&.pink          { background: pink;    border: 1px solid lighten(pink, 10%); }
+	&.darkpink      { background: #b71c46; border: 1px solid lighten(#b71c46, 10%); }
+	&.done          { background: #008000; border: 1px solid lighten(#008000, 10%); }
+	&.red           { background: #800000; border: 1px solid lighten(#800000, 10%); }
+	&.yellow        { background: #ccc102; border: 1px solid lighten(#ccc102, 10%); }
+	&.gray          { background: #414141; border: 1px solid lighten(#414141, 10%); }
+	&.lightblue     { background: #00b5df; border: 1px solid lighten(#00b5df, 10%); }
+	&.darkblue      { background: #293f7b; border: 1px solid lighten(#293f7b, 10%); }
+	&.blue          { background: #24A0DA; border: 1px solid lighten(#24A0DA, 10%); }
+	&.lightgreen    { background: #65bf10; border: 1px solid lighten(#65bf10, 10%); }
+	&.green         { background: #19a053; border: 1px solid lighten(#19a053, 10%); }
+	&.lightred      { background: #d64d34; border: 1px solid lighten(#d64d34, 10%); }
+	&.greenblue     { background: #00586d; border: 1px solid lighten(#00586d, 10%); }
+	&.brown         { background: #833801; border: 1px solid lighten(#833801, 10%); }
+}
+
+.tile-group-item 
+{
+    .clear; .ohidden; margin: 5px 0 5px;
+    
+    div.tile  
+    {
+        margin: 0 15px 15px 0 !important;
+    }
+    
+    h2, h3, h4, h5, h6  
+    {
+        margin: 0 0 5px; 
+        
+        &:hover     { cursor: pointer, }
+        &:active    { .opacity(0.45); }
+    }
+    
+    h3 { color: #19a053; }
+    &.red       { h3 { color: #800000; } }
+    &.blue      { h3 { color: #24A0DA; } }
+    &.darkblue  { h3 { color: #293f7b; } }
+    &.orange    { h3 { color: #dd9616; } }
+    &.purple    { h3 { color: #69349c; } }
+    &.lightred  { h3 { color: #d64d34; } }
+    &.darkpink  { h3 { color: #b71c46; } }
 }
 /*#endregion METRO-TILES */
 

@@ -47,7 +47,7 @@ $data.Class.define('JayScrum.Views.ProjectEdit', JayScrum.FrameView, null, {
     initializeView:function(){
         JayScrum.app.hideLoading();
         $("h1.main-header").addClass("animate");
-        if (android23) {
+        if (android23 || android && !window['cordova']) {
             this.i_scroll = JayScrum.app.initScrollById("transition-projects");
         }
         $("div.metro-actionbar.detail-view-edit").addClass("opened");

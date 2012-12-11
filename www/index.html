@@ -19,7 +19,7 @@
     <script type="text/javascript" src="scripts/libs/zeptojs.min.js"></script>
     <script type="text/javascript" src="scripts/libs/q.js"></script>
 
-    <script type="text/javascript" src="cordova_mock.js"></script>
+    <!--<script type="text/javascript" src="cordova_mock.js"></script>-->
     <!--<script type="text/javascript" src="scripts/cordova-2.2.0.js"></script>-->
     <script type="text/javascript">
         var jqReady = Q.defer();
@@ -1180,23 +1180,63 @@
         <div class="hint-screen" id="hintScreenScroller">
             <div class="container">
                 <h1>Welcome to JayScrum!</h1>
-                <p> 
-                                    In this Agile Application you can manage your team's current sprint, complete with user stories, tasks, the works.
-                                    To get started you have to create a Repository for your Application where everything will be stored.            
-                                    If you would like to try this app, click and <b>Create a local demo database</b> and get started now!
-                                    If you would like to have your own online repository click <b>Subscribe for an online repository</b> button.
-                                    If your team already has an online repository click <b>Connect to online repository</b> and setup your connection. 
-
+                <p>
+                    In this Agile Application you can manage your team's current sprint, complete with user stories, tasks, the works.
+                    To get started you have to create a Repository for your Application where everything will be stored.
+                    <!--If you would like to try this app, click and <b>Create a local demo database</b> and get started now!-->
+                    <!--If you would like to have your own online repository click <b>Subscribe for an online repository</b> button.-->
+                    <!--If your team already has an online repository click <b>Connect to online repository</b> and setup your connection.-->
                 </p>
 
-                <div class="tacenter">
+                <!--<div class="tacenter">
                     <span class="btn-metro btn-large" data-bind="click: $data.getDemoDb">Create local demo database</span>
                     <span class="btn-metro btn-large" data-bind="click: $data.addSetting">Connect to repository</span>
-                    <!--ko if: $data.data().isSupportedPurchase-->
+                    <!--ko if: $data.data().isSupportedPurchase-- >
                     <span class="btn-metro btn-large" data-bind="click: $data.buyDatabase">Subscribe for an online repository</span>
                     <span class="btn-metro btn-large" data-bind="click: $data._goToRepository">My repo</span>
-                    <!--/ko-->
+                    <!--/ko-- >
+                </div>-->
+
+                <br />
+
+                <div class="tile-group-item blue">
+                    <div class="tile wide blue">
+                        <span data-bind="click: $data.getDemoDb">
+                            <span class="middle icon icon-57 devices"></span>
+                        </span>
+                    </div>
+                    <h3 data-bind="click: $data.getDemoDb">Create local demo database</h3>
+                    <p>If you would like to try this app, click here to create a local demo database and get started now!</p>
                 </div>
+                <div class="tile-group-item blue">
+                    <div class="tile wide blue">
+                        <span data-bind="click: $data.addSetting">
+                            <span class="middle icon icon-57 connect"></span>
+                        </span>
+                    </div>
+                    <h3 data-bind="click: $data.addSetting">Connect to repository</h3>
+                    <p>If your team already has an online repository click here to setup your connection.</p>
+                </div>
+                <!--ko if: $data.data().isSupportedPurchase-->
+                <div class="tile-group-item blue">
+                    <div class="tile wide blue">
+                        <span data-bind="click: $data.buyDatabase">
+                            <span class="middle icon icon-57 subscribe"></span>
+                        </span>
+                    </div>
+                    <h3 data-bind="click: $data.buyDatabase">Subscribe for an online repository</h3>
+                    <p>If you would like to have your own online repository click here and subscribe for an online repository.</p>
+                </div>
+                <div class="tile-group-item blue">
+                    <div class="tile wide blue">
+                        <span data-bind="click: $data._goToRepository">
+                            <span class="middle icon icon-57 repos"></span>
+                        </span>
+                    </div>
+                    <h3 data-bind="click: $data._goToRepository">My repository</h3>
+                    <p>If you already have a subscription for an online repository click here and go to your repository.</p>
+                </div>
+                <!--/ko-->
             </div>
         </div>
     </script>
@@ -1284,6 +1324,14 @@
                                 <div><span>admin user password</span></div>
                                 <input class="medium accent-bg" type="password" data-bind="value: Password, valueUpdate:['afterkeydown','propertychange','input']" />
                             </div>
+
+                            <div class="ttnone close-p">
+                                <p>By clicking Subscribe, you initiate the purchase of a monthly subscription for your private JayScrum repository via the Android App Store. Your subscription fee will be billed by the Android App Store as long as your subscription is live.</p>
+
+                                <p class="accent-color"><b>JayScrum Repository monthly fee: $35/month</b></p>
+                                <p>Once this process is finished, you can start using your new repository, invite team members and kick off collaboration!</p>
+                            </div>
+
                             <div class="split2">
                                 <span class="btn-metro btn-large margin10_0" data-bind="click: $parent.subscriptionDatabase">subscribe</span>
                                 <span class="btn-metro btn-large margin10_0" data-bind="click: $parent.cancelSetting">Cancel</span>
@@ -1371,7 +1419,7 @@
                     <p>JayScrum is an agile Project Management tool, that enables you to make your Scrum-methodology-based daily routine enjoyable. JayScrum turns your daily standup meetings something you and your team will look forward to, all that with an intuitive and beautifully designed application.  Through this application you can manage Projects, Backlogs, Tasks, Bugs, and Impediments.</p>
                     <p>If you have any suggestions that could help us make JayScrum even better or more to your liking, or if you are facing any support issues with your application or with your online repository, please contact us <a href="mailto:jayscrum@jaystack.com"></a>via e-mail.</a></p>
                     <br />
-                    <p>Application framework: </br><b>JayData</b> (<a class="phonegap-link" href="http://jaydata.org" target="_blank"  rel="external">http://jaydata.org</a>)</p>
+                    <p>Application framework: </br><b>JayData</b> (<a class="phonegap-link" href="http://jaydata.org" target="_blank" rel="external">http://jaydata.org</a>)</p>
                     <p>Application built on: </br> <b>JayStorm </b>(<a href="http://jaydata.org" target="_blank">http://jaystack.com</a>)</p>
                     <p>Copyright:</br> <b>JayStack Technologies</b> (<a href="http://jaystack.com" target="_blank">http://jaystack.com</a>)</p>
                     <br />
@@ -1444,7 +1492,7 @@
                     <span class="btn-metro btn-large" data-bind="click: $parent._goToRepository">Go to my repository</span>
                     <!--/ko-->
                 </div>
-               
+
             </div>
         </div>
     </script>
@@ -1553,17 +1601,17 @@
         <div data-bind="text:$data.data().name">alma</div>
     </script>
 
-	<script type="text/javascript">
-		var _gaq = _gaq || [];
-		_gaq.push(['_setAccount', 'UA-30304727-7']);
-		_gaq.push(['_trackPageview']);
+    <script type="text/javascript">
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-30304727-7']);
+        _gaq.push(['_trackPageview']);
 
-		(function() {
-		var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-		ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-		var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-		})();
-	</script>
+        (function () {
+            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+    </script>
 
 </body>
 </html>
