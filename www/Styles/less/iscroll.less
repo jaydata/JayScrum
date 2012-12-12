@@ -146,7 +146,7 @@
     }
     
     &.scrollable-list {
-        .position(absolute, 50px, auto, 0);
+        .position(absolute, 50px, 0, 0, 0);
         overflow-y: scroll;
         overflow-x: hidden;
         -webkit-overflow-scrolling: touch;
@@ -154,6 +154,8 @@
         &.bottom45 { bottom: 45px !important; height: auto; }
     }
 }
+
+#transition-settings .detail .item { margin: 0 auto; }
 /*#endregion SCROLL LIST */
 
 /*#region SWIPEVIEW */
