@@ -1,4 +1,4 @@
-// JayData 1.2.3
+// JayData 1.2.5
 // Dual licensed under MIT and GPL v2
 // Copyright JayStack Technologies (http://jaydata.org/licensing)
 //
@@ -28,7 +28,8 @@ $C('$data.storageProviders.oData.oDataProvider', $data.StorageProviderBase, null
             maxDataServiceVersion: '2.0',
             user: null,
             password: null,
-            withCredentials: false
+            withCredentials: false,
+            enableJSONP: false
         }, cfg);
         if (this.context && this.context._buildDbType_generateConvertToFunction && this.buildDbType_generateConvertToFunction) {
             this.context._buildDbType_generateConvertToFunction = this.buildDbType_generateConvertToFunction;
@@ -86,7 +87,7 @@ $C('$data.storageProviders.oData.oDataProvider', $data.StorageProviderBase, null
                         (association.FromMultiplicity == "0..1" && association.ToMultiplicity == "1") ||
                         (association.FromMultiplicity == '$$unbound')) {
                         var refValue = logicalEntity[association.FromPropertyName];
-                        if (refValue !== null && refValue !== undefined) {
+                        if (/*refValue !== null &&*/ refValue !== undefined) {
                             if (refValue instanceof $data.Array) {
                                 dbInstance[association.FromPropertyName] = dbInstance[association.FromPropertyName] || [];
                                 refValue.forEach(function (rv) {
@@ -94,6 +95,8 @@ $C('$data.storageProviders.oData.oDataProvider', $data.StorageProviderBase, null
                                     if (contentId < 0) { Guard.raise("Dependency graph error"); }
                                     dbInstance[association.FromPropertyName].push({ __metadata: { uri: "$" + (contentId + 1) } });
                                 }, this);
+                            } else if (refValue === null) {
+                                dbInstance[association.FromPropertyName] = null;
                             } else {
                                 if (refValue.entityState === $data.EntityState.Modified) {
                                     var sMod = context._storageModel.getStorageModel(refValue.getType())
@@ -140,6 +143,7 @@ $C('$data.storageProviders.oData.oDataProvider', $data.StorageProviderBase, null
             {
                 requestUri: this.providerConfiguration.oDataServiceHost + sql.queryText,
                 method: sql.method,
+                enableJsonpCallback: this.providerConfiguration.enableJSONP,
                 headers: {
                     MaxDataServiceVersion: this.providerConfiguration.maxDataServiceVersion
                 }
@@ -257,7 +261,9 @@ $C('$data.storageProviders.oData.oDataProvider', $data.StorageProviderBase, null
                 callBack.error(response);
             }
 
-        }, callBack.error];
+        }, function (e) {
+            callBack.error(new Exception((e.response || {}).body, e.message, e));
+        }];
 
         this.appendBasicAuth(requestData[0], this.providerConfiguration.user, this.providerConfiguration.password, this.providerConfiguration.withCredentials);
         //if (this.providerConfiguration.user) {
@@ -340,11 +346,11 @@ $C('$data.storageProviders.oData.oDataProvider', $data.StorageProviderBase, null
                         }, this);
 
                     } else {
-                        errors.push(result[i]);
+                        errors.push(new Exception((result[i].response || {}).body, result[i].message, result[i]));
                     }
                 }
                 if (errors.length > 0) {
-                    callBack.error(errors);
+                    callBack.error(new Exception('See inner exceptions','Batch failed', errors));
                 } else if (callBack.success) {
                     callBack.success(convertedItem.length);
                 }
@@ -352,7 +358,9 @@ $C('$data.storageProviders.oData.oDataProvider', $data.StorageProviderBase, null
                 callBack.error(response);
             }
 
-        }, callBack.error, OData.batchHandler];
+        }, function (e) {
+            callBack.error(new Exception((e.response || {}).body, e.message, e));
+        }, OData.batchHandler];
 
         this.appendBasicAuth(requestData[0], this.providerConfiguration.user, this.providerConfiguration.password, this.providerConfiguration.withCredentials);
         //if (this.providerConfiguration.user) {
@@ -368,7 +376,7 @@ $C('$data.storageProviders.oData.oDataProvider', $data.StorageProviderBase, null
         var serializableObject = {}
         item.physicalData.getType().memberDefinitions.asArray().forEach(function (memdef) {
             if (memdef.kind == $data.MemberTypes.navProperty || memdef.kind == $data.MemberTypes.complexProperty || (memdef.kind == $data.MemberTypes.property && !memdef.notMapped)) {
-                if (typeof memdef.concurrencyMode === 'undefined' && (memdef.key === true || item.data.entityState === $data.EntityState.Added || item.data.changedProperties.some(function (def) { return def.name === memdef.name; })))
+                if (typeof memdef.concurrencyMode === 'undefined' && (memdef.key === true || item.data.entityState === $data.EntityState.Added || item.data.changedProperties.some(function(def){ return def.name === memdef.name; })))
                     serializableObject[memdef.name] = item.physicalData[memdef.name];
             }
         }, this);
@@ -605,7 +613,7 @@ $C('$data.storageProviders.oData.oDataProvider', $data.StorageProviderBase, null
                     return geo;
                 },
                 '$data.Guid': function (guid) { return guid ? ("guid'" + guid.value + "'") : guid; }
-            }
+}
         }
     },
     getEntityKeysValue: function (entity) {
@@ -619,7 +627,7 @@ $C('$data.storageProviders.oData.oDataProvider', $data.StorageProviderBase, null
                 switch (Container.getName(field.dataType)) {
                     case "$data.Guid":
                     case "Edm.Guid":
-                        keyValue = ("guid'" + (keyValue ? keyValue.value : keyValue) + "'");
+                        keyValue = ("guid'" + (keyValue ? keyValue.value : keyValue)  + "'");
                         break;
                     case "$data.Blob":
                     case "Edm.Binary":
@@ -757,7 +765,7 @@ $C('$data.storageProviders.oData.oDataCompiler', $data.Expressions.EntityExpress
         this.mainEntitySet = query.context.getEntitySetFromElementType(query.defaultType);
 
         var queryFragments = { urlText: "" };
-
+        
         this.Visit(query.expression, queryFragments);
 
         query.modelBinderConfig = {};
@@ -771,15 +779,15 @@ $C('$data.storageProviders.oData.oDataCompiler', $data.Expressions.EntityExpress
             if (name != "urlText" && name != "actionPack" && name != "data" && name != "lambda" && name != "method" && queryFragments[name] != "") {
                 if (addAmp) { queryText += "&"; } else { queryText += "?"; }
                 addAmp = true;
-                if (name != "$urlParams") {
+                if(name != "$urlParams"){
                     queryText += name + '=' + queryFragments[name];
-                } else {
+                }else{
                     queryText += queryFragments[name];
                 }
             }
         }
         query.queryText = queryText;
-
+        
         return {
             queryText: queryText,
             method: queryFragments.method || 'GET',
@@ -877,23 +885,23 @@ $C('$data.storageProviders.oData.oDataCompiler', $data.Expressions.EntityExpress
         }
         context['$urlParams'] += expression.name + '=' + value;
     },
-    //    VisitConstantExpression: function (expression, context) {
-    //        if (context['$urlParams']) { context['$urlParams'] += '&'; } else { context['$urlParams'] = ''; }
-    //
-    //
-    //        var valueType = Container.getTypeName(expression.value);
-    //
-    //
-    //
-    //        context['$urlParams'] += expression.name + '=' + this.provider.fieldConverter.toDb[Container.resolveName(Container.resolveType(valueType))](expression.value);
-    //    },
+//    VisitConstantExpression: function (expression, context) {
+//        if (context['$urlParams']) { context['$urlParams'] += '&'; } else { context['$urlParams'] = ''; }
+//
+//
+//        var valueType = Container.getTypeName(expression.value);
+//
+//
+//
+//        context['$urlParams'] += expression.name + '=' + this.provider.fieldConverter.toDb[Container.resolveName(Container.resolveType(valueType))](expression.value);
+//    },
 
 
     VisitCountExpression: function (expression, context) {
         this.Visit(expression.source, context);
-        context.urlText += '/$count';
+        context.urlText += '/$count';       
     }
-}, {}); $C('$data.storageProviders.oData.oDataWhereCompiler', $data.Expressions.EntityExpressionVisitor, null, {
+}, {});$C('$data.storageProviders.oData.oDataWhereCompiler', $data.Expressions.EntityExpressionVisitor, null, {
     constructor: function (provider, lambdaPrefix) {
         this.provider = provider;
         this.lambdaPrefix = lambdaPrefix;
@@ -1063,7 +1071,7 @@ $C('$data.storageProviders.oData.oDataCompiler', $data.Expressions.EntityExpress
         }
         context.data += ")";
     }
-}); $C('$data.storageProviders.oData.oDataOrderCompiler', $data.storageProviders.oData.oDataWhereCompiler, null, {
+});$C('$data.storageProviders.oData.oDataOrderCompiler', $data.storageProviders.oData.oDataWhereCompiler, null, {
     constructor: function (provider) {
         this.provider = provider;
     },
@@ -1208,7 +1216,7 @@ $C('$data.storageProviders.oData.oDataProjectionCompiler', $data.Expressions.Ent
         this.Visit(expression.source, context);
         this.Visit(expression.selector, context);
     },
-
+    
     VisitEntityFieldExpression: function (expression, context) {
         this.Visit(expression.source, context);
         this.Visit(expression.selector, context);
@@ -1245,6 +1253,6 @@ $C('$data.storageProviders.oData.oDataProjectionCompiler', $data.Expressions.Ent
     VisitConstantExpression: function (expression, context) {
         //Guard.raise(new Exception('Constant value is not supported in Projection.', 'Not supported!'));
         //context.data += expression.value;
-        context.data = context.data.slice(0, context.data.length - 1);
+		context.data = context.data.slice(0, context.data.length - 1);
     }
 });

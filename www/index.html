@@ -1368,7 +1368,7 @@
                                 <br />
                                 <!-- /ko -->
 
-                                <span class="to-ellipsis small-info" data-bind="text: 'url: ' + $data.Url()"></span>
+                                <span class="to-ellipsis small-info" data-bind="text: 'repository url: ' + ($data.Url() || 'local')"></span>
 
                                 <div class="actions fright">
                                     <!--ko if: $data.Status() == 'static' || $data.Status() == 'ready'-->

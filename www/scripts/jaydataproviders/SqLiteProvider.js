@@ -1,4 +1,4 @@
-// JayData 1.2.3
+// JayData 1.2.5
 // Dual licensed under MIT and GPL v2
 // Copyright JayStack Technologies (http://jaydata.org/licensing)
 //
@@ -18,7 +18,7 @@ $data.Class.define('$data.dbClient.DbCommand', null, null,
     execute: function (callback) {
         Guard.raise("Pure class");
     }
-}, null); $data.Class.define('$data.dbClient.DbConnection', null, null,
+}, null);$data.Class.define('$data.dbClient.DbConnection', null, null,
 {
     connectionParams: {},
     database: {},
@@ -34,7 +34,7 @@ $data.Class.define('$data.dbClient.DbCommand', null, null,
     createCommand: function () {
         Guard.raise("Pure class");
     }
-}, null); $data.Class.define('$data.dbClient.openDatabaseClient.OpenDbCommand', $data.dbClient.DbCommand, null,
+}, null);$data.Class.define('$data.dbClient.openDatabaseClient.OpenDbCommand', $data.dbClient.DbCommand, null,
 {
     constructor: function (con, queryStr, params) {
         this.query = queryStr;
@@ -50,7 +50,7 @@ $data.Class.define('$data.dbClient.DbCommand', null, null,
         this.exec(this.query, this.parameters, callback.success, callback.error);
     },
     exec: function (query, parameters, callback, errorhandler) {
-        // suspicious code
+		// suspicious code
         /*if (console) {
             //console.log(query);
         }*/
@@ -62,7 +62,7 @@ $data.Class.define('$data.dbClient.DbCommand', null, null,
                     query = [query];
                     parameters = [parameters];
                 }
-
+                
                 var results = [];
                 var remainingCommands = 0;
 
@@ -106,7 +106,7 @@ $data.Class.define('$data.dbClient.DbCommand', null, null,
             }
         });
     }
-}, null); $data.Class.define('$data.dbClient.openDatabaseClient.OpenDbConnection', $data.dbClient.DbConnection, null,
+}, null);$data.Class.define('$data.dbClient.openDatabaseClient.OpenDbConnection', $data.dbClient.DbConnection, null,
 {
     constructor: function (params) {
         this.connectionParams = params;
@@ -115,13 +115,13 @@ $data.Class.define('$data.dbClient.DbCommand', null, null,
         return this.database !== null && this.database !== undefined && this.transaction !== null && this.transaction !== undefined;
     },
     open: function (callBack) {
-        if (this.database) {
-            this.database.transaction(function (tran) { callBack.success(tran); });
+		if (this.database){
+			this.database.transaction(function (tran) { callBack.success(tran); });
         } else {
             var p = this.connectionParams;
             var con = this;
-            this.database = openDatabase(p.fileName, p.version, p.displayName, p.maxSize);
-            this.database.transaction(function (tran) { callBack.success(tran); });
+			this.database = openDatabase(p.fileName, p.version, p.displayName, p.maxSize);
+			this.database.transaction(function (tran) { callBack.success(tran); });
         }
     },
     close: function () {
@@ -132,7 +132,7 @@ $data.Class.define('$data.dbClient.DbCommand', null, null,
         var cmd = new $data.dbClient.openDatabaseClient.OpenDbCommand(this, queryStr, params);
         return cmd;
     }
-}, null); $data.Class.define('$data.dbClient.jayStorageClient.JayStorageCommand', $data.dbClient.DbCommand, null,
+}, null);$data.Class.define('$data.dbClient.jayStorageClient.JayStorageCommand', $data.dbClient.DbCommand, null,
 {
     constructor: function (con, queryStr, params) {
         this.query = queryStr;
@@ -168,42 +168,42 @@ $data.Class.define('$data.dbClient.DbCommand', null, null,
             }
         };
 
-        query.forEach(function (q, i) {
-            if (q) {
-                $data.ajax({
-                    url: 'http' + (this.connection.connectionParams.storage.ssl ? 's' : '') + '://' + this.connection.connectionParams.storage.src.replace('http://', '').replace('https://', '') + '?db=' + this.connection.connectionParams.storage.key,
-                    type: 'POST',
-                    headers: {
-                        'X-PINGOTHER': 'pingpong'
-                    },
-                    data: { query: q, parameters: parameters[i] },
-                    dataType: 'json',
-                    contentType: 'application/json;charset=UTF-8',
-                    success: function (data) {
-                        if (data && data.error) {
-                            console.log('JayStorage error', data.error);
-                            errorhandler(data.error);
-                            return;
-                        }
-                        if (this.lastID) {
-                            results[i] = { insertId: this.lastID, rows: (data || { rows: [] }).rows };
-                        } else results[i] = { rows: (data || { rows: [] }).rows };
-                        decClb();
-                    }
-                });
-            } else {
-                results[i] = null;
-                decClb();
-            }
-        }, this);
+		query.forEach(function(q, i){
+			if (q){
+				$data.ajax({
+					url: 'http' + (this.connection.connectionParams.storage.ssl ? 's' : '') + '://' + this.connection.connectionParams.storage.src.replace('http://', '').replace('https://', '') + '?db=' + this.connection.connectionParams.storage.key,
+					type: 'POST',
+					headers: {
+						'X-PINGOTHER': 'pingpong'
+					},
+					data: { query: q, parameters: parameters[i] },
+					dataType: 'json',
+					contentType: 'application/json;charset=UTF-8',
+					success: function(data){
+						if (data && data.error){
+							console.log('JayStorage error', data.error);
+							errorhandler(data.error);
+							return;
+						}
+						if (this.lastID){
+							results[i] = { insertId: this.lastID, rows: (data || { rows: [] }).rows };
+						}else results[i] = { rows: (data || { rows: [] }).rows };
+ 						decClb();
+					}
+				});
+			}else{
+				results[i] = null;
+				decClb();
+			}
+		}, this);
     }
-}, null); $data.Class.define('$data.dbClient.jayStorageClient.JayStorageConnection', $data.dbClient.DbConnection, null,
+}, null);$data.Class.define('$data.dbClient.jayStorageClient.JayStorageConnection', $data.dbClient.DbConnection, null,
 {
     constructor: function (params) {
         this.connectionParams = params;
     },
     isOpen: function () {
-        return true;
+		return true;
         //return this.database !== null && this.database !== undefined;
     },
     open: function () {
@@ -219,7 +219,7 @@ $data.Class.define('$data.dbClient.DbCommand', null, null,
         var cmd = new $data.dbClient.jayStorageClient.JayStorageCommand(this, queryStr, params);
         return cmd;
     }
-}, null); $data.Class.define('$data.dbClient.sqLiteNJClient.SqLiteNjCommand', $data.dbClient.DbCommand, null,
+}, null);$data.Class.define('$data.dbClient.sqLiteNJClient.SqLiteNjCommand', $data.dbClient.DbCommand, null,
 {
     constructor: function (con, queryStr, params) {
         this.query = queryStr;
@@ -288,7 +288,7 @@ $data.Class.define('$data.dbClient.DbCommand', null, null,
             }
         }, this);
     }
-}, null); $data.Class.define('$data.dbClient.sqLiteNJClient.SqLiteNjConnection', $data.dbClient.DbConnection, null,
+}, null);$data.Class.define('$data.dbClient.sqLiteNJClient.SqLiteNjConnection', $data.dbClient.DbConnection, null,
 {
     constructor: function (params) {
         this.connectionParams = params;
@@ -309,7 +309,7 @@ $data.Class.define('$data.dbClient.DbCommand', null, null,
         var cmd = new $data.dbClient.sqLiteNJClient.SqLiteNjCommand(this, queryStr, params);
         return cmd;
     }
-}, null); $data.Class.define('$data.storageProviders.sqLite.SqLiteStorageProvider', $data.StorageProviderBase, null,
+}, null);$data.Class.define('$data.storageProviders.sqLite.SqLiteStorageProvider', $data.StorageProviderBase, null,
 {
     constructor: function (cfg, context) {
         this.SqlCommands = [];
@@ -359,7 +359,7 @@ $data.Class.define('$data.dbClient.DbCommand', null, null,
             fromDb: {
                 "$data.Integer": function (number) { return number; },
                 "$data.Number": function (number) { return number; },
-                "$data.Date": function (dbData) { return new Date(dbData); },
+                "$data.Date": function (dbData) { return dbData != null ? new Date(dbData) : dbData; },
                 "$data.String": function (text) { return text; },
                 "$data.Boolean": function (b) { return b === 1 ? true : false; },
                 "$data.Blob": function (blob) { return blob; },
@@ -373,7 +373,7 @@ $data.Class.define('$data.dbClient.DbCommand', null, null,
                 "$data.Boolean": function (b) { return b ? 1 : 0; },
                 "$data.Blob": function (blob) { return blob; },
                 "$data.Guid": function (g) { return g ? g.value : g; },
-                "$data.Object": function (value) { if (value === null) { return null; } throw 'Not supported exception'; }
+                "$data.Object": function(value){if(value === null){return null;} throw 'Not supported exception';}
             }
         }
     },
@@ -623,15 +623,16 @@ $data.Class.define('$data.dbClient.DbCommand', null, null,
                         var deleteCmd = [];
                         for (var i = 0; i < that.SqlCommands.length; i++) {
                             if (that.SqlCommands[i] == "") { continue; }
-                            var regEx = /^CREATE TABLE IF NOT EXISTS ([^ ]*) (\(.*\))/g;
+                            var regEx = new RegExp('^CREATE TABLE IF NOT EXISTS ([^ ]*) (\\(.*\\))', 'g');
                             var data = regEx.exec(that.SqlCommands[i]);
                             if (data) {
                                 var tableName = data[1];
                                 var tableDef = data[2];
                                 if (existObjectInDB[tableName.slice(1, tableName.length - 1)]) {
-                                    var existsRegEx = new RegExp('^CREATE TABLE ([^ ]*) (\(.*\))', 'g');
-                                    var existTableDef = existsRegEx.exec(existObjectInDB[tableName.slice(1, tableName.length - 1)].sql)[2];
-                                    if (tableDef.toLowerCase() != existTableDef.toLowerCase()) {
+                                    var regex = new RegExp('\\(.*\\)', 'g');
+                                    var existsRegExMatches = existObjectInDB[tableName.slice(1, tableName.length - 1)].sql.match(regex);
+
+                                    if (!existsRegExMatches || tableDef.toLowerCase() != existsRegExMatches[0].toLowerCase()) {
                                         deleteCmd.push("DROP TABLE IF EXISTS [" + existObjectInDB[tableName.slice(1, tableName.length - 1)].tbl_name + "];");
                                     }
                                 }
@@ -1312,7 +1313,7 @@ $C('$data.sqLite.SqlPagingCompiler', $data.Expressions.EntityExpressionVisitor, 
         sqlBuilder.addParameter(expression.value);
         sqlBuilder.addText(SqlStatementBlocks.parameter);
     }
-}); $C('$data.sqLite.SqlOrderCompiler', $data.Expressions.EntityExpressionVisitor, null, {
+});$C('$data.sqLite.SqlOrderCompiler', $data.Expressions.EntityExpressionVisitor, null, {
     constructor: function (provider) {
         this.provider = provider;
     },
@@ -1345,7 +1346,7 @@ $C('$data.sqLite.SqlPagingCompiler', $data.Expressions.EntityExpressionVisitor, 
     VisitMemberInfoExpression: function (expression, sqlBuilder) {
         sqlBuilder.addText(expression.memberName);
     },
-    VisitComplexTypeExpression: function (expression, sqlBuilder) {
+    VisitComplexTypeExpression: function (expression, sqlBuilder) { 
         this.Visit(expression.source, sqlBuilder);
         this.Visit(expression.selector, sqlBuilder);
         sqlBuilder.addText('__');
@@ -1496,7 +1497,7 @@ $C('$data.sqLite.SqlProjectionCompiler', $data.Expressions.EntityExpressionVisit
             var alias = sqlBuilder.getExpressionAlias(expression.source.source.source);
             var storageModel = expression.source.source.storageModel.ComplexTypes[expression.source.selector.memberName];
             var member = storageModel.ReferentialConstraint.filter(function (item) { return item[expression.source.selector.memberName] == expression.selector.memberName; })[0];
-            if (!member) { Guard.raise(new Exception('Compiler error! ComplexType does not contain ' + expression.source.selector.memberName + ' property!')); return; }
+            if (!member) { Guard.raise(new Exception('Compiler error! ComplexType does not contain ' + expression.source.selector.memberName + ' property!')); return;}
 
             sqlBuilder.addText(alias);
             sqlBuilder.addText(SqlStatementBlocks.nameSeparator);
@@ -1506,7 +1507,7 @@ $C('$data.sqLite.SqlProjectionCompiler', $data.Expressions.EntityExpressionVisit
             this.Visit(expression.source, sqlBuilder);
             this.Visit(expression.selector, sqlBuilder);
         }
-
+        
     },
 
     VisitEntitySetExpression: function (expression, sqlBuilder) {
@@ -1594,7 +1595,7 @@ $C('$data.sqLite.SqlProjectionCompiler', $data.Expressions.EntityExpressionVisit
         this.currentObjectLiteralName = tempObjectLiteralName;
     }
 
-}, null); $C('$data.sqLite.ExpressionMonitor', $data.Expressions.EntityExpressionVisitor, null, {
+}, null);$C('$data.sqLite.ExpressionMonitor', $data.Expressions.EntityExpressionVisitor, null, {
     constructor: function (monitorDefinition) {
 
         this.Visit = function (expression, context) {
@@ -1604,7 +1605,7 @@ $C('$data.sqLite.SqlProjectionCompiler', $data.Expressions.EntityExpressionVisit
             if (this.canVisit(expression)) {
 
                 //if (monitorDefinition.FilterExpressionNode) {
-
+                            
                 //};
 
                 if (monitorDefinition.VisitExpressionNode) {
@@ -1672,7 +1673,7 @@ $C('$data.sqLite.SqlProjectionCompiler', $data.Expressions.EntityExpressionVisit
         };
     }
 
-}); $C('$data.sqLite.SqlFilterCompiler', $data.Expressions.EntityExpressionVisitor, null, {
+});$C('$data.sqLite.SqlFilterCompiler', $data.Expressions.EntityExpressionVisitor, null, {
     VisitParametricQueryExpression: function (expression, sqlBuilder) {
         this.Visit(expression.expression, sqlBuilder);
     },
@@ -1680,10 +1681,10 @@ $C('$data.sqLite.SqlProjectionCompiler', $data.Expressions.EntityExpressionVisit
     VisitUnaryExpression: function (expression, sqlBuilder) {
         /// <param name="expression" type="$data.Expressions.SimpleBinaryExpression"></param>
         /// <param name="sqlBuilder" type="$data.sqLite.SqlBuilder"></param>
-        sqlBuilder.addText(expression.resolution.mapTo);
-        sqlBuilder.addText(SqlStatementBlocks.beginGroup);
-        this.Visit(expression.operand, sqlBuilder);
-        sqlBuilder.addText(SqlStatementBlocks.endGroup);
+            sqlBuilder.addText(expression.resolution.mapTo);
+            sqlBuilder.addText(SqlStatementBlocks.beginGroup);
+            this.Visit(expression.operand, sqlBuilder);
+            sqlBuilder.addText(SqlStatementBlocks.endGroup);
     },
 
     VisitSimpleBinaryExpression: function (expression, sqlBuilder) {
@@ -1729,7 +1730,7 @@ $C('$data.sqLite.SqlProjectionCompiler', $data.Expressions.EntityExpressionVisit
                     this.Visit(expression.right, sqlBuilder);
                 }
             }
-
+            
             sqlBuilder.addText(SqlStatementBlocks.endGroup);
         }
     },
@@ -1803,7 +1804,7 @@ $C('$data.sqLite.SqlProjectionCompiler', $data.Expressions.EntityExpressionVisit
         sqlBuilder.addText(SqlStatementBlocks.parameter);
     },
 
-    VisitEntityFieldExpression: function (expression, sqlBuilder) {
+    VisitEntityFieldExpression:function(expression, sqlBuilder){
         this.Visit(expression.source, sqlBuilder);
         this.Visit(expression.selector, sqlBuilder);
     },
@@ -1812,7 +1813,7 @@ $C('$data.sqLite.SqlProjectionCompiler', $data.Expressions.EntityExpressionVisit
         this.Visit(expression.selector, sqlBuilder);
         sqlBuilder.addText("__");
     }
-}); $C('$data.sqLite.sqLite_ModelBinderCompiler', $data.Expressions.EntityExpressionVisitor, null, {
+});$C('$data.sqLite.sqLite_ModelBinderCompiler', $data.Expressions.EntityExpressionVisitor, null, {
     constructor: function (query, context) {
         this._query = query;
         this.sqlContext = context;
@@ -1838,7 +1839,7 @@ $C('$data.sqLite.SqlProjectionCompiler', $data.Expressions.EntityExpressionVisit
     },
     VisitCountExpression: function (expression) {
         var builder = Container.createqueryBuilder();
-
+        
         builder.modelBinderConfig['$type'] = $data.Array;
         builder.selectModelBinderProperty('$item');
         builder.modelBinderConfig['$type'] = $data.Integer;
@@ -1914,7 +1915,7 @@ $C('$data.sqLite.SqlProjectionCompiler', $data.Expressions.EntityExpressionVisit
         //no projection, get all item from entitySet
         builder.modelBinderConfig['$type'] = this._query.defaultType;
         var storageModel = this._query.context._storageModel.getStorageModel(this._query.defaultType);
-
+        
         var needPrefix = this.sqlContext.infos.filter(function (i) { return i.IsMapped; }).length > 1;
         if (needPrefix) {
             this.currentObjectFieldName = this._sqlBuilder.getExpressionAlias(this.sqlContext.sets[0]);
@@ -2049,7 +2050,7 @@ $C('$data.sqLite.SqlProjectionCompiler', $data.Expressions.EntityExpressionVisit
 
         if (expression.expression instanceof $data.Expressions.EntityExpression || expression.expression instanceof $data.Expressions.ComplexTypeExpression) {
             this.VisitEntityAsProjection(expression.expression, builder);
-        } else if (expression.expression instanceof $data.Expressions.EntitySetExpression) {
+        } else if(expression.expression instanceof $data.Expressions.EntitySetExpression){
             this.VisitEntitySetAsProjection(expression.expression, builder);
         }
         else {
