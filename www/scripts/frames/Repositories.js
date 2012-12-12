@@ -301,7 +301,7 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
         JayScrum.app.selectedFrame()._initializeRepositoriesFrame();
     },
     connectTo: function (repoSetting) {
-        JayScrum.app.globalData().repositoryName(repoSetting.Title() + ' (' + repoSetting.Url() + ') ');
+        JayScrum.app.globalData().repositoryName(repoSetting.Title() + ' (' + (repoSetting.Url() || 'local') + ') ');
         //Repository Id is -1, if it is local storage
         if (repoSetting.Id() === -1) {
             JayScrum.app._initializeDemoRepositories(JayScrum.app.selectedFrame().localContext);

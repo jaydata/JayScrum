@@ -1,4 +1,4 @@
-// JayData 1.2.3
+// JayData 1.2.5
 // Dual licensed under MIT and GPL v2
 // Copyright JayStack Technologies (http://jaydata.org/licensing)
 //
@@ -49,8 +49,8 @@ if (!console.error) console.error = function () { };
     /// Collection of JayData services
     ///</summary>
     $data.__namespace = true;
-    $data.version = "JayData 1.2.3";
-    $data.versionNumber = "1.2.3";
+    $data.version = "JayData 1.2.5";
+    $data.versionNumber = "1.2.5";
     $data.root = {};
 
 })($data);
@@ -233,7 +233,17 @@ Object.isNullOrUndefined = function (value) {
         };
     }
 
+    if (!String.prototype.trimLeft) {
+        String.prototype.trimLeft = function () {
+            return this.replace(/^\s+/, "");
+        }
+    }
 
+    if (!String.prototype.trimRight) {
+        String.prototype.trimRight = function () {
+            return this.replace(/\s+$/, "");
+        }
+    }
 
 })();// This file is derived from jslint.js
 // 2011-06-12
@@ -7141,9 +7151,8 @@ JAYLINT = (function () {
         }
     }
 
-
     function MemberDefinition(memberDefinitionData, definedClass) {
-        
+
         ///<field name="name" type="String">*</field>
         ///<field name="dataType" type="Object">*</field>
         ///<field name="elementType" type="Object"></field>
@@ -7163,7 +7172,7 @@ JAYLINT = (function () {
 
         this.kind = MemberTypes.property;
         //this.definedBy = definedClass;
-        Object.defineProperty(this, 'definedBy', { value: definedClass, enumerable:false, configurable: false, writable: false });
+        Object.defineProperty(this, 'definedBy', { value: definedClass, enumerable: false, configurable: false, writable: false });
         if (memberDefinitionData) {
             if (typeof memberDefinitionData === 'function' || typeof memberDefinitionData.asFunction === 'function') {
                 this.method = memberDefinitionData;
@@ -7192,8 +7201,6 @@ JAYLINT = (function () {
             }
         }
     }
-
-
     MemberDefinition.prototype.createPropertyDescriptor = function (classFunction, value) {
         ///<returns type="Object" />
         var pd = this;
@@ -7247,16 +7254,18 @@ JAYLINT = (function () {
 
     //TODO global/window
     $data.MemberDefinition = window["MemberDefinition"] = MemberDefinition;
-    
+
     var memberDefinitionPrefix = '$';
     function MemberDefinitionCollection() { };
     MemberDefinitionCollection.prototype = {
-		clearCache: function(){
-			this.arrayCache = undefined;
-			this.pubMapPropsCache = undefined;
-			this.keyPropsCache = undefined;
-			this.propByTypeCache = undefined;
-		},
+        clearCache: function () {
+            this.arrayCache = undefined;
+            this.pubMapPropsCache = undefined;
+            this.keyPropsCache = undefined;
+            this.propByTypeCache = undefined;
+            this.pubMapMethodsCache = undefined;
+            this.pubMapPropNamesCache = undefined;
+        },
         asArray: function () {
             if (!this.arrayCache) {
                 this.arrayCache = [];
@@ -7268,99 +7277,63 @@ JAYLINT = (function () {
             return this.arrayCache;
         },
         getPublicMappedProperties: function () {
-			if (!this.pubMapPropsCache){
-				this.pubMapPropsCache = [];
-				for (var i in this){
-					if (i.indexOf(memberDefinitionPrefix) === 0 && this[i].kind == 'property' && !this[i].notMapped && this[i].enumerable)
-						this.pubMapPropsCache.push(this[i]);
-				}
-			}
-			return this.pubMapPropsCache;// || (this.pubMapPropsCache = this.asArray().filter(function (m) { return m.kind == 'property' && !m.notMapped && m.enumerable; }));
-		},
-		getPublicMappedPropertyNames: function(){
-		    if (!this.pubMapPropNamesCache){
-		        this.pubMapPropNamesCache = [];
-		        for (var i in this){
-					if (i.indexOf(memberDefinitionPrefix) === 0 && this[i].kind == 'property' && !this[i].notMapped && this[i].enumerable)
-						this.pubMapPropNamesCache.push(this[i].name);
-				}
-		    }
-		    return this.pubMapPropNamesCache;
-		},
+            if (!this.pubMapPropsCache) {
+                this.pubMapPropsCache = [];
+                for (var i in this) {
+                    if (i.indexOf(memberDefinitionPrefix) === 0 && this[i].kind == 'property' && !this[i].notMapped && this[i].enumerable)
+                        this.pubMapPropsCache.push(this[i]);
+                }
+            }
+            return this.pubMapPropsCache;// || (this.pubMapPropsCache = this.asArray().filter(function (m) { return m.kind == 'property' && !m.notMapped && m.enumerable; }));
+        },
+        getPublicMappedPropertyNames: function () {
+            if (!this.pubMapPropNamesCache) {
+                this.pubMapPropNamesCache = [];
+                for (var i in this) {
+                    if (i.indexOf(memberDefinitionPrefix) === 0 && this[i].kind == 'property' && !this[i].notMapped && this[i].enumerable)
+                        this.pubMapPropNamesCache.push(this[i].name);
+                }
+            }
+            return this.pubMapPropNamesCache;
+        },
         getKeyProperties: function () {
-			if (!this.keyPropsCache){
-				this.keyPropsCache = [];
-				for (var i in this){
-					if (i.indexOf(memberDefinitionPrefix) === 0 && this[i].kind == 'property' && this[i].key)
-						this.keyPropsCache.push(this[i]);
-				}
-			}
-			return this.keyPropsCache;
-			//return this.keyPropsCache || (this.keyPropsCache = this.asArray().filter(function (m) { return m.kind == 'property' && m.key; }));
-		},
-		getPublicMappedMethods: function(){
-		    if (!this.pubMapMethodsCache){
-				this.pubMapMethodsCache = [];
-				for (var i in this){
-					if (i.indexOf(memberDefinitionPrefix) === 0 && this[i].kind == 'method' && this[i].method/* && this.hasOwnProperty(i)*/)
-						this.pubMapMethodsCache.push(this[i]);
-				}
-			}
-			return this.pubMapMethodsCache;
-		},
+            if (!this.keyPropsCache) {
+                this.keyPropsCache = [];
+                for (var i in this) {
+                    if (i.indexOf(memberDefinitionPrefix) === 0 && this[i].kind == 'property' && this[i].key)
+                        this.keyPropsCache.push(this[i]);
+                }
+            }
+            return this.keyPropsCache;
+            //return this.keyPropsCache || (this.keyPropsCache = this.asArray().filter(function (m) { return m.kind == 'property' && m.key; }));
+        },
+        getPublicMappedMethods: function () {
+            if (!this.pubMapMethodsCache) {
+                this.pubMapMethodsCache = [];
+                for (var i in this) {
+                    if (i.indexOf(memberDefinitionPrefix) === 0 && this[i].kind == 'method' && this[i].method/* && this.hasOwnProperty(i)*/)
+                        this.pubMapMethodsCache.push(this[i]);
+                }
+            }
+            return this.pubMapMethodsCache;
+        },
         getPropertyByType: function (type) {
-			if (!this.propByTypeCache){
-				this.propByTypeCache = [];
-				for (var i in this){
-					if (i.indexOf(memberDefinitionPrefix) === 0 && this[i].dataType == type)
-						this.propByTypeCache.push(this[i]);
-				}
-			}
-			return this.propByTypeCache;
-			//return this.propByTypeCache || (this.propByTypeCache = this.asArray().filter(function (m) { return m.dataType == type; }));
-		},
+            if (!this.propByTypeCache) {
+                this.propByTypeCache = [];
+                for (var i in this) {
+                    if (i.indexOf(memberDefinitionPrefix) === 0 && this[i].dataType == type)
+                        this.propByTypeCache.push(this[i]);
+                }
+            }
+            return this.propByTypeCache;
+            //return this.propByTypeCache || (this.propByTypeCache = this.asArray().filter(function (m) { return m.dataType == type; }));
+        },
         getMember: function (name) { return this[memberDefinitionPrefix + name]; },
         setMember: function (value) { this[memberDefinitionPrefix + value.name] = value; }
     };
     MemberDefinitionCollection.prototype.constructor = MemberDefinitionCollection;
     $data.MemberDefinitionCollection = window["MemberDefinitionCollection"] = MemberDefinitionCollection;
 
-    
-    eval('function Base() { };');
-
-    $data.Base = Base;
-
-    $data.Base.fullName = '$data.Base';
-    if (!$data.Base.name) {
-        $data.Base.name = "Base";
-    };
-
-    $data.Base.prototype.storeProperty = function (memberDefinition, value) {
-        var backingFieldName = "_" + memberDefinition.name;
-        if (!this[backingFieldName]) {
-            Object.defineProperty(this, backingFieldName, memberDefinition.createStorePropertyDescriptor(value));
-        }
-        else {
-            this[backingFieldName] = value;
-        }
-    };
-
-    $data.Base.prototype.retrieveProperty = function (memberDefinition) {
-        var backingFieldName = "_" + memberDefinition.name;
-        return this[backingFieldName];
-    };
-
-    $data.Base.prototype.setProperty = function (memberDefinition, value, callback) {
-        this[memberDefinition.name] = value;
-        callback();
-    };
-    $data.Base.prototype.getProperty = function (memberDefinition, callback) {
-        callback.apply(this, [this[memberDefinition.name]]);
-    };
-    $data.Base.extend = function (name, instanceDefinition, classDefinition) {
-        return $data.Class.define(name, null, null, instanceDefinition, classDefinition);
-    };
-    //window['Base'] = Base;
 
     function ClassEngineBase() {
         this.classNames = {};
@@ -7381,854 +7354,819 @@ JAYLINT = (function () {
     MemberTypes.field = "field";
 
     $data.MemberTypes = MemberTypes;
-    
-    function classToJSON(){
-        var ret = {};
-        for (var i in this){
-            if (this.hasOwnProperty(i)){
-                ret[i] = this[i];
-            }
-        }
-        return ret;
-    }
-    
-    $data.Base.toJSON = classToJSON;
 
-    function TypeCreator() {
-
-    }
-
-    function TypeCreateStep(definedBy, initFunc) {
-        this.definedBy = definedBy;
-        this.initfunc = initFunc;
-    }
-    TypeCreateStep.constructor = "constructor";
-    TypeCreateStep.classConstructor = "classConstructor";
-    TypeCreateStep.mixin = "mixin";
-    TypeCreateStep.propagation = "propagation";
-
-    function TypeCreateObject()
-    {
-        this._createOrder = [];
-        this._createOrder.calculated = false;
-        this.keyIndex = [];
-
-        this.constructorKeys = [];
-        this.mixinKeys = [];
-        this.propagationKeys = [];
-
-        this.steppes = {};
-
-        this.addStep = function (stepType, defined, typeCreateFunc) {
-            this._createOrder.calculated = false;
-            var key = defined.name + '_' + stepType;
-            if (this.steppes[key])
-                Guard.raise(new Exception("ERROR: '" + key + "' already defined!", "Type build error"));
-
-            switch (stepType) {
-                case TypeCreateStep.constructor:
-                case TypeCreateStep.classConstructor:
-                    this.constructorKeys.push(key);
-                    break;
-                case TypeCreateStep.mixin:
-                    this.mixinKeys.push(key);
-                    break;
-                case TypeCreateStep.propagation:
-                    this.propagationKeys.push(key);
-                    break;
-                default:
-                    return;
-            }
-
-            this.steppes[key] = new TypeCreateStep(defined, typeCreateFunc);
-        };
-        this.keyCount = function(){
-            return this.constructorKeys.length + this.mixinKeys.length + this.propagationKeys.length;
-        };
-
-        this.getOrderedSteppes = function () {
-            if (this._createOrder.calculated == false) {
-                var _this = this;
-                //function _concatStep(key) {
-                //    _this._createOrder.push(_this.steppes[key]);
-                //}
-
-                this._createOrder = [];
-                for (var i = 0, l = mixinKeys.length; i < l; i++) {
-                    _this._createOrder.push(_this.steppes[mixinKeys[i]]);
-                }
-                for (var i = 0, l = constructorKeys.length; i < l; i++) {
-                    _this._createOrder.push(_this.steppes[constructorKeys[i]]);
-                }
-                for (var i = 0, l = propagationKeys.length; i < l; i++) {
-                    _this._createOrder.push(_this.steppes[propagationKeys[i]]);
-                }
-                //this.mixinKeys.forEach(_concatStep);
-                //this.constructorKeys.forEach(_concatStep);
-                //this.propagationKeys.forEach(_concatStep);
-
-                this._createOrder.calculated = true;
-            }
-
-            return this._createOrder;
-        };
-    }
+    //function classToJSON() {
+    //    var ret = {};
+    //    for (var i in this) {
+    //        if (this.hasOwnProperty(i)) {
+    //            ret[i] = this[i];
+    //        }
+    //    }
+    //    return ret;
+    //}
+    //$data.Base.toJSON = classToJSON;
 
     ClassEngineBase.prototype = {
 
-    getClass: function(classReference) {
+        //getClass: function (classReference) {
+        //},
 
-    },
+        //getProperties: function (classFunction) {
+        //    return classFunction.propertyDefinitions;
+        //},
 
-    getProperties: function (classFunction) {
-        return classFunction.propertyDefinitions;
-    },
+        define: function (className, baseClass, interfaces, instanceDefinition, classDefinition) {
+            /// <signature>
+            ///     <summary>Creates a Jaydata type</summary>
+            ///     <param name="className" type="String">Name of the class</param>
+            ///     <param name="baseClass" type="Function">Basetype of the class</param>
+            ///     <param name="interfaces" type="Object" elementType="Function" />
+            ///     <param name="instanceDefinition" type="Object">Class definition (properties, methods, etc)</param>
+            ///     <param name="classDefinition" type="Object">Class static definition</param>
+            ///     <example>
+            ///         
+            ///         var t = new $data.Class.define('Types.A', $data.Base, null, {
+            ///             constructor: function(){ },
+            ///             func1: function(){ },
+            ///             member1: { type: 'string' }
+            ///         }, { 
+            ///             staticFunc1: function() {}    
+            ///         })
+            ///         
+            ///     </example>
+            /// </signature>
 
+            return this.defineEx(className, [{ type: baseClass }], interfaces, instanceDefinition, classDefinition);
+        },
+        defineEx: function (className, baseClasses, interfaces, instanceDefinition, classDefinition) {
+            /// <signature>
+            ///     <summary>Creates a Jaydata type</summary>
+            ///     <param name="className" type="String">Name of the class</param>
+            ///     <param name="baseClasses" type="Array" elementType="Functions">Basetypes of the class. First is a real base, others are mixins</param>
+            ///     <param name="interfaces" type="Object" elementType="Function" />
+            ///     <param name="instanceDefinition" type="Object">Class definition (properties, methods, etc)</param>
+            ///     <param name="classDefinition" type="Object">Class static definition</param>
+            ///     <example>
+            ///         
+            ///         var t = new $data.Class.define('Types.A', [$data.Base, $data.Mixin1, $data.Mixin2], null, {
+            ///             constructor: function(){ },
+            ///             func1: function(){ },
+            ///             member1: { type: 'string' }
+            ///         }, { 
+            ///             staticFunc1: function() {}    
+            ///         })
+            ///         
+            ///     </example>
+            /// </signature>
+            /// <signature>
+            ///     <summary>Creates a Jaydata type</summary>
+            ///     <param name="className" type="String">Name of the class</param>
+            ///     <param name="baseClasses" type="Array" elementType="Object">Basetypes of the class. First is a real base, others are mixins or propagations</param>
+            ///     <param name="interfaces" type="Object" elementType="Function" />
+            ///     <param name="instanceDefinition" type="Object">Class definition (properties, methods, etc)</param>
+            ///     <param name="classDefinition" type="Object">Class static definition</param>
+            ///     <example>
+            ///         
+            ///         var t = new $data.Class.define('Types.A', [
+            ///                         { type: $data.Base, params: [1, 'secondParameterValue', new ConstructorParameter(0)] },
+            ///                         { type: $data.Mixin1, },
+            ///                         { type: $data.Mixin2, },
+            ///                         { type: $data.Propagation1, params: [new ConstructorParameter(1)], propagateTo:'Propagation1' },
+            ///                         { type: $data.Propagation2, params: ['firstParameterValue'], propagateTo:'Propagation2' }
+            ///                     ], null, {
+            ///             constructor: function(){ },
+            ///             func1: function(){ },
+            ///             member1: { type: 'string' }
+            ///         }, { 
+            ///             staticFunc1: function() {}    
+            ///         })
+            ///         
+            ///     </example>
+            /// </signature>
 
+            //il("!defineClass was invoked:" + className);
 
-    define: function (className, baseClass, interfaces, instanceDefinition, classDefinition) {
-        /// <signature>
-        ///     <summary>Creates a Jaydata type</summary>
-        ///     <param name="className" type="String">Name of the class</param>
-        ///     <param name="baseClass" type="Function">Basetype of the class</param>
-        ///     <param name="interfaces" type="Object" elementType="Function" />
-        ///     <param name="instanceDefinition" type="Object">Class definition (properties, methods, etc)</param>
-        ///     <param name="classDefinition" type="Object">Class static definition</param>
-        ///     <example>
-        ///         
-        ///         var t = new $data.Class.define('Types.A', $data.Base, null, {
-        ///             constructor: function(){ },
-        ///             func1: function(){ },
-        ///             member1: { type: 'string' }
-        ///         }, { 
-        ///             staticFunc1: function() {}    
-        ///         })
-        ///         
-        ///     </example>
-        /// </signature>
-
-        return this.defineEx(className, [{ type: baseClass }], interfaces, instanceDefinition, classDefinition);
-    },
-    defineEx: function (className, baseClasses, interfaces, instanceDefinition, classDefinition) {
-        /// <signature>
-        ///     <summary>Creates a Jaydata type</summary>
-        ///     <param name="className" type="String">Name of the class</param>
-        ///     <param name="baseClasses" type="Array" elementType="Functions">Basetypes of the class. First is a real base, others are mixins</param>
-        ///     <param name="interfaces" type="Object" elementType="Function" />
-        ///     <param name="instanceDefinition" type="Object">Class definition (properties, methods, etc)</param>
-        ///     <param name="classDefinition" type="Object">Class static definition</param>
-        ///     <example>
-        ///         
-        ///         var t = new $data.Class.define('Types.A', [$data.Base, $data.Mixin1, $data.Mixin2], null, {
-        ///             constructor: function(){ },
-        ///             func1: function(){ },
-        ///             member1: { type: 'string' }
-        ///         }, { 
-        ///             staticFunc1: function() {}    
-        ///         })
-        ///         
-        ///     </example>
-        /// </signature>
-        /// <signature>
-        ///     <summary>Creates a Jaydata type</summary>
-        ///     <param name="className" type="String">Name of the class</param>
-        ///     <param name="baseClasses" type="Array" elementType="Object">Basetypes of the class. First is a real base, others are mixins or propagations</param>
-        ///     <param name="interfaces" type="Object" elementType="Function" />
-        ///     <param name="instanceDefinition" type="Object">Class definition (properties, methods, etc)</param>
-        ///     <param name="classDefinition" type="Object">Class static definition</param>
-        ///     <example>
-        ///         
-        ///         var t = new $data.Class.define('Types.A', [
-        ///                         { type: $data.Base, params: [1, 'secondParameterValue', new ConstructorParameter(0)] },
-        ///                         { type: $data.Mixin1, },
-        ///                         { type: $data.Mixin2, },
-        ///                         { type: $data.Propagation1, params: [new ConstructorParameter(1)], propagateTo:'Propagation1' },
-        ///                         { type: $data.Propagation2, params: ['firstParameterValue'], propagateTo:'Propagation2' }
-        ///                     ], null, {
-        ///             constructor: function(){ },
-        ///             func1: function(){ },
-        ///             member1: { type: 'string' }
-        ///         }, { 
-        ///             staticFunc1: function() {}    
-        ///         })
-        ///         
-        ///     </example>
-        /// </signature>
-
-        //il("!defineClass was invoked:" + className);
-
-        if (baseClasses.length == 0) {
-            baseClasses.push({ type: $data.Base });
-        } else if (baseClasses.length > 0 && !baseClasses[0].type){
-            baseClasses[0].type = $data.Base;
-        }
-        for (var i = 0, l=baseClasses.length; i < l; i++){
-            if (typeof baseClasses[i] === 'function')
-                baseClasses[i] = { type: baseClasses[i] };
-        }
-
-        var providedCtor = instanceDefinition ? instanceDefinition.constructor : undefined;
-
-        var classNameParts = className.split('.');
-        var shortClassName = classNameParts.splice(classNameParts.length - 1, 1)[0];
-
-        var root = window;
-        for (var i = 0; i < classNameParts.length; i++){
-            var part = classNameParts[i];
-            if (!root[part]) {
-                //console.log("namespace missing:" + part + ", creating");
-                var ns = {};
-                ns.__namespace = true;
-                root[part] = ns;
+            if (baseClasses.length == 0) {
+                baseClasses.push({ type: $data.Base });
+            } else if (baseClasses.length > 0 && !baseClasses[0].type) {
+                baseClasses[0].type = $data.Base;
             }
-            root = root[part];
-        }
-        
-        /*classNameParts.forEach(function (part) {
-            if (!root[part]) {
-                //console.log("namespace missing:" + part + ", creating");
-                var ns = {};
-                ns.__namespace = true;
-                root[part] = ns;
+            for (var i = 0, l = baseClasses.length; i < l; i++) {
+                if (typeof baseClasses[i] === 'function')
+                    baseClasses[i] = { type: baseClasses[i] };
             }
-            root = root[part];
-        });*/
 
-        var classFunction = null;
-        classFunction = this.classFunctionBuilder(shortClassName, baseClasses, classDefinition, instanceDefinition);
-        classFunction.fullName = className;
-        classFunction.namespace = classNameParts.join('.'); //classname splitted
+            var providedCtor = instanceDefinition ? instanceDefinition.constructor : undefined;
 
-        this.buildType(classFunction, baseClasses, instanceDefinition, classDefinition);
+            var classNameParts = className.split('.');
+            var shortClassName = classNameParts.splice(classNameParts.length - 1, 1)[0];
 
-        classFunction.name = shortClassName;
-        Container.registerType(className, classFunction);
-
-        if (typeof intellisense !== 'undefined') {
-            if (instanceDefinition && instanceDefinition.constructor) {
-                intellisense.annotate(classFunction, instanceDefinition.constructor);
-            }
-        }
-
-        root[shortClassName] = this.classNames[className] = classFunction;
-        //classFunction.toJSON = classToJSON;
-        var baseCount = classFunction.baseTypes.length;
-        for (var i = 0; i < baseCount; i++) {
-            var b = classFunction.baseTypes[i];
-            if ("inheritedTypeProcessor" in b) {
-                b.inheritedTypeProcessor(classFunction);
-            }
-        }
-        //classFunction.prototype.constructor = instanceDefinition.constructor;
-        //classFunction.constructor = instanceDefinition.constructor;
-        //classFunction.toJSON = function () { return classFunction.memberDefinitions.filter( function(md) { return md; };
-        return classFunction;
-    },
-    classFunctionBuilder: function (name, base, classDefinition, instanceDefinition) {
-        var body = this.bodyBuilder(base, classDefinition, instanceDefinition);
-        return new Function('base', 'classDefinition', 'instanceDefinition', 'name', 'return function ' + name + ' (){ ' +
-            body + ' \n}; ')(base, classDefinition, instanceDefinition, name);
-    },
-    bodyBuilder: function (bases, classDefinition, instanceDefinition) {
-        var mixin = '';
-        var body = '';
-        var propagation = '';
-
-        for (var i = 0, l = bases.length; i < l; i++) {
-            var base = bases[i];
-            var index = i;
-            if (index == 0) { //ctor func
-                if (base && base.type && base.type !== $data.Base) {
-                    body += '    var baseArguments = $data.typeSystem.createCtorParams(arguments, base[' + index + '].params, this); \n';
-                    body += '    ' + base.type.fullName + '.apply(this, baseArguments); \n';
+            var root = window;
+            for (var i = 0; i < classNameParts.length; i++) {
+                var part = classNameParts[i];
+                if (!root[part]) {
+                    //console.log("namespace missing:" + part + ", creating");
+                    var ns = {};
+                    ns.__namespace = true;
+                    root[part] = ns;
                 }
-            } else {
-                if (base && base.type && base.propagateTo) {
-                    //propagation
-                    propagation += '    ' + (!propagation ? 'var ' : '' + '') + 'propagationArguments = $data.typeSystem.createCtorParams(arguments, base[' + index + '].params, this); \n';
-                    propagation += '    this["' + base.propagateTo + '"] =  Object.create(' + base.type.fullName + '.prototype); \n' +
-                                   '    ' + base.type.fullName + '.apply(this["' + base.propagateTo + '"], propagationArguments); \n';
+                root = root[part];
+            }
+
+            /*classNameParts.forEach(function (part) {
+                if (!root[part]) {
+                    //console.log("namespace missing:" + part + ", creating");
+                    var ns = {};
+                    ns.__namespace = true;
+                    root[part] = ns;
                 }
-                else if (base && base.type && base.type.memberDefinitions && base.type.memberDefinitions.$constructor && !base.propagateTo) {
-                    //mixin
-                    mixin += '    ' + base.type.fullName + '.memberDefinitions.$constructor.method.apply(this); \n';
+                root = root[part];
+            });*/
+
+            var classFunction = null;
+            classFunction = this.classFunctionBuilder(shortClassName, baseClasses, classDefinition, instanceDefinition);
+            classFunction.fullName = className;
+            classFunction.namespace = classNameParts.join('.'); //classname splitted
+
+            this.buildType(classFunction, baseClasses, instanceDefinition, classDefinition);
+
+            classFunction.name = shortClassName;
+            Container.registerType(className, classFunction);
+
+            if (typeof intellisense !== 'undefined') {
+                if (instanceDefinition && instanceDefinition.constructor) {
+                    intellisense.annotate(classFunction, instanceDefinition.constructor);
                 }
             }
-        }
-        if (instanceDefinition && instanceDefinition.constructor != Object) 
-            body += "    instanceDefinition.constructor.apply(this, arguments); \n";
 
-        return '\n    //mixins \n' + mixin + '\n    //construction \n' + body + '\n    //propagations \n' + propagation;
-    },
-
-    buildType: function (classFunction, baseClasses, instanceDefinition, classDefinition) {
-        var baseClass = baseClasses[0].type;
-        classFunction.inheritsFrom = baseClass;
-
-        if (baseClass) {
-            classFunction.prototype = Object.create(baseClass.prototype);
-            classFunction.memberDefinitions = Object.create(baseClass.memberDefinitions || new MemberDefinitionCollection());
-			classFunction.memberDefinitions.clearCache();
-
-			var staticDefs = baseClass.staticDefinitions;
-			if (staticDefs){
-				staticDefs = staticDefs.asArray();
-				if (staticDefs) {
-            		for(var i = 0; i < staticDefs.length; i++) {
-						this.buildMember(classFunction, staticDefs[i], undefined, 'staticDefinitions');
-            		}
-				}
-			}
-			classFunction.baseTypes = baseClass.baseTypes ? [].concat(baseClass.baseTypes) : [];
-            for (var i = 0; i < baseClasses.length; i++){
-                classFunction.baseTypes.push(baseClasses[i].type);
+            root[shortClassName] = this.classNames[className] = classFunction;
+            //classFunction.toJSON = classToJSON;
+            var baseCount = classFunction.baseTypes.length;
+            for (var i = 0; i < baseCount; i++) {
+                var b = classFunction.baseTypes[i];
+                if ("inheritedTypeProcessor" in b) {
+                    b.inheritedTypeProcessor(classFunction);
+                }
             }
-            //classFunction.baseTypes = (baseClass.baseTypes || []).concat(baseClasses.map(function (base) { return base.type; }));
-            if (!classFunction.isAssignableTo) {
-                Object.defineProperty(classFunction, "isAssignableTo", {
-                    value: function (type) {
-                        return this === type || this.baseTypes.indexOf(type) >= 0;
-                    },
-                    writable: false,
-                    enumerable: false,
-                    configurable: false
-                });
+            //classFunction.prototype.constructor = instanceDefinition.constructor;
+            //classFunction.constructor = instanceDefinition.constructor;
+            //classFunction.toJSON = function () { return classFunction.memberDefinitions.filter( function(md) { return md; };
+            return classFunction;
+        },
+        classFunctionBuilder: function (name, base, classDefinition, instanceDefinition) {
+            var body = this.bodyBuilder(base, classDefinition, instanceDefinition);
+            return new Function('base', 'classDefinition', 'instanceDefinition', 'name', 'return function ' + name + ' (){ ' +
+                body + ' \n}; ')(base, classDefinition, instanceDefinition, name);
+        },
+        bodyBuilder: function (bases, classDefinition, instanceDefinition) {
+            var mixin = '';
+            var body = '';
+            var propagation = '';
+
+            for (var i = 0, l = bases.length; i < l; i++) {
+                var base = bases[i];
+                var index = i;
+                if (index == 0) { //ctor func
+                    if (base && base.type && base.type !== $data.Base && base.type.fullName) {
+                        body += '    var baseArguments = $data.typeSystem.createCtorParams(arguments, base[' + index + '].params, this); \n';
+                        body += '    ' + base.type.fullName + '.apply(this, baseArguments); \n';
+                    }
+                } else {
+                    if (base && base.type && base.propagateTo) {
+                        //propagation
+                        propagation += '    ' + (!propagation ? 'var ' : '' + '') + 'propagationArguments = $data.typeSystem.createCtorParams(arguments, base[' + index + '].params, this); \n';
+                        propagation += '    this["' + base.propagateTo + '"] =  Object.create(' + base.type.fullName + '.prototype); \n' +
+                                       '    ' + base.type.fullName + '.apply(this["' + base.propagateTo + '"], propagationArguments); \n';
+                    }
+                    else if (base && base.type && base.type.memberDefinitions && base.type.memberDefinitions.$constructor && !base.propagateTo) {
+                        //mixin
+                        mixin += '    ' + base.type.fullName + '.memberDefinitions.$constructor.method.apply(this); \n';
+                    }
+                }
             }
-        }
+            if (instanceDefinition && instanceDefinition.constructor != Object)
+                body += "    instanceDefinition.constructor.apply(this, arguments); \n";
 
-        if (classDefinition) {
-            this.buildStaticMembers(classFunction, classDefinition);
+            return '\n    //mixins \n' + mixin + '\n    //construction \n' + body + '\n    //propagations \n' + propagation;
+        },
 
-            if (classDefinition.constructor)
-                classFunction.classConstructor = classDefinition.constructor;
-        }
+        buildType: function (classFunction, baseClasses, instanceDefinition, classDefinition) {
+            var baseClass = baseClasses[0].type;
+            classFunction.inheritsFrom = baseClass;
 
-        if (instanceDefinition) {
-            this.buildInstanceMembers(classFunction, instanceDefinition);
-        }
+            if (baseClass) {
+                classFunction.prototype = Object.create(baseClass.prototype);
+                classFunction.memberDefinitions = Object.create(baseClass.memberDefinitions || new MemberDefinitionCollection());
+                classFunction.memberDefinitions.clearCache();
 
-        var mixins = [].concat(baseClasses);
-        mixins.shift();
-        if (Object.keys(mixins).length > 0)
-            this.buildInstanceMixins(classFunction, mixins);
-
-        classFunction.__class = true;
-
-        classFunction.prototype.constructor = classFunction;
-
-        Object.defineProperty(classFunction.prototype, "getType", {
-            value: function () {
-                return classFunction;
-            },
-            writable: false,
-            enumerable: false,
-            configurable: false
-        });
-
-
-        classFunction.extend = function (name, instanceDefinition, classDefinition) {
-            return $data.Class.define(name, classFunction, null, instanceDefinition, classDefinition);
-        };
-
-        Object.defineProperty(classFunction, "getMemberDefinition", {
-            value: function (name) {
-                return classFunction.memberDefinitions.getMember(name);
+                var staticDefs = baseClass.staticDefinitions;
+                if (staticDefs) {
+                    staticDefs = staticDefs.asArray();
+                    if (staticDefs) {
+                        for (var i = 0; i < staticDefs.length; i++) {
+                            this.buildMember(classFunction, staticDefs[i], undefined, 'staticDefinitions');
+                        }
+                    }
+                }
+                classFunction.baseTypes = baseClass.baseTypes ? [].concat(baseClass.baseTypes) : [];
+                for (var i = 0; i < baseClasses.length; i++) {
+                    classFunction.baseTypes.push(baseClasses[i].type);
+                }
+                //classFunction.baseTypes = (baseClass.baseTypes || []).concat(baseClasses.map(function (base) { return base.type; }));
+                if (!classFunction.isAssignableTo) {
+                    Object.defineProperty(classFunction, "isAssignableTo", {
+                        value: function (type) {
+                            return this === type || this.baseTypes.indexOf(type) >= 0;
+                        },
+                        writable: false,
+                        enumerable: false,
+                        configurable: false
+                    });
+                }
             }
-        });
 
-    },
+            if (classDefinition) {
+                this.buildStaticMembers(classFunction, classDefinition);
 
-    addMethod: function (holder, name, method, propagation) {
-        if (!propagation || (typeof intellisense !== 'undefined')) {
-            holder[name] = method;
+                if (classDefinition.constructor)
+                    classFunction.classConstructor = classDefinition.constructor;
+            }
+
+            if (instanceDefinition) {
+                this.buildInstanceMembers(classFunction, instanceDefinition);
+            }
+
+            var mixins = [].concat(baseClasses);
+            mixins.shift();
+            if (Object.keys(mixins).length > 0)
+                this.buildInstanceMixins(classFunction, mixins);
+
+            classFunction.__class = true;
+
+            classFunction.prototype.constructor = classFunction;
+
+            Object.defineProperty(classFunction.prototype, "getType", {
+                value: function () {
+                    return classFunction;
+                },
+                writable: false,
+                enumerable: false,
+                configurable: false
+            });
+        },
+
+        addMethod: function (holder, name, method, propagation) {
+            if (!propagation || (typeof intellisense !== 'undefined')) {
+                holder[name] = method;
             } else {
                 holder[name] = function () {
                     return method.apply(this[propagation], arguments);
                 };
             }
-    },
+        },
 
-    addProperty: function (holder, name, propertyDescriptor, propagation) {
-        
-        //holder[name] = {};
+        addProperty: function (holder, name, propertyDescriptor, propagation) {
 
-        if (propagation)
-        {
-            propertyDescriptor.configurable = true;
-            if (propertyDescriptor.get)
-            {
-                var origGet = propertyDescriptor.get;
-                propertyDescriptor.get = function () {
-                    if (!this[propagation])
-                        Guard.raise(new Exception("not inicialized"));
-                    return origGet.apply(this[propagation], arguments);
-                };
+            //holder[name] = {};
+
+            if (propagation) {
+                propertyDescriptor.configurable = true;
+                if (propertyDescriptor.get) {
+                    var origGet = propertyDescriptor.get;
+                    propertyDescriptor.get = function () {
+                        if (!this[propagation])
+                            Guard.raise(new Exception("not inicialized"));
+                        return origGet.apply(this[propagation], arguments);
+                    };
+                }
+                if (propertyDescriptor.set) {
+                    var origSet = propertyDescriptor.set;
+                    propertyDescriptor.set = function () {
+                        if (!this[propagation])
+                            Guard.raise(new Exception("not inicialized"));
+                        origSet.apply(this[propagation], arguments);
+                    };
+                }
             }
-            if (propertyDescriptor.set) {
-                var origSet = propertyDescriptor.set;
-                propertyDescriptor.set = function () {
-                    if (!this[propagation])
-                        Guard.raise(new Exception("not inicialized"));
-                    origSet.apply(this[propagation], arguments);
-                };
+
+            Object.defineProperty(holder, name, propertyDescriptor);
+        },
+
+        addField: function (holder, name, field) {
+            Guard.raise("not implemented");
+        },
+
+        buildMethod: function (classFunction, memberDefinition, propagation) {
+            ///<param name="classFunction" type="Function">The object that will receive member</param>
+            ///<param name="memberDefinition" type="MemberDefinition">the newly added member</param>
+            var holder = memberDefinition.classMember ? classFunction : classFunction.prototype;
+            this.addMethod(holder, memberDefinition.name, memberDefinition.method, propagation);
+        },
+
+        buildProperty: function (classFunction, memberDefinition, propagation) {
+            ///<param name="classFunction" type="Function">The object that will receive member</param>
+            ///<param name="memberDefinition" type="MemberDefinition">the newly added member</param>
+            var holder = memberDefinition.classMember ? classFunction : classFunction.prototype;
+            var pd = memberDefinition.createPropertyDescriptor(classFunction);
+            this.addProperty(holder, memberDefinition.name, pd, propagation);
+
+            //if lazyload TODO
+            if (!memberDefinition.classMember && classFunction.__setPropertyfunctions == true) {
+                var pdGetMethod = memberDefinition.createGetMethod();
+                this.addProperty(holder, 'get_' + memberDefinition.name, pdGetMethod, propagation);
+
+                var pdSetMethod = memberDefinition.createSetMethod();
+                this.addProperty(holder, 'set_' + memberDefinition.name, pdSetMethod, propagation);
             }
-        }
-
-        Object.defineProperty(holder, name, propertyDescriptor);
-    },
-
-    addField: function(holder, name, field) {
-        Guard.raise("not implemented");
-    },
-
-    buildMethod: function (classFunction, memberDefinition, propagation) {
-        ///<param name="classFunction" type="Function">The object that will receive member</param>
-        ///<param name="memberDefinition" type="MemberDefinition">the newly added member</param>
-        var holder = memberDefinition.classMember ? classFunction : classFunction.prototype;
-        this.addMethod(holder, memberDefinition.name, memberDefinition.method, propagation);
-    },
-
-    buildProperty: function (classFunction, memberDefinition, propagation) {
-        ///<param name="classFunction" type="Function">The object that will receive member</param>
-        ///<param name="memberDefinition" type="MemberDefinition">the newly added member</param>
-        var holder = memberDefinition.classMember ? classFunction : classFunction.prototype;
-        var pd = memberDefinition.createPropertyDescriptor(classFunction);
-        this.addProperty(holder, memberDefinition.name, pd, propagation);
-
-        //if lazyload TODO
-        if (!memberDefinition.classMember && classFunction.__setPropertyfunctions == true) {
-            var pdGetMethod = memberDefinition.createGetMethod();
-            this.addProperty(holder, 'get_' + memberDefinition.name, pdGetMethod, propagation);
-
-            var pdSetMethod = memberDefinition.createSetMethod();
-            this.addProperty(holder, 'set_' + memberDefinition.name, pdSetMethod, propagation);
-        }
-    },
+        },
 
 
-    buildMember: function (classFunction, memberDefinition, propagation, memberCollectionName) {
-        ///<param name="memberDefinition" type="MemberDefinition" />
-        memberCollectionName = memberCollectionName || 'memberDefinitions';
-        classFunction[memberCollectionName] = classFunction[memberCollectionName] || new MemberDefinitionCollection();
+        buildMember: function (classFunction, memberDefinition, propagation, memberCollectionName) {
+            ///<param name="memberDefinition" type="MemberDefinition" />
+            memberCollectionName = memberCollectionName || 'memberDefinitions';
+            classFunction[memberCollectionName] = classFunction[memberCollectionName] || new MemberDefinitionCollection();
 
-        classFunction[memberCollectionName].setMember(memberDefinition);
+            classFunction[memberCollectionName].setMember(memberDefinition);
 
-        switch (memberDefinition.kind) {
-            case MemberTypes.method:
-                this.buildMethod(classFunction, memberDefinition, propagation);
-                break;
-            case MemberTypes.navProperty:
-            case MemberTypes.complexProperty:
-            case MemberTypes.property:
-                this.buildProperty(classFunction, memberDefinition, propagation);
-                break;
-            default: Guard.raise("Unknown member type: " + memberDefinition.kind + "," + memberDefinition.name);
-        }
-    },
-
-    buildStaticMembers: function (classFunction, memberListDefinition) {
-        ///<param name="classFunction" type="Object">The class constructor that will be extended</param>
-        ///<param name="memberListDefinition" type="Object"></param>
-        var t = this;
-        for (var item in memberListDefinition)
-        {
-            if (memberListDefinition.hasOwnProperty(item)) {
-                var memberDefinition = new MemberDefinition(memberListDefinition[item], classFunction);
-                memberDefinition.name = item;
-                memberDefinition.classMember = true;
-                t.buildMember(classFunction, memberDefinition, undefined, 'staticDefinitions');
+            switch (memberDefinition.kind) {
+                case MemberTypes.method:
+                    this.buildMethod(classFunction, memberDefinition, propagation);
+                    break;
+                case MemberTypes.navProperty:
+                case MemberTypes.complexProperty:
+                case MemberTypes.property:
+                    this.buildProperty(classFunction, memberDefinition, propagation);
+                    break;
+                default: Guard.raise("Unknown member type: " + memberDefinition.kind + "," + memberDefinition.name);
             }
-        }
-    },
+        },
 
-    buildInstanceMembers: function (classFunction, memberListDefinition) {
-        ///<param name="classFunction" type="Function">The class constructor whose prototype will be extended</param>
-        ///<param name="memberListDefinition" type="Object"></param>
-        ///pinning t outside of the closure seems actually faster then passing in the this  and referencing
-        var t = this;
-        for (var item in memberListDefinition) {
-            if (memberListDefinition.hasOwnProperty(item)) {
-                var memberDefinition = new MemberDefinition(memberListDefinition[item], classFunction);
-
-                memberDefinition.name = item;
-                t.buildMember(classFunction, memberDefinition);
+        buildStaticMembers: function (classFunction, memberListDefinition) {
+            ///<param name="classFunction" type="Object">The class constructor that will be extended</param>
+            ///<param name="memberListDefinition" type="Object"></param>
+            var t = this;
+            for (var item in memberListDefinition) {
+                if (memberListDefinition.hasOwnProperty(item)) {
+                    var memberDefinition = new MemberDefinition(memberListDefinition[item], classFunction);
+                    memberDefinition.name = item;
+                    memberDefinition.classMember = true;
+                    t.buildMember(classFunction, memberDefinition, undefined, 'staticDefinitions');
+                }
             }
-        }
-    },
+        },
 
-    copyMembers: function(sourceType, targetType) {
-        ///<param name="sourceType" type="Function" />
-        ///<param name="targetType" type="Function" />
-        function il(msg) {
-            if (typeof intellisense === 'undefined') {
-                return;
+        buildInstanceMembers: function (classFunction, memberListDefinition) {
+            ///<param name="classFunction" type="Function">The class constructor whose prototype will be extended</param>
+            ///<param name="memberListDefinition" type="Object"></param>
+            ///pinning t outside of the closure seems actually faster then passing in the this  and referencing
+            var t = this;
+            for (var item in memberListDefinition) {
+                if (memberListDefinition.hasOwnProperty(item)) {
+                    var memberDefinition = new MemberDefinition(memberListDefinition[item], classFunction);
+
+                    memberDefinition.name = item;
+                    t.buildMember(classFunction, memberDefinition);
+                }
             }
-            intellisense.logMessage(msg);
-        }
+        },
 
-        Object.keys(sourceType.prototype).forEach(function (item, i, src) {
-            if (item !== 'constructor' && item !== 'toString') {
-                il("copying item:" + item);
-                targetType.prototype[item] = sourceType[item];
+        copyMembers: function (sourceType, targetType) {
+            ///<param name="sourceType" type="Function" />
+            ///<param name="targetType" type="Function" />
+            function il(msg) {
+                if (typeof intellisense === 'undefined') {
+                    return;
+                }
+                intellisense.logMessage(msg);
             }
-        });
-    },
 
-    buildInstanceMixins: function (classFunction, mixinList) {
-        ///<param name="classFunction" type="Function">The class constructor whose prototype will be extended</param>
-        ///<param name="mixinList" type="Array"></param>
+            Object.keys(sourceType.prototype).forEach(function (item, i, src) {
+                if (item !== 'constructor' && item !== 'toString') {
+                    il("copying item:" + item);
+                    targetType.prototype[item] = sourceType[item];
+                }
+            });
+        },
 
-        classFunction.mixins = classFunction.mixins || [];
-        classFunction.propagations = classFunction.propagations || [];
+        buildInstanceMixins: function (classFunction, mixinList) {
+            ///<param name="classFunction" type="Function">The class constructor whose prototype will be extended</param>
+            ///<param name="mixinList" type="Array"></param>
 
-        for(var i = 0; i < mixinList.length; i++) {
-            var item = mixinList[i];
-            //if (classFunction.memberDefinitions.getMember(item.type.name)) {
-            if (item.propagateTo) {
-                this.buildInstancePropagation(classFunction, item);
-                classFunction.propagations.push(item);
-                classFunction.propagations[item.type.name] = true;
-            } else {
-                this.buildInstanceMixin(classFunction, item);
-                classFunction.mixins.push(item);
-                classFunction.mixins[item.type.name] = true;
-            }
-        };
-    },
-    buildInstanceMixin: function (classFunction, typeObj) {
-        ///<param name="classFunction" type="Function">The class constructor whose prototype will be extended</param>
-        ///<param name="typeObj" type="Object"></param>
+            classFunction.mixins = classFunction.mixins || [];
+            classFunction.propagations = classFunction.propagations || [];
 
-        var memberDefs = typeObj.type.memberDefinitions.asArray();
-        for (var i = 0, l = memberDefs.length; i < l; i++) {
-            var itemName = memberDefs[i].name;
-            if (itemName !== 'constructor' && !classFunction.memberDefinitions.getMember(itemName)) {
-                this.buildMember(classFunction, memberDefs[i]);
-            }
-        }
+            for (var i = 0; i < mixinList.length; i++) {
+                var item = mixinList[i];
+                //if (classFunction.memberDefinitions.getMember(item.type.name)) {
+                if (item.propagateTo) {
+                    this.buildInstancePropagation(classFunction, item);
+                    classFunction.propagations.push(item);
+                    classFunction.propagations[item.type.name] = true;
+                } else {
+                    this.buildInstanceMixin(classFunction, item);
+                    classFunction.mixins.push(item);
+                    classFunction.mixins[item.type.name] = true;
+                }
+            };
+        },
+        buildInstanceMixin: function (classFunction, typeObj) {
+            ///<param name="classFunction" type="Function">The class constructor whose prototype will be extended</param>
+            ///<param name="typeObj" type="Object"></param>
 
-        if (typeObj.type.staticDefinitions) {
-            var staticDefs = typeObj.type.staticDefinitions.asArray();
-            for (var i = 0, l = staticDefs.length; i < l; i++) {
-                var itemName = staticDefs[i].name;
+            var memberDefs = typeObj.type.memberDefinitions.asArray();
+            for (var i = 0, l = memberDefs.length; i < l; i++) {
+                var itemName = memberDefs[i].name;
                 if (itemName !== 'constructor' && !classFunction.memberDefinitions.getMember(itemName)) {
-                    this.buildMember(classFunction, staticDefs[i], undefined, 'staticDefinitions');
+                    this.buildMember(classFunction, memberDefs[i]);
+                }
+            }
+
+            if (typeObj.type.staticDefinitions) {
+                var staticDefs = typeObj.type.staticDefinitions.asArray();
+                for (var i = 0, l = staticDefs.length; i < l; i++) {
+                    var itemName = staticDefs[i].name;
+                    if (itemName !== 'constructor' && !classFunction.memberDefinitions.getMember(itemName)) {
+                        this.buildMember(classFunction, staticDefs[i], undefined, 'staticDefinitions');
+                    }
+                }
+            }
+        },
+        buildInstancePropagation: function (classFunction, typeObj) {
+            ///<param name="classFunction" type="Function">The class constructor whose prototype will be extended</param>
+            ///<param name="typeObj" type="Object"></param>
+
+            var memberDefs = typeObj.type.memberDefinitions.asArray();
+            for (var i = 0, l = memberDefs.length; i < l; i++) {
+                var itemName = memberDefs[i].name;
+                if (itemName !== 'constructor' && !classFunction.memberDefinitions.getMember(itemName)) {
+                    this.buildMember(classFunction, memberDefs[i], typeObj.propagateTo);
                 }
             }
         }
-    },
-    buildInstancePropagation: function (classFunction, typeObj) {
-        ///<param name="classFunction" type="Function">The class constructor whose prototype will be extended</param>
-        ///<param name="typeObj" type="Object"></param>
 
-        var memberDefs = typeObj.type.memberDefinitions.asArray();
-        for (var i = 0, l = memberDefs.length; i < l; i++) {
-            var itemName = memberDefs[i].name;
-            if (itemName !== 'constructor' && !classFunction.memberDefinitions.getMember(itemName)) {
-                this.buildMember(classFunction, memberDefs[i], typeObj.propagateTo);
-            }
-            }
-    }
-
-};
+    };
 
     $data.Class = Class = new ClassEngineBase();
 
+    (function (global) {
 
-(function (global) {
+        function ContainerCtor() {
 
-    function ContainerCtor() {
+            var classNames = {};
+            var consolidatedClassNames = [];
+            var classTypes = [];
 
-        var classNames = {};
-        var consolidatedClassNames = [];
-        var classTypes = [];
+            this.classNames = classNames;
+            this.consolidatedClassNames = consolidatedClassNames;
+            this.classTypes = classTypes;
 
-        this.classNames = classNames;
-        this.consolidatedClassNames = consolidatedClassNames;
-        this.classTypes = classTypes;
+            var mappedTo = [];
+            this.mappedTo = mappedTo;
 
-        var mappedTo = [];
-        this.mappedTo = mappedTo;
+            var self = this;
 
-        var self = this;
+            this["holder"] = null;
 
-        this["holder"] = null;
-
-        var IoC = function (type, parameters) {
-            var t = self.resolveType(type);
-            var inst = Object.create(t.prototype);
-            t.apply(inst, parameters);
-            return inst;
-        };
-
-        this.mapType = function (aliasTypeOrName, realTypeOrName) {
-            Guard.requireValue("aliasType", aliasTypeOrName);
-            Guard.requireValue("realType", realTypeOrName);
-            var aliasT = this.getType(aliasTypeOrName);
-            var realT = this.getType(realTypeOrName);
-            var aliasPos = classTypes.indexOf(aliasT);
-            var realPos = classTypes.indexOf(realT);
-            mappedTo[aliasPos] = realPos;
-        },
-
-        this.resolve = function (type, parameters) {
-            var classFunction = this.resolveType(type, parameters);
-            return new classFunction(parameters);
-        };
-
-        this.resolveName = function (type) {
-            var t = this.resolveType(type);
-            var tPos = classTypes.indexOf(t);
-            return consolidatedClassNames[tPos];
-        };
-
-        this.isPrimitiveType = function(type) {
-            var t = this.resolveType(type);
-            return t === Number || t === String || t === Date || t === String || t === Boolean || t === Array || t === Object ||
-                t === $data.Number || t === $data.Integer || t === $data.Date || t === $data.String || t === $data.Boolean || t === $data.Array || t === $data.Object ||
-                t === $data.Geography || t === $data.Guid;
-        };
-
-        this.resolveType = function (typeOrName) {
-            var t = typeOrName;
-            t = this.getType(t);
-            var posT = classTypes.indexOf(t);
-			return typeof mappedTo[posT] === 'undefined' ? t : classTypes[mappedTo[posT]];
-        };
-
-        this.getTypes = function () {
-            var keys = Object.keys(classNames);
-            var ret = [];
-            for (var i = 0; i < keys.length; i++){
-                var className = keys[i];
-                ret.push({ name: className, type: classTypes[classNames[className]], toString: function () { return this.name; } });
-            }
-            return ret;
-            
-            /*return Object.keys(classNames).map(function (className, index) {
-                return { name: className, type: classTypes[classNames[className]], toString: function () { return this.name; } };
-            });*/
-        };
-
-        //this.getTypeName( in type);
-        //this.resolveType()
-        //this.inferTypeFromValue = function (value) {
-
-        this.getTypeName = function (value) {
-            switch (typeof value) {
-                case 'object':
-                    if (value == null) return '$data.Object';
-                    if (value instanceof Array) return '$data.Array';
-                    if (value.getType) return value.getType().fullName;
-                    if (value instanceof Date) return '$data.Date';
-                    if (value instanceof $data.Geography) return '$data.Geography';
-                    if (value instanceof $data.Guid) return '$data.Guid';
-                    //if(value instanceof "number") return
-                default:
-                    return typeof value;
-            }
-        };
-
-        this.isTypeRegistered = function (typeOrName) {
-            if (typeof typeOrName === 'function') {
-                return classTypes.indexOf(typeOrName) > -1;
-            } else {
-                return typeOrName in classNames;
-            }
-        };
-
-        this.unregisterType = function (type) {
-            Guard.raise("Unimplemented");
-        };
-
-        this.getType = function (typeOrName) {
-            Guard.requireValue("typeOrName", typeOrName);
-            if (typeof typeOrName === 'function') {
-                return typeOrName;
+            var IoC = function (type, parameters) {
+                var t = self.resolveType(type);
+                var inst = Object.create(t.prototype);
+                t.apply(inst, parameters);
+                return inst;
             };
 
-            if (!(typeOrName in classNames)) {
-                Guard.raise(new Exception("Unable to resolve type:" + typeOrName));
+            this.mapType = function (aliasTypeOrName, realTypeOrName) {
+                Guard.requireValue("aliasType", aliasTypeOrName);
+                Guard.requireValue("realType", realTypeOrName);
+                var aliasT = this.getType(aliasTypeOrName);
+                var realT = this.getType(realTypeOrName);
+                var aliasPos = classTypes.indexOf(aliasT);
+                var realPos = classTypes.indexOf(realT);
+                mappedTo[aliasPos] = realPos;
+            },
+
+            this.resolve = function (type, parameters) {
+                var classFunction = this.resolveType(type, parameters);
+                return new classFunction(parameters);
             };
-            return classTypes[classNames[typeOrName]];
-        };
 
-        this.getName = function (typeOrName) {
-            var t = this.getType(typeOrName);
-            var tPos = classTypes.indexOf(t);
-            if (tPos == -1)
-                Guard.raise("unknown type to request name for: " + typeOrName);
-            return consolidatedClassNames[tPos];
-        };
+            this.resolveName = function (type) {
+                var t = this.resolveType(type);
+                var tPos = classTypes.indexOf(t);
+                return consolidatedClassNames[tPos];
+            };
 
-		this.getDefault = function (typeOrName) {
-			var t = this.resolveType(typeOrName);
-			switch (t){
-				case $data.Number: return 0.0;
-				case $data.Integer: return 0;
-				case $data.String: return null;
-				case $data.Boolean: return false;
-				default: return null;
-			}
-		};
+            this.isPrimitiveType = function (type) {
+                var t = this.resolveType(type);
+                return t === Number || t === String || t === Date || t === String || t === Boolean || t === Array || t === Object ||
+                    t === $data.Number || t === $data.Integer || t === $data.Date || t === $data.String || t === $data.Boolean || t === $data.Array || t === $data.Object ||
+                    t === $data.Geography || t === $data.Guid;
+            };
 
-        //name array ['', '', '']
-        this.registerType = function(nameOrNamesArray, type, factoryFunc) {
-            ///<signature>
-            ///<summary>Registers a type and optionally a lifetimeManager with a name
-            ///that can be used to later resolve the type or create new instances</summary>
-            ///<param name="nameOrNamesArray" type="Array">The names of the type</param>
-            ///<param name="type" type="Function">The type to register</param>
-            ///<param name="instanceManager" type="Function"></param>
-            ///</signature>
-            ///<signature>
-            ///<summary>Registers a new type that </summary>
-            ///<param name="aliasType" type="Function">The name of the type</param>
-            ///<param name="actualType" type="Function">The type to register</param>
-            ///</signature>
+            this.resolveType = function (typeOrName) {
+                var t = typeOrName;
+                t = this.getType(t);
+                var posT = classTypes.indexOf(t);
+                return typeof mappedTo[posT] === 'undefined' ? t : classTypes[mappedTo[posT]];
+            };
 
-
-            ///TODO remove
-            /*if (typeof typeNameOrAlias === 'string') {
-                if (classNames.indexOf(typeNameOrAlias) > -1) {
-                    Guard.raise("Type already registered. Remove first");
+            this.getTypes = function () {
+                var keys = Object.keys(classNames);
+                var ret = [];
+                for (var i = 0; i < keys.length; i++) {
+                    var className = keys[i];
+                    ret.push({ name: className, type: classTypes[classNames[className]], toString: function () { return this.name; } });
                 }
-            }*/
+                return ret;
 
-            if (!nameOrNamesArray) {
-                return;
-            }
+                /*return Object.keys(classNames).map(function (className, index) {
+                    return { name: className, type: classTypes[classNames[className]], toString: function () { return this.name; } };
+                });*/
+            };
 
-            //todo add ('number', 'number')
-            if (typeof type === "string") {
-                type = self.resolveType(type);
-            }
+            //this.getTypeName( in type);
+            //this.resolveType()
+            //this.inferTypeFromValue = function (value) {
 
-            if (typeof nameOrNamesArray === 'string') {
-                var tmp = [];
-                tmp.push(nameOrNamesArray);
-                nameOrNamesArray = tmp;
-            }
+            this.getTypeName = function (value) {
+                switch (typeof value) {
+                    case 'object':
+                        if (value == null) return '$data.Object';
+                        if (value instanceof Array) return '$data.Array';
+                        if (value.getType) return value.getType().fullName;
+                        if (value instanceof Date) return '$data.Date';
+                        if (value instanceof $data.Geography) return '$data.Geography';
+                        if (value instanceof $data.Guid) return '$data.Guid';
+                        //if(value instanceof "number") return
+                    default:
+                        return typeof value;
+                }
+            };
 
-            for (var i = 0; i < nameOrNamesArray.length; i++) {
-                var parts = nameOrNamesArray[i].split('.');
-                var item = {};
-                item.shortName = parts[parts.length - 1];
-                item.fullName = nameOrNamesArray[i];
-                nameOrNamesArray[i] = item;
-            }
+            this.isTypeRegistered = function (typeOrName) {
+                if (typeof typeOrName === 'function') {
+                    return classTypes.indexOf(typeOrName) > -1;
+                } else {
+                    return typeOrName in classNames;
+                }
+            };
 
-            //if (type.
+            this.unregisterType = function (type) {
+                Guard.raise("Unimplemented");
+            };
+
+            this.getType = function (typeOrName) {
+                Guard.requireValue("typeOrName", typeOrName);
+                if (typeof typeOrName === 'function') {
+                    return typeOrName;
+                };
+
+                if (!(typeOrName in classNames)) {
+                    Guard.raise(new Exception("Unable to resolve type:" + typeOrName));
+                };
+                return classTypes[classNames[typeOrName]];
+            };
+
+            this.getName = function (typeOrName) {
+                var t = this.getType(typeOrName);
+                var tPos = classTypes.indexOf(t);
+                if (tPos == -1)
+                    Guard.raise("unknown type to request name for: " + typeOrName);
+                return consolidatedClassNames[tPos];
+            };
+
+            this.getDefault = function (typeOrName) {
+                var t = this.resolveType(typeOrName);
+                switch (t) {
+                    case $data.Number: return 0.0;
+                    case $data.Integer: return 0;
+                    case $data.String: return null;
+                    case $data.Boolean: return false;
+                    default: return null;
+                }
+            };
+
+            //name array ['', '', '']
+            this.registerType = function (nameOrNamesArray, type, factoryFunc) {
+                ///<signature>
+                ///<summary>Registers a type and optionally a lifetimeManager with a name
+                ///that can be used to later resolve the type or create new instances</summary>
+                ///<param name="nameOrNamesArray" type="Array">The names of the type</param>
+                ///<param name="type" type="Function">The type to register</param>
+                ///<param name="instanceManager" type="Function"></param>
+                ///</signature>
+                ///<signature>
+                ///<summary>Registers a new type that </summary>
+                ///<param name="aliasType" type="Function">The name of the type</param>
+                ///<param name="actualType" type="Function">The type to register</param>
+                ///</signature>
 
 
-            var creatorFnc = function () { return IoC(type, arguments); };
-
-            if (typeof intellisense !== 'undefined') {
-                intellisense.annotate(creatorFnc, type);
-            }
-
-            for (var i = 0, l = nameOrNamesArray.length; i < l; i++) {
-                var item = nameOrNamesArray[i];
-                if (!(("create" + item.shortName) in self)) {
-                    if (typeof factoryFunc === 'function') {
-                        self["create" + item.shortName] = factoryFunc;
-                    } else {
-                        self["create" + item.shortName] = creatorFnc;
+                ///TODO remove
+                /*if (typeof typeNameOrAlias === 'string') {
+                    if (classNames.indexOf(typeNameOrAlias) > -1) {
+                        Guard.raise("Type already registered. Remove first");
                     }
-                }/* else {
+                }*/
+
+                if (!nameOrNamesArray) {
+                    return;
+                }
+
+                //todo add ('number', 'number')
+                if (typeof type === "string") {
+                    type = self.resolveType(type);
+                }
+
+                if (typeof nameOrNamesArray === 'string') {
+                    var tmp = [];
+                    tmp.push(nameOrNamesArray);
+                    nameOrNamesArray = tmp;
+                }
+
+                for (var i = 0; i < nameOrNamesArray.length; i++) {
+                    var parts = nameOrNamesArray[i].split('.');
+                    var item = {};
+                    item.shortName = parts[parts.length - 1];
+                    item.fullName = nameOrNamesArray[i];
+                    nameOrNamesArray[i] = item;
+                }
+
+                //if (type.
+
+
+                var creatorFnc = function () { return IoC(type, arguments); };
+
+                if (typeof intellisense !== 'undefined') {
+                    intellisense.annotate(creatorFnc, type);
+                }
+
+                for (var i = 0, l = nameOrNamesArray.length; i < l; i++) {
+                    var item = nameOrNamesArray[i];
+                    if (!(("create" + item.shortName) in self)) {
+                        if (typeof factoryFunc === 'function') {
+                            self["create" + item.shortName] = factoryFunc;
+                        } else {
+                            self["create" + item.shortName] = creatorFnc;
+                        }
+                    }/* else {
                     //if (console) { console.warn("warning: short names overlap:" + item.shortName + ", Container.create" + item.shortName + " has not been updated"); }
                 };*/
 
-                var typePos = classTypes.indexOf(type);
-                if (typePos == -1) {
-                    //new type
-                    typePos = classTypes.push(type) - 1;
-                    var fn = item.fullName;
-                    consolidatedClassNames[typePos] = item.fullName;
-                };
+                    var typePos = classTypes.indexOf(type);
+                    if (typePos == -1) {
+                        //new type
+                        typePos = classTypes.push(type) - 1;
+                        var fn = item.fullName;
+                        consolidatedClassNames[typePos] = item.fullName;
+                    };
 
-                /*if (item.fullName in classNames) {
-                    //console.warn("warning:!!! This typename has already been registered:" + item.fullName);
-                };*/
-                classNames[item.fullName] = typePos;
+                    /*if (item.fullName in classNames) {
+                        //console.warn("warning:!!! This typename has already been registered:" + item.fullName);
+                    };*/
+                    classNames[item.fullName] = typePos;
+                }
+
+                if (!type.name) {
+                    type.name = nameOrNamesArray[0].shortName;
+                }
+            };
+        }
+
+        $data.Number = typeof Number !== 'undefined' ? Number : function JayNumber() { };
+        $data.Integer = typeof Integer !== 'undefined' ? Integer : function JayInteger() { };
+        $data.Date = typeof Date !== 'undefined' ? Date : function JayDate() { };
+        $data.String = typeof String !== 'undefined' ? String : function JayString() { };
+        $data.Boolean = typeof Boolean !== 'undefined' ? Boolean : function JayBoolean() { };
+        $data.Blob = /*typeof Blob !== 'undefined' ? Blob :*/ function JayBlob() { };
+        $data.Array = typeof Array !== 'undefined' ? Array : function JayArray() { };
+        $data.Object = typeof Object !== 'undefined' ? Object : function JayObject() { };
+        $data.ObjectID = typeof ObjectID !== 'undefined' ? ObjectID : function JayObjectID() { };
+        $data.Function = Function;
+
+        var c;
+        global["Container"] = $data.Container = c = global["C$"] = new ContainerCtor();
+        c.registerType(["$data.Number", "number", "float", "real", "decimal", "JayNumber"], $data.Number);
+        c.registerType(["$data.Integer", "int", "integer", "int16", "int32", "int64", "JayInteger"], $data.Integer);
+        c.registerType(["$data.String", "string", "text", "character", "JayString"], $data.String);
+        c.registerType(["$data.Array", "array", "Array", "[]", "JayArray"], $data.Array, function () {
+            return $data.Array.apply(undefined, arguments);
+        });
+        c.registerType(["$data.Date", "datetime", "date", "JayDate"], $data.Date);
+        c.registerType(["$data.Boolean", "bool", "boolean", "JayBoolean"], $data.Boolean);
+        c.registerType(["$data.Blob", "blob", "JayBlob"], $data.Blob);
+        c.registerType(["$data.Object", "Object", "object", "{}", "JayObject"], $data.Object);
+        c.registerType(["$data.Function", "Function", "function"], $data.Function);
+        c.registerType(['$data.ObjectID', 'ObjectID', 'objectId', 'objectid', 'ID', 'Id', 'id', 'JayObjectID'], $data.ObjectID);
+
+    })(window);
+
+    global["$C"] = function () { Class.define.apply(Class, arguments); };
+
+    $data.Class.define('$data.Base', function Base() { }, null, {
+        storeProperty: function (memberDefinition, value) {
+            var backingFieldName = "_" + memberDefinition.name;
+            if (!this[backingFieldName]) {
+                Object.defineProperty(this, backingFieldName, memberDefinition.createStorePropertyDescriptor(value));
+            }
+            else {
+                this[backingFieldName] = value;
+            }
+        },
+        retrieveProperty: function (memberDefinition) {
+            var backingFieldName = "_" + memberDefinition.name;
+            return this[backingFieldName];
+        },
+        setProperty: function (memberDefinition, value, callback) {
+            this[memberDefinition.name] = value;
+            callback();
+        },
+        getProperty: function (memberDefinition, callback) {
+            callback.apply(this, [this[memberDefinition.name]]);
+        }
+    }, {
+        extend: function (name, instanceDefinition, classDefinition) {
+            return $data.Class.define(name, this, null, instanceDefinition, classDefinition);
+        },
+        getMemberDefinition: function (name) {
+            return this.memberDefinitions.getMember(name);
+        },
+        addProperty: function (name, getterOrType, setterOrGetter, setter) {
+            var _getter = getterOrType;
+            var _setter = setterOrGetter;
+            var _type;
+            if (typeof _getter === 'string') {
+                _type = getterOrType;
+                _getter = setterOrGetter;
+                _setter = setter;
             }
 
-			if (!type.name){
-				type.name = nameOrNamesArray[0].shortName;
-			}
-        };
-    }
+            var propDef = {
+                notMapped: true,
+                storeOnObject: true,
+                get: typeof _getter === 'function' ? _getter : function () { },
+                set: typeof _setter === 'function' ? _setter : function () { },
+                type: _type
+            };
 
-    $data.Number = typeof Number !== 'undefined' ? Number : function JayNumber() { };
-    $data.Integer = typeof Integer !== 'undefined' ? Integer : function JayInteger() {  };
-    $data.Date = typeof Date !== 'undefined' ? Date : function JayDate() { };
-    $data.String = typeof String !== 'undefined' ? String : function JayString() { };
-    $data.Boolean = typeof Boolean !== 'undefined' ? Boolean : function JayBoolean() { };
-    $data.Blob = /*typeof Blob !== 'undefined' ? Blob :*/ function JayBlob() { };
-    $data.Array = typeof Array !== 'undefined' ? Array : function JayArray() { };
-    $data.Object = typeof Object !== 'undefined' ? Object : function JayObject() { };
-    $data.ObjectID = typeof ObjectID !== 'undefined' ? ObjectID : function JayObjectID(){};
-    $data.Function = Function;
+            var memberDefinition = new MemberDefinition(propDef, this);
+            memberDefinition.name = name;
+            $data.Class.buildMember(this, memberDefinition);
 
-    var c;
-    global["Container"] = $data.Container = c = global["C$"] = new ContainerCtor();
-    c.registerType(["$data.Number", "number", "float", "real", "decimal", "JayNumber"], $data.Number);
-    c.registerType(["$data.Integer", "int", "integer", "int16", "int32", "int64", "JayInteger"], $data.Integer);
-    c.registerType(["$data.String", "string", "text", "character", "JayString"], $data.String);
-    c.registerType(["$data.Array", "array", "Array", "[]", "JayArray"], $data.Array, function () {
-        return $data.Array.apply(undefined, arguments);
+            this.memberDefinitions.clearCache();
+
+            return this;
+        },
+        addMember: function (name, definition) {
+            var memberDefinition = new MemberDefinition(definition, this);
+            memberDefinition.name = name;
+            $data.Class.buildMember(this, memberDefinition);
+
+            this.memberDefinitions.clearCache();
+
+            return this;
+        }
     });
-    c.registerType(["$data.Date", "datetime", "date", "JayDate"], $data.Date);
-    c.registerType(["$data.Boolean", "bool", "boolean", "JayBoolean"], $data.Boolean);
-    c.registerType(["$data.Blob", "blob", "JayBlob"], $data.Blob);
-    c.registerType(["$data.Object", "Object", "object", "{}", "JayObject"], $data.Object);
-    c.registerType(["$data.Function", "Function", "function"], $data.Function);
-    c.registerType(['$data.ObjectID', 'ObjectID', 'objectId', 'objectid', 'ID', 'Id', 'id', 'JayObjectID'], $data.ObjectID);
 
-})(window);
+    $data.Class.ConstructorParameter = ConstructorParameter = $data.Class.define('ConstructorParameter', null, null, {
+        constructor: function (paramIndex) {
+            ///<param name="paramIndex" type="integer" />
+            this.paramIndex = paramIndex;
+        },
+        paramIndex: {}
+    });
+    /*$data.Class.MixinParameter = MixinParameter = $data.Class.define('MixinParameter', null, null, {
+        constructor: function (typeName) {
+            ///<param name="paramIndex" type="integer">
+            this.typeName = typeName;
+        },
+        typeName: {}
+    });*/
 
-global["$C"] = function () { Class.define.apply(Class, arguments); };
+    //var e = new Entity();
 
 
-$data.Class.ConstructorParameter = ConstructorParameter = $data.Class.define('ConstructorParameter', null, null, {
-    constructor: function (paramIndex) {
-        ///<param name="paramIndex" type="integer" />
-        this.paramIndex = paramIndex;
+    /*$data.Interface = Class.define("Interface", null, null, {
+        constructor: function() { Guard.raise("Can not create an interface"); }
     },
-    paramIndex: {}
-});
-/*$data.Class.MixinParameter = MixinParameter = $data.Class.define('MixinParameter', null, null, {
-    constructor: function (typeName) {
-        ///<param name="paramIndex" type="integer">
-        this.typeName = typeName;
-    },
-    typeName: {}
-});*/
+    {
+        define: function (name, definition) {
+            var result = Class.define(name, $data.Interface, null, null, definition);
+            delete result.__class;
+            result.__interface = true;
+            return result;
+        }
+    });
+    
+    
+    
+    $data.Observable = Observable = Class.define("Observable", null, null, {
+        propertyChanged: { dataType: $data.Event }
+    }, { 
+        createFromInstance: function(instance) {
+            var propNames = instance.getClass().memberDefinitions.f
+        }
+    });*/
 
-//var e = new Entity();
-
-
-/*$data.Interface = Class.define("Interface", null, null, {
-    constructor: function() { Guard.raise("Can not create an interface"); }
-},
-{
-    define: function (name, definition) {
-        var result = Class.define(name, $data.Interface, null, null, definition);
-        delete result.__class;
-        result.__interface = true;
-        return result;
-    }
-});
-
-
-
-$data.Observable = Observable = Class.define("Observable", null, null, {
-    propertyChanged: { dataType: $data.Event }
-}, { 
-    createFromInstance: function(instance) {
-        var propNames = instance.getClass().memberDefinitions.f
-    }
-});*/
 
 
 })($data, window);
@@ -8278,7 +8216,7 @@ $data.typeSystem = {
         /// <param name="object" type="Object">Object to extend target with.</param>
         /// <param name="objectN" optional="true" parameterArray="true" type="Object">Object to extend target with.</param>
         /// </signature>        
-    	/// <returns></returns>
+        /// <returns></returns>
         if (typeof target !== 'object' && typeof target !== 'function')
             Guard.raise('Target must be object or function');
 
@@ -8289,7 +8227,7 @@ $data.typeSystem = {
             for (key in obj) {
                 target[key] = obj[key];
             }
-        }        
+        }
         return target;
     },
     createCallbackSetting: function (callBack, defaultSetting) {
@@ -8309,7 +8247,7 @@ $data.typeSystem = {
         }
         return this.extend(setting, callBack);
     },
-    createCtorParams: function(source, indexes, thisObj) {
+    createCtorParams: function (source, indexes, thisObj) {
         ///<param name="source" type="Array" />Paramerter array
         ///<param name="indexes" type="Array" />
         ///<param name="thisObj" type="Object" />
@@ -8328,17 +8266,14 @@ $data.typeSystem = {
         }
         return source;
     },
-    writePropertyValues: function (obj)
-    {
-        if (obj && obj.getType && obj.getType().memberDefinitions)
-        {
+    writePropertyValues: function (obj) {
+        if (obj && obj.getType && obj.getType().memberDefinitions) {
             this.writeProperties(obj, obj.getType().memberDefinitions.asArray().filter(
                 function (md) { return (md.kind == "property" || md.kind == "navProperty" || md.kind == "complexProperty") && !md.prototypeProperty; }
                 ));
         }
     },
-    writeProperties: function (obj, members)
-    {
+    writeProperties: function (obj, members) {
         var defines = {};
         for (var i = 0, l = members.length; i < l; i++) {
             var memDef = members[i];
@@ -8348,8 +8283,7 @@ $data.typeSystem = {
         Object.defineProperties(obj, defines);
 
     },
-    writeProperty: function (obj, member, value)
-    {
+    writeProperty: function (obj, member, value) {
         var memDef = typeof member === 'string' ? obj.getType().memberDefinitions.getMember(member) : member;
         if (memDef) {
             var propDef = memDef.createPropertyDescriptor(null, value);
@@ -8357,6 +8291,10 @@ $data.typeSystem = {
             Object.defineProperty(obj, memDef.name, propDef);
         }
     }
+};
+
+$data.debug = function () {
+    console.log.apply(console, arguments);
 };
 $data.Class.define('$data.TraceBase', null, null, {
     log: function () { },
@@ -8547,7 +8485,48 @@ $data.parseGuid = function (guid) {
     $data.Container.registerType('Edm.GeographyPoint', Edm_GeographyPoint);
     $data.Container.mapType(Edm_GeographyPoint, $data.Geography);
 
-})($data);$data.ASTNode = function() {
+})($data);$data.StringFunctions = {
+    startsWith: function () {
+        var self, str;
+        if (arguments.length == 2) {
+            self = arguments[0];
+            str = arguments[1];
+        } else if (arguments.length == 1 && typeof this === 'string') {
+            self = this;
+            str = arguments[0];
+        } else
+            return false;;
+
+        return self.indexOf(str) === 0;
+    },
+    endsWith: function () {
+        var self, str;
+        if (arguments.length == 2) {
+            self = arguments[0];
+            str = arguments[1];
+        } else if (arguments.length == 1 && typeof this === 'string') {
+            self = this;
+            str = arguments[0];
+        } else
+            return false;
+
+        return self.slice(-str.length) === str;
+    },
+    contains: function () {
+        var self, str;
+        if (arguments.length == 2) {
+            self = arguments[0];
+            str = arguments[1];
+        } else if (arguments.length == 1 && typeof this === 'string') {
+            self = this;
+            str = arguments[0];
+        } else
+            return false;
+
+        return self.indexOf(str) >= 0;
+    }
+};
+$data.ASTNode = function() {
     ///<field name="arity" type="string">represents the kind of the AST node</field>
     ///<field name="edge" type="Boolean" />
     ///<field name="identifier" type="Boolean" />
@@ -12134,6 +12113,24 @@ $data.Event = Event = $data.Class.define("$data.Event", null, null, {
                 });
             }
         };
+        this.fireCancelAble = function (eventData, snder) {
+            var snd = snder || sender || this;
+            //eventData.eventName = name;
+            ///<value name="subscriberList type="Array" />
+            var isValid = true;
+            if (subscriberList) {
+                subscriberList.forEach(function (subscriber) {
+                    ///<param name="subscriber" type="EventSubscriber" />
+                    try {
+                        isValid = isValid && (subscriber.handler.call(subscriber.thisArg, snd, eventData, subscriber.state) === false ? false : true);
+                    } catch (ex) {
+                        console.log("unhandled exception in event handler. exception suppressed");
+                        console.dir(ex);
+                    }
+                });
+            }
+            return isValid;
+        };
     }
 });
 
@@ -12212,13 +12209,18 @@ $data.Entity = Entity = $data.Class.define("$data.Entity", null, null, {
             for (var i in initData) {
                 if (memDefNames.indexOf(i) > -1) {
                     var type = Container.resolveType(typeMemDefs.getMember(i).type);
-                    if (type === $data.Date && typeof initData[i] === 'string')
-                        this.initData[i] = new Date(initData[i]);
-                    else if (type === $data.Geography && typeof initData[i] === 'object' && !(initData[i] instanceof $data.Geography))
-                        this.initData[i] = new $data.Geography(initData[i]);
-                    else {
+                    if (!Object.isNullOrUndefined(initData[i])) {
+                        if (type === $data.Date && typeof initData[i] === 'string')
+                            this.initData[i] = new Date(initData[i]);
+                        else if (type === $data.Geography && typeof initData[i] === 'object' && !(initData[i] instanceof $data.Geography))
+                            this.initData[i] = new $data.Geography(initData[i]);
+                        else if (type === $data.Guid && !(initData[i] instanceof $data.Guid))
+                            this.initData[i] = $data.parseGuid(initData[i]);
+                        else {
+                            this.initData[i] = initData[i];
+                        }
+                    } else {
                         this.initData[i] = initData[i];
-
                     }
                 }
             }
@@ -12355,27 +12357,33 @@ $data.Entity = Entity = $data.Class.define("$data.Entity", null, null, {
     },
     typeConversion: function (memberDefinition, value) {
         var convertedValue = value;
+        
         if (typeof value === 'string' && !memberDefinition.concurrencyMode) {
             switch (Container.resolveName(memberDefinition.type)) {
                 case '$data.Guid':
+                    if (value === '') return undefined;
                     convertedValue = $data.parseGuid(value);
                     break;
                 case '$data.Integer':
+                    if (value === '') return undefined;
                     convertedValue = parseInt(value);
                     if (isNaN(convertedValue))
                         throw Guard.raise(new Exception('TypeError: ', 'value not convertable to $data.Integer', [memberDefinition, value]));
                     break;
                 case '$data.Number':
+                    if (value === '') return undefined;
                     convertedValue = parseFloat(value);
                     if (isNaN(convertedValue))
                         throw Guard.raise(new Exception('TypeError: ', 'value not convertable to $data.Number', [memberDefinition, value]));
                     break;
                 case '$data.Date':
+                    if (value === '') return undefined;
                     convertedValue = new Date(value);
                     if (isNaN(convertedValue.valueOf()))
                         throw Guard.raise(new Exception('TypeError: ', 'value not convertable to $data.Date', [memberDefinition, value]));
                     break;
                 case '$data.Boolean':
+                    if (value === '') return undefined;
                     switch (value.toLowerCase()) {
                         case 'true': 
                             convertedValue = true;
@@ -12388,11 +12396,14 @@ $data.Entity = Entity = $data.Class.define("$data.Entity", null, null, {
                     }
                     break;
                 case '$data.Object':
+                    if (value === '') return undefined;
                     try {
                         convertedValue = JSON.parse(value);
                     } catch (e) {
                         throw Guard.raise(new Exception('TypeError: ', e.toString(), [memberDefinition, value]));
                     }
+                    break;
+                default:
                     break;
             }
         }
@@ -12424,8 +12435,9 @@ $data.Entity = Entity = $data.Class.define("$data.Entity", null, null, {
         /// </param>
         /// <returns>value associated for [i]memberDefinition[/i]</returns>
 
+        callback = $data.typeSystem.createCallbackSetting(callback);
         if (this[memberDefinition.name] != undefined) {
-            callback(this[memberDefinition.name]);
+            callback.success(this[memberDefinition.name]);
             return;
         }
 
@@ -12440,7 +12452,12 @@ $data.Entity = Entity = $data.Class.define("$data.Entity", null, null, {
         /// <param name="value" />
         /// <param name="callback" type="Function">done</param>
         this[memberDefinition.name] = value;
-        callback();
+        
+        callback = $data.typeSystem.createCallbackSetting(callback);
+        var pHandler = new $data.PromiseHandler();
+        callBack = pHandler.createCallback(callback);
+        callback.success(this[memberDefinition.name]);
+        return pHandler.getPromise();
     },
 
     isValid: function () {
@@ -12506,329 +12523,62 @@ $data.Entity = Entity = $data.Class.define("$data.Entity", null, null, {
     //    this.__onReadyList.push(callback);
     //},
 
-
-    promiseWrapper: function (action, store, options) {
-
-        var self = this;
-        var pHandler = new $data.PromiseHandler();
-        var deferred = pHandler.deferred;
-        var pHandlerResult = pHandler.getPromise();
-        try {
-            var contextFactory = $data.Entity.getDefaultItemStoreFactory(self, store, options);
-            var context = contextFactory();
-            context.onReady(function () {
-                var result = action(context);
-                context.saveChanges({
-                    success: function () {
-                        deferred.resolve(result);
-                    },
-                    error: function (err) {
-                        deferred.reject(err);
-                    }
-                });
-            });
-            //var set = context.getEntitySetFromElementType(entity.getType());
-            
-        } catch (error) {
-            deferred.reject(error);
-        }
-        //deferred.resolve("!");
-
-        return pHandlerResult;
+    remove: function () {
+        if ($data.ItemStore && 'EntityInstanceRemove' in $data.ItemStore)
+            return $data.ItemStore.EntityInstanceRemove.apply(this, arguments);
+        else
+            throw 'not implemented'; //todo
     },
-
-    remove: function (store, options, callback) {
-        var self = this;
-        return self.promiseWrapper(function (context) {
-            context.remove(self);
-            return self;
-        });
+    save: function () {
+        if ($data.ItemStore && 'EntityInstanceSave' in $data.ItemStore)
+            return $data.ItemStore.EntityInstanceSave.apply(this, arguments);
+        else
+            throw 'not implemented'; //todo
     },
-
-
-
-    save: function(store, options) {
-        var self = this;
-        return self.promiseWrapper(function (context) {
-           var key = self.getType().memberDefinitions.getKeyProperties()[0];
-            //return context.add(self);
-           if (self[key.name]) {
-               context.attach(self, true);
-               return self;
-
-           } else {
-               return context.add(self);
-           }
-        }, store, options);
-    }
+    refresh: function () {
+        if ($data.ItemStore && 'EntityInstanceSave' in $data.ItemStore)
+            return $data.ItemStore.EntityInstanceRefresh.apply(this, arguments);
+        else
+            throw 'not implemented'; //todo
+    },
+    storeToken: { type: Object, monitorChanges: false, notMapped: true, storeOnObject: true }
  
 }, {
     //create get_[property] and set_[property] functions for properties
     __setPropertyfunctions: { value: true, notMapped: true, enumerable: false, storeOnObject: true },
     //copy public properties to current instance
     __copyPropertiesToInstance: { value: false, notMapped: true, enumerable: false, storeOnObject: true },
-     
-    defaultItemStoreFactory: { value: undefined },
-    
 
     inheritedTypeProcessor: function (type) {
-
-        function findById (set, keyValue) {
-
-            //var callback = $data.typeSystem.createCallbackSetting(cb);
-            //todo multifield key support
-            var key = set.defaultType.memberDefinitions.getKeyProperties()[0];
-            if ("filter" in set.entityContext.storageProvider.supportedSetOperations) {
-                return set.filter("it." + key.name + " == this.value", { value: keyValue });
-            } else {
-                return {
-                    toArray: function (cb) {
-                        var pHandler = new $data.PromiseHandler();
-                        var deferred = pHandler.deferred;
-                        var promise = pHandler.getPromise();
-                        set.toArray({
-                            success: function (items) {
-                                for (var i = 0; i < items.length; i++) {
-                                    if (items[i][key.name] === keyValue) {
-                                        //deferred.resolve(items[i]);
-                                        cb.success(items[i]);
-                                        return items[i];
-                                    }
-                                }
-                                cb.error(new Error("unknown id"));
-                                //deferred.reject(new Error("unknown id"));
-                            },
-                            error: function (error) {
-                                cb.error(error);
-                                //console.log(error);
-                                //deferred.reject(error);
-                            }
-                        });
-
-                    }
-                }
-                
-            }
-
-        };
-
-        type.get = function (key, store, options) {
-            var result = new Type({ Id: key });
-            result.defaultItemStore = store;
-            result.refresh();
-        },
-
-        type.removeAll = function (store, options) {
-
-            var self = this;
-            var pHandler = new $data.PromiseHandler();
-            var deferred = pHandler.deferred;
-            var pHandlerResult = pHandler.getPromise();
-            try {
-                var contextFactory = $data.Entity.getDefaultItemStoreFactory(type, store, options);
-                var context = contextFactory();
-                context.onReady(function () {
-                    var set = context.getEntitySetFromElementType(type);
-                    //var result = action(context);
-                    set.toArray({
-                        success: function (items) {
-                            items.forEach(function (item) {
-                                context.remove(item);
-                            });
-                            context.saveChanges({
-                                success: function () {
-                                    deferred.resolve(items);
-                                },
-                                error: function (err) {
-                                    deferred.reject(err);
-                                }
-                            });
-                        },
-                        error: function (err) {
-                            deferred.reject(err);
-                        }
-                    });
-                });
-            } catch (error) {
-                deferred.reject(error);
-            }
-            //deferred.resolve("!");
-
-            return pHandlerResult;
-        },
-        type.readAll = function (store, options) {
-            //return the entity
-            //refresh when ready
-            var pHandler = new $data.PromiseHandler();
-            var deferred = pHandler.deferred;
-            var promise = pHandler.getPromise();
-            var storeFactory = $data.Entity.getDefaultItemStoreFactory(type, store, options);
-            var store = storeFactory();
-            store.onReady(function () {
-                var set = store.getEntitySetFromElementType(type);
-                set.toArray({
-                    success: function (items) {
-                        //callback(items, null);
-                        deferred.resolve(items);
-                    },
-                    error: function (err) {
-                        //callback(null, err);
-                        deferred.reject(err);
-                    }
-                });
-            });
-            //var keyFields
-            return promise;
-        };
-
-        type.read = function (key, store, options) {
-            //return the entity
-            //refresh when ready
-            var pHandler = new $data.PromiseHandler();
-            var deferred = pHandler.deferred;
-            var promise = pHandler.getPromise();
-            var storeFactory = $data.Entity.getDefaultItemStoreFactory(type, store, options);
-            var store = storeFactory();
-            store.onReady(function () {
-                var set = store.getEntitySetFromElementType(type);
-                var itemsQuery = findById(set, key);
-                itemsQuery.toArray({
-                    success: function (items) {
-                        //callback(items, null);
-                        if (items.length < 1) {
-                            deferred.reject(new Error("Not items found by that key"));
-                        } else {
-                            if (items.length === 1) {
-                                deferred.resolve(items[0]);
-                            } else {
-                                deferred.resolve(items);
-                            }
-                        }
-                    },
-                    error: function (err) {
-                        //callback(null, err);
-                        deferred.reject(err);
-                    }
-                });
-            });
-            //var keyFields
-            return promise;
-        };
-
-        type.save = function ( initData, store, options) {
-            var instance = new type(initData);
-            return instance.save();
-        };
-
-        type.remove = function (key, store, options) {
-            var entityPk = type.memberDefinitions.getKeyProperties();
-            var obj = {};
-            obj[entityPk[0].name] = key;
-            var inst = new type(obj);
-            return inst.remove();
-        };
-        type.itemCount = function () {
-
-        };
-
-        type.filter = function (predicate, thisArgs, store, options) {
-            var pHandler = new $data.PromiseHandler();
-            var deferred = pHandler.deferred;
-            var promise = pHandler.getPromise();
-            var storeFactory = $data.Entity.getDefaultItemStoreFactory(type, store, options);
-            var store = storeFactory();
-            store.onReady(function () {
-                var set = store.getEntitySetFromElementType(type);
-                set.toArray({
-                    success: function (items) {
-                        deferred.resolve(items.filter(predicate, thisArgs));
-                    },
-                    error: function (err) {
-                        //callback(null, err);
-                        deferred.reject(err);
-                    }
-                });
-            });
-            return promise;
-        };
-
-        type.first = function (predicate, thisArgs, store, options) {
-            var pHandler = new $data.PromiseHandler();
-            var deferred = pHandler.deferred;
-            var promise = pHandler.getPromise();
-            var storeFactory = $data.Entity.getDefaultItemStoreFactory(type, store, options);
-            var store = storeFactory();
-            store.onReady(function () {
-                var set = store.getEntitySetFromElementType(type);
-                set.toArray({
-                    success: function (items) {
-                        deferred.resolve(items.filter(predicate, thisArgs)[0]);
-                    },
-                    error: function (err) {
-                        //callback(null, err);
-                        deferred.reject(err);
-                    }
-                });
-            });
-            return promise;
-        };
-
-        if (typeof String.prototype.startsWith !== 'function') {
-            String.prototype.startsWith = function (str) {
-                return this.indexOf(str) === 0;
-            };
-        }
-        if (typeof String.prototype.endsWith !== 'function') {
-            String.prototype.endsWith = function (str) {
-                return this.slice(-str.length) === str;
-            };
-        }
-        if (typeof String.prototype.contains !== 'function') {
-            String.prototype.contains = function (str) {
-                return this.indexOf(str) >= 0;
-            };
-        }
+        if ($data.ItemStore && 'EntityInheritedTypeProcessor' in $data.ItemStore)
+            $data.ItemStore.EntityInheritedTypeProcessor.apply(this, arguments);
     },
 
-    getDefaultItemStoreFactory: function (instanceOrType, store, options) {
 
-        //function resolveStoreName(store, options) {
-        //    if (!store) {
-        //        var type = ("function" === typeof instanceOrType) ? instanceOrType : instanceOrType.getType();
-        //        var typeName = $data.Container.resolveName(type) + "_items";
-        //        var typeName = typeName.replace(".", "_");
-        //        store = "local:" + typeName;
-        //    } else {
-        //        var splitStore = store.split(":");
-        //        if (splitStore.length < 2) {
-        //            //if 
-        //        }
-        //    }
-        //}
-
-        var type = ("function" === typeof instanceOrType) ? instanceOrType : instanceOrType.getType();
-        var typeName = $data.Container.resolveName(type) + "_items";
-        var typeName = typeName.replace(".", "_");
-        store = "local:" + typeName;
-
-        //provider = 'indexedDb';
-        var provider = 'local';
-
-        var inMemoryType = $data.EntityContext.extend(typeName, {
-            'Items': { type: $data.EntitySet, elementType: type }
-        });
-
-        var factory = function () {
-            return new inMemoryType({ name: provider, databaseName: typeName });
+    //Type Events
+    addEventListener: function(eventName, fn) {
+        var delegateName = "on" + eventName;
+        if (!(delegateName in this)) {
+            this[delegateName] = new $data.Event(eventName, this);
         }
-        return factory;
+        this[delegateName].attach(fn);
+    },
+    removeEventListener: function(eventName, fn) {
+        var delegateName = "on" + eventName;
+        if (!(delegateName in this)) {
+            return;
+        }
+        this[delegateName].detach(fn);
+    },
+    raiseEvent: function(eventName, data) {
+        var delegateName = "on" + eventName;
+        if (!(delegateName in this)) {
+            return;
+        }
+        this[delegateName].fire(data);
     }
 });
 
-
-
-
-$data.__nameCache = {};
 
 $data.define = function (name, definition) {
     if (!definition) {
@@ -12838,22 +12588,33 @@ $data.define = function (name, definition) {
     var hasKey = false;
     var keyFields = [];
     Object.keys(definition).forEach(function (fieldName) {
-        if (Object.hasOwnProperty(definition[fieldName],"type")) {
-            var propDef = definition[fieldName]; 
+        var propDef = definition[fieldName];
+        if (typeof propDef === 'object' && ("type" in propDef || "get" in propDef || "set" in propDef)) {
+
             _def[fieldName] = propDef;
             if (propDef.key) {
                 keyFields.push(propDef);
             }
 
+            if (("get" in propDef || "set" in propDef) && (!('notMapped' in propDef) || propDef.notMapped === true)) {
+                propDef.notMapped = true;
+                propDef.storeOnObject = true;
+            }
+            if ("get" in propDef && !("set" in propDef)) {
+                propDef.set = function () { };
+            } else if ("set" in propDef && !("get" in propDef)) {
+                propDef.get = function () { };
+            }
+
         } else {
-            _def[fieldName] = { type: definition[fieldName] };
+            _def[fieldName] = { type: propDef };
         }
     });
 
     if (keyFields.length < 1) {
         var keyProp;
         switch (true) {
-            case "id" in _def: 
+            case "id" in _def:
                 keyProp = "id";
                 break;
             case "Id" in _def:
@@ -12876,14 +12637,14 @@ $data.define = function (name, definition) {
 
 
     var entityType = $data.Entity.extend(name, _def);
-    $data.__nameCache[name] = entityType;
     return entityType;
 }
-
 $data.implementation = function (name) {
-    var result = $data.__nameCache[name];
-    return result;
-}
+    return Container.resolveType(name);
+};
+
+
+
 
 $data.Class.define('$data.StorageModel', null, null, {
     constructor: function () {
@@ -12933,6 +12694,17 @@ $data.Class.define('$data.EntityContext', null, null,
         /// <description>Provides facilities for querying and working with entity data as objects.</description>
         ///<param name="storageProviderCfg" type="Object">Storage provider specific configuration object.</param>
 
+        var self = this;
+        var args = JSON.parse(JSON.stringify(storageProviderCfg));
+        this.storeToken = {
+            typeName: this.getType().fullName,
+            args: args,
+            factory: function () {
+                return new (self.getType())(args);
+            }
+        }
+
+
         if ("string" === typeof storageProviderCfg) {
             if (0 === storageProviderCfg.indexOf("http")) {
                 storageProviderCfg = {
@@ -12941,7 +12713,7 @@ $data.Class.define('$data.EntityContext', null, null,
                 }
             } else {
                 storageProviderCfg = {
-                    name: "sqLite",
+                    name: "local",
                     databaseName: storageProviderCfg
                 }
             }
@@ -13018,7 +12790,7 @@ $data.Class.define('$data.EntityContext', null, null,
             if (!(delegateName in this)) {
                 return;
             }
-            this[delegateName].attach(fn);
+            this[delegateName].detach(fn);
         };
 
         this.raiseEvent = function(eventName, data) {
@@ -13028,6 +12800,7 @@ $data.Class.define('$data.EntityContext', null, null,
             }
             this[delegateName].fire(data);
         };
+
         /*
         while (!(providerType = $data.StorageProviderBase.getProvider(storageProviderCfg.name[i])) && i < storageProviderCfg.name.length) i++;
         if (providerType){
@@ -13501,6 +13274,10 @@ $data.Class.define('$data.EntityContext', null, null,
         var clbWrapper = {};
         clbWrapper.success = function (query) {
             query.buildResultSet(that);
+
+            if ($data.ItemStore && 'QueryResultModifier' in $data.ItemStore)
+                $data.ItemStore.QueryResultModifier.call(that, query);
+
             var successResult;
             
             if (query.expression.nodeType === $data.Expressions.ExpressionType.Single ||
@@ -13525,7 +13302,7 @@ $data.Class.define('$data.EntityContext', null, null,
                 successResult = query.result;
             }
             
-            var readyFn = function(){
+            var readyFn = function () {
                 callBack.success(successResult);
             };
             
@@ -13658,6 +13435,9 @@ $data.Class.define('$data.EntityContext', null, null,
                         }
                     }
                 }
+
+                //type before events with items
+                this.processEntityTypeBeforeEventHandler(skipItems, entityCachedItem);
 
                 var navigationProperties = [];
                 var smPhyMemDefs = sModel.PhysicalType.memberDefinitions.asArray();
@@ -13967,6 +13747,58 @@ $data.Class.define('$data.EntityContext', null, null,
         
         return pHandlerResult;
     },
+
+    processEntityTypeBeforeEventHandler: function (skipItems, entityCachedItem) {
+        if (!entityCachedItem.skipSave) {
+            var entity = entityCachedItem.data;
+            var entityType = entity.getType();
+            var state = entity.entityState;
+
+            switch (true) {
+                case state === $data.EntityState.Added && entityType.onbeforeCreate instanceof $data.Event:
+                    if (entityType.onbeforeCreate.fireCancelAble(entity) === false) {
+                        entityCachedItem.skipSave = true;
+                        skipItems.push(entity);
+                    }
+                    break;
+                case state === $data.EntityState.Modified && entityType.onbeforeUpdate instanceof $data.Event:
+                    if (entityType.onbeforeUpdate.fireCancelAble(entity) === false) {
+                        entityCachedItem.skipSave = true;
+                        skipItems.push(entity);
+                    }
+                    break;
+                case state === $data.EntityState.Deleted && entityType.onbeforeDelete instanceof $data.Event:
+                    if (entityType.onbeforeDelete.fireCancelAble(entity) === false) {
+                        entityCachedItem.skipSave = true;
+                        skipItems.push(entity);
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+    },
+    processEntityTypeAfterEventHandler: function (entityCachedItem) {
+        var entity = entityCachedItem.data;
+        var entityType = entity.getType();
+        var state = entity.entityState;
+
+        switch (true) {
+            case state === $data.EntityState.Added && entityType.onafterCreate instanceof $data.Event:
+                entityType.onafterCreate.fire(entity);
+                break;
+            case state === $data.EntityState.Modified && entityType.onafterUpdate instanceof $data.Event:
+                entityType.onafterUpdate.fire(entity);
+                break;
+            case state === $data.EntityState.Deleted && entityType.onafterDelete instanceof $data.Event:
+                entityType.onafterDelete.fire(entity);
+                break;
+            default:
+                break;
+        }
+    },
+
+
     prepareRequest: function () { },
     _postProcessSavedItems: function (callBack, changedEntities) {
         if (this.ChangeCollector && this.ChangeCollector instanceof $data.Notifications.ChangeCollectorBase)
@@ -13978,6 +13810,8 @@ $data.Class.define('$data.EntityContext', null, null,
         for (var i = 0; i < changedEntities.length; i++) {
             var entity = changedEntities[i];
 
+            //type after events with items
+            this.processEntityTypeAfterEventHandler(entity);
 
             var oes = entity.data.entityState;
             
@@ -14325,7 +14159,8 @@ $data.Class.define('$data.EntityContext', null, null,
         }
         var entitySet = this.getEntitySetFromElementType(entity.getType());
         return entitySet.remove(entity);
-    }
+    },
+    storeToken: { type: Object }
 }, {
     generateServiceOperation: function (cfg) {
 
@@ -14465,7 +14300,7 @@ $data.Class.define('$data.QueryProvider', null, null,
         this.cache = {};
     },
 
-    deepExtend: function(o, r){
+    _deepExtend: function(o, r){
         if (o === null || o === undefined){
             o = r;
             return;
@@ -14479,12 +14314,78 @@ $data.Class.define('$data.QueryProvider', null, null,
                                 o[i].push(r[i][j]);
                             }
                         }
-                    }else this.deepExtend(o[i], r[i]);
+                    }else this._deepExtend(o[i], r[i]);
                 }
             }else{
                 o[i] = r[i];
             }
         }
+    },
+    
+    _dataSelector: function(metaSelector, data){
+        if (!metaSelector) return data;
+        
+        if (!(metaSelector instanceof Array)){
+            metaSelector = [metaSelector];
+        }
+
+        var i = 0;
+        var part;
+        while (i < metaSelector.length){
+            part = data;
+            var selector = metaSelector[i];
+            var type = selector.split(':');
+            switch (type[0]){
+                case 'json':
+                    var path = type[1].split('.');
+                    while (path.length) {
+                        if (typeof part[path[0]] === 'undefined') {
+                            if (i === metaSelector.length){
+                                return undefined;
+                            }else if (path.length){
+                                break;
+                            }
+                        }else{
+                            part = part[path[0]];
+                            path = path.slice(1);
+                            if (part === null) return part;
+                        }
+                    }
+                    if (!path.length){
+                        i = metaSelector.length;
+                    }
+                    break;
+                case 'css':
+                case 'xml':
+                    if (part.querySelector){
+                        part = part[meta.$item ? 'querySelectorAll' : 'querySelector'](type[1]);
+                    }else{
+                        part = $(part).find(type[1]);
+                        if (!meta.$item) part = part[0];
+                    }
+                    break;
+            }
+            i++;
+        }
+        
+        return part;
+    },
+    
+    _keyProcessor: function(type, keys, data){
+        var key = '';
+        
+        for (var i = 0; i < keys.length; i++){
+            var part = data;
+            var id = typeof keys[i] !== 'object' ? keys[i] : keys[i].$source;
+            if (keys[i].$selector){
+                part = this._dataSelector(keys[i].$selector, part);
+            }
+            if (part[id] === null) return null;
+            if (typeof part[id] === 'undefined') return undefined;
+            key += (type + '_' + id + '#' + part[id]);
+        }
+        
+        return key;
     },
 
     call: function (data, meta) {
@@ -14495,54 +14396,10 @@ $data.Class.define('$data.QueryProvider', null, null,
         var result;
 
         if (meta.$selector){
-			var metaSelector = meta.$selector;
-			if (!(metaSelector instanceof Array)){
-				metaSelector = [metaSelector];
-			}
-
-			var i = 0;
-			var part;
-			while (i < metaSelector.length){
-				part = data;
-				var selector = metaSelector[i];
-				var type = selector.split(':');
-				switch (type[0]){
-					case 'json':
-						var path = type[1].split('.');
-						while (path.length) {
-						    if (typeof part[path[0]] === 'undefined') {
-								if (i === metaSelector.length){
-									return undefined;
-								}else if (path.length){
-									break;
-								}
-							}else{
-								part = part[path[0]];
-								path = path.slice(1);
-								if (part === null) return part;
-							}
-						}
-						if (!path.length){
-							i = metaSelector.length;
-						}
-						break;
-					case 'css':
-					case 'xml':
-						if (part.querySelector){
-							part = part[meta.$item ? 'querySelectorAll' : 'querySelector'](type[1]);
-						}else{
-							part = $(part).find(type[1]);
-							if (!meta.$item) part = part[0];
-						}
-						break;
-				}
-				i++;
-			}
-
-			data = part;
-			if (!data){
-				return data;
-			}
+            data = this._dataSelector(meta.$selector, data);
+            if (!data){
+                return data;
+            }
         }
         
         if (meta.$type) {
@@ -14567,9 +14424,9 @@ $data.Class.define('$data.QueryProvider', null, null,
             }
         }
 
-		if (meta.$value){
-			if (typeof meta.$value === 'function'){
-				result = meta.$value.call(this, meta, data);
+        if (meta.$value){
+            if (typeof meta.$value === 'function'){
+                result = meta.$value.call(this, meta, data);
             }else if (meta.$type){
                 var type = Container.resolveName(meta.$type);
                 var converter = this.context.storageProvider.fieldConverter.fromDb[type];
@@ -14581,14 +14438,16 @@ $data.Class.define('$data.QueryProvider', null, null,
                 var converter = this.context.storageProvider.fieldConverter.fromDb[type];
                 result = converter ? converter(data[meta.$source]) : new (Container.resolveType(meta.$type))(data[meta.$source]); //Container['create' + Container.resolveType(meta.$type).name](data[meta.$source]);
             }else result = (meta.$source.split(':')[0] == 'attr' && data.getAttribute) ? data.getAttribute(meta.$source.split(':')[1]) : (meta.$source == 'textContent' && !data[meta.$source] ? $(data).text() : data[meta.$source]);
-        } else if (meta.$item) {
+        }else if (meta.$item){
             var keycache;
             if (meta.$item.$keys) keycache = [];
             
             if (Array.isArray(data)) {
                 for (var i = 0; i < data.length; i++) {
                     var key = '';
-                    if (meta.$keys) for (var j = 0; j < meta.$keys.length; j++) { key += (meta.$type + '_' + meta.$keys[j] + '#' + data[i][meta.$keys[j]]); }
+                    if (meta.$keys){
+                        key = this._keyProcessor(meta.$type, meta.$keys, data[i]);
+                    }
                     var r = this.call(data[i], meta.$item);
                     if (key){
                         if (this.cache[key]){
@@ -14602,24 +14461,24 @@ $data.Class.define('$data.QueryProvider', null, null,
                         }
                     }else{
                         var key = '';
-                        if (meta.$item.$keys) for (var j = 0; j < meta.$item.$keys.length; j++) {
-                            if (typeof data[i][meta.$item.$keys[j]] === 'undefined'){
-                                key = undefined;
-                                break;
-                            }
-                            key += (meta.$type + '_' + meta.$item.$keys[j] + '#' + data[i][meta.$item.$keys[j]]);
+                        if (meta.$item.$keys){
+                            key = this._keyProcessor(meta.$type, meta.$item.$keys, data[i]);
                         }
-                        if (keycache && key){
-                            if (keycache.indexOf(key) < 0){
-                                result.push(r);
-                                keycache.push(key);
-                            }
-                        }else result.push(r);
+                        if (key !== null){
+                            if (keycache && key){
+                                if (keycache.indexOf(key) < 0){
+                                    result.push(r);
+                                    keycache.push(key);
+                                }
+                            }else result.push(r);
+                        }
                     }
                 }
             } else {
                 var key = '';
-                if (meta.$keys) for (var j = 0; j < meta.$keys.length; j++) { key += (meta.$type + '_' + meta.$keys[j] + '#' + data[meta.$keys[j]]); }
+                if (meta.$keys){
+                    key = this._keyProcessor(meta.$type, meta.$keys, data);
+                }
                 var r = this.call(data, meta.$item);
                 if (key){
                     if (this.cache[key]){
@@ -14633,26 +14492,25 @@ $data.Class.define('$data.QueryProvider', null, null,
                     }
                 }else{
                     var key = '';
-                    if (meta.$item.$keys) for (var j = 0; j < meta.$item.$keys.length; j++) {
-                        if (typeof data[meta.$item.$keys[j]] === 'undefined'){
-                            key = undefined;
-                            break;
-                        }
-                        key += (meta.$type + '_' + meta.$item.$keys[j] + '#' + data[meta.$item.$keys[j]]);
+                    if (meta.$item.$keys){
+                        key = this._keyProcessor(meta.$type, meta.$item.$keys, data);
                     }
-                    if (keycache && key){
-                        if (keycache.indexOf(key) < 0){
-                            result.push(r);
-                            keycache.push(key);
-                        }
-                    }else result.push(r);
+                    if (key !== null){
+                        if (keycache && key){
+                            if (keycache.indexOf(key) < 0){
+                                result.push(r);
+                                keycache.push(key);
+                            }
+                        }else result.push(r);
+                    }
                 }
             }
         }else{
             var key = '';
             if (meta.$keys){
-                for (var j = 0; j < meta.$keys.length; j++) { key += (meta.$type + '_' + meta.$keys[j] + '#' + data[meta.$keys[j]]); }
+                key = this._keyProcessor(meta.$type, meta.$keys, data);
                 if (!this.cache[key]){
+                    if (key === null) return null;
                     for (var j in meta){
                         if (j.indexOf('$') < 0){
                             if (!meta[j].$item) {
@@ -14672,15 +14530,16 @@ $data.Class.define('$data.QueryProvider', null, null,
                         if (j.indexOf('$') < 0){
                             if (meta[j].$item) {
                                 if (meta[j].$item.$keys){
-                                    var key = '';
-                                    for (var k = 0; k < meta[j].$item.$keys.length; k++) { key += (meta[j].$item.$type + '_' + meta[j].$item.$keys[k] + '#' + data[meta[j].$item.$keys[k]]); }
-                                    var r = this.call(data, meta[j].$item);
-                                    if (!this.cache[key]){
-                                        this.cache[key] = r;
-                                        result[j].push(r);
-                                    }else{
-                                        if (result[j].indexOf(this.cache[key]) < 0){
-                                            result[j].push(this.cache[key]);
+                                    var key = this._keyProcessor(meta[j].$item.$type, meta[j].$item.$keys, this._dataSelector(meta[j].$item.$keys, data));
+                                    if (key !== null){
+                                        var r = this.call(data, meta[j].$item);
+                                        if (!this.cache[key]){
+                                            this.cache[key] = r;
+                                            result[j].push(r);
+                                        }else{
+                                            if (result[j].indexOf(this.cache[key]) < 0){
+                                                result[j].push(this.cache[key]);
+                                            }
                                         }
                                     }
                                 }else{
@@ -14689,7 +14548,7 @@ $data.Class.define('$data.QueryProvider', null, null,
                             }else{
                                 if (typeof meta[j] === 'object'){
                                     var r = this.call(data, meta[j]);
-                                    this.deepExtend(result[j], r);
+                                    this._deepExtend(result[j], r);
                                 }
                             }
                         }
@@ -14712,8 +14571,8 @@ $data.Class.define('$data.QueryProvider', null, null,
         }
 
 
-		if (result instanceof $data.Entity)
-		    result.changedProperties = undefined;
+        if (result instanceof $data.Entity)
+            result.changedProperties = undefined;
         return result;
     }
 });
@@ -15594,6 +15453,8 @@ $data.Class.defineEx('$data.EntitySet',
         for (var i in eventHandlers){
             this[i] = eventHandlers[i];
         }
+
+        this.elementType.storeToken = this.elementType.storeToken || context.storeToken;
     },
 
 
@@ -15925,6 +15786,12 @@ $data.Class.defineEx('$data.EntitySet',
 
         return this.entityContext.loadItemProperty(entity, memberDefinition, callback);
     },
+    saveChanges: function () {
+        return this.entityContext.saveChanges.apply(this.entityContext, arguments);
+    },
+    addProperty: function (name, getter, setter) {
+        return this.elementType.addProperty.apply(this.elementType, arguments);
+    },
     expression: {
         get: function () {
             if (!this._expression) {
@@ -15964,7 +15831,471 @@ $data.EntityState = {
     reset: function () {
         this.trackedEntities = [];
     }
-}, null);Exception = function(message, name, data) {
+}, null);$data.Class.define('$data.ItemStoreClass', null, null, {
+    constructor: function () {
+        var self = this;
+        self.itemStoreConfig = {
+            aliases: {},
+            contextTypes: {}
+        }
+
+        self.resetStoreToDefault('local', true);
+        $data.addStore = function () {
+            return self.addItemStoreAlias.apply(self, arguments);
+        };
+        $data.implementation = self.implementation;
+    },
+    itemStoreConfig: {},
+
+    addItemStoreAlias: function (name, contextFactoryOrToken, isDefault) {
+        var self = this;
+        var promise = new $data.PromiseHandler();
+
+        if ('string' === typeof name) {
+            //storeToken
+            if ('object' === typeof contextFactoryOrToken && 'factory' in contextFactoryOrToken) {
+                var type = Container.resolveType(contextFactoryOrToken.typeName);
+
+                self.itemStoreConfig.aliases[name] = contextFactoryOrToken;
+                self.itemStoreConfig.contextTypes[name] = type;
+                if (isDefault) {
+                    self.itemStoreConfig['default'] = name;
+                }
+
+                promise.deferred.resolve();
+                return promise.getPromise();
+            }
+                //contextFactory
+            else if ('function' === typeof contextFactoryOrToken) {
+                var preContext = contextFactoryOrToken();
+                var contextPromise;
+                if (preContext && preContext instanceof $data.EntityContext) {
+                    promise.deferred.resolve(preContext);
+                    contextPromise = promise.getPromise();
+                } else {
+                    contextPromise = preContext;
+                }
+
+                return contextPromise.then(function (ctx) {
+                    if (typeof ctx === 'function') {
+                        //factory resolve factory
+                        return self.addItemStoreAlias(name, ctx, isDefault);
+                    }
+
+                    if (ctx instanceof $data.EntityContext) {
+                        return ctx.onReady()
+                            .then(function (ctx) {
+                                self.itemStoreConfig.aliases[name] = contextFactoryOrToken;
+                                self.itemStoreConfig.contextTypes[name] = ctx.getType();
+                                if (isDefault) {
+                                    self.itemStoreConfig['default'] = name;
+                                }
+
+                                return ctx;
+                            });
+                    } else {
+                        promise = new $data.PromiseHandler();
+                        promise.deferred.reject(new Exception('factory dont have context instance', 'Invalid arguments'));
+                        return promise.getPromise();
+                    }
+                });
+            }
+        }
+
+        promise.deferred.reject(new Exception('Name or factory missing', 'Invalid arguments'));
+        return promise.getPromise();
+    },
+    resetStoreToDefault: function (name, isDefault) {
+        this.itemStoreConfig.aliases[name] = this._getDefaultItemStoreFactory;
+        delete this.itemStoreConfig.contextTypes[name];
+        if (isDefault) {
+            this.itemStoreConfig['default'] = name;
+        }
+    },
+    _setStoreAlias: function (entity, storeToken) {
+        if ('object' === typeof storeToken)
+            entity.storeToken = storeToken
+        return entity;
+    },
+    _getStoreAlias: function (entity, storeAlias) {
+        if (entity instanceof $data.Entity) {
+            return storeAlias || entity.storeToken || entity.getType().storeToken;
+        } else {
+            return storeAlias || entity.storeToken;
+        }
+    },
+    _getStoreContext: function (aliasOrToken, type, nullIfInvalid) {
+        var contextPromise;
+
+        if (aliasOrToken && 'object' === typeof aliasOrToken && 'function' === typeof aliasOrToken.factory) {
+            contextPromise = aliasOrToken.factory(type);
+        } else if (aliasOrToken && 'string' === typeof aliasOrToken && this.itemStoreConfig.aliases[aliasOrToken]) {
+            contextPromise = this.itemStoreConfig.aliases[aliasOrToken](type);
+        } else {
+            contextPromise = this.itemStoreConfig.aliases[this.itemStoreConfig['default']](type);
+        }
+
+        if (!contextPromise || contextPromise instanceof $data.EntityContext) {
+            var promise = new $data.PromiseHandler();
+            promise.deferred.resolve(contextPromise);
+            contextPromise = promise.getPromise();
+        }
+
+        return contextPromise.then(function (context) {
+            if (context instanceof $data.EntityContext) {
+                return context.onReady();
+            } else if (nullIfInvalid) {
+                return null;
+            } else {
+                var promise = new $data.PromiseHandler();
+                promise.deferred.reject(new Exception('factory return type error', 'Error'));
+                return promise.getPromise();
+            }
+        });
+    },
+    _getStoreEntitySet: function (aliasOrToken, instanceOrType) {
+        aliasOrToken = this._getStoreAlias(instanceOrType, aliasOrToken);
+        var type = ("function" === typeof instanceOrType) ? instanceOrType : instanceOrType.getType();;
+
+        return this._getStoreContext(aliasOrToken, type)
+            .then(function (ctx) {
+                var entitySet = ctx.getEntitySetFromElementType(type);
+                if (!entitySet) {
+                    var d = new $data.PromiseHandler();
+                    d.deferred.reject("EntitySet not exist for " + type.fullName);
+                    return d.getPromise();
+                }
+                return entitySet;
+            });
+    },
+    _getDefaultItemStoreFactory: function (instanceOrType) {
+        if (instanceOrType) {
+            var type = ("function" === typeof instanceOrType) ? instanceOrType : instanceOrType.getType();
+            var typeName = $data.Container.resolveName(type) + "_items";
+            var typeName = typeName.replace(".", "_");
+
+            var provider = 'local';
+
+            var inMemoryType = $data.EntityContext.extend(typeName, {
+                'Items': { type: $data.EntitySet, elementType: type }
+            });
+
+            return new inMemoryType({ name: provider, databaseName: typeName });
+        }
+        return undefined;
+    },
+    implementation: function (name, contextOrAlias) {
+        var self = $data.ItemStore;
+        var result;
+
+        if (typeof contextOrAlias === 'string') {
+            contextOrAlias = self.itemStoreConfig.contextTypes[contextOrAlias]
+        } else if (contextOrAlias instanceof $data.EntityContext) {
+            contextOrAlias = contextOrAlias.getType();
+        } else if (!(typeof contextOrAlias === 'function' && contextOrAlias.isAssignableTo)) {
+            contextOrAlias = self.itemStoreConfig.contextTypes[self.itemStoreConfig['default']];
+        }
+
+        if (contextOrAlias) {
+            result = self._resolveFromContext(contextOrAlias, name);
+        }
+
+        if (!result) {
+            result = Container.resolveType(name);
+        }
+
+        return result;
+    },
+    _resolveFromContext: function (contextType, name) {
+        var memDefs = contextType.memberDefinitions.getPublicMappedProperties();
+        for (var i = 0; i < memDefs.length; i++) {
+            var memDef = memDefs[i];
+            var memDefType = Container.resolveType(memDef.type);
+            if (memDefType.isAssignableTo && memDefType.isAssignableTo($data.EntitySet)) {
+                var elementType = Container.resolveType(memDef.elementType);
+                if (elementType.name === name) {
+                    return elementType;
+                }
+            }
+        }
+        return null;
+    },
+
+
+    //Entity Instance
+    EntityInstanceSave: function (storeAlias, hint) {
+        var self = $data.ItemStore;
+        var entity = this;
+        return self._getStoreEntitySet(storeAlias, entity)
+            .then(function (entitySet) {
+                return self._getSaveMode(entity, entitySet, hint, storeAlias)
+                    .then(function (mode) {
+                        mode = mode || 'add';
+                        switch (mode) {
+                            case 'add':
+                                entitySet.add(entity);
+                                break;
+                            case 'attach':
+                                entitySet.attach(entity, true);
+                                entity.entityState = $data.EntityState.Modified;
+                                break;
+                            default:
+                                var d = new $data.PromiseHandler();
+                                d.deferred.reject('save mode not supported: ' + mode);
+                                return d.getPromise();
+                        }
+
+                        return entitySet.entityContext.saveChanges()
+                            .then(function () { return entity; });
+                    });
+            });
+    },
+    EntityInstanceRemove: function (storeAlias) {
+        var self = $data.ItemStore;
+        var entity = this;
+        return self._getStoreEntitySet(storeAlias, entity)
+            .then(function (entitySet) {
+                entitySet.remove(entity);
+
+                return entitySet.entityContext.saveChanges()
+                    .then(function () { return entity; });
+            });
+    },
+    EntityInstanceRefresh: function (storeAlias, keepStore) {
+        var self = $data.ItemStore;
+        var entity = this;
+        var entityType = entity.getType();
+
+        var key = self._getKeyObjectFromEntity(entity, entityType);
+
+        return entityType.read(key, storeAlias)
+            .then(function (loadedEntity) {
+                entityType.memberDefinitions.getPublicMappedProperties().forEach(function (memDef) {
+                    entity[memDef.name] = loadedEntity[memDef.name];
+                });
+                entity.storeToken = (keepStore ? entity.storeToken : undefined) || loadedEntity.storeToken;
+                entity.changedProperties = undefined;
+                return entity;
+            });
+    },
+
+    //Entity Type
+    EntityInheritedTypeProcessor: function (type) {
+        var self = $data.ItemStore;
+        type.readAll = self.EntityTypeReadAll(type);
+        type.read = self.EntityTypeRead(type);
+        type.removeAll = self.EntityTypeRemoveAll(type);
+        type.remove = self.EntityTypeRemove(type);
+        type.get = self.EntityTypeGet(type); //Not complete
+        type.save = self.EntityTypeSave(type);
+        type.addMany = self.EntityTypeAddMany(type);
+        type.itemCount = self.EntityTypeItemCount(type);
+        type.query = self.EntityTypeQuery(type);
+        type.takeFirst = self.EntityTypeTakeFirst(type);
+    },
+    EntityTypeReadAll: function (type) {
+        return function (storeAlias) {
+            var self = $data.ItemStore;
+            return self._getStoreEntitySet(storeAlias, type)
+                .then(function (entitySet) {
+                    return entitySet.forEach(function (item) { self._setStoreAlias(item, entitySet.entityContext.storeToken); });
+                });
+        }
+    },
+    EntityTypeRemoveAll: function (type) {
+        return function (storeAlias) {
+            var self = $data.ItemStore;
+            return self._getStoreEntitySet(storeAlias, type)
+                .then(function (entitySet) {
+                    return entitySet.toArray().then(function (items) {
+                        items.forEach(function (item) {
+                            entitySet.remove(item);
+                        });
+
+                        return entitySet.entityContext.saveChanges()
+                            .then(function () { return items; });
+                    });
+                });
+        }
+    },
+    EntityTypeRead: function (type) {
+        return function (key, storeAlias) {
+            var self = $data.ItemStore;
+            return self._getStoreEntitySet(storeAlias, type)
+                .then(function (entitySet) {
+                    try {
+                        var singleParam = self._findByIdQueryable(entitySet, key);
+                        return entitySet.single(singleParam.predicate, singleParam.thisArgs)
+                            .then(function (item) { return self._setStoreAlias(item, entitySet.entityContext.storeToken); });
+                    } catch (e) {
+                        var d = new $data.PromiseHandler();
+                        d.deferred.reject(e);
+                        return d.getPromise();
+                    }
+                });
+        };
+    },
+    EntityTypeGet: function (type) {
+        return function (key, storeAlias) {
+            var self = $data.ItemStore;
+            var item = new type(self._getKeyObjectFromEntity(key));
+            item.refresh(storeAlias);
+            return item;
+        };
+    },
+    EntityTypeSave: function (type) {
+        return function (initData, storeAlias, hint) {
+
+            var self = $data.ItemStore;
+            var instance = new type(initData);
+            return instance.save(storeAlias, hint);
+        }
+    },
+    EntityTypeAddMany: function (type) {
+        return function (initDatas, storeAlias) {
+            var self = $data.ItemStore;
+            return self._getStoreEntitySet(storeAlias, type)
+                .then(function (entitySet) {
+                    var items = entitySet.addMany(initDatas);
+                    return entitySet.entityContext.saveChanges()
+                        .then(function () {
+                            return items;
+                        });
+                });
+        }
+    },
+    EntityTypeRemove: function (type) {
+        return function (key, storeAlias) {
+            var self = $data.ItemStore;
+            var entityPk = type.memberDefinitions.getKeyProperties();
+            var entity;
+            if (entityPk.length === 1) {
+                var obj = {};
+                obj[entityPk[0].name] = key;
+                entity = new type(obj);
+            } else {
+                entity = new type(key);
+            }
+            return entity.remove(storeAlias);
+        }
+    },
+    EntityTypeItemCount: function (type) {
+        return function (storeAlias) {
+            var self = $data.ItemStore;
+            return self._getStoreEntitySet(storeAlias, type)
+                .then(function (entitySet) {
+                    return entitySet.length();
+                });
+        }
+    },
+    EntityTypeQuery: function (type) {
+        return function (predicate, thisArg, storeAlias) {
+            var self = $data.ItemStore;
+            return self._getStoreEntitySet(storeAlias, type)
+                .then(function (entitySet) {
+                    return entitySet.filter(predicate, thisArg).forEach(function (item) { self._setStoreAlias(item, entitySet.entityContext.storeToken); });
+                });
+        }
+    },
+    EntityTypeTakeFirst: function (type) {
+        return function (predicate, thisArg, storeAlias) {
+            var self = $data.ItemStore;
+            return self._getStoreEntitySet(storeAlias, type)
+                .then(function (entitySet) {
+                    return entitySet.first(predicate, thisArg)
+                        .then(function (item) { return self._setStoreAlias(item, entitySet.entityContext.storeToken); });
+                });
+        }
+    },
+
+    _findByIdQueryable: function (set, keys) {
+        var keysProps = set.defaultType.memberDefinitions.getKeyProperties();
+        if (keysProps.length > 1 && keys && 'object' === typeof keys) {
+            var predicate = "", thisArgs = {};
+            for (var i = 0; i < keysProps.length; i++) {
+                if (i > 0) predicate += " && ";
+
+                var key = keysProps[i];
+                predicate += "it." + key.name + " == this." + key.name;
+                thisArgs[key.name] = keys[key.name];
+            }
+
+            return {
+                predicate: predicate,
+                thisArgs: thisArgs
+            };
+        } else if (keysProps.length === 1) {
+            return {
+                predicate: "it." + keysProps[0].name + " == this.value",
+                thisArgs: { value: keys }
+            };
+        } else {
+            throw 'invalid keys';
+        }
+    },
+    _getKeyObjectFromEntity: function (obj, entityType) {
+        var key;
+        var keyDefs = entityType.memberDefinitions.getKeyProperties();
+        if (keyDefs.length === 1)
+            key = obj && typeof obj === 'object' ? obj[keyDefs[0].name] : obj;
+        else {
+            key = {};
+
+            for (var i = 0; i < keyDefs.length; i++) {
+                key[keyDefs[0].name] = obj ? obj[keyDefs[0].name] : obj;
+            }
+        }
+
+        return key;
+    },
+    _getSaveMode: function (entity, entitySet, hint, storeAlias) {
+        var self = this;
+        var promise = new $data.PromiseHandler();
+        var deferred = promise.deferred;
+        var entityType = entity.getType();
+
+        switch (true) {
+            case hint === 'update':
+                deferred.resolve('attach'); break;
+            case hint === 'new':
+                deferred.resolve('add'); break;
+            case false === entityType.memberDefinitions.getKeyProperties().every(function (keyDef) { return entity[keyDef.name]; }):
+                deferred.resolve('add'); break;
+            default:
+                //use the current entity store informations
+                storeAlias = this._getStoreAlias(entity, storeAlias);
+                entityType.read(self._getKeyObjectFromEntity(entity, entityType), storeAlias)
+                    .then(function () { deferred.resolve('attach'); })
+                    .fail(function () { deferred.resolve('add'); });
+                break;
+        }
+
+        return promise.getPromise();
+    },
+
+    //EntityContext
+    QueryResultModifier: function (query) {
+        var self = $data.ItemStore;
+        var context = query.context;
+        var type = query.modelBinderConfig.$type;
+        if ('string' === typeof type) {
+            type = Container.resolveType(type);
+        }
+
+        if (type === $data.Array && query.modelBinderConfig.$item && query.modelBinderConfig.$item.$type) {
+            type = query.modelBinderConfig.$item.$type;
+        }
+
+        if ((type && type.isAssignableTo && type.isAssignableTo($data.Entity)) || (typeof type === 'undefined' && query.result && query.result[0] instanceof $data.Entity)) {
+            for (var i = 0; i < query.result.length; i++) {
+                self._setStoreAlias(query.result[i], context.storeToken)
+            }
+        }
+    }
+});
+
+$data.ItemStore = new $data.ItemStoreClass();
+Exception = function(message, name, data) {
     Error.call(this);
 	if (Error.captureStackTrace)
 	    Error.captureStackTrace(this, this.constructor);
@@ -17125,7 +17456,8 @@ $data.Class.define('$data.MetadataLoaderClass', null, null, {
             url: metadataUri,
             user: undefined,
             password: undefined,
-            withCredentials: undefined
+            withCredentials: undefined,
+            httpHeaders: undefined
         };
 
         $data.typeSystem.extend( cnf, config || {});
@@ -17173,7 +17505,7 @@ $data.Class.define('$data.MetadataLoaderClass', null, null, {
                     metadataUri: self.xsltRepoUrl + self._supportedODataVersionXSLT[versionInfo.version],
                     user: cnf.user,
                     password: cnf.password,
-                    headers: cnf.headers
+                    httpHeaders: cnf.httpHeaders
                 }, function (xsl, response) {
                     if (response.statusCode < 200 || response.statusCode > 299) {
                         callBack.error(response);
@@ -17219,6 +17551,9 @@ $data.Class.define('$data.MetadataLoaderClass', null, null, {
         var ctxType = $data.generatedContexts.pop();
         var factoryFn = self.createFactoryFunc(ctxType, cnf);
         this.factoryCache[cnf.url] = [factoryFn, ctxType];
+
+        factoryFn.type = ctxType;
+        factoryFn.codeText = codeText;
 
         if (self.debugMode)
             callBack.success(factoryFn, ctxType, codeText);
@@ -17309,7 +17644,6 @@ $data.Class.define('$data.MetadataLoaderClass', null, null, {
             return resultDocument.textContent;
         } else if (typeof module !== 'undefined' && typeof require !== 'undefined') {
             var xslt = require('node_xslt');
-            var libxml = require('libxmljs');
 
             return xslt.transform(xslt.readXsltString(transformXslt), xslt.readXmlString(metadata), [
                 'SerivceUri', "'" + cnf.SerivceUri + "'",
@@ -17342,26 +17676,21 @@ $data.Class.define('$data.MetadataLoaderClass', null, null, {
                 version: versionNum || 'unknown'
             };
         }else if (typeof module !== 'undefined' && typeof require !== 'undefined'){
-            var xslt = require('node_xslt');
-            var libxml = require('libxmljs');
-
             var schemaXml = metadata;
+            
             var schemaNamespace = 'http://schemas.microsoft.com/ado/2008/09/edm';
-
-            /*var parserEvents = {
-             startElementNS: function() {
-             if ('Schema' === arguments[0]){
-             schemaNamespace = arguments[3];
-             }
-             }
-             };
-
-             var parser = new libxml.SaxParser(parserEvents);
-             parser.parseString(schemaXml);*/
+            var version = 'nodejs';
+            for (var i in this._supportedODataVersions){
+                if (schemaXml.search(new RegExp('<Schema.+xmlns=\"' + i + '\"', 'gi')) >= 0){
+                    schemaNamespace = i;
+                    version = this._supportedODataVersions[i];
+                    break;
+                }
+            }
 
             return {
                 ns: schemaNamespace,
-                version: 'nodejs'
+                version: version
             }
         }
     },
@@ -17695,8 +18024,53 @@ $data.Class.define('$data.MetadataLoaderClass', null, null, {
 });
 
 $data.MetadataLoader = new $data.MetadataLoaderClass();
-$data.service = function (serviceUri, cb, config) {
-    $data.MetadataLoader.load(serviceUri, cb, config);
+$data.service = function (serviceUri, config, cb) {
+    var _url, _config, _callback;
+    function getParam(paramValue) {
+        switch (typeof paramValue) {
+            case 'object':
+                if (typeof paramValue.success === 'function' || typeof paramValue.error === 'function') {
+                    _callback = paramValue;
+                } else {
+                    _config = paramValue;
+                }
+                break;
+            case 'function':
+                _callback = paramValue;
+                break;
+            default:
+                break;
+        }
+    }
+    getParam(config);
+    getParam(cb);
+
+    if (typeof serviceUri === 'object') {
+        _config = $data.typeSystem.extend(serviceUri, _config);
+        serviceUri = serviceUri.url;
+        delete _config.url;
+    }
+
+    var pHandler = new $data.PromiseHandler();
+    _callback = pHandler.createCallback(_callback);
+
+    $data.MetadataLoader.load(serviceUri, {
+        success: function (factory) {
+            var type = factory.type;
+            //register to local store
+            if (_config) {
+                var storeAlias = _config.serviceName || _config.storeAlias;
+                if (storeAlias && 'addStore' in $data) {
+                    $data.addStore(storeAlias, factory, _config.isDefault === undefined || _config.isDefault)
+                }
+            }
+
+            _callback.success(factory, type);
+        },
+        error: _callback.error
+    }, _config);
+
+    return pHandler.getPromise();
 };
 (function ($data) {
     if (typeof jQuery !== 'undefined') {
@@ -17731,4 +18105,51 @@ $data.service = function (serviceUri, cb, config) {
 
         $data.PromiseHandler = $data.Deferred;
     }
+})($data);
+(function ($data) {
+
+    $data.initService = function (apiKey, options) {
+        var d = new $data.PromiseHandler();
+        var cfg;
+
+        if (typeof apiKey === 'object') {
+            //appId, serviceName, ownerid, isSSL, port, license, url
+            cfg = apiKey;
+            var protocol = cfg.isSSL || cfg.isSSL === undefined ? 'https' : 'http';
+            var port = cfg.port ? (':' + cfg.port) : '';
+
+            if (typeof cfg.license === 'string' && cfg.license.toLowerCase() === 'business') {
+                if (cfg.appId && cfg.serviceName) {
+                    apiKey = protocol + '://' + cfg.appId + '.jaystack.net' + port + '/' + cfg.serviceName;
+                } else {
+                    apiKey = cfg.url;
+                }
+            } else {
+                if (cfg.ownerId && cfg.appId && cfg.serviceName) {
+                    apiKey = protocol + '://open.jaystack.net/' + cfg.ownerId + '/' + cfg.appId + '/api/' + cfg.serviceName;
+                } else {
+                    apiKey = cfg.url;
+                }
+            }
+
+            delete cfg.url;
+            cfg = $data.typeSystem.extend(cfg, options);
+        } else {
+            cfg = options;
+        }
+
+        $data.service(apiKey, cfg).then(function (factory) {
+            var ctx = factory();
+            return ctx.onReady()
+                .then(function (context) {
+                    context.serviceFactory = factory;
+                    d.deferred.resolve(context, factory, factory.type);
+                }).fail(function () {
+                    d.deferred.reject.apply(d.deferred, arguments);
+                });
+        });
+
+        return d.getPromise();
+    };
+
 })($data);

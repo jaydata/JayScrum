@@ -56,19 +56,19 @@
     };
 
     if (typeof ko !== 'undefined') {
-        // custom bindings
-        var ieVersion = (function () {
-            var version = 3, div = document.createElement('div'), iElems = div.getElementsByTagName('i');
+		// custom bindings
+		var ieVersion = (function() {
+			var version = 3, div = document.createElement('div'), iElems = div.getElementsByTagName('i');
 
-            // Keep constructing conditional HTML blocks until we hit one that resolves to an empty fragment
-            while (
+			// Keep constructing conditional HTML blocks until we hit one that resolves to an empty fragment
+			while (
 				div.innerHTML = '<!--[if gt IE ' + (++version) + ']><i></i><![endif]-->',
 				iElems[0]
 			);
-            return version > 4 ? version : undefined;
-        }());
+			return version > 4 ? version : undefined;
+		}());
 
-        ko.utils.ensureSelectElementIsRenderedCorrectly = function (selectElement) {
+		ko.utils.ensureSelectElementIsRenderedCorrectly = function(selectElement) {
             // Workaround for IE9 rendering bug - it doesn't reliably display all the text in dynamically-added select boxes unless you force it to re-render by updating the width.
             // (See https://github.com/SteveSanderson/knockout/issues/312, http://stackoverflow.com/questions/5908494/select-only-shows-first-char-of-selected-option)
             if (ieVersion >= 9) {
@@ -78,7 +78,7 @@
             }
         };
 
-        ko.utils.setOptionNodeSelectionState = function (optionNode, isSelected) {
+		ko.utils.setOptionNodeSelectionState = function (optionNode, isSelected) {
             // IE6 sometimes throws "unknown error" if you try to write to .selected directly, whereas Firefox struggles with setAttribute. Pick one based on browser.
             if (navigator.userAgent.indexOf("MSIE 6") >= 0)
                 optionNode.setAttribute("selected", isSelected);
@@ -86,7 +86,7 @@
                 optionNode.selected = isSelected;
         };
 
-        ko.utils.setTextContent = function (element, textContent) {
+		ko.utils.setTextContent = function(element, textContent) {
             var value = ko.utils.unwrapObservable(textContent);
             if ((value === null) || (value === undefined))
                 value = "";
@@ -101,103 +101,103 @@
             }
         };
 
-        function ensureDropdownSelectionIsConsistentWithModelValue(element, modelValue, preferModelValue) {
-            if (preferModelValue) {
-                if (modelValue !== ko.selectExtensions.readValue(element))
-                    ko.selectExtensions.writeValue(element, modelValue);
-            }
+		function ensureDropdownSelectionIsConsistentWithModelValue(element, modelValue, preferModelValue) {
+			if (preferModelValue) {
+				if (modelValue !== ko.selectExtensions.readValue(element))
+					ko.selectExtensions.writeValue(element, modelValue);
+			}
 
-            // No matter which direction we're syncing in, we want the end result to be equality between dropdown value and model value.
-            // If they aren't equal, either we prefer the dropdown value, or the model value couldn't be represented, so either way,
-            // change the model value to match the dropdown.
-            if (modelValue !== ko.selectExtensions.readValue(element))
-                ko.utils.triggerEvent(element, "change");
-        };
+			// No matter which direction we're syncing in, we want the end result to be equality between dropdown value and model value.
+			// If they aren't equal, either we prefer the dropdown value, or the model value couldn't be represented, so either way,
+			// change the model value to match the dropdown.
+			if (modelValue !== ko.selectExtensions.readValue(element))
+				ko.utils.triggerEvent(element, "change");
+		};
 
-        ko.bindingHandlers['options'] = {
-            'update': function (element, valueAccessor, allBindingsAccessor) {
-                if (element.tagName.toLowerCase() !== "select")
-                    throw new Error("options binding applies only to SELECT elements");
+		ko.bindingHandlers['options'] = {
+			'update': function (element, valueAccessor, allBindingsAccessor) {
+				if (element.tagName.toLowerCase() !== "select")
+					throw new Error("options binding applies only to SELECT elements");
 
-                var selectWasPreviouslyEmpty = element.length == 0;
-                var previousSelectedValues = ko.utils.arrayMap(ko.utils.arrayFilter(element.childNodes, function (node) {
-                    return node.tagName && (node.tagName.toLowerCase() === "option") && node.selected;
-                }), function (node) {
-                    return ko.selectExtensions.readValue(node) || node.innerText || node.textContent;
-                });
-                var previousScrollTop = element.scrollTop;
+				var selectWasPreviouslyEmpty = element.length == 0;
+				var previousSelectedValues = ko.utils.arrayMap(ko.utils.arrayFilter(element.childNodes, function (node) {
+					return node.tagName && (node.tagName.toLowerCase() === "option") && node.selected;
+				}), function (node) {
+					return ko.selectExtensions.readValue(node) || node.innerText || node.textContent;
+				});
+				var previousScrollTop = element.scrollTop;
 
-                var value = ko.utils.unwrapObservable(valueAccessor());
-                var selectedValue = element.value;
+				var value = ko.utils.unwrapObservable(valueAccessor());
+				var selectedValue = element.value;
 
-                // Remove all existing <option>s.
-                // Need to use .remove() rather than .removeChild() for <option>s otherwise IE behaves oddly (https://github.com/SteveSanderson/knockout/issues/134)
-                while (element.length > 0) {
-                    ko.cleanNode(element.options[0]);
-                    element.remove(0);
-                }
+				// Remove all existing <option>s.
+				// Need to use .remove() rather than .removeChild() for <option>s otherwise IE behaves oddly (https://github.com/SteveSanderson/knockout/issues/134)
+				while (element.length > 0) {
+					ko.cleanNode(element.options[0]);
+					element.remove(0);
+				}
 
-                if (value) {
-                    var allBindings = allBindingsAccessor();
-                    if (typeof value.length != "number")
-                        value = [value];
-                    if (allBindings['optionsCaption']) {
-                        var option = document.createElement("option");
-                        ko.utils.setHtml(option, allBindings['optionsCaption']);
-                        ko.selectExtensions.writeValue(option, allBindings['optionsCaptionValue'] || undefined);
-                        element.appendChild(option);
-                    }
-                    for (var i = 0, j = value.length; i < j; i++) {
-                        var option = document.createElement("option");
+				if (value) {
+					var allBindings = allBindingsAccessor();
+					if (typeof value.length != "number")
+						value = [value];
+					if (allBindings['optionsCaption']) {
+						var option = document.createElement("option");
+						ko.utils.setHtml(option, allBindings['optionsCaption']);
+						ko.selectExtensions.writeValue(option, allBindings['optionsCaptionValue'] || undefined);
+						element.appendChild(option);
+					}
+					for (var i = 0, j = value.length; i < j; i++) {
+						var option = document.createElement("option");
 
-                        // Apply a value to the option element
-                        var optionValue = typeof allBindings['optionsValue'] == "string" ? value[i][allBindings['optionsValue']] : value[i];
-                        optionValue = ko.utils.unwrapObservable(optionValue);
-                        ko.selectExtensions.writeValue(option, optionValue);
+						// Apply a value to the option element
+						var optionValue = typeof allBindings['optionsValue'] == "string" ? value[i][allBindings['optionsValue']] : value[i];
+						optionValue = ko.utils.unwrapObservable(optionValue);
+						ko.selectExtensions.writeValue(option, optionValue);
 
-                        // Apply some text to the option element
-                        var optionsTextValue = allBindings['optionsText'];
-                        var optionText;
-                        if (typeof optionsTextValue == "function")
-                            optionText = optionsTextValue(value[i]); // Given a function; run it against the data value
-                        else if (typeof optionsTextValue == "string")
-                            optionText = value[i][optionsTextValue]; // Given a string; treat it as a property name on the data value
-                        else
-                            optionText = optionValue;				 // Given no optionsText arg; use the data value itself
-                        if ((optionText === null) || (optionText === undefined))
-                            optionText = "";
+						// Apply some text to the option element
+						var optionsTextValue = allBindings['optionsText'];
+						var optionText;
+						if (typeof optionsTextValue == "function")
+							optionText = optionsTextValue(value[i]); // Given a function; run it against the data value
+						else if (typeof optionsTextValue == "string")
+							optionText = value[i][optionsTextValue]; // Given a string; treat it as a property name on the data value
+						else
+							optionText = optionValue;				 // Given no optionsText arg; use the data value itself
+						if ((optionText === null) || (optionText === undefined))
+							optionText = "";
 
-                        ko.utils.setTextContent(option, optionText);
+						ko.utils.setTextContent(option, optionText);
 
-                        element.appendChild(option);
-                    }
+						element.appendChild(option);
+					}
 
-                    // IE6 doesn't like us to assign selection to OPTION nodes before they're added to the document.
-                    // That's why we first added them without selection. Now it's time to set the selection.
-                    var newOptions = element.getElementsByTagName("option");
-                    var countSelectionsRetained = 0;
-                    for (var i = 0, j = newOptions.length; i < j; i++) {
-                        if (ko.utils.arrayIndexOf(previousSelectedValues, ko.selectExtensions.readValue(newOptions[i])) >= 0) {
-                            ko.utils.setOptionNodeSelectionState(newOptions[i], true);
-                            countSelectionsRetained++;
-                        }
-                    }
+					// IE6 doesn't like us to assign selection to OPTION nodes before they're added to the document.
+					// That's why we first added them without selection. Now it's time to set the selection.
+					var newOptions = element.getElementsByTagName("option");
+					var countSelectionsRetained = 0;
+					for (var i = 0, j = newOptions.length; i < j; i++) {
+						if (ko.utils.arrayIndexOf(previousSelectedValues, ko.selectExtensions.readValue(newOptions[i])) >= 0) {
+							ko.utils.setOptionNodeSelectionState(newOptions[i], true);
+							countSelectionsRetained++;
+						}
+					}
 
-                    element.scrollTop = previousScrollTop;
+					element.scrollTop = previousScrollTop;
 
-                    if (selectWasPreviouslyEmpty && ('value' in allBindings)) {
-                        // Ensure consistency between model value and selected option.
-                        // If the dropdown is being populated for the first time here (or was otherwise previously empty),
-                        // the dropdown selection state is meaningless, so we preserve the model value.
-                        ensureDropdownSelectionIsConsistentWithModelValue(element, ko.utils.unwrapObservable(allBindings['value']), /* preferModelValue */ true);
-                    }
+					if (selectWasPreviouslyEmpty && ('value' in allBindings)) {
+						// Ensure consistency between model value and selected option.
+						// If the dropdown is being populated for the first time here (or was otherwise previously empty),
+						// the dropdown selection state is meaningless, so we preserve the model value.
+						ensureDropdownSelectionIsConsistentWithModelValue(element, ko.utils.unwrapObservable(allBindings['value']), /* preferModelValue */ true);
+					}
 
-                    // Workaround for IE9 bug
-                    ko.utils.ensureSelectElementIsRenderedCorrectly(element);
-                }
-            }
-        };
-        ko.bindingHandlers['options'].optionValueDomDataKey = '__ko.optionValueDomData__';
+					// Workaround for IE9 bug
+					ko.utils.ensureSelectElementIsRenderedCorrectly(element);
+				}
+			}
+		};
+		ko.bindingHandlers['options'].optionValueDomDataKey = '__ko.optionValueDomData__';
 
         /* Observable Query*/
         function checkObservableValue(expression, context) {
@@ -348,13 +348,13 @@
                 }
 
             },
-
-            getProperties: function () {
+            
+            getProperties: function() {
                 //todo cache!
                 var self = this;
                 var props = this.innerInstance.getType().memberDefinitions.getPublicMappedProperties();
                 //todo remove map
-                var koData = props.map(function (memberInfo) {
+                var koData = props.map( function(memberInfo) {
                     return {
                         type: memberInfo.type,
                         name: memberInfo.name,
