@@ -265,6 +265,10 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
             wrkItem.Reason(wrkItem.Id() === null ? 'New task' : 'Work stopped');
             currentLista = JayScrum.app.selectedFrame().data().todoList();
         }
+        if (wrkItem.Type() == 'Bug') {
+            //remove user story
+            wrkItem.WorkItem_WorkItem(null);
+        }
         //save parentName
         var us = JayScrum.app.globalData().userStoryList().filter(function (item) { return item.Id() == wrkItem.WorkItem_WorkItem() })[0];
         if (us) {
