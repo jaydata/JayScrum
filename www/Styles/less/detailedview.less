@@ -86,12 +86,16 @@
 	        width: 30px !important; height: 30px !important; margin: 0 10px 0 0;
 	        
 	        &:hover { cursor: pointer; }
+			&.active { border: 1px solid rgba(255, 255, 255, 0.75); }
 	    }
+	}
+	
+	.theme-font {
+		p { margin-bottom: 0; }
 	}
 	
 	.tolower { .clear; }
 }
-body[theme="white"] .detail .field .field.active    { border-color: Black !important; }
 
 .wrapper-detailed       	{ .ohidden; }
 .wrapper-detailed-edit  	{ bottom: 45px; }

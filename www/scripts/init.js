@@ -70,52 +70,32 @@ function initEnvironment(wnd) {
     $("div.floating-box").live(eventName, function () {
         $(this).removeClass("visible");
     });
-    /*$("div").live('scroll', function () {
-        console.log('scroll');
-    });
-    $("div").live('onscroll', function () {
-        console.log('scroll');
-    });
-    $("input").live('blur', function () {
-        console.log('blur');
-    });
-    $("div").scroll(function () {
-        console.log('scroll - no live');
-    });*/
-    /*$(".phonegap-link").live(eventName, function (e) {
-        e.preventDefault();
-
-        if (navigator) {
-            navigator.app.loadUrl($(this).attr("href"), { openExternal: true });
-
-            console.log("phonegap link: " + $(this).attr("href"));
-            alert(1);
-        }
-    });*/
 
     // FONT
-    $("div.field.fonts div.field").live(eventName, function () {
-        var font = $(this).attr('font')
-        $("body").attr('font', font);
-        setSettingsByValue('font', font);
+    $(".theme-font").live(eventName, function () {
+        var font = this.dataset.font;
 
-        $("div.field.fonts div.field").each(function () {
-            $(this).removeClass("active");
-        });
+        document.body.setAttribute('data-font', font);
+        $(".theme-font.active").removeClass("active");
         $(this).addClass("active");
+
+        setSettingsByValue('font', font);
     });
 
     // THEME
-    $("div.themes div.theme-box").live(eventName, function () {
-        var theme = $(this).attr('theme');
-        $("body").attr('theme', theme);
+    $(".theme-box").live(eventName, function () {
+        var theme = this.dataset.theme;
+
+        document.body.setAttribute('data-theme', theme);
+        $(".theme-box.active").removeClass("active");
+        $(this).addClass("active");
+
         setSettingsByValue('theme', theme);
     });
 
     // LOCAL STORAGE
     wnd.setSetting = function (name, object) {
         localStorage.setItem(name, object);
-        console.log('localstorage set:', name, object);
     }
     wnd.getSetting = function (name) {
         var storage = localStorage[name];
@@ -132,39 +112,44 @@ function initEnvironment(wnd) {
         var prev = getSetting('settings');
 
         if (prev == null || prev === undefined) {
-            var accent = $("body").attr('accent'),
-                theme = $("body").attr('theme'),
-                font = $("body").attr('font'),
+            var accent   = $("body").attr('data-accent'),
+                theme    = $("body").attr('data-theme'),
+                font     = $("body").attr('data-font'),
                 settings = { 'theme': theme, 'font': font, 'accent': accent },
                 jsonSettings = JSON.stringify(settings);
 
             setSetting('settings', jsonSettings);
+            setBodyClasses(settings);
         } else {
-            $("body").attr('accent', prev.accent);
-            $("body").attr('theme', prev.theme);
-            $("body").attr('font', prev.font);
+            $("body").attr('data-accent', prev.accent);
+            $("body").attr('data-theme', prev.theme);
+            $("body").attr('data-font', prev.font);
+
+            setBodyClasses(prev);
         }
     }
     wnd.setSettingsByValue = function (key, value) {
-        var prev = getSetting('settings');
+        var prev = getSetting('settings'), accent, theme, font, settings;
 
         if (prev != null || prev !== undefined) {
-            var accent = key == 'accent' ? value : $("body").attr('accent'),
-                theme = key == 'theme' ? value : $("body").attr('theme'),
-                font = key == 'font' ? value : $("body").attr('font'),
-                settings = { 'theme': theme, 'font': font, 'accent': accent },
-                jsonSettings = JSON.stringify(settings);
-
-            setSetting('settings', jsonSettings);
+            accent  = key == 'accent'   ? value : $("body").attr('data-accent');
+            theme   = key == 'theme'    ? value : $("body").attr('data-theme');
+            font    = key == 'font'     ? value : $("body").attr('data-font');
         } else {
-            var accent = $("body").attr('accent'),
-                theme = $("body").attr('theme'),
-                font = $("body").attr('font'),
-                settings = { 'theme': theme, 'font': font, 'accent': accent },
-                jsonSettings = JSON.stringify(settings);
-
-            setSetting('settings', jsonSettings);
+            accent  = $("body").attr('data-accent');
+            theme   = $("body").attr('data-theme');
+            font    = $("body").attr('data-font');
         }
+
+        var settings = { 'theme': theme, 'font': font, 'accent': accent };
+        jsonSettings = JSON.stringify(settings);
+
+        setSetting('settings', jsonSettings);
+        setBodyClasses(settings);
+    }
+
+    wnd.setBodyClasses = function (s) {
+        document.body.className = android ? ("android font-" + s.font + " theme-" + s.theme) : ("font-" + s.font + " theme-" + s.theme);
     }
 
     wnd.initDateFieldsById = function (containerId) {

@@ -1,48 +1,39 @@
-body[font=segoewp]{
-    .segoewp;
-    
-    h1, h2, h3, h4, h5, h6, p { .segoewp; }
+@font-face {
+	font-family: 'SegoeUILight';
+	src: url('@{font-folder}/segoeuil-webfont.eot');
+	src: url('@{font-folder}/segoeuil-webfont.eot?#iefix') format('embedded-opentype'),
+		 url('@{font-folder}/segoeuil-webfont.ttf') format('truetype'),
+		 url('@{font-folder}/segoeuil-webfont.woff') format('woff'),
+		 url('@{font-folder}/segoeuil-webfont.svg') format('svg');
+	font-weight: normal;
+	font-style: normal;
+}
+@font-face {
+    font-family: 'SegoeWP';
+    src: url('@{font-folder}/segoewp.eot');
+    src: url('@{font-folder}/segoewp.eot?#iefix') format('embedded-opentype'),
+         url('@{font-folder}/segoewp.ttf') format('truetype'),
+         url('@{font-folder}/segoewp.woff') format('woff'),
+         url('@{font-folder}/segoewp.svg') format('svg');
+    font-weight: normal;
+    font-style: normal;
 }
 
-body[font=segoeuilight]{
+.font-mixed {
+    .segoewp;
+    
+    h1, h2, h3, h4, h5, h6, p { .segoeuilight; }
+	p { .segoewp; }
+}
+
+.font-segoewp {
+    .segoewp;
+}
+
+.font-segoeuilight {
     .segoeuilight;
-    
-    h1, h2, h3, h4, h5, h6, p { .segoeuilight; }
 }
 
-body[font=segoewplight]{
+.font-segoewplight {
     .segoewplight;
-    
-    h1, h2, h3, h4, h5, h6, p { .segoewplight; }
-}
-
-body[font=mixed]{
-    .segoewp;
-    
-    h1, h2, h3, h4, h5, h6, p { .segoeuilight; }
-}
-
-div[font=segoewp]{
-    .segoewp;
-    
-    h1, h2, h3, h4, h5, h6, p { .segoewp; }
-}
-
-div[font=segoeuilight]{
-    .segoeuilight;
-    
-    h1, h2, h3, h4, h5, h6, p { .segoeuilight; }
-}
-
-div[font=segoewplight]{
-    .segoewplight;
-         
-    h1, h2, h3, h4, h5, h6 { .segoewplight; }
-}
-
-div[font=mixed]{
-    .segoewp;
-    
-    h1, h2, h3, h4, h5, h6 { .segoeuilight; }
-    p { .segoewp; }
 }

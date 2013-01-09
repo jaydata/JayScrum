@@ -1,161 +1,127 @@
-/*
-accent: { orange, red, green, blue, magenta, purple, pink, teal, lime, brown }
-class for accent-text color     : "accent-color"
-class for accent-bg             : "accent-bg"
-class for theme-bg              : "theme-bg"
-*/
-
-/*#region TILE THEME */
-li, div
-{
-    &.tile  { background: @metro-done; border: 1px solid lighten(@metro-done, 10%); }
-    &.wide  {
-        background: @metro-lightblue; border: 1px solid lighten(@metro-lightblue, 10%);
-        
-        &.pinned  { background: @metro-lightgreen; border: 1px solid lighten(@metro-lightgreen, 10%); }
+body[data-accent=blue] {
+	.accent-bg { background-color:#24A0DA; }
+	.accent-color, a { color:#24A0DA; }
+}
+.tile  { background: @metro-done; border: 1px solid lighten(@metro-done, 10%); }
+.wide  {
+	background: @metro-lightblue; border: 1px solid lighten(@metro-lightblue, 10%);
+	
+	&.pinned  { background: @metro-lightgreen; border: 1px solid lighten(@metro-lightgreen, 10%); }
+}
+.accent-bg 		{ color: #fff; }
+.theme-bg  		{ background:#000; }
+.hint-screen 	{ background: url("@{img-folder}/promo_bg.png") top right black no-repeat; }
+div.pivot {
+    > span.icon-action {
+        .fright;    
     }
 }
 
-body {
-    &[theme=black]{
-        background: black; color: white;
-    
-        div[theme=black], .metro-loading { background: black; color: white; }
-    
-        .tile {
-            background: @metro-done; border: 1px solid lighten(@metro-done, 10%);
-        }
-    }
-    
-    &[theme=darkblue]{
-        li, div
-        {
-            &.tile  { background: @metro-blue; border: 1px solid lighten(@metro-blue, 10%); }
-            &.wide  {
-                background: @metro-lightblue; border: 1px solid lighten(@metro-lightblue, 10%);
-        
-                &.pinned  { background: @metro-orange; border: 1px solid lighten(@metro-orange, 10%); }
-            }
-        }
-    }
-    
-    &[theme=img_1]{
-        li, div
-        {
-            &.tile  { background: @metro-greenblue; border: 1px solid lighten(@metro-greenblue, 10%); }
-            &.wide  {
-                background: @metro-green; border: 1px solid lighten(@metro-green, 10%);
-        
-                &.pinned  { background: @metro-orange; border: 1px solid lighten(@metro-orange, 10%); }
-            }
-        }
-    }
-    
-    &[theme=img_2]{
-        li, div
-        {
-            &.tile  { background: @metro-done; border: 1px solid lighten(@metro-done, 5%); }
-            &.wide  {
-                background: @metro-lightblue; border: 1px solid lighten(@metro-lightblue, 10%);
-        
-                &.pinned  { background: @metro-lightgreen; border: 1px solid lighten(@metro-lightgreen, 5%); }
-            }
-        }
-    }
-    
-    &[theme=img_3]{
-        li, div
-        {
-            &.tile  { background: @metro-blue; border: 1px solid lighten(@metro-blue, 5%); }
-            &.wide  {
-                background: @metro-lightgreen; border: 1px solid lighten(@metro-lightgreen, 10%);
-        
-                &.pinned  { background: @metro-done; border: 1px solid lighten(@metro-done, 5%); }
-            }
-        }
-    }
-    
-    &[theme=img_5]{
-        li, div
-        {
-            &.tile  { background: @metro-darkorange; border: 1px solid lighten(@metro-darkorange, 10%); }
-            &.wide  {
-                background: @metro-orange; border: 1px solid lighten(@metro-orange, 10%);
-        
-                &.pinned  { background: @metro-lightred; border: 1px solid lighten(@metro-lightred, 10%); }
-            }
-        }
-    }
+.theme-black {
+	background: black; color: white;
+
+	.metro-loading 	{ background: black; color: white; }
+	
+	.tile {
+		background: @metro-done; border: 1px solid lighten(@metro-done, 10%);
+	}
 }
-/*#endregion TILE THEME */
 
-/*#region BODY THEME */
+.theme-darkblue {
+	background: #30508B; color: white;
 
-body[theme=white], div[theme=white], body[theme=white] .metro-loading               { background: #F7F7F7; color: black; }
+	.metro-loading { background: #30508B; color: white; }
 
-body[theme=dark] h2 a       { color: #fff; }
-body[theme=darkblue], div[theme=darkblue], body[theme=darkblue] .metro-loading      { background: #30508B; color: white; }
-body[theme=darkgray], div[theme=darkgray], body[theme=darkgray] .metro-loading      { background: #5A5A5A; color: white; }
-body[theme=img_1], body[theme=img_1] .metro-loading                                 { background: url("@{img-folder}/bg/bg_1.jpg"); color: white; }
-body[theme=img_2], body[theme=img_2] .metro-loading                                 { background: url("@{img-folder}/bg/bg_2.jpg"); color: white; }
-body[theme=img_3], body[theme=img_3] .metro-loading                                 { background: url("@{img-folder}/bg/bg_3.jpg"); color: white; }
-body[theme=img_4], body[theme=img_4] .metro-loading                                 { background: url("@{img-folder}/bg/bg_4.jpg"); color: white; }
-body[theme=img_5], body[theme=img_5] .metro-loading                                 { background: url("@{img-folder}/bg/bg_5.jpg"); color: white; }
-body[theme=img_6], body[theme=img_6] .metro-loading                                 { background: url("@{img-folder}/bg/bg_6.jpg"); color: white; }
+	.tile { background: @metro-blue; border: 1px solid lighten(@metro-blue, 10%); }
+	.wide {
+		background: @metro-lightblue; border: 1px solid lighten(@metro-lightblue, 10%);
 
-div[theme^=img_] { background: url("@{img-folder}/bg/bg_thumb.jpg") no-repeat; }
-div[theme=img_1] { background-position: 0 0; }  
-div[theme=img_2] { background-position: 0 -30px; }
-div[theme=img_3] { background-position: 0 -60px; }
-div[theme=img_4] { background-position: 0 -90px; }
-div[theme=img_5] { background-position: 0 -120px; }
-div[theme=img_6] { background-position: 0 -150px; }
+		&.pinned { background: @metro-orange; border: 1px solid lighten(@metro-orange, 10%); }
+	}
+}
 
-body[theme=white] div[theme=white] { border: 1px solid black; }
-body[theme=black] div[theme=black] { border: 1px solid white; }
-body[theme=darkblue] div[theme=darkblue] { border: 1px solid white; }
-body[theme=darkgray] div[theme=darkgray] { border: 1px solid white; }
+.theme-darkgray {
+	background: #5A5A5A; color: white;
 
-body[theme=img_5] .metro-tiles li.green { background: #db532d !important; }
-body[theme=img_5] .metro-tiles li.lightred  { background: #833801; }
+	.metro-loading { background: #5A5A5A; color: white; }
+}
 
-.accent-bg { color: #fff; }
-div[theme=black] { background: black; }
+.theme-img_1 {
+	background: url("@{img-folder}/bg/bg_1.jpg"); color: white;
+	
+	.metro-loading { background: url("@{img-folder}/bg/bg_1.jpg"); }
 
-.theme-bg { background:#000; }
-body[theme=light] .theme-bg {background:#fff;}
+	.tile { background: @metro-greenblue; border: 1px solid lighten(@metro-greenblue, 10%); }
+	.wide  {
+		background: @metro-green; border: 1px solid lighten(@metro-green, 10%);
 
-body[accent=orange] .accent-color, body[accent=orange] a { color:#F09720; }
-body[accent=orange] .accent-bg { background-color:#F09720; }
+		&.pinned { background: @metro-orange; border: 1px solid lighten(@metro-orange, 10%); }
+	}
+}
 
-body[accent=red] .accent-color, body[accent=red] a { color:#E61E26; }
-body[accent=red] .accent-bg { background-color:#E61E26; }
+.theme-img_2 {
+	background: url("@{img-folder}/bg/bg_2.jpg"); color: white;
+	
+	.metro-loading { background: url("@{img-folder}/bg/bg_2.jpg"); }
 
-body[accent=green] .accent-color, body[accent=green] a { color:#309B46; }
-body[accent=green] .accent-bg { background-color:#309B46; }
+	.tile { background: @metro-done; border: 1px solid lighten(@metro-done, 5%); }
+	.wide  {
+		background: @metro-lightblue; border: 1px solid lighten(@metro-lightblue, 10%);
 
-body[accent=blue] .accent-color, body[accent=blue] a { color:#24A0DA; }
-body[accent=blue] .accent-bg { background-color:#24A0DA; }
+		&.pinned { background: @metro-lightgreen; border: 1px solid lighten(@metro-lightgreen, 5%); }
+	}
+}
+    
+.theme-img_3 {
+	background: url("@{img-folder}/bg/bg_3.jpg"); color: white;
+	
+	.metro-loading { background: url("@{img-folder}/bg/bg_3.jpg"); }
 
-body[accent=brown] .accent-color, body[accent=brown] a { color:#986829; }
-body[accent=brown] .accent-bg { background-color:#986829; }
+	.tile  { background: @metro-blue; border: 1px solid lighten(@metro-blue, 5%); }
+	.wide  {
+		background: @metro-lightgreen; border: 1px solid lighten(@metro-lightgreen, 10%);
 
-body[accent=magenta] .accent-color, body[accent=magenta] a { color:#EB1691; }
-body[accent=magenta] .accent-bg { background-color:#EB1691; }
+		&.pinned  { background: @metro-done; border: 1px solid lighten(@metro-done, 5%); }
+	}
+}
 
-body[accent=purple] .accent-color, body[accent=purple] a { color:#7D50A0; }
-body[accent=purple] .accent-bg { background-color:#7D50A0; }
+.theme-img_4 {
+	background: url("@{img-folder}/bg/bg_4.jpg"); color: white;
+	
+	.metro-loading { background: url("@{img-folder}/bg/bg_4.jpg"); }
+}
 
-body[accent=teal] .accent-color, body[accent=teal] a { color:#16ABA9; }
-body[accent=teal] .accent-bg { background-color:#16ABA9; }
+.theme-img_5 {
+	background: url("@{img-folder}/bg/bg_5.jpg"); color: white;
+	
+	.metro-loading { background: url("@{img-folder}/bg/bg_5.jpg"); }
+	
+	.tile  { background: @metro-darkorange; border: 1px solid lighten(@metro-darkorange, 10%); }
+	.wide  {
+		background: @metro-orange; border: 1px solid lighten(@metro-orange, 10%);
 
-body[accent=lime] .accent-color, body[accent=lime] a { color:#8BC140; }
-body[accent=lime] .accent-bg { background-color:#8BC140; }
+		&.pinned  { background: @metro-lightred; border: 1px solid lighten(@metro-lightred, 10%); }
+	}
+	
+	.metro-tiles li {
+		&.green 	{ background: #db532d !important; }
+		&.lightred  	{ background: #833801; }
+	}
+}
 
-body[accent=pink] .accent-color, body[accent=pink] a { color:#DD72AC; }
-body[accent=pink] .accent-bg { background-color:#DD72AC; }
+.theme-img_6 {
+	background: url("@{img-folder}/bg/bg_6.jpg"); color: white;
+	
+	.metro-loading { background: url("@{img-folder}/bg/bg_6.jpg"); }
+}
 
-/*#endregion BODY THEME */
+.theme-bg-thumb  { background: url("@{img-folder}/bg/bg_thumb.jpg") no-repeat; }
+.thumb-img_1 	{ background-position: 0 0; 	 }
+.thumb-img_2 	{ background-position: 0 -30px;  }
+.thumb-img_3 	{ background-position: 0 -60px;  }
+.thumb-img_4 	{ background-position: 0 -90px;  }
+.thumb-img_5 	{ background-position: 0 -120px; }
+.thumb-img_6 	{ background-position: 0 -150px; }
 
 /*#region STATES */
 .uslist {
@@ -193,11 +159,7 @@ body[accent=pink] .accent-bg { background-color:#DD72AC; }
 	    }
     }
 }
-div.pivot {
-    > span.icon-action {
-        .fright;    
-    }
-}
+
 .To.Do.item {
 	border-left: 4px solid @colorTodo;
 	                
@@ -249,9 +211,7 @@ div.pivot {
 	    &:focus { background: white !important; color: Black !important; }
 	}
 }
-/*#endregion STATES */
 
-/*#region STATES 2 */
 .In.Progress {
 	.accent-bg {
 		background-color: @colorInprog !important; 
@@ -329,6 +289,3 @@ div.pivot {
 	    }
 	}
 }
-/*#endregion STATES 2 */
-
-.hint-screen { background: url("@{img-folder}/promo_bg.png") top right black no-repeat; }

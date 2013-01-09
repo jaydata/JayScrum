@@ -56,11 +56,6 @@
         ["jay-data-grid-data-cell",
             "<td data-bind='template: $root.getTemplate($data.owner,$data.metadata)'></td>"],
 
-
-//    visible: visible($parents[1]), \
-//    click: $data.execute, \
-        //<span data-bind='with: $parent'>\
-        //</span>\
         ["jay-data-grid-control-cell",
             "<td>\
                 <div class='tacenter' data-bind='foreach: itemCommands'>\
@@ -77,7 +72,7 @@
 
         ["jay-data-grid-$data.Boolean-display",
             "<div class='metro-checkbox white fnone_'>\
-                '<input class='disabled' type='checkbox' data-bind='checked: value' disabled='disabled' />\
+                '<input class='disabled' type='checkbox' data-bind='checked: value' disabled='disabled' class='input-checkbox' />\
                 '<label data-bind='attr: { for: $parent[name] }'></label>'\
             </div>"],
 
@@ -88,16 +83,16 @@
             '[<span data-bind="foreach: value"><span data-bind="text:$data"></span></span>]'],
 
         ["jay-data-grid-generic-editor",
-            '<input type="text" data-bind="value: value, attr: { required: metadata.required }" />'],
+            '<input type="text" class="input-text" data-bind="value: value, attr: { required: metadata.required }" />'],
 
         ["jay-data-grid-$data.Boolean-editor",
             "<div class='metro-checkbox white fnone_'>\
-                '<input type='checkbox' value='None' data-bind='checked: $parent[name], attr: { id: $parent[name] }' />\
+                '<input type='checkbox' value='None' class='input-checkbox' data-bind='checked: $parent[name], attr: { id: $parent[name] }' />\
                 '<label data-bind='attr: { for: $parent[name] }'></label>'\
             </div>"],
 
         ["jay-data-grid-Edm.String-editor",
-            "<input type='text' data-bind='value: value, attr: { required: metadata[\"required\"] }, css: { verror: owner.ValidationErrors }' />" ],
+            '<input type="text" class="input-text" data-bind="value: value, attr: { required: metadata[\"required\"] }, css: { verror: owner.ValidationErrors }" />' ],
 
         ["jay-data-grid-Edm.Int32-editor",
             "<input type='range' min=1 max=10 \

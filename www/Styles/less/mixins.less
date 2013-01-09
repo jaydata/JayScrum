@@ -41,30 +41,6 @@
 @inactive: #989898;
 
 /*#region FONT */
-
-/*#region FONT-FACE*/
-@font-face {
-	font-family: 'SegoeUILight';
-	src: url('@{font-folder}/segoeuil-webfont.eot');
-	src: url('@{font-folder}/segoeuil-webfont.eot?#iefix') format('embedded-opentype'),
-		 url('@{font-folder}/segoeuil-webfont.ttf') format('truetype'),
-		 url('@{font-folder}/segoeuil-webfont.woff') format('woff'),
-		 url('@{font-folder}/segoeuil-webfont.svg') format('svg');
-	font-weight: normal;
-	font-style: normal;
-}
-@font-face {
-    font-family: 'SegoeWP';
-    src: url('@{font-folder}/segoewp.eot');
-    src: url('@{font-folder}/segoewp.eot?#iefix') format('embedded-opentype'),
-         url('@{font-folder}/segoewp.ttf') format('truetype'),
-         url('@{font-folder}/segoewp.woff') format('woff'),
-         url('@{font-folder}/segoewp.svg') format('svg');
-    font-weight: normal;
-    font-style: normal;
-}
-/*#endregion FONT-FACE*/
-
 .font-size(@font-size: 16){
 font-size: @font-size * 1px; }
 
@@ -397,14 +373,14 @@ hr.soften {
     &.btn-large     { .size(100%, 35px, 27px); }
 }
 
-div.metro-checkbox {
+.metro-checkbox {
     .relative; .iblock; .fleft;
     height: 28px !important; width: 28px !important;
 	margin: 0 auto;
 
     &.white { background-color: white; }
 
-    input[type=checkbox] {
+    .input-checkbox {
         visibility: hidden;
         
         &:checked + label:after { opacity: 1; }
@@ -424,11 +400,9 @@ div.metro-checkbox {
 	        border-top: none;
 	        border-right: none;
         }
-        
-        /*&:hover::after { opacity: 0.3; }*/
     }
 }
-span.metro-checkbox-label { .size(auto, 28px, 28px); }
+.metro-checkbox-label { .size(auto, 28px, 28px); }
 /*#endregion METRO */
 
 /*#region FUNCTIONS */

@@ -33,7 +33,7 @@
         $(function () { jqReady.resolve(); });
     </script>
 </head>
-<body accent="blue" theme="black" font="segoeuilight">
+<body data-accent="blue" data-theme="black" data-font="segoeuilight" class="theme-black font-segoeuilight">
     <div id="page" class="app-container">
         <div class="metro-loading">
             <h1>JayScrum</h1>
@@ -508,7 +508,7 @@
                                 <div class="field">
                                     <div><span class="metro-checkbox-label">Blocked</span></div>
                                     <div class="metro-checkbox accent-bg">
-                                        <input type="checkbox" id="Blocked" value="None" name="check" class="medium accent-bg" data-bind="checked: IsBlocked" />
+                                        <input type="checkbox" id="Blocked" class="input-checkbox medium accent-bg" name="check" value="None" data-bind="checked: IsBlocked" />
                                         <label for="Blocked"></label>
                                     </div>
                                 </div>
@@ -1125,22 +1125,21 @@
                                 <div class="field">
                                     <div><span>Theme</span></div>
                                     <div class="themes">
-                                        <!--<div theme="white" class="theme-box"></div>-->
-                                        <div theme="black" class="theme-box"></div>
-                                        <div theme="darkgray" class="theme-box"></div>
-                                        <div theme="darkblue" class="theme-box"></div>
-                                        <div theme="img_1" class="theme-box"></div>
-                                        <div theme="img_2" class="theme-box"></div>
-                                        <div theme="img_3" class="theme-box"></div>
-                                        <div theme="img_4" class="theme-box"></div>
-                                        <div theme="img_5" class="theme-box"></div>
-                                        <div theme="img_6" class="theme-box"></div>
+                                        <div data-theme="black" class="theme-box theme-black"></div>
+                                        <div data-theme="darkgray" class="theme-box theme-darkgray"></div>
+                                        <div data-theme="darkblue" class="theme-box theme-darkblue"></div>
+                                        <div data-theme="img_1" class="theme-box theme-bg-thumb thumb-img_1"></div>
+                                        <div data-theme="img_2" class="theme-box theme-bg-thumb thumb-img_2"></div>
+                                        <div data-theme="img_3" class="theme-box theme-bg-thumb thumb-img_3"></div>
+                                        <div data-theme="img_4" class="theme-box theme-bg-thumb thumb-img_4"></div>
+                                        <div data-theme="img_5" class="theme-box theme-bg-thumb thumb-img_5"></div>
+                                        <div data-theme="img_6" class="theme-box theme-bg-thumb thumb-img_6"></div>
                                     </div>
                                 </div>
 
                                 <div class="field fonts">
                                     <div><span>Font</span></div>
-                                    <div font="segoewp" class="field">
+                                    <div data-font="segoewp" class="theme-font font-segoewp field">
                                         <h5 class="toupper">Segoe WP</h5>
                                         <h3>Lorem ipsum dolor</h3>
                                         <p>
@@ -1148,7 +1147,7 @@
                                             veniam.
                                         </p>
                                     </div>
-                                    <div font="segoeuilight" class="field">
+                                    <div data-font="segoeuilight" class="theme-font font-segoeuilight field">
                                         <h5 class="toupper">Segoe UI Light</h5>
                                         <h3>Lorem ipsum dolor</h3>
                                         <p>
@@ -1156,7 +1155,7 @@
                                             veniam.
                                         </p>
                                     </div>
-                                    <div font="mixed" class="field">
+                                    <div data-font="mixed" class="theme-font font-mixed field">
                                         <h5 class="toupper">Segoe UI Light header & SegoeWP content</h5>
                                         <h3>Lorem ipsum dolor</h3>
                                         <p>
@@ -1277,7 +1276,7 @@
                             <div class="field">
                                 <div><span class="metro-checkbox-label">Set as default repository</span></div>
                                 <div class="metro-checkbox accent-bg">
-                                    <input type="checkbox" value="None" id="isDefault" name="check" data-bind="checked: IsDefault" />
+                                    <input type="checkbox" id="isDefault" class="input-checkbox" name="check" value="None"  data-bind="checked: IsDefault" />
                                     <label for="isDefault"></label>
                                 </div>
                             </div>
