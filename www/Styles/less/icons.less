@@ -2,32 +2,34 @@
 	.iblock; .size(48px, 48px);  .position(relative, 50%);
 	background: url("@{img-folder}/icon_states.png") no-repeat; margin-top: -24px;
 	
-	&.done, &.Approved      { background-position: -48px -48px; }
-	&.blocked               { background-position: -48px 0; }
-	&.To.Do                 { background-position: -48px -240px; }
-	&.In.Progress           { background-position: -48px -96px; }
-	&.open                  { background-position: -48px -192px; }
+	&.done, &.Approved  { background-position: -48px -48px;  }
+	&.blocked               	{ background-position: -48px 0; 	 }
+	&.To.Do                 	{ background-position: -48px -240px; }
+	&.In.Progress           	{ background-position: -48px -96px;  }
+	&.open                  	{ background-position: -48px -192px; }
 
-	&.New                   { background-position: -48px -240px; }
-	&.Committed             { background-position: -48px -240px; }
-	&.Removed               { background-position: -48px -144px; }
+	&.New                   	{ background-position: -48px -240px; }
+	&.Committed             	{ background-position: -48px -240px; }
+	&.Removed               	{ background-position: -48px -144px; }
 	
 	a { .show; .size(100%, 100%); }
 }
+
 .icon-57 {
 	background: url("@{img-folder}/icon_57x57.png") no-repeat center center;
 	height: 57px !important;
 		        
 	&.settings  { background-position: center -397px; }
-	&.repos     { background-position: center -456px; }
-	&.sprints   { background-position: center -114px; }
-	&.projects  { background-position: center -170px; }
-	&.users     { background-position: center -228px; }
-	&.us        { background-position: center -513px; }
-	&.devices   { background-position: center -570px; }
-	&.subscribe { background-position: center -627px; }
-	&.connect   { background-position: center -684px; }
+	&.repos     	{ background-position: center -456px; }
+	&.sprints   	{ background-position: center -114px; }
+	&.projects  	{ background-position: center -170px; }
+	&.users     	{ background-position: center -228px; }
+	&.us        	{ background-position: center -513px; }
+	&.devices   	{ background-position: center -570px; }
+	&.subscribe 	{ background-position: center -627px; }
+	&.connect   	{ background-position: center -684px; }
 }
+
 .icon-action {
 	.iblock; .size(30px, 30px); margin: 0 15px 0 0;
 	
@@ -48,69 +50,74 @@
 	a, span { 
 		.iblock; .size(100%, 100%); background: url("@{img-folder}/icon_actions.png") no-repeat;
 		
-		&:hover     { cursor: pointer; z-index: 4500; }
+		&:hover { cursor: pointer; z-index: 4500; }
 	}
 	
-	&.back span         { background-position: 0 -30px; }
-	&.more span         { background-position: 0 -120px; }
-	&.save span         { background-position: 0 -240px; }
-	&.save              { background-position: 0 -240px; }
-	&.edit span         { background-position: 0 -270px; }
-	&.userstory span    { background-position: 0 -300px; }
-	&.settings span     { background-position: 0 -390px; }
-	&.add span          { background-position: 0 -420px; }
-	&.update span       { background-position: 0 -540px; }
-	&.clock span        { background-position: 0 -570px; }
-	&.revert span       { background-position: 0 -600px; }
-	&.delete span       { background-position: 0 -630px; }
-	&.user span         { background-position: 0 -690px; }
-	&.undo span         { background-position: 0 -720px; }
-	&.pin span          { background-position: 0 -750px; }
-	&.lock span         { background-position: 0 -780px; }
-	&.unlock span       { background-position: 0 -810px; }
-	&.client span       { background-position: 0 -870px; }
-	&.server span       { background-position: 0 -900px; }
-	&.money span        { background-position: 0 -930px; }
-	&.list span         { background-position: 0 -960px; }
-	&.user span         { background-position: 0 -1020px; }
-	&.upload span       { background-position: 0 -1110px; }
-	&.download span     { background-position: 0 -1110px; .rotate(180deg); }
-	&.unpin span        { background-position: 0 -1140px; }
-	&.question span     { background-position: 0 -1230px; }
-	&.nomoney span      { background-position: 0 -1260px; }
-	&.delete.undo span  { background-position: 0 -1290px; }
-	&.edit.mini span    { background-position: 0 -1320px; }
-	&.more-circle span  { background-position: 0 -1380px; }
-	&.wrong span        { background-position: 0 -1410px; }
-	&.good span         { background-position: 0 -1440px; }
+	&.back span         	{ background-position: 0 -30px;   }
+	&.more span         	{ background-position: 0 -120px;  }
+	&.save span         	{ background-position: 0 -240px;  }
+	&.save              		{ background-position: 0 -240px;  }
+	&.edit span         	{ background-position: 0 -270px;  }
+	&.userstory span 	{ background-position: 0 -300px;  }
+	&.settings span     	{ background-position: 0 -390px;  }
+	&.add span          		{ background-position: 0 -420px;  }
+	&.update span       	{ background-position: 0 -540px;  }
+	&.clock span        	{ background-position: 0 -570px;  }
+	&.revert span       	{ background-position: 0 -600px;  }
+	&.delete span       	{ background-position: 0 -630px;  }
+	&.user span			{ background-position: 0 -690px;  }
+	&.undo span         	{ background-position: 0 -720px;  }
+	&.pin span          		{ background-position: 0 -750px;  }
+	&.lock span         	{ background-position: 0 -780px;  }
+	&.unlock span       	{ background-position: 0 -810px;  }
+	&.client span       	{ background-position: 0 -870px;  }
+	&.server span       	{ background-position: 0 -900px;  }
+	&.money span        	{ background-position: 0 -930px;  }
+	&.list span         	{ background-position: 0 -960px;  }
+	&.user span         	{ background-position: 0 -1020px; }
+	&.upload span       	{ background-position: 0 -1110px; }
+	&.download span     	{ background-position: 0 -1110px; .rotate(180deg); }
+	&.unpin span        	{ background-position: 0 -1140px; }
+	&.question span     	{ background-position: 0 -1230px; }
+	&.nomoney span      	{ background-position: 0 -1260px; }
+	&.delete.undo span  	{ background-position: 0 -1290px; }
+	&.edit.mini span    	{ background-position: 0 -1320px; }
+	&.more-circle span  	{ background-position: 0 -1380px; }
+	&.wrong span        	{ background-position: 0 -1410px; }
+	&.good span         	{ background-position: 0 -1440px; }
 }
+
 input.icon-action 
 {
     background: url("@{img-folder}/icon_actions.png") no-repeat; border: none;
     
     &:hover { cursor: pointer; z-index: 4500; }
 }
+
 body[theme=white] .icon-action {
-    &.back span         { background-position: -30px -30px; }
-	&.clock span        { background-position: -30px -570px; }
-	&.userstory span    { background-position: -30px -300px; }
-	&.user span         { background-position: -30px -690px; }
-	&.delete span       { background-position: -30px -630px; }
-	&.client span       { background-position: -30px -870px; }
-	&.server span       { background-position: -30px -900px; }
-	&.settings span     { background-position: -30px -390px; }
-	&.upload span       { background-position: -30px -1110px; }
+    &.back span         { background-position: -30px -30px;   }
+	&.clock span        	{ background-position: -30px -570px;  }
+	&.userstory span    	{ background-position: -30px -300px;  }
+	&.user span         	{ background-position: -30px -690px;  }
+	&.delete span       	{ background-position: -30px -630px;  }
+	&.client span       	{ background-position: -30px -870px;  }
+	&.server span       	{ background-position: -30px -900px;  }
+	&.settings span     	{ background-position: -30px -390px;  }
+	&.upload span       	{ background-position: -30px -1110px; }
 }
+
 .detail .icon-action {
     &.topleft { margin: 10px 15px 15px 0px; .fnone; }
 }
+
 .icon-checkbox {
     .iblock; .size(28px, 28px);
     background: url("@{img-folder}/icon_check.png") 0 30px no-repeat #fff;
     
     &.checked   { background-position: center center; }
-    &:hover     { cursor: pointer; }
+    &:hover     	{ cursor: pointer; }
 }
+
 .event-controller { .position(absolute, 0, 0); z-index: 6500; }
 .icon-mini {
     padding: 0 5px; .opacity(0.4);

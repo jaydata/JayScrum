@@ -13,10 +13,10 @@
 	
 	h1 { margin: 0 0 5px; }
 	
-	#wrapper {
+	.iscroll-wrapper {
 	    .ohidden; 
 	           
-	    #scroller  {
+	    .iscroll-scroller  {
             .size(@metro-column * 6, 100%);
             
             .pivot-list {
@@ -49,10 +49,10 @@
 		}
 	}
     
-    #metro-tiles-scroll {
+    .metro-tiles-scroll  {
         top: 0px;
         
-	    #metro-tiles .metro-tiles { max-width: @wide-tile-width !important; }
+	    .metro-tiles { max-width: @wide-tile-width !important; }
 	}
 	
 	.tile-group-item { margin: 0 0 15px; }
@@ -81,19 +81,13 @@
 	    &.topleft { .fleft; }
 	}
 	
-	#wrapper {
-        #scroller  {
+	.iscroll-wrapper {
+        .iscroll-scroller {
             .size(@metro-column * 6, 100%);
             
             .pivot-list {
 	            .pivot {
 	                h1 { margin-bottom: 5px; font-size: 30px; }
-	                
-	                /*.scroll-list {
-	                    .position(absolute, 50px, auto, 50px); .size(@metro-column - 10);
-	                
-	                    .scroller-list { .reset-p; }
-	                }*/
 	            }
 	        }
         }
@@ -123,29 +117,27 @@
 	    h1, h2 { font-size: 70px !important; }
 	}
 
-    #metro-tiles-scroll 
-    {
+    .metro-tiles-scroll {
         top: 0;
         
-	    #metro-tiles .metro-tiles { max-width: 456px; }
+		.metro-tiles { max-width: 456px; }
 	}
 }
 /*#endregion Screen (480-768) */
 
 /*#region iPad Portrait */
 @media only screen and (max-width: 768px) and (min-width: 768px) and (orientation:portrait){
-    #metro-tiles-scroll {
+    .metro-tiles-scroll {
         top: 0;
                 
-        #metro-tiles .metro-tiles {
+        .metro-tiles {
             max-width: 456px;
             margin: 0 auto;
             .reset-p;
         }
     }
     
-    .metro-table 
-    {
+    .metro-table {
         tbody tr td 
         {
             input[type="text"]
@@ -184,10 +176,10 @@
 	    &.topleft           { .fleft; }
 	}
 	
-	#wrapper {
+	.iscroll-wrapper {
 	    .size(100%, 92%); .ohidden;
 	    
-        #scroller  {
+        .iscroll-scroller {
             .size(@metro-column * 5, 100%);
             
             .pivot-list {
@@ -212,7 +204,7 @@
 	    h1, h2 { font-size: 65px !important; }
 	}
 	
-	#settingPage {
+	.page-setting {
         h1.main-header  { .tacenter; }
         .btn-large      { max-width: 100%; }
     
@@ -223,30 +215,26 @@
         .field { .taleft; }
     }
     
-    #metro-tiles-scroll {
+    .metro-tiles-scroll {
         top: 0;
                 
-        #metro-tiles .metro-tiles {
+        .metro-tiles {
             max-width: 456px;
             margin: 0 auto;
             .reset-p;
         }
     }
     
-    .metro-table 
-    {
-        tbody tr td 
-        {
-            input[type="text"]
-            {
+    .metro-table {
+        td {
+            input[type="text"] {
                 max-width: 90%; width: auto;
             }
         }
     }
     
-    #wrapper-detailed   { .ovisible; }
-    .slider-action       
-    {
+    .wrapper-detailed   { .ovisible; }
+    .slider-action {
         .fixed; width: 150px; .transition(0.3s, background);
     
         &:hover { background: rgba(255, 255, 255, 0.1); }    
@@ -258,7 +246,7 @@
 @media only screen and (min-width:1024px) {
 	h1 { .font-size(45); }
 		
-	#settingPage {
+	.page-setting {
         .mauto; max-width: 768px;
         
         .setting-list { max-width: 768px; }

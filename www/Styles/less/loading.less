@@ -18,11 +18,13 @@
     box-pack: center;
     box-align: center;
     
-    h1, h2 { .show; .font-size(50); margin-bottom: 30px; /*text-transform: none !important;*/ }
+    h1, h2 { .show; .font-size(50); margin-bottom: 30px; }
 }
+
 .scroll-down {
     margin: -70px 0 20px;
 }
+
 .scroll-down, .scroll-up {
 	height: 50px;
 	line-height: 50px;
@@ -30,6 +32,7 @@
 	font-size:14px;
 	color:#fff;
 }
+
 .scroll-down .pullDownIcon, .scroll-up .pullUpIcon  {
 	display:block; float:left; margin: 7px 7px 0 0;
 	width:32px; height:32px;
@@ -38,18 +41,23 @@
 	-webkit-transition-property: -webkit-transform;
 	-webkit-transition-duration: 300ms;	
 }
+
 .scroll-down .pullDownIcon {
 	-webkit-transform:rotate(0deg) translateZ(0);
 }
+
 .scroll-up .pullUpIcon  {
 	-webkit-transform:rotate(-180deg) translateZ(0);
 }
+
 .scroll-down.flip .pullDownIcon {
 	-webkit-transform:rotate(-180deg) translateZ(0);
 }
+
 .scroll-up.flip .pullUpIcon {
 	-webkit-transform:rotate(0deg) translateZ(0);
 }
+
 .scroll-down.loading .pullDownIcon, .scroll-up.loading .pullUpIcon {
 	background-position:0 100%;
 	-webkit-transform:rotate(0deg) translateZ(0);
@@ -61,9 +69,10 @@
 	-webkit-animation-timing-function:linear;
 }
 
-@-webkit-keyframes loadingList {
-	from    { -webkit-transform:rotate(0deg) translateZ(0); }
-	to      { -webkit-transform:rotate(360deg) translateZ(0); }
+@-webkit-keyframes loadingList 
+{
+	from    { -webkit-transform:rotate(0deg) translateZ(0); 	}
+	to      	{ -webkit-transform:rotate(360deg) translateZ(0); 	}
 }
 
 .ui-icon {
@@ -80,8 +89,9 @@
     
     &.inline { maring: 0 5px 0 0 !important; .iblock; .position(relative, 9px); }
 }
+
 @-webkit-keyframes spin 
 {
-    from { -webkit-transform: rotate(0deg); }
-    to   { -webkit-transform: rotate(360deg); }
+    from 	{ -webkit-transform: rotate(0deg); 	 }
+    to   		{ -webkit-transform: rotate(360deg); }
 }

@@ -1,5 +1,5 @@
 /*#region METRO-TILES */
-#metro-tiles {
+.metro-tiles-container {
 	h1 { padding: 10px 0; }
     
     .metro-tiles {
@@ -15,6 +15,7 @@
 	    li {
 		    .relative; .box;
 
+			// LESS
 		    #metro > .tile;
 
 		    &:hover { .pointer; }
@@ -35,8 +36,8 @@
 			            
 			            .border-radius(0, 0, 10px, 0);
 			        }
-			        .subtitle   { .font-size(15px); .size(auto, 20px, 20px); margin-top: 9px; }
-			        span        { .iblock; }
+			        .subtitle   	{ .font-size(15px); .size(auto, 20px, 20px); margin-top: 9px; }
+			        span        	{ .iblock; }
 			        
 			        &.twolined {
 			            top: 46%; .taleft; padding-left: 9px;
@@ -47,23 +48,23 @@
 			    }
 		    }
 
-		    &.orange        { background: #dd9616; border: 1px solid lighten(#dd9616, 10%); }
-		    &.darkorange    { background: #e76321; border: 1px solid lighten(#e76321, 10%); }
-			&.purple        { background: #69349c; border: 1px solid lighten(#69349c, 10%);  }
-			&.pink          { background: pink;    border: 1px solid lighten(pink, 10%); }
-			&.darkpink      { background: #b71c46; border: 1px solid lighten(#b71c46, 10%); }
-			&.done          { background: #008000; border: 1px solid lighten(#008000, 10%); }
-			&.red           { background: #800000; border: 1px solid lighten(#800000, 10%); }
-			&.yellow        { background: #ccc102; border: 1px solid lighten(#ccc102, 10%); }
-			&.gray          { background: #414141; border: 1px solid lighten(#414141, 10%); }
-			&.lightblue     { background: #00b5df; border: 1px solid lighten(#00b5df, 10%); }
-			&.darkblue      { background: #293f7b; border: 1px solid lighten(#293f7b, 10%); }
-			&.blue          { background: #1774bc; border: 1px solid lighten(#b71c46, 10%); }
-			&.lightgreen    { background: #65bf10; border: 1px solid lighten(#65bf10, 10%); }
-			&.green         { background: #19a053; border: 1px solid lighten(#19a053, 10%); }
-			&.lightred      { background: #d64d34; border: 1px solid lighten(#d64d34, 10%); }
-			&.greenblue     { background: #00586d; border: 1px solid lighten(#00586d, 10%); }
-			&.brown         { background: #833801; border: 1px solid lighten(#833801, 10%); }
+		    &.orange        	{ background: #dd9616; border: 1px solid lighten(#dd9616, 10%); }
+		    &.darkorange    	{ background: #e76321; border: 1px solid lighten(#e76321, 10%); }
+			&.purple        	{ background: #69349c; border: 1px solid lighten(#69349c, 10%); }
+			&.pink          	{ background: #ffc0cb; border: 1px solid lighten(#ffc0cb, 10%); }
+			&.darkpink      	{ background: #b71c46; border: 1px solid lighten(#b71c46, 10%); }
+			&.done          	{ background: #008000; border: 1px solid lighten(#008000, 10%); }
+			&.red           		{ background: #800000; border: 1px solid lighten(#800000, 10%); }
+			&.yellow        	{ background: #ccc102; border: 1px solid lighten(#ccc102, 10%); }
+			&.gray          	{ background: #414141; border: 1px solid lighten(#414141, 10%); }
+			&.lightblue     	{ background: #00b5df; border: 1px solid lighten(#00b5df, 10%); }
+			&.darkblue      	{ background: #293f7b; border: 1px solid lighten(#293f7b, 10%); }
+			&.blue          	{ background: #1774bc; border: 1px solid lighten(#b71c46, 10%); }
+			&.lightgreen    	{ background: #65bf10; border: 1px solid lighten(#65bf10, 10%); }
+			&.green         	{ background: #19a053; border: 1px solid lighten(#19a053, 10%); }
+			&.lightred      	{ background: #d64d34; border: 1px solid lighten(#d64d34, 10%); }
+			&.greenblue     	{ background: #00586d; border: 1px solid lighten(#00586d, 10%); }
+			&.brown         	{ background: #833801; border: 1px solid lighten(#833801, 10%); }
     
             span.middle { margin-top: -30px !important; }
             	
@@ -87,27 +88,28 @@
 
 div.tile 
 {
+	// LESS
     #metro > .tile; .relative; .box;
 	
 	&.wide { #metro > .tilewide; }
 	
 	&.orange        { background: #dd9616; border: 1px solid lighten(#dd9616, 10%); }
-	&.darkorange    { background: #e76321; border: 1px solid lighten(#e76321, 10%); }
-	&.purple        { background: #69349c; border: 1px solid lighten(#69349c, 10%);  }
-	&.pink          { background: pink;    border: 1px solid lighten(pink, 10%); }
-	&.darkpink      { background: #b71c46; border: 1px solid lighten(#b71c46, 10%); }
-	&.done          { background: #008000; border: 1px solid lighten(#008000, 10%); }
-	&.red           { background: #800000; border: 1px solid lighten(#800000, 10%); }
-	&.yellow        { background: #ccc102; border: 1px solid lighten(#ccc102, 10%); }
-	&.gray          { background: #414141; border: 1px solid lighten(#414141, 10%); }
-	&.lightblue     { background: #00b5df; border: 1px solid lighten(#00b5df, 10%); }
-	&.darkblue      { background: #293f7b; border: 1px solid lighten(#293f7b, 10%); }
-	&.blue          { background: #24A0DA; border: 1px solid lighten(#24A0DA, 10%); }
-	&.lightgreen    { background: #65bf10; border: 1px solid lighten(#65bf10, 10%); }
-	&.green         { background: #19a053; border: 1px solid lighten(#19a053, 10%); }
-	&.lightred      { background: #d64d34; border: 1px solid lighten(#d64d34, 10%); }
-	&.greenblue     { background: #00586d; border: 1px solid lighten(#00586d, 10%); }
-	&.brown         { background: #833801; border: 1px solid lighten(#833801, 10%); }
+	&.darkorange    	{ background: #e76321; border: 1px solid lighten(#e76321, 10%); }
+	&.purple        	{ background: #69349c; border: 1px solid lighten(#69349c, 10%); }
+	&.pink          	{ background: #ffc0cb; border: 1px solid lighten(#ffc0cb, 10%); }
+	&.darkpink      	{ background: #b71c46; border: 1px solid lighten(#b71c46, 10%); }
+	&.done          	{ background: #008000; border: 1px solid lighten(#008000, 10%); }
+	&.red           		{ background: #800000; border: 1px solid lighten(#800000, 10%); }
+	&.yellow        	{ background: #ccc102; border: 1px solid lighten(#ccc102, 10%); }
+	&.gray          	{ background: #414141; border: 1px solid lighten(#414141, 10%); }
+	&.lightblue     	{ background: #00b5df; border: 1px solid lighten(#00b5df, 10%); }
+	&.darkblue      	{ background: #293f7b; border: 1px solid lighten(#293f7b, 10%); }
+	&.blue          	{ background: #24A0DA; border: 1px solid lighten(#24A0DA, 10%); }
+	&.lightgreen    	{ background: #65bf10; border: 1px solid lighten(#65bf10, 10%); }
+	&.green         	{ background: #19a053; border: 1px solid lighten(#19a053, 10%); }
+	&.lightred      	{ background: #d64d34; border: 1px solid lighten(#d64d34, 10%); }
+	&.greenblue     	{ background: #00586d; border: 1px solid lighten(#00586d, 10%); }
+	&.brown         	{ background: #833801; border: 1px solid lighten(#833801, 10%); }
 }
 
 .tile-group-item 
@@ -123,18 +125,18 @@ div.tile
     {
         margin: 0 0 5px; 
         
-        &:hover     { cursor: pointer, }
-        &:active    { .opacity(0.45); }
+        &:hover     { cursor: pointer; }
+        &:active    	{ .opacity(0.45); }
     }
     
     h3 { color: #19a053; }
-    &.red       { h3 { color: #800000; } }
-    &.blue      { h3 { color: #24A0DA; } }
-    &.darkblue  { h3 { color: #293f7b; } }
-    &.orange    { h3 { color: #dd9616; } }
-    &.purple    { h3 { color: #69349c; } }
-    &.lightred  { h3 { color: #d64d34; } }
-    &.darkpink  { h3 { color: #b71c46; } }
+    &.red       	{ h3 { color: #800000; } }
+    &.blue      	{ h3 { color: #24A0DA; } }
+    &.darkblue  	{ h3 { color: #293f7b; } }
+    &.orange    	{ h3 { color: #dd9616; } }
+    &.purple    	{ h3 { color: #69349c; } }
+    &.lightred  	{ h3 { color: #d64d34; } }
+    &.darkpink  	{ h3 { color: #b71c46; } }
 }
 /*#endregion METRO-TILES */
 
@@ -173,12 +175,9 @@ div.tile
 		.toupper, .tolower {
 			.fleft {
 				margin: 0 5px 5px 0; padding: 0 5px; .font-size(15);
-				
-				/*&:first-child { margin-left: 0; }
-				&:last-child { margin-right: 0; }*/
 			}
 		}
-				
+
 		&.sprint {
 			.mini-box { .size(auto, 20px, 20px); margin: 10px 0;  padding: 0 6px; }
 			
@@ -231,32 +230,32 @@ div.tile
     .size(30px, 30px); .fleft; margin: 8px 10px 0 0;
     background: url("@{img-folder}/icon_actions.png");
     
-    &.priority       { background-position: 0 -990px; }
-    &.effort         { background-position: 0 -570px; }
-    &.parent         { background-position: 0 -300px; }
-    &.value          { background-position: 0 -930px; }
-    &.user           { background-position: 0 -1020px; }
-    &.area           { background-position: 0 -960px; }
-    &.blocked        { background-position: 0 -780px; }
-    &.remaining      { background-position: 0 -1050px; }
-    &.state          { background-position: 0 -1080px; }
-    &.project        { background-position: 0 -1200px; }
-    &.sprint         { background-position: 0 -1170px; }
-    &.type           { background-position: 0 -1230px; }
+    &.priority      { background-position: 0 -990px;  }
+    &.effort         	{ background-position: 0 -570px;  }
+    &.parent         	{ background-position: 0 -300px;  }
+    &.value          	{ background-position: 0 -930px;  }
+    &.user           	{ background-position: 0 -1020px; }
+    &.area           	{ background-position: 0 -960px;  }
+    &.blocked        	{ background-position: 0 -780px;  }
+    &.remaining      	{ background-position: 0 -1050px; }
+    &.state          	{ background-position: 0 -1080px; }
+    &.project        	{ background-position: 0 -1200px; }
+    &.sprint         	{ background-position: 0 -1170px; }
+    &.type           	{ background-position: 0 -1230px; }
 }
 body[theme=white] .detail .tile-small {
-    &.priority       { background-position: -30px -990px; }
-    &.effort         { background-position: -30px -570px; }
-    &.parent         { background-position: -30px -300px; }
-    &.value          { background-position: -30px -930px; }
-    &.user           { background-position: -30px -1020px; }
-    &.area           { background-position: -30px -960px; }
-    &.blocked        { background-position: -30px -780px; }
-    &.remaining      { background-position: -30px -1050px; }
-    &.state          { background-position: -30px -1080px; }
-    &.project        { background-position: -30px -1200px; }
-    &.sprint         { background-position: -30px -1170px; }
-    &.type           { background-position: -30px -1230px; }
+    &.priority		{ background-position: -30px -990px;  }
+    &.effort         	{ background-position: -30px -570px;  }
+    &.parent         	{ background-position: -30px -300px;  }
+    &.value          	{ background-position: -30px -930px;  }
+    &.user           	{ background-position: -30px -1020px; }
+    &.area           	{ background-position: -30px -960px;  }
+    &.blocked        	{ background-position: -30px -780px;  }
+    &.remaining      	{ background-position: -30px -1050px; }
+    &.state          	{ background-position: -30px -1080px; }
+    &.project        	{ background-position: -30px -1200px; }
+    &.sprint         	{ background-position: -30px -1170px; }
+    &.type           	{ background-position: -30px -1230px; }
 }
 /*#endregion METRO-TILE-ICONS */
 
@@ -267,18 +266,17 @@ body[theme=white] .detail .tile-small {
     
     &.margin { margin: 15px 0 10px; }
     
-    thead th, tbody tr td 
-    {
+    th, td {
         font-size: 16px;
         
-        &:first-child   { width: 20px; max-width: 20px; }
+        &:first-child  { width: 20px; max-width: 20px; }
         &:nth-child(2)  { .tacenter; }
         &:nth-child(3)  { .tacenter; }
     }
     
-    thead th    { .tolower;  padding: 10px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.3); .tacenter; }
-    tbody tr td  
-    {
+    th { .tolower;  padding: 10px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.3); .tacenter; }
+    
+	td {
         padding: 10px 0 5px; .taleft; max-width: 80px !important;
         
         &:first-child { width: 20px; }
@@ -296,17 +294,13 @@ body[theme=white] .detail .tile-small {
         .icon-action { margin: 0 0 8px 5px; }
     }
     
-    tr.subrow 
-    {
-        td 
-        {
-            .control 
-            {
-                margin: 2px 0 10px;
-                
-                label { .show; margin: 0 0 5px; }
-            }
-        }
+    .subrow {
+		.control 
+		{
+			margin: 2px 0 10px;
+			
+			label { .show; margin: 0 0 5px; }
+		}
     }
     
     .error-msg { font-size: 15px; margin: 5px 0; color: Red; }
@@ -327,12 +321,11 @@ body[theme=white] .detail .tile-small {
         
             a
             {
-                .iblock; .size(30px, 30px); .rounded(20px); .tacenter;
+				.iblock; .size(30px, 30px); .rounded(20px); .tacenter;
                 border: 2px solid #fff; color: #fff; font-size: 21px; line-height: 20px;
             }
             
-            select 
-            {
+            select {
                 border: none; -webkit-appearance: none;
             }
         }

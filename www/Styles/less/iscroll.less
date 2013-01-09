@@ -1,6 +1,5 @@
 /*#region NEW SCROLL */
-#application { .size(100%, 100%); }
-#page {
+.app-container {
   .position(absolute, 0, 0, 0, 0); .size(100%, 100%); .ohidden;
 }
 .scroll-out {
@@ -16,17 +15,17 @@
         width: 100%; padding: 0;
 	}
 }
-#metro-tiles-scroll {
+.metro-tiles-scroll {
     top: 150px; bottom: 0 !important;
 }
 /*#endregion NEW SCROLL */
 
 /*#region WRAPPER */
-#wrapper {
+.iscroll-wrapper {
 	.size(100%, 100%); .clear; .ohidden; .relative;
 	min-width: @metro-column; z-index:1;
 
-    #scroller {
+    .iscroll-scroller {
 	    .size(@metro-column * 5, 100%); .fleft; .reset-p;
 	    
 	    .pivot-list {
@@ -47,7 +46,7 @@
 	            	            
 	            .scroll-list {
 	                .position(absolute, 50px, auto, 50px); .size(@metro-column - 10);
-	                border-top: 1px solid transparent; /*overflow: hidden !important;*/
+	                border-top: 1px solid transparent;
 	                
 	                .scroller-list { .reset-p; }
 	            }
@@ -131,16 +130,11 @@
 
 /*#region SCROLL LIST */
 .scroll-list {
-	/*.relative;*/ /*.show; .fleft;*/ .size(100%, auto);
-	/*overflow: hidden;*/ z-index: 1;
+	.size(100%, auto);
+	z-index: 1;
 	
 	.scroller-list {
 	    .absolute; .size(100%); padding: 0 10px !important;
-	    /*z-index: 1;*/
-	    
-	    .list {
-	        /*.reset-mp; .size(100%);*/
-        }
 	    
 	    p.inactive { line-height: 60px; }
     }
@@ -155,13 +149,13 @@
     }
 }
 
-#transition-settings, #addSettingScroller, #addSubscriptionScroller {
+.scrollable-list {
     .detail .item { .mauto; }
 }
 /*#endregion SCROLL LIST */
 
 /*#region SWIPEVIEW */
-div#swipeview-inside-1, div#swipeview-inside-2, div#swipeview-inside-0 {
+.swipeview-item {
     .position(absolute, 45px, auto, 0); z-index: 1; width: 100%; overflow: auto;
         
     .tolower {
@@ -197,8 +191,7 @@ div#swipeview-inside-1, div#swipeview-inside-2, div#swipeview-inside-0 {
     }
 }
 
-#wrapper #scroller .pivot-list .scroll-list
-{
+.iscroll-wrapper .iscroll-scroller .pivot-list .scroll-list {
     .iscrollbarV div { .opacity(0); }
     
     &:hover {

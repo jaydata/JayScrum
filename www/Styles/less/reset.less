@@ -1,12 +1,12 @@
 body { 
-	.reset-mp; .ohidden; .size(100%, 100%);
+	.size(100%, 100%);
 	background : rgb(255,255,255); overflow-y: hidden;
+	margin: 0; padding: 0;
 	
 	-webkit-font-smoothing: antialiased;
 	-webkit-user-select: none;
     -webkit-text-size-adjust: none;
 }
-
 
 h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, cite, code, del, 
 dfn, em, img, q, s, samp, small, strike, strong, sub, sup, tt, var, dd, dl, dt, li, ol, 
@@ -106,11 +106,11 @@ sub {
 a, span { 
 	.tdnone; .tap();
 	outline: none;
-}
-
-a:visited, a:hover, a:focus, a:active {
-	.tap();
-	outline: none; text-decoration: none;
+	
+	&:visited, &:hover, &:focus, &:active {
+		.tap();
+		outline: none; text-decoration: none;
+	}
 }
 /*#endregion 4. LINKS */
 

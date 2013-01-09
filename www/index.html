@@ -34,7 +34,7 @@
     </script>
 </head>
 <body accent="blue" theme="black" font="segoeuilight">
-    <div id="page">
+    <div id="page" class="app-container">
         <div class="metro-loading">
             <h1>JayScrum</h1>
             <span class="ui-icon spin"></span>
@@ -43,9 +43,9 @@
 
     <!-- #region TEMPLATES -->
     <script type="text/html" id="dashBoard-template">
-        <div id="metro-tiles-scroll" class="scroll-out pivot-default-opacity">
+        <div id="metro-tiles-scroll" class="metro-tiles-scroll scroll-out pivot-default-opacity">
             <div class="scroll-in">
-                <div id="metro-tiles">
+                <div id="metro-tiles" class="metro-tiles-container">
                     <div class="main-header" data-bind="attr: { 'class': 'main-header main-page' }">
                         <h1 class="pivot-default animate" data-bind="text: $root.selectedFrame().data().name"></h1>
                         <small class="subtitle" data-bind="text: $root.globalData().repositoryName"></small>
@@ -117,8 +117,8 @@
         <div class="icon-action main-top-right more-circle">
             <span data-bind="click: $root.selectedFrame().onShowToolbar"></span>
         </div>
-        <div id="wrapper" class="metro-pivot reset">
-            <div id="scroller">
+        <div id="wrapper" class="iscroll-wrapper metro-pivot reset">
+            <div id="scroller" class="iscroll-scroller">
                 <div class="pivot-list">
                     <div class="pivot rechanged">
                         <h1 class="pivot-default">just changed</h1>
@@ -281,7 +281,7 @@
                             <div class="scroller-list">
                                 <div class="list">
                                     <div class="review-item">
-                                        <div id="burndownChart" class="metro-chart" style="width: 100%; height: 320px;"></div>
+                                        <div id="burndownChart" class="chart-burndown metro-chart" style="width: 100%; height: 320px;"></div>
                                         <div class="info" data-bind="with: $data.data().summaryList">
                                             <ul class="tolower first">
                                                 <li class="first">
@@ -341,15 +341,15 @@
             <div class="icon-action back topleft absolute" data-bind="with: $data.data().selectedWorkItem">
                 <span data-bind="click: $root.selectedFrame().onCancelWorkItem"></span>
             </div>
-            <div id="wrapper-detailed" class="scroll-out">
+            <div id="wrapper-detailed" class="wrapper-detailed scroll-out">
                 <div class="slider-action prev">‹</div>
                 <div id="swipeview" class="scroller-in">
                     <div class="list maxlist">
-                        <div id="swipeview-slider">
+                        <div id="swipeview-slider" class="swipeview-slider">
                             <div id="swipeview-masterpage-0" data-bind="with: $data.data().selectedWorkItemPrev">
                                 <div class="pivot-content">
                                     <div class="item task" data-bind="attr: { 'class': 'item task ' + State() }">
-                                        <div id="swipeview-inside-0">
+                                        <div id="swipeview-inside-0" class="swipeview-item">
                                             <div class="tolower">
                                                 <!-- ko template: { name: 'workItemSelector-template', data: $data }-->
                                                 <!-- /ko-->
@@ -361,7 +361,7 @@
                             <div id="swipeview-masterpage-1" data-bind="with: $data.data().selectedWorkItem">
                                 <div class="pivot-content">
                                     <div class="item task" data-bind="attr: { 'class': 'item task ' + State() }">
-                                        <div id="swipeview-inside-1">
+                                        <div id="swipeview-inside-1" class="swipeview-item">
                                             <div class="tolower">
                                                 <!-- ko template: { name: 'workItemSelector-template', data: $data }-->
                                                 <!-- /ko-->
@@ -373,7 +373,7 @@
                             <div id="swipeview-masterpage-2" data-bind="with: $data.data().selectedWorkItemNext">
                                 <div class="pivot-content">
                                     <div class="item task" data-bind="attr: { 'class': 'item task ' + State() }">
-                                        <div id="swipeview-inside-2">
+                                        <div id="swipeview-inside-2" class="swipeview-item">
                                             <div class="tolower">
                                                 <!-- ko template: { name: 'workItemSelector-template', data: $data }-->
                                                 <!-- /ko-->
@@ -422,7 +422,7 @@
     </script>
 
     <script id="workItemEditor-template" type="text/html">
-        <div id="wrapper-detailed-edit" class="scroll-out top50">
+        <div id="wrapper-detailed-edit" class="wrapper-detailed-edit scroll-out top50">
             <div class="scroll-in">
                 <div class="list maxlist">
                     <div class="pivot-content">
@@ -635,8 +635,8 @@
         <div class="icon-action main-top-right add">
             <span data-bind="click: $root.selectedFrame().onAddUserStory"></span>
         </div>
-        <div id="wrapper" class="metro-pivot reset wrapper-container">
-            <div id="scroller">
+        <div id="wrapper" class="iscroll-wrapper metro-pivot reset wrapper-container">
+            <div id="scroller" class="iscroll-scroller">
                 <div class="pivot-list us-dated-list">
                     <div class="pivot">
                         <h1 class="pivot-default">Independent</h1>
@@ -702,19 +702,19 @@
             <div class="icon-action back topleft absolute">
                 <span data-bind="click: $root.selectedFrame().onCancelUserStory"></span>
             </div>
-            <div id="wrapper-detailed" class="scroll-out">
+            <div id="wrapper-detailed" class="wrapper-detailed scroll-out">
                 <div id="swipeview" class="scroller-in">
                     <div class="list maxlist">
                         <div class="pivot-content">
                             <div class="item task" data-bind="attr: { 'class': 'item task ' + State() }">
-                                <div id="swipeview-inside-1" class="top15">
+                                <div id="swipeview-inside-1" class="swipeview-item top15">
                                     <div class="tolower">
                                         <!-- ko template: { name: 'workItemSelector-template', data: $data }-->
                                         <!-- /ko-->
 
                                         <br />
 
-                                        <div class="metro-pivot uslist" id="task-list">
+                                        <div class="task-list metro-pivot uslist">
                                             <h2 class="font30 marginb20">
                                                 <span class="value">Tasks</span>
 
@@ -806,8 +806,8 @@
         </div>
     </script>
     <script type="text/html" id="userStoryByProject-template">
-        <div id="wrapper" class="metro-pivot wrapper-container">
-            <div id="scroller">
+        <div id="wrapper" class="iscroll-wrapper metro-pivot wrapper-container">
+            <div id="scroller" class="iscroll-scroller">
                 <div class="pivot-list us-dated-list">
                     <!-- ko foreach: userStoriesInSprintList-->
                     <div class="pivot">
@@ -1042,7 +1042,7 @@
                                     <div class="item task list-item clear">
                                         <p data-bind="text: Description"></p>
 
-                                        <div class="metro-pivot uslist" id="task-list">
+                                        <div class="task-list metro-pivot uslist">
                                             <h2 class="font30 marginb20">
                                                 <span class="value">user stories</span>
 
@@ -1117,7 +1117,7 @@
                 <h1 class="title" data-bind="text: $root.selectedFrame().data().name"></h1>
             </div>
 
-            <div class="scroll-list pivot-default-opacity scrollable-list" id="transition-settings">
+            <div id="transition-settings" class="scroll-list pivot-default-opacity scrollable-list">
                 <div class="scroller-list">
                     <div class="list detail options">
                         <div class="item task">
@@ -1238,7 +1238,7 @@
         </div>
     </script>
     <script type="text/html" id="repositories-addsetting">
-        <div id="settingPage">
+        <div id="settingPage" class="page-setting">
             <div class="icon-action back topleft" data-bind="with: $data.data().selectedSetting">
                 <span data-bind="click: $parent.cancelSetting"></span>
             </div>
@@ -1292,7 +1292,7 @@
         </div>
     </script>
     <script type="text/html" id="repositories-addsubscription">
-        <div id="settingPage">
+        <div id="settingPage" class="page-setting">
             <div class="icon-action back topleft" data-bind="with: $data.data().selectedSetting">
                 <span data-bind="click: $parent.cancelSetting"></span>
             </div>
@@ -1347,7 +1347,7 @@
         </div>
     </script>
     <script type="text/html" id="repositories-template">
-        <div id="settingPage">
+        <div id="settingPage" class="page-setting">
             <div class="icon-action back topleft">
                 <span data-bind="click: $root.backView"></span>
             </div>
@@ -1404,7 +1404,7 @@
             </div>
             <!--/ko-->
         </div>
-        <div id="repo-info" class="metro-actionbar">
+        <div id="repo-info" class="repo-info metro-actionbar">
             <ul id="repo-info-scroll">
                 <li>
                     <div class="icon-action back topleft">
@@ -1445,7 +1445,7 @@
         </div>
     </script>
     <script type="text/html" id="repositories-subscription">
-        <div id="settingPage">
+        <div id="settingPage" class="page-setting">
             <div class="icon-action back topleft">
                 <span data-bind="click: $root.backView"></span>
             </div>
@@ -1515,7 +1515,7 @@
         </form>
     </script>
     <script type="text/html" id="usersPage-template">
-        <div class="maxw768" id="settingPage">
+        <div id="settingPage" class="page-setting maxw768">
             <div class="icon-action back topleft">
                 <span data-bind="click: $root.backView"></span>
             </div>

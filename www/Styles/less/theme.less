@@ -86,26 +86,6 @@ body {
             }
         }
     }
-    
-    /*
-    &.orange        { background: #dd9616; }
-	&.darkorange    { background: #e76321; }
-	&.purple        { background: #69349c; }
-	&.pink          { background: pink; }
-	&.darkpink      { background: #b71c46; }
-	&.done          { background: @colorDone; }
-	&.red           { background: #800000; }
-	&.yellow        { background: #ccc102; }
-	&.gray          { background: #414141; }
-	&.lightblue     { background: #00b5df; }
-	&.darkblue      { background: #293f7b; }
-	&.blue          { background: #1774bc; }
-	&.lightgreen    { background: #65bf10; }
-	&.green         { background: #19a053; }
-	&.lightred      { background: #d64d34; }
-	&.greenblue     { background: #00586d; }
-	&.brown         { background: #833801; }
-    */
 }
 /*#endregion TILE THEME */
 
@@ -136,8 +116,8 @@ body[theme=black] div[theme=black] { border: 1px solid white; }
 body[theme=darkblue] div[theme=darkblue] { border: 1px solid white; }
 body[theme=darkgray] div[theme=darkgray] { border: 1px solid white; }
 
-body[theme=img_5] #metro-tiles .metro-tiles li.green { background: #db532d !important; }
-body[theme=img_5] #metro-tiles .metro-tiles li.lightred  { background: #833801; }
+body[theme=img_5] .metro-tiles li.green { background: #db532d !important; }
+body[theme=img_5] .metro-tiles li.lightred  { background: #833801; }
 
 .accent-bg { color: #fff; }
 div[theme=black] { background: black; }
@@ -317,14 +297,14 @@ div.pivot {
 	}
 }
 
-#task-list {
+.task-list {
     .In.Progress {
 	    .accent-bg {
 		    background-color: @colorInprog !important; 
 	    }
 	    .accent-color { color: @colorInprog !important; }
     }
-				
+
     .To.Do {
 	    .accent-bg {
 		    background-color: @colorTodo !important;
