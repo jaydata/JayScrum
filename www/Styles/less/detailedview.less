@@ -1,104 +1,59 @@
+.detail-title {
+	font-size: 27px; line-height: 26px; z-index: 1000; pointer-events: none; margin: 0 0 10px 0;  max-width: 85%;
+}
+
 .detail {
-    .size(auto, 100%); /*.ohidden;*/ .relative;
-    padding: 0 10px;
+    .size(auto, 100%); .relative;
+    padding: 0 10px; overflow-x: hidden; overflow-y: visible;
     
-    overflow-y: visible;
-    overflow-x: hidden;
-       
-    h1              { .reset-p; .position(relative, -4px); .font-size(27); line-height: 26px; z-index: 1000; pointer-events: none; margin: 0 0 10px 0;  max-width: 85%; }
-    .item           { max-width: 768px; margin: 0 15px 0 0; padding-top: 10px; }
-    
-    .swipeview-slider .item, .wrapper-detailed .pivot-content > .item { .noborder_; }
-    
-    .scroll-list    	{ .size(100%, 100%); }
-    p               		{ margin: 5px 0 20px; line-height: 24px !important; .ohidden; .font-size(18); .clear; }
-    .close-p p      	{ margin: 0 0 5px; }
+    .scroll-list    { .size(100%, 100%); }
+    .description       { margin: 5px 0 20px; line-height: 24px; .ohidden; .font-size(18); .clear; }
+    .close-p      		{ margin: 0 0 5px; }
     .scroll-out     	{ padding: 0 12px; }
-    .tile-mini      	{ margin: 0 15px 10px 1px !important; }
     
 	.field {
-		.size(auto, auto, 30px); .ohidden; .clear;
-		margin: 5px 0 20px; padding-left: 1px;
+		line-height: 30px; .ohidden; .clear;
+		margin: 5px 0 20px; font-size: 18px;
 		
-		.icon-action { .fleft; margin-right: 10px; }
+		span { line-height: 21px; }
 		
-		div {
-		    span    { font-size: 20px; line-height: 21px; }
-		    .medium 	{ .show; margin-top: 2px; }
-		}
-		
-		.field {
-		    margin: 5px 0 20px; padding-left: 14px;
-		    
-		    h3          { margin: 0; }
-		    &:hover     	{ cursor: pointer; }
-		    &.active    	{ border-left: 4px solid #fff; padding-left: 10px; }
-		}
-		
-	    select {
-	        .iblock; .size(auto, 28px);
-	        background: url("@{img-folder}/icon_arrow_down.png") #24A0DA no-repeat;
+	    .input-dropdown  {
+	        .iblock; .size(100%, 28px);
+	        font-size: 17px;
+			background: url("@{img-folder}/icon_arrow_down.png") #24A0DA no-repeat;
 	        background-position: 98% 50%;
 	        background-repeat: no-repeat; 
-	        z-index: 1500; padding-right: 20px !important;
+	        z-index: 1500; padding-right: 20px;
 	        
 	        -webkit-appearance: none;
 	    }
-	    
-	    &.State select          		{ background-position: 99px 10px !important; }
-	    &.RemainingWork select  	{ background-position: 34px 10px !important; }
-	    
-	    .chbox-icon {
-	        .iblock; .size(20px, 20px, 20px); .position(relative, 4px, auto, auto, -13px);
-	        background-color: #fff; .reset-m;
-	        
-	        &.checked { background: url("@{img-folder}/icon_check.png") #fff center center no-repeat; }
-	    }
-	    .chbox-text { .reset-m; }
+		
+		.with-icon 		{ width: 80%; }
+		.icon-action 	{ margin: 0;  }
+		
+		.field {
+			padding-left: 14px;
+		}
+		
+		.active  { border-left: 4px solid #fff; padding-left: 10px; }
 	}
 	
 	&.edit {
-	    &.reset { .size(inherit, inherit); .ovisible_; .static; }
+	    .static;
 	    
 	    .field {
-	        .size(auto, auto, auto);
-	        margin-top: 0;
-		    
 		    div { margin-bottom: 8px; }
-		    
-		    select {
-		        .size(100%, 28px); 
-		        
-		        &.with-icon { width: 80% !important; }  
-		    }
-		    
-		    .icon-action.update.fright  { .reset-m; float: right !important; }
+		}
+	}
+
+	.themes {
+		.theme-box {
+			.iblock;
+			width: 30px; height: 30px; margin: 0 10px 0 0;
 		}
 		
-		.item { padding-top: 0; .noborder_; }
-	}
-	
-	&.options .field div span { .show; margin-bottom: 4px !important; }
-	
-	.themes {
-	    .theme-box {
-	        .iblock;
-	        width: 30px !important; height: 30px !important; margin: 0 10px 0 0;
-	        
-	        &:hover { cursor: pointer; }
-			&.active { border: 1px solid rgba(255, 255, 255, 0.75); }
-	    }
-	}
-	
-	.theme-font {
-		p { margin-bottom: 0; }
+		.active { border: 1px solid rgba(255, 255, 255, 0.75); }
 	}
 	
 	.tolower { .clear; }
-}
-
-.wrapper-detailed       	{ .ohidden; }
-.wrapper-detailed-edit  	{ bottom: 45px; }
-.detail-edit-fix-header 	{
-    h1 { top: auto !important; padding-top: 10px; }
 }

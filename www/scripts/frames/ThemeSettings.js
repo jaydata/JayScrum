@@ -17,6 +17,11 @@ $data.Class.define('JayScrum.Views.ThemeSetting', JayScrum.FrameView, null, {
             if ($(this).attr('data-font') == getSetting('settings').font)
                 $(this).addClass('active');
         });
+        $(".theme-box").each(function () {
+            if ($(this).attr('data-theme') == getSetting('settings').theme)
+                $(this).addClass('active');
+        });
+
         this.i_scroll = JayScrum.app.initScrollById("transition-settings");
     },
     tearDownView:function(){

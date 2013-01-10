@@ -18,6 +18,7 @@
 .metro-tiles-scroll {
     top: 150px; bottom: 0 !important;
 }
+.wrapper-detailed-edit  	{ top: 50px; bottom: 45px; }
 /*#endregion NEW SCROLL */
 
 /*#region WRAPPER */
@@ -134,9 +135,11 @@
 	z-index: 1;
 	
 	.scroller-list {
-	    .absolute; .size(100%); padding: 0 10px !important;
+	    .absolute; .size(100%); padding: 0 10px;
 	    
 	    p.inactive { line-height: 60px; }
+		
+		&.maxlist { position: relative !important; }
     }
     
     &.scrollable-list {

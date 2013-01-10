@@ -86,7 +86,7 @@
     }
 }
 
-div.tile 
+.tile 
 {
 	// LESS
     #metro > .tile; .relative; .box;
@@ -116,7 +116,7 @@ div.tile
 {
     .clear; .ohidden; margin: 5px 0 5px;
     
-    div.tile  
+    .tile  
     {
         margin: 0 15px 15px 0 !important;
     }
@@ -199,8 +199,10 @@ div.tile
 	z-index: 4000;
 
 	&:hover     { cursor: pointer; }
-	&.fright    { margin: 0 0 15px 10px !important; }
-	&.fleft     { margin: 0 10px 15px 0 !important; }
+	&.fright    	{ margin: 0 0 15px 10px; }
+	&.fleft     	{ margin: 0 15px 10px 1px; }
+	
+	.icon 		{ border: 0; }
 }
 .tile-small {
     .iblock; .size(38px, 38px);

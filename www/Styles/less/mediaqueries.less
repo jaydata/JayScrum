@@ -1,14 +1,10 @@
 /*#region Screen (-480) */
 @media only screen and (max-width : 480px), (max-device-width : 480px) {
-	.main-header 
-	{
-	    &.main-page {
-	        .maxsize(@wide-tile-width, 65px); max-width: 228px !important;
-	    
-	        h1 { .tacenter; max-width: inherit; width: auto; height: auto; line-height: 35px; }
-	        
-	        .subtitle { top: -10px; }
-	    }
+	.main-page-header {
+		.maxsize(@wide-tile-width, 65px); max-width: 228px !important;
+	
+		h1 			{ .tacenter; max-width: inherit; width: auto; height: auto; line-height: 35px; }
+		.subtitle 	{ top: -10px; }
 	}
 	
 	h1 { margin: 0 0 5px; }
@@ -57,7 +53,7 @@
 	
 	.tile-group-item { margin: 0 0 15px; }
 	
-	div.tile.wide 
+	.tile.wide 
 	{
 	    .size(100%, 107px); margin: 0 0 5px !important;
 	}
@@ -67,14 +63,11 @@
 /*#region Screen (480-768) */
 @media only screen and (min-width: 481px) and (max-width : 768px), (min-device-width : 480px) and (max-device-width : 768px) {
 	
-	.main-header {
-	    &.main-page {
-	        .maxsize(@wide-tile-width, 80px);
-	    
-	        h1 { line-height: 55px; .tacenter; }
-	        
-	        .subtitle { top: -15px; }
-	    }
+	.main-page-header  {
+		.maxsize(@wide-tile-width, 80px);
+
+		h1 			{ line-height: 55px; .tacenter; }
+		.subtitle 	{ top: -15px; }
     }
     
     .icon-action {
@@ -153,23 +146,22 @@
 	.pivot h1 { font-size: 32px !important; margin-bottom: 5px; }
 	
 	.main-header 
-	{
-	    &.main-page 
-	    {
-	        .maxsize(@wide-tile-width, 95px);
-	    
-	        h1 { line-height: 55px; .tacenter; }
-	        
-	        .subtitle { top: -15px; }
-	    }
-	    
+	{   
 	    h1 {
 	        line-height: 45px; font-size: 38px;
 	    }
 	}
 	
+	.main-page-header
+	{
+		.maxsize(@wide-tile-width, 95px);
+
+		h1 			{ line-height: 55px; .tacenter; }
+		.subtitle 	{ top: -15px; }
+	}
+	
 	.icon-action {
-	    &.topleft           { .fleft; }
+	    &.topleft { .fleft; }
 	}
 	
 	.iscroll-wrapper {
