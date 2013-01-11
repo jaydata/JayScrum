@@ -139,7 +139,7 @@
 	    
 	    p.inactive { line-height: 60px; }
 		
-		&.maxlist { position: relative !important; }
+		//&.maxlist { position: relative !important; }
     }
     
     &.scrollable-list {
@@ -167,7 +167,13 @@
     }
 }
 
-.swipeview-slider { .relative; }
+.swipeview-slider { 
+	.relative; 
+	
+	.iscrollbarV { .hide; }
+	.swipeview-active .iscrollbarV { .show; right: 4px; }
+	
+}
 
 .slider-action
 {

@@ -47,55 +47,53 @@
             <div class="scroll-in">
                 <div id="metro-tiles" class="metro-tiles-container">
                     <div class="main-header main-page-header">
-                        <h1 class="pivot-default animate click-via" data-bind="text: $root.selectedFrame().data().name"></h1>
+                        <h1 class="pivot-default animate click-via padding10_0" data-bind="text: $root.selectedFrame().data().name"></h1>
                         <small class="subtitle" data-bind="text: $root.globalData().repositoryName"></small>
                     </div>
 
                     <ul class="metro-tiles tolower">
                         <!-- ko foreach: $data.data().activeSprintList -->
-                        <li data-bind="attr: { 'class': $parent.isPinnedSprint($data) ? 'wide pinned' : 'wide' }, click: $parent.onTaskListShow">
-                            <span>
-                                <span class="day" data-bind="text: Name"></span>
-                                <span class="b-right" data-bind="text: moment(FinishDate).diff(moment(), 'days') + ' days left'"></span>
-                                <span class="text" data-bind="text: tasksLeft+' task left'"></span>
-                                <!--<span class="number">scrumwall</span>-->
-                                <!--ko if: $parent.isPinnedSprint($data)-->
-                                <!--<span class="pin"></span>-->
-                                <!--/ko-->
-                            </span>
+                        <li data-bind="attr: { 'class': $parent.isPinnedSprint($data) ? 'metro-tile metro-tile-wide pinned' : 'metro-tile metro-tile-wide' }, click: $parent.onTaskListShow">
+                            <span class="day" data-bind="text: Name"></span>
+                            <span class="b-right" data-bind="text: moment(FinishDate).diff(moment(), 'days') + ' days left'"></span>
+                            <span class="text" data-bind="text: tasksLeft+' task left'"></span>
+                            <!--<span class="number">scrumwall</span>-->
+                            <!--ko if: $parent.isPinnedSprint($data)-->
+                            <!--<span class="pin"></span>-->
+                            <!--/ko-->
                         </li>
                         <!-- /ko -->
-                        <li class="wide">
+                        <li class="metro-tile metro-tile-wide">
                             <span data-bind="click: $data.onProjectListShow">
                                 <span class="middle icon icon-57 projects"></span>
                                 <span class="text">Projects</span>
                             </span>
                         </li>
-                        <li class="wide">
+                        <li class="metro-tile metro-tile-wide">
                             <span data-bind="click: $data.onSprintListShow">
                                 <span class="middle icon icon-57 sprints"></span>
                                 <span class="text">Sprints</span>
                             </span>
                         </li>
-                        <li class="wide">
+                        <li class="metro-tile metro-tile-wide">
                             <span data-bind="click: $data.onUserStoryListShow">
                                 <span class="middle icon icon-57 us"></span>
                                 <span class="text">User Stories</span>
                             </span>
                         </li>
-                        <li class="tile">
+                        <li class="metro-tile tile">
                             <span data-bind="click: $data.onSettingsShow">
                                 <span class="middle icon icon-57 settings"></span>
                                 <span class="text">UI Settings</span>
                             </span>
                         </li>
-                        <li class="tile">
+                        <li class="metro-tile tile">
                             <span data-bind="click: $data.onRepositorySettingShow">
                                 <span class="middle icon icon-57 repos"></span>
                                 <span class="text">Repositories</span>
                             </span>
                         </li>
-                        <li class="tile">
+                        <li class="metro-tile tile">
                             <span data-bind="click: $data.onUserSettingShow">
                                 <span class="middle icon icon-57 users"></span>
                                 <span class="text">Users</span>
@@ -946,7 +944,7 @@
 
                                     <div class="item task list-item reset-p clear">
                                         <h2 class="title margintop tolower accent-color">
-                                            <span class="click-fade" data-bind="text: Name, click: $parent.onSelectProject"></span>
+                                            <span class="value click-fade" data-bind="text: Name, click: $parent.onSelectProject"></span>
                                             <span class="icon-action edit fright" data-bind="click: $parent.onEditProject"><span></span></span>
                                         </h2>
 
@@ -1178,40 +1176,40 @@
                 <br />
 
                 <div class="tile-group-item blue">
-                    <div class="tile wide blue">
+                    <div class="metro-tile-wide blue">
                         <span data-bind="click: $data.getDemoDb">
                             <span class="middle icon icon-57 devices"></span>
                         </span>
                     </div>
-                    <h3 data-bind="click: $data.getDemoDb">Create local demo database</h3>
+                    <h3 class="click-fade pointer marginb5 color-blue" data-bind="click: $data.getDemoDb">Create local demo database</h3>
                     <p>If you would like to try this app, click here to create a local demo database and get started now!</p>
                 </div>
                 <div class="tile-group-item blue">
-                    <div class="tile wide blue">
+                    <div class="metro-tile-wide blue">
                         <span data-bind="click: $data.addSetting">
                             <span class="middle icon icon-57 connect"></span>
                         </span>
                     </div>
-                    <h3 data-bind="click: $data.addSetting">Connect to repository</h3>
+                    <h3 class="click-fade pointer marginb5 color-blue" data-bind="click: $data.addSetting">Connect to repository</h3>
                     <p>If your team already has an online repository click here to setup your connection.</p>
                 </div>
                 <!--ko if: $data.data().isSupportedPurchase-->
                 <div class="tile-group-item blue">
-                    <div class="tile wide blue">
+                    <div class="metro-tile-wide blue">
                         <span data-bind="click: $data.buyDatabase">
                             <span class="middle icon icon-57 subscribe"></span>
                         </span>
                     </div>
-                    <h3 data-bind="click: $data.buyDatabase">Subscribe for an online repository</h3>
+                    <h3 class="click-fade pointer marginb5 color-blue" data-bind="click: $data.buyDatabase">Subscribe for an online repository</h3>
                     <p>If you would like to have your own online repository click here and subscribe for an online repository.</p>
                 </div>
                 <div class="tile-group-item blue">
-                    <div class="tile wide blue">
+                    <div class="metro-tile-wide blue">
                         <span data-bind="click: $data._goToRepository">
                             <span class="middle icon icon-57 repos"></span>
                         </span>
                     </div>
-                    <h3 data-bind="click: $data._goToRepository">My repository</h3>
+                    <h3 class="click-fade pointer marginb5 color-blue" data-bind="click: $data._goToRepository">My repository</h3>
                     <p>If you already have a subscription for an online repository click here and go to your repository.</p>
                 </div>
                 <!--/ko-->
@@ -1230,7 +1228,7 @@
 
             <div class="scroll-list scrollable-list" id="addSettingScroller">
                 <div class="scroller-list">
-                    <div class="edit detail reset-p" data-bind="with: $data.data().selectedSetting">
+                    <div class="edit detail reset-p maxw768" data-bind="with: $data.data().selectedSetting">
                         <div class="tolower item reset-m">
                             <div class="field hide">
                                 <div><span>Id</span></div>
@@ -1284,7 +1282,7 @@
 
             <div class="scroll-list scrollable-list" id="addSubscriptionScroller">
                 <div class="scroller-list">
-                    <div class="edit detail reset-p" data-bind="with: $data.data().selectedSetting">
+                    <div class="edit detail reset-p maxw768" data-bind="with: $data.data().selectedSetting">
                         <div class="tolower item reset-m">
                             <div class="field hide">
                                 <div><span>Id</span></div>

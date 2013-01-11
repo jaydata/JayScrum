@@ -1,99 +1,14 @@
 /*#region METRO-TILES */
-.metro-tiles-container {
-	h1 { padding: 10px 0; }
-    
-    .metro-tiles {
-	    .ohidden; .mauto;
-	    padding: 0;
-	
-	    span.pin {      
-            .iblock; .position(absolute, -5px, -5px); .size(32px, 32px);
-            background: url("@{img-folder}/icon_pin.png") no-repeat center center;
-            background-size: 95%;
-        }
-	
-	    li {
-		    .relative; .box;
-
-			// LESS
-		    #metro > .tile;
-
-		    &:hover { .pointer; }
-
-		    &.tile {
-		        .text { .capitalize_; }
-		    }
-		    
-		    &.wide {
-			    #metro > .tilewide;
-			    
-			    .middle {
-			        margin-top: -25px !important;
-			    
-			        .day {
-			            .font-size(25px); .fleft;
-			            margin: 0 10px 0 10px;
-			            
-			            .border-radius(0, 0, 10px, 0);
-			        }
-			        .subtitle   	{ .font-size(15px); .size(auto, 20px, 20px); margin-top: 9px; }
-			        span        	{ .iblock; }
-			        
-			        &.twolined {
-			            top: 46%; .taleft; padding-left: 9px;
-			            
-			            .day    { background-position: -2px 0; background-size: 70%; }
-			            .text   { .font-size(15px); .fwnormal; .size(auto, 20px, 20px); .static; .ohidden; max-width: 135px; min-width: 135px; }
-			        }
-			    }
-		    }
-
-		    &.orange        	{ background: #dd9616; border: 1px solid lighten(#dd9616, 10%); }
-		    &.darkorange    	{ background: #e76321; border: 1px solid lighten(#e76321, 10%); }
-			&.purple        	{ background: #69349c; border: 1px solid lighten(#69349c, 10%); }
-			&.pink          	{ background: #ffc0cb; border: 1px solid lighten(#ffc0cb, 10%); }
-			&.darkpink      	{ background: #b71c46; border: 1px solid lighten(#b71c46, 10%); }
-			&.done          	{ background: #008000; border: 1px solid lighten(#008000, 10%); }
-			&.red           		{ background: #800000; border: 1px solid lighten(#800000, 10%); }
-			&.yellow        	{ background: #ccc102; border: 1px solid lighten(#ccc102, 10%); }
-			&.gray          	{ background: #414141; border: 1px solid lighten(#414141, 10%); }
-			&.lightblue     	{ background: #00b5df; border: 1px solid lighten(#00b5df, 10%); }
-			&.darkblue      	{ background: #293f7b; border: 1px solid lighten(#293f7b, 10%); }
-			&.blue          	{ background: #1774bc; border: 1px solid lighten(#b71c46, 10%); }
-			&.lightgreen    	{ background: #65bf10; border: 1px solid lighten(#65bf10, 10%); }
-			&.green         	{ background: #19a053; border: 1px solid lighten(#19a053, 10%); }
-			&.lightred      	{ background: #d64d34; border: 1px solid lighten(#d64d34, 10%); }
-			&.greenblue     	{ background: #00586d; border: 1px solid lighten(#00586d, 10%); }
-			&.brown         	{ background: #833801; border: 1px solid lighten(#833801, 10%); }
-    
-            span.middle { margin-top: -30px !important; }
-            	
-			.day 
-			{
-			    // BIGGER TILES
-			    /*.size(auto, 55px, 68px);font-size: 34px; */
-			    .show; .size(100%, 55px, 30px);  .tacenter; .to-ellipsis;
-			    margin: 35px auto 0; max-width: 190px;
-			    font-size: 28px;
-			}
-		
-			.icon { height: 57px !important; top: 41% !important; }
-	    
-		    .icon-57 {
-		        &.middle { margin-top: -25px !important; }
-		    }
-	    }
-    }
+.metro-tiles {
+	.ohidden; 
+	margin: 0 auto; padding: 0;
 }
 
-.tile 
-{
-	// LESS
-    #metro > .tile; .relative; .box;
-	
-	&.wide { #metro > .tilewide; }
-	
-	&.orange        { background: #dd9616; border: 1px solid lighten(#dd9616, 10%); }
+.metro-tile {
+	/* LESS */
+	#metro > .tile;
+
+	&.orange        	{ background: #dd9616; border: 1px solid lighten(#dd9616, 10%); }
 	&.darkorange    	{ background: #e76321; border: 1px solid lighten(#e76321, 10%); }
 	&.purple        	{ background: #69349c; border: 1px solid lighten(#69349c, 10%); }
 	&.pink          	{ background: #ffc0cb; border: 1px solid lighten(#ffc0cb, 10%); }
@@ -104,62 +19,52 @@
 	&.gray          	{ background: #414141; border: 1px solid lighten(#414141, 10%); }
 	&.lightblue     	{ background: #00b5df; border: 1px solid lighten(#00b5df, 10%); }
 	&.darkblue      	{ background: #293f7b; border: 1px solid lighten(#293f7b, 10%); }
-	&.blue          	{ background: #24A0DA; border: 1px solid lighten(#24A0DA, 10%); }
+	&.blue          	{ background: #1774bc; border: 1px solid lighten(#b71c46, 10%); }
 	&.lightgreen    	{ background: #65bf10; border: 1px solid lighten(#65bf10, 10%); }
 	&.green         	{ background: #19a053; border: 1px solid lighten(#19a053, 10%); }
 	&.lightred      	{ background: #d64d34; border: 1px solid lighten(#d64d34, 10%); }
 	&.greenblue     	{ background: #00586d; border: 1px solid lighten(#00586d, 10%); }
 	&.brown         	{ background: #833801; border: 1px solid lighten(#833801, 10%); }
+
+	.text 	{ .capitalize; }
+	
+	.day {  
+		.show; .size(100%, 55px, 30px);  .tacenter; .to-ellipsis;
+		margin: 35px auto 0; max-width: 190px;
+		font-size: 28px;
+	}
+
+	.icon { height: 57px; top: 41%; }
+}
+
+.metro-tile-wide {
+	/* LESS */
+	#metro > .tilewide;  .pointer;
 }
 
 .tile-group-item 
 {
     .clear; .ohidden; margin: 5px 0 5px;
-    
-    .tile  
-    {
-        margin: 0 15px 15px 0 !important;
-    }
-    
-    h2, h3, h4, h5, h6  
-    {
-        margin: 0 0 5px; 
-        
-        &:hover     { cursor: pointer; }
-        &:active    	{ .opacity(0.45); }
-    }
-    
-    h3 { color: #19a053; }
-    &.red       	{ h3 { color: #800000; } }
-    &.blue      	{ h3 { color: #24A0DA; } }
-    &.darkblue  	{ h3 { color: #293f7b; } }
-    &.orange    	{ h3 { color: #dd9616; } }
-    &.purple    	{ h3 { color: #69349c; } }
-    &.lightred  	{ h3 { color: #d64d34; } }
-    &.darkpink  	{ h3 { color: #b71c46; } }
 }
 /*#endregion METRO-TILES */
 
 /*#region METRO-PIVOT */
-.metro-pivot {   
+.metro-pivot {
 	.item {
 		.ohidden; margin: 0 0 20px; padding-left: 10px;
 		
-		h2.title, h4.title  
-		{
-		    .maxsize(95%, 26px); line-height: 24px;
-		    
-		    span.value { .maxsize(60%, 35px); .iblock; line-height: 30px; }
-		}
-		
 		.title {
-		    &:hover { cursor: pointer; }
+		    .maxsize(95%, 26px); .pointer;  line-height: 24px;
+		    
+		    .value { .maxsize(60%, 35px); .iblock; line-height: 30px; .to-ellipsis; }
 		}
 		
 		.description { 
 			.size(auto, 37px); .ohidden; .taleft;
 
-			p { line-height: 18px; .taleft; }
+			
+			/* FOLYT KOV */
+			p { line-height: 18px; .taleft;  }
 		}
 
 		.box-container {

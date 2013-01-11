@@ -47,15 +47,15 @@
     
     .metro-tiles-scroll  {
         top: 0px;
-        
-	    .metro-tiles { max-width: @wide-tile-width !important; }
 	}
+	
+	.metro-tiles { max-width: @wide-tile-width; }
 	
 	.tile-group-item { margin: 0 0 15px; }
 	
-	.tile.wide 
+	.metro-tile-wide 
 	{
-	    .size(100%, 107px); margin: 0 0 5px !important;
+	    .size(100%, 107px);
 	}
 }
 /*#endregion Screen (-480) */
@@ -114,6 +114,10 @@
         top: 0;
         
 		.metro-tiles { max-width: 456px; }
+	}
+	
+	.hint-screen {
+		.metro-tile-wide { margin-right: 15px; }
 	}
 }
 /*#endregion Screen (480-768) */
@@ -212,6 +216,10 @@
             .reset-p;
         }
     }
+	
+	.hint-screen {
+		.metro-tile-wide { margin-right: 15px; }
+	}
     
     .metro-table {
 		.input-text {
