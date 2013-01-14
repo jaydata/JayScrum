@@ -2,9 +2,7 @@
     .position(absolute, 0, auto, auto, 0); .size(100%, 100%);
     z-index: 7000;
     
-    display: -moz-box;
-    display: -webkit-box;
-    display: box;
+	.dbox;
     
     -moz-box-orient: vertical;
     -moz-box-pack: center;
@@ -58,6 +56,12 @@
 	-webkit-transform:rotate(0deg) translateZ(0);
 }
 
+@-webkit-keyframes loadingList 
+{
+	from    { -webkit-transform:rotate(0deg) translateZ(0); 	}
+	to      	{ -webkit-transform:rotate(360deg) translateZ(0); 	}
+}
+
 .scroll-down.loading .pullDownIcon, .scroll-up.loading .pullUpIcon {
 	background-position:0 100%;
 	-webkit-transform:rotate(0deg) translateZ(0);
@@ -69,10 +73,10 @@
 	-webkit-animation-timing-function:linear;
 }
 
-@-webkit-keyframes loadingList 
+@-webkit-keyframes spin 
 {
-	from    { -webkit-transform:rotate(0deg) translateZ(0); 	}
-	to      	{ -webkit-transform:rotate(360deg) translateZ(0); 	}
+    from 	{ -webkit-transform: rotate(0deg); 	 }
+    to   		{ -webkit-transform: rotate(360deg); }
 }
 
 .ui-icon {
@@ -88,10 +92,4 @@
     }
     
     &.inline { maring: 0 5px 0 0 !important; .iblock; .position(relative, 9px); }
-}
-
-@-webkit-keyframes spin 
-{
-    from 	{ -webkit-transform: rotate(0deg); 	 }
-    to   		{ -webkit-transform: rotate(360deg); }
 }

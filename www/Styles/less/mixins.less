@@ -66,13 +66,13 @@ font-family: 'DINProMedium', Verdana, Arial; }
 font-family: 'DINProRegular', Verdana, Arial; }
 
 .segoewp {
-font-family: 'SegoeWP', 'Century Gothic', Arial !important; }
+font-family: 'SegoeWP', 'Century Gothic', Arial; }
 
 .segoewplight {
-font-family: 'SegoeWPLight', 'Century Gothic', Arial !important; }
+font-family: 'SegoeWPLight', 'Century Gothic', Arial; }
 
 .segoeuilight { 
-font-family: 'SegoeUILight', 'Century Gothic', Arial !important; }
+font-family: 'SegoeUILight', 'Century Gothic', Arial; }
 
 .font16 { font-size: 16px; }
 .font20 { font-size: 20px; }
@@ -160,9 +160,9 @@ ul.listreset {
 	box-sizing: border-box; }
 	
 .nobox {
-	-webkit-box-sizing: initial;
-	-moz-box-sizing: initial;
-	box-sizing: initial; }
+	-webkit-box-sizing: content-box;
+	-moz-box-sizing: content-box;
+	box-sizing: content-box; }
 	
 .nobox_ {
 	-webkit-box-sizing: content-box !important;
@@ -293,7 +293,7 @@ hr.soften {
 #metro {
 	.tile {
 		.relative; .box; .pointer;
-		display: block; width: 106px; height: 107px; margin: 4px;
+		display: block; width: 106px; height: 106px; margin: 4px;
 		float: left; clear: none;
 		font-size: 14px; color: #fff;
 
@@ -308,11 +308,6 @@ hr.soften {
 		display: block; width: 220px; height: 107px;
 		margin: 4px; color: #fff;
 		float: left;
-				
-		.middle 	{ .position(absolute, 50%); .show; .size(100%, 50px, 50px);  margin-top: -30px; .font-size(37); .tacenter; }
-		.text 		{ .position(absolute, auto, auto, 7px, 7px); line-height: 14px; }
-		.number 		{ .position(absolute, 7px, 7px); line-height: 14px; }
-		.b-right 	{ .position(absolute, auto, 7px, 7px); line-height: 14px; }
 	}
 }
 

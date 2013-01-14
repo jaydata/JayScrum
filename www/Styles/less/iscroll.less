@@ -1,24 +1,20 @@
 /*#region NEW SCROLL */
-.app-container {
-  .position(absolute, 0, 0, 0, 0); .size(100%, 100%); .ohidden;
-}
+.app-container 			{ .position(absolute, 0, 0, 0, 0); .size(100%, 100%); .ohidden; }
+.metro-tiles-scroll 		{ top: 150px; bottom: 0; }
+
 .scroll-out {
-	.position(absolute, 0, auto, 45px, 0); width: 100%; overflow: auto; z-index:1;
-	    
-	&.bottom0   { bottom: 0 !important; }
-	&.top30     { top: 30px !important; }
-	&.top50     { top: 50px !important; }
-	    
+	.position(absolute, 0, auto, 45px, 0); 
+	width: 100%; z-index:1;
+	overflow-x: hidden; overflow-y: auto;
+
 	.scroll-in {
-	    z-index:1; 
-        -webkit-tap-highlight-color: rgba(0,0,0,0); 
         width: 100%; padding: 0;
+		z-index:1;	    
+        -webkit-tap-highlight-color: rgba(0,0,0,0);
 	}
+	
+	&.wrapper-detailed-edit { bottom: 90px; }
 }
-.metro-tiles-scroll {
-    top: 150px; bottom: 0 !important;
-}
-.wrapper-detailed-edit  	{ top: 50px; bottom: 45px; }
 /*#endregion NEW SCROLL */
 
 /*#region WRAPPER */
@@ -27,105 +23,101 @@
 	min-width: @metro-column; z-index:1;
 
     .iscroll-scroller {
-	    .size(@metro-column * 5, 100%); .fleft; .reset-p;
+	    .size(@metro-column * 5, 100%); .fleft; 
+		padding: 0;
 	    
+		.scroll-list {
+			.position(absolute, 50px, auto, 50px); .size(@metro-column - 10);
+			border-top: 1px solid transparent;
+			
+			.scroller-list { .reset-p; }
+		}
+		
 	    .pivot-list {
-	        .show; .fleft; .size(100%, 100%); .reset-mp;
-	        list-style: none;
-	        
-	        &.us-dated-list {
-	            .pivot h1 {
-	                margin-bottom: 0;
-	                .maxsize(95%, 45px);
-	            }
-	            .scroll-list.scrollable-list { top: 75px; }
-	        }
-	        
-	        .pivot {
-	            .size(@metro-column, 100%); .box; .show; .fleft;
-	            padding: 0 5px 0 10px;
-	            	            
-	            .scroll-list {
-	                .position(absolute, 50px, auto, 50px); .size(@metro-column - 10);
-	                border-top: 1px solid transparent;
-	                
-	                .scroller-list { .reset-p; }
-	            }
-	            
-	            .item {
-	                padding: 0 0 0 10px;
-	                
-	                &.true {
-	                	border-left: 4px solid @colorBlocked !important;
-	                	color: @colorRemoved;
-	                
-	                    .accent-color { color: @colorRemoved !important; }
-	                    .accent-bg {
-	                        background-color: @colorRemoved !important;
-	                    }
-	                }
-	            }
-	            &:last-child { padding-right: 0; }
-	            
-	            &.todo .item {
-	                border-left: 4px solid @colorTodo;
-	                
-	                .accent-color { color: @colorTodo; }
-	                .accent-bg {
-	                    background-color: @colorTodo;
-	                    color: #fff !important;
-	                    padding: 2px 5px; margin-right: 5px;
-	                }
-	            }
-	            &.inprog .item {
-	                border-left: 4px solid @colorInprog; 	                
-	                
-	                .accent-color { color: @colorInprog; }
-	                .accent-bg {
-	                    background-color: @colorInprog;
-	                    color: #fff !important;
-	                    padding: 2px 5px; margin-right: 5px;
-	                }
-	            }
-	            &.done .item {
-	                border-left: 4px solid @colorDone;
-	                
-	                .accent-color { color: @colorDone; }
-	                .accent-bg {
-	                    background-color: @colorDone;
-	                    color: #fff !important;
-	                    padding: 2px 5px; margin-right: 5px;
-	                }
-	            }
-	            &.review .review-item {               
-	                ul {
-	                    margin: 0 0 15px; padding-left: 5px;
-	                    
-	                    &.first {
-	                        li.first {
-	                            border-bottom: 1px solid rgba(246, 246, 246, 0.2);
-	                            padding-bottom: 15px;
-	                        }
-	                    }
-	                    
-	                    li {
-	                        margin: 0 0 15px; .ohidden;
-	                        
-	                        &.first  {
-	                            h2 { .font-size(26); .fnone; } 
-	                            p  { .fnone; }
-	                        }
-	                        
-	                        h2, p { .fleft; line-height: 27px; }
-	                        
-	                        h2 { .font-size(23); margin: 0 10px 0 0;  }
-	                        p  { .font-size(21); margin-bottom: 0px;  }
-	                    }
-	                }
-                }
-            }
+	        .show; .fleft; .size(100%, 100%);
+	        margin: 0; padding: 0; list-style: none;
         }
-    }
+		
+		.pivot {
+			.size(@metro-column, 100%); .box; .show; .fleft;
+			padding: 0 5px 0 10px;
+
+			.item {
+				padding: 0 0 0 10px;
+				
+				&.true {
+					border-left: 4px solid @colorBlocked;
+					color: @colorRemoved;
+				
+					.accent-color { color: @colorRemoved !important; }
+					.accent-bg {
+						background-color: @colorRemoved !important;
+					}
+				}
+			}
+			&:last-child { padding-right: 0; }
+		}
+	
+		.us-dated-list {
+			h1 {
+				margin-bottom: 0;
+				.maxsize(95%, 45px);
+			}
+			.scroll-list { top: 75px; }
+		}
+	}
+	
+	.todo .item {
+		border-left: 4px solid @colorTodo;
+		
+		.accent-color { color: @colorTodo; }
+		.accent-bg {
+			background-color: @colorTodo;
+			color: #fff !important;
+			padding: 2px 5px; margin-right: 5px;
+		}
+	}
+	.inprog .item {
+		border-left: 4px solid @colorInprog; 	                
+		
+		.accent-color { color: @colorInprog; }
+		.accent-bg {
+			background-color: @colorInprog;
+			color: #fff !important;
+			padding: 2px 5px; margin-right: 5px;
+		}
+	}
+	.done .item {
+		border-left: 4px solid @colorDone;
+		
+		.accent-color { color: @colorDone; }
+		.accent-bg {
+			background-color: @colorDone;
+			color: #fff !important;
+			padding: 2px 5px; margin-right: 5px;
+		}
+	}
+	.review .review-item {
+		.listitem-first {
+			border-bottom: 1px solid rgba(246, 246, 246, 0.2);
+			padding-bottom: 15px;
+		}
+	
+		.tolower {
+			padding-left: 5px;
+
+			li { margin: 0 0 15px; .ohidden; }
+			
+			.first  {
+				h2 { .font-size(26); .fnone; } 
+				p  { .fnone; }
+			}
+		}
+		
+		h2, p 	{ .fleft; line-height: 27px; }
+		h2 		{ font-size: 23px; margin: 0 10px 0 0;  }
+		p  		{ font-size: 21px; margin-bottom: 0;  }
+	}
 }
 /*#endregion WRAPPER */
 
@@ -138,28 +130,25 @@
 	    .absolute; .size(100%); padding: 0 10px;
 	    
 	    p.inactive { line-height: 60px; }
-		
-		//&.maxlist { position: relative !important; }
-    }
-    
-    &.scrollable-list {
-        .position(absolute, 50px, 0, 0, 0);
-        overflow-y: scroll;
-        overflow-x: hidden;
-        -webkit-overflow-scrolling: touch;
-        
-        &.bottom45 { bottom: 45px !important; height: auto; }
     }
 }
 
 .scrollable-list {
-    .detail .item { .mauto; }
+	.position(absolute, 50px, 0, 0, 0);
+	overflow-y: scroll;
+	overflow-x: hidden;
+	-webkit-overflow-scrolling: touch;
+	
+	&.bottom45 { bottom: 45px; }
+	
+	.detail .item { .mauto; }
 }
 /*#endregion SCROLL LIST */
 
 /*#region SWIPEVIEW */
 .swipeview-item {
-    .position(absolute, 45px, auto, 0); z-index: 1; width: 100%; overflow: auto;
+    .position(absolute, 45px, auto, 0);
+	width: 100%; overflow: auto; z-index: 1;
         
     .tolower {
         .absolute; .size(100%, auto);
@@ -172,7 +161,6 @@
 	
 	.iscrollbarV { .hide; }
 	.swipeview-active .iscrollbarV { .show; right: 4px; }
-	
 }
 
 .slider-action
@@ -181,8 +169,8 @@
     z-index: 4500; font-size: 150px;
     .dbox; .dbox-center;
     
-    &.prev { left: 0; text-indent: -10px; }
-    &.next { right: 0; text-indent: 10px; }
+    &.prev 	{ left: 0; text-indent: -10px; }
+    &.next 	{ right: 0; text-indent: 10px; }
 }
 
 /*#endregion SWIPEVIEW */
@@ -193,14 +181,14 @@
 	width: 5px; z-index: 100;
 	
     div {
-        position: absolute; width: 100%; z-index: 100;
-
-	    .opacity(0.25); .rounded(4px);
+        .opacity(0.25); .rounded(4px);
+		position: absolute; width: 100%;
 	    background: #fff; border: none;
+		z-index: 100;
     }
 }
 
-.iscroll-wrapper .iscroll-scroller .pivot-list .scroll-list {
+.iscroll-wrapper .scroll-list {
     .iscrollbarV div { .opacity(0); }
     
     &:hover {
@@ -208,21 +196,10 @@
     }
 }
 
-::-webkit-scrollbar {
-    width: 5px; 
-    background: transparent;
-    
-    /* HTC scrolling sluggy fix */
-    display: none;
-}
- 
-::-webkit-scrollbar-track {
-    background: transparent;
-}
- 
-::-webkit-scrollbar-thumb {
-	background: rgba(255, 255, 255, 0.25);
-	.rounded(4px);
+.scroll-out, .scrollable-list {
+	&::-webkit-scrollbar 		{ background: transparent; width: 5px; }
+	&::-webkit-scrollbar-track 	{ background: transparent; }
+	&::-webkit-scrollbar-thumb 	{ background: rgba(255, 255, 255, 0.25); .rounded(4px); }
 }
 /*#endregion SCROLLBARS */
 

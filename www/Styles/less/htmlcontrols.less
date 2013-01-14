@@ -31,13 +31,15 @@ textarea {
     background: url("@{img-folder}/icon_arrow_down.png") #24A0DA 95% 50% no-repeat; z-index: 1500;
     -webkit-appearance: none;
     
-    &:active { outline: none; }
-    &:focus { outline: none; }
+    &:active 	{ outline: none; }
+    &:focus 		{ outline: none; }
 }
 
 /*#region MOBI SCROLL */
-table td { max-width: inherit !important; }
 .dwbg, .dw  {
-    a, span, div, p { .nobox_(); }
+    a, span, div, p { .nobox; }
+}
+.dw {
+	.nobox;
 }
 /*#endregion MOBI SCROLL */

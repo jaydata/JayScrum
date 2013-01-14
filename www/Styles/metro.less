@@ -39,7 +39,7 @@ h1, h2, h3, h4, h5, h6
     &:focus { outline: none; }
 }
 
-a, span, div:not(.dw), p {
+a, span, div, p {
     .box;
         
     &:focus { outline: none; }
@@ -103,7 +103,8 @@ p               	{ margin: 0 0 4px; font-size: 16px; line-height: 21px; }
 }
 
 .main-page-header {
-	.show; .maxsize(inherit, inherit); .ovisible_; .mauto; .reset-p; .tacenter;
+	.show; .tacenter; max-height: inherit;
+	margin: 0 auto; padding: 0;
 		
 	h1 			{ .ohidden;  }
 	.subtitle 	{ .relative; }
@@ -125,10 +126,21 @@ p               	{ margin: 0 0 4px; font-size: 16px; line-height: 21px; }
 /*#region NOT ANDROID */
 body:not(.android)
 {
-    .metro-tiles li, .tile {
+    .metro-tile {
         .transition(0.2s);
         
-        &:active { .scale(0.85); }
+		&:after { .click-via; }
+		
+		&:hover {
+			&:after {
+				@borderWidth: -4px;
+			
+				content: '';
+				display: block; .position(absolute, @borderWidth, @borderWidth, @borderWidth, @borderWidth);
+				border: 3px solid rgba(255, 255, 255, 0.3);
+			}
+		}
+        &:active 	{ .scale(0.85); }
     }
 
     .pivot-default {

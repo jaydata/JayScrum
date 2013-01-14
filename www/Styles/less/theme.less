@@ -1,19 +1,12 @@
-.accent-bg 			{ background-color:#24A0DA; }
+.accent-bg 			{ background-color:#24A0DA; color: #fff; }
+.theme-bg  			{ background: #000; }
 .accent-color, a 	{ color:#24A0DA; }
+.hint-screen 		{ background: url("@{img-folder}/promo_bg.png") top right black no-repeat; }
 
-.tile  { background: @metro-done; border: 1px solid lighten(@metro-done, 10%); }
 .metro-tile-wide  {
 	background: @metro-lightblue; border: 1px solid lighten(@metro-lightblue, 10%);
 	
 	&.pinned  { background: @metro-lightgreen; border: 1px solid lighten(@metro-lightgreen, 10%); }
-}
-.accent-bg 		{ color: #fff; }
-.theme-bg  		{ background:#000; }
-.hint-screen 	{ background: url("@{img-folder}/promo_bg.png") top right black no-repeat; }
-div.pivot {
-    > span.icon-action {
-        .fright;    
-    }
 }
 
 .theme-black {
@@ -101,11 +94,6 @@ div.pivot {
 
 		&.pinned  { background: @metro-lightred; border: 1px solid lighten(@metro-lightred, 10%); }
 	}
-	
-	.metro-tiles li {
-		&.green 	{ background: #db532d !important; }
-		&.lightred  	{ background: #833801; }
-	}
 }
 
 .theme-img_6 {
@@ -128,10 +116,10 @@ div.pivot {
         padding-left: 10px;
 	    border-left: 4px solid @colorNew;
 	                    
-	    .accent-color { color: @colorNew !important; }
+	    .accent-color { color: @colorNew; }
 	    .accent-bg {
-	        background-color: @colorNew !important;
-	        color: #fff !important;
+	        background-color: @colorNew;
+	        color: #fff;
 	        padding: 2px 5px; margin-right: 5px;
 	    }
     }
@@ -139,10 +127,10 @@ div.pivot {
 	    padding-left: 10px;
 	    border-left: 4px solid @colorApproved;
 	                    
-	    .accent-color { color: @colorApproved !important; }
+	    .accent-color { color: @colorApproved; }
 	    .accent-bg {
-	        background-color: @colorApproved !important;
-	        color: #fff !important;
+	        background-color: @colorApproved;
+	        color: #fff;
 	        padding: 2px 5px; margin-right: 5px;
 	    }
     }
@@ -150,10 +138,10 @@ div.pivot {
 	    padding-left: 10px;
 	    border-left: 4px solid @colorCommitted;
 	                    
-	    .accent-color { color: @colorCommitted !important; }
+	    .accent-color { color: @colorCommitted; }
 	    .accent-bg {
-	        background-color: @colorCommitted !important;
-	        color: #fff !important;
+	        background-color: @colorCommitted;
+	        color: #fff;
 	        padding: 2px 5px; margin-right: 5px;
 	    }
     }
@@ -162,37 +150,37 @@ div.pivot {
 .To {
 	border-left: 4px solid @colorTodo;
 	                
-	.accent-color { color: @colorTodo !important; }
+	.accent-color { color: @colorTodo; }
 	.accent-bg {
-	    background-color: @colorTodo !important;
-	    color: #fff !important;
+	    background-color: @colorTodo;
+	    color: #fff;
 	    padding: 2px 5px; margin-right: 5px;
 	    
-	    &:focus { background: white !important; color: Black !important; }
+	    &:focus { background: white; color: Black ; }
 	}
 }
 .In.Progress.item {
 	border-left: 4px solid @colorInprog; 	                
 	                
-	.accent-color { color: @colorInprog !important; }
+	.accent-color { color: @colorInprog; }
 	.accent-bg {
-	    background-color: @colorInprog !important;
-	    color: #fff !important;
+	    background-color: @colorInprog;
+	    color: #fff;
 	    padding: 2px 5px; margin-right: 5px;
 	    
-	    &:focus { background: white !important; color: Black !important; }
+	    &:focus { background: white; color: Black; }
 	}
 }
 .Done.item {
 	border-left: 4px solid @colorDone;
 	                
-	.accent-color { color: @colorDone !important; }
+	.accent-color { color: @colorDone; }
 	.accent-bg {
-	    background-color: @colorDone !important;
-	    color: #fff !important;
+	    background-color: @colorDone;
+	    color: #fff;
 	    padding: 2px 5px; margin-right: 5px;
 	    
-	    &:focus { background: white !important; color: Black !important; }
+	    &:focus { background: white; color: Black; }
 	}
 }
 
@@ -201,23 +189,23 @@ div.pivot {
 	                    
 	h2 { color: @colorRemoved; .tdthrough; }
 	                
-	.accent-color { color: @colorRemoved !important; }
+	.accent-color { color: @colorRemoved; }
 	.accent-bg {
-	    background-color: @colorRemoved !important;
-	    color: #fff !important;
+	    background-color: @colorRemoved;
+	    color: #fff;
 	    padding: 2px 5px; margin-right: 5px;
 	    
-	    &:focus { background: white !important; color: Black !important; }
+	    &:focus { background: white; color: Black; }
 	}
 }
 
 .In.Progress {
 	.accent-bg {
-		background-color: @colorInprog !important; 
-		color: #fff !important;
+		background-color: @colorInprog; 
+		color: #fff;
 	    padding: 2px 5px; margin-right: 5px;
 	}
-	.accent-color { color: @colorInprog !important; }
+	.accent-color { color: @colorInprog; }
 	
 	&.accent-border {
 	    padding-left: 10px;
@@ -228,11 +216,11 @@ div.pivot {
 				
 .To {
 	.accent-bg {
-		background-color: @colorTodo !important;
-		color: #fff !important;
+		background-color: @colorTodo;
+		color: #fff;
 	    padding: 2px 5px; margin-right: 5px;   
 	}
-	.accent-color { color: @colorTodo !important; }
+	.accent-color { color: @colorTodo; }
 	
 	&.accent-border {
 	    padding-left: 10px;
@@ -243,11 +231,11 @@ div.pivot {
 
 .Done {
 	.accent-bg {
-		background-color: @colorDone !important;
-		color: #fff !important;
+		background-color: @colorDone;
+		color: #fff;
 	    padding: 2px 5px; margin-right: 5px;
 	}
-	.accent-color { color: @colorDone !important; }
+	.accent-color { color: @colorDone; }
 	
 	&.accent-border {
 	    padding-left: 10px;
@@ -259,32 +247,32 @@ div.pivot {
 .task-list {
     .In.Progress {
 	    .accent-bg {
-		    background-color: @colorInprog !important; 
+		    background-color: @colorInprog; 
 	    }
-	    .accent-color { color: @colorInprog !important; }
+	    .accent-color { color: @colorInprog; }
     }
 
     .To {
 	    .accent-bg {
-		    background-color: @colorTodo !important;
+		    background-color: @colorTodo;
 	    }
-	    .accent-color { color: @colorTodo !important; }
+	    .accent-color { color: @colorTodo; }
     }
 
     .Done {
 	    .accent-bg {
-		    background-color: @colorDone !important;
+		    background-color: @colorDone;
 	    }
-	    .accent-color { color: @colorDone !important; }
+	    .accent-color { color: @colorDone; }
     }
     
     .true {
-	    border-left: 4px solid @colorBlocked !important;
+	    border-left: 4px solid @colorBlocked;
 	    color: @colorRemoved;
 	                
-	    .accent-color { color: @colorRemoved !important; }
+	    .accent-color { color: @colorRemoved; }
 	    .accent-bg {
-	        background-color: @colorRemoved !important;
+	        background-color: @colorRemoved;
 	    }
 	}
 }

@@ -1,7 +1,7 @@
 /*#region Screen (-480) */
 @media only screen and (max-width : 480px), (max-device-width : 480px) {
 	.main-page-header {
-		.maxsize(@wide-tile-width, 65px); max-width: 228px !important;
+		.maxsize(@wide-tile-width, 65px); max-width: 230px;
 	
 		h1 			{ .tacenter; max-width: inherit; width: auto; height: auto; line-height: 35px; }
 		.subtitle 	{ top: -10px; }
@@ -45,17 +45,12 @@
 		}
 	}
     
-    .metro-tiles-scroll  {
-        top: 0px;
-	}
-	
-	.metro-tiles { max-width: @wide-tile-width; }
-	
-	.tile-group-item { margin: 0 0 15px; }
-	
-	.metro-tile-wide 
-	{
-	    .size(100%, 107px);
+    .metro-tiles-scroll  	{ top: 0; bottom: 0; }
+	.metro-tiles 			{ max-width: @wide-tile-width !important; } /* !important for Android native browser */
+	.tile-group-item 		{ 
+		margin: 0 0 15px; 
+		
+		.metro-tile-wide 	{ .size(100%, 107px); }
 	}
 }
 /*#endregion Screen (-480) */
@@ -107,7 +102,7 @@
 	}
 	
 	.metro-loading {
-	    h1, h2 { font-size: 70px !important; }
+	    h1, h2 { font-size: 70px; }
 	}
 
     .metro-tiles-scroll {
@@ -147,10 +142,10 @@
 /*#region Screen (768+) */
 @media only screen and (min-width: 769px) {
 	
-	.pivot h1 { font-size: 32px !important; margin-bottom: 5px; }
+	.pivot h1 { font-size: 32px; margin-bottom: 5px; }
 	
 	.main-header 
-	{   
+	{
 	    h1 {
 	        line-height: 45px; font-size: 38px;
 	    }
@@ -181,19 +176,17 @@
 	                &:last-child { margin-right: 0; }
 	        
 	                .scroll-list {
-	                    bottom: 0 !important;	                
-	                	            
-	                    .scroller-list { .reset-p; }
+	                    bottom: 0;
 	                }
 	            }
 	        }
         }
 	}
 	
-	.scroll-list { .relative; .show; .fleft; .size(100%, 95%); }
+	/*.scroll-list { .relative; .show; .fleft; .size(100%, 95%); }*/
 	
 	.metro-loading {
-	    h1, h2 { font-size: 65px !important; }
+	    h1, h2 { font-size: 65px; }
 	}
 	
 	.page-setting {
@@ -208,7 +201,7 @@
     }
     
     .metro-tiles-scroll {
-        top: 0;
+        top: 0; bottom: 0;
                 
         .metro-tiles {
             max-width: 456px;

@@ -4,7 +4,7 @@
 
 .detail {
     .size(auto, 100%); .relative;
-    padding: 0 10px; overflow-x: hidden; overflow-y: visible;
+    padding: 0 10px; overflow: hidden; /*overflow-y: visible;*/
     
     .scroll-list    { .size(100%, 100%); }
     .description       { margin: 5px 0 20px; line-height: 24px; .ohidden; .font-size(18); .clear; }
@@ -39,8 +39,6 @@
 	}
 	
 	&.edit {
-	    .static;
-	    
 	    .field {
 		    div { margin-bottom: 8px; }
 		}
