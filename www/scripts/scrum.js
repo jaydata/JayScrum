@@ -303,7 +303,7 @@ $data.Class.define('JayScrum.ScrumApp', JayScrum.FrameApp, null, {
         this.fixedScrollbar = false;
         this.hideScrollbar = false;
         this.scrollbarClass = "iscrollbar";
-        this.bounce = true;
+        this.bounce = true; //TODO: this prop should come from property
         this.lockDirection = true;
         this.checkDOMChanges = checkDomChanges;
         this.onScrollStart = function () {
