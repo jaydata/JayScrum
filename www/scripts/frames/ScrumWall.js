@@ -224,7 +224,7 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
         JayScrum.app.selectedFrame().data().selectedWorkItemActive(wrkItem);
 
         // SWIPEVIEW FOR TASKS
-        if (isEventCall && isEventCall.srcElement.attributes['data-isInRecentlyChangedList'] && isEventCall.srcElement.attributes['data-isInRecentlyChangedList'].value === 'true') {
+        if (isEventCall && isEventCall.currentTarget.attributes['data-isInRecentlyChangedList'] && isEventCall.currentTarget.attributes['data-isInRecentlyChangedList'].value === 'true') {
             JayScrum.app.selectedFrame().activeList = JayScrum.app.selectedFrame().data().recentlyChangedTasks();
         } else if (wrkItem.Type() == "Task" || wrkItem.Type() == "Bug") {
             JayScrum.app.selectedFrame().activeList = JayScrum.app.selectedFrame()._findListById(wrkItem.Id(), wrkItem);
