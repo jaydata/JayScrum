@@ -4,7 +4,7 @@
 
 .detail {
     .size(auto, 100%); .relative;
-    padding: 0 10px; overflow: hidden; /*overflow-y: visible;*/
+    padding: 0 10px; /*overflow: hidden;*/ /*overflow-y: visible;*/
     
     .scroll-list    { .size(100%, 100%); }
     .description       { margin: 5px 0 20px; line-height: 24px; .ohidden; .font-size(18); .clear; }
@@ -18,15 +18,13 @@
 		span { line-height: 21px; }
 		
 	    .input-dropdown  {
-	        .iblock; .size(100%, 28px);
+	        .iblock; .size(100%, 28px); .appearance(none);
 	        font-size: 17px;
 			background: url("@{img-folder}/icon_arrow_down.png") #24A0DA no-repeat;
 	        background-position: 98% 50%;
 	        background-repeat: no-repeat; 
 	        z-index: 1500; padding-right: 20px;
-	        
-	        -webkit-appearance: none;
-	    }
+		}
 		
 		.with-icon 		{ width: 80%; }
 		.icon-action 	{ margin: 0;  }

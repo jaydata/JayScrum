@@ -22,9 +22,6 @@ function initEnvironment(wnd) {
         }
     }, false);
 
-    /*console.log('IsAndroid: ', android?'true':'false');
-    console.log('IsAndroid1: ', window['android']?'true':'false');*/
-
     wnd.setupScroll = function () {
         //var page = document.getElementById('page');
         if (ios) {

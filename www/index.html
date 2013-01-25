@@ -16,7 +16,14 @@
 
     <link rel="stylesheet" href="Styles/metro.css" type="text/css" />
 
-    <script type="text/javascript" src="scripts/libs/zeptojs.min.js"></script>
+    <!--[if IE]>
+        <script  type="text/javascript" src="scripts/libs/jquery-1.9.0.min.js"></script>
+    <![endif]-->
+    
+    <script type="text/javascript">
+        window.jQuery || document.write("<script  type='text/javascript' src='scripts/libs/zeptojs.min.js'>\x3C/script>");
+    </script>
+    
     <script type="text/javascript" src="scripts/libs/q.js"></script>
 
     <!--<script type="text/javascript" src="cordova_mock.js"></script>-->
