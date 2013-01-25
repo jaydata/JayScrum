@@ -1,22 +1,26 @@
 .metro-loading {
-    .position(absolute, 0, auto, auto, 0); .size(100%, 100%);
+    .relative; .size(100%, 100%);
     z-index: 7000;
     
-	.dbox;
-    
-    -moz-box-orient: vertical;
-    -moz-box-pack: center;
-    -moz-box-align: center;
-    
-    -webkit-box-orient: vertical;
-    -webkit-box-pack: center;
-    -webkit-box-align: center;
-    
-    box-orient: vertical;
-    box-pack: center;
-    box-align: center;
-    
-    h1, h2 { .show; .font-size(50); margin-bottom: 30px; }
+	display: -webkit-box;
+	-webkit-box-pack: center;
+	-webkit-box-align: center;
+	
+	display: -moz-box;
+	-moz-box-pack: center;
+	-moz-box-align: center;
+	
+	display: -ms-box;
+	-ms-box-pack: center;
+	-ms-box-align: center;
+	
+	display: box;
+	box-pack: center;
+	box-align: center;
+	
+    h1, h2 {
+		.show; .font-size(50); margin-bottom: 30px;
+	}
 }
 
 .scroll-down {
@@ -78,18 +82,27 @@
     from 	{ -webkit-transform: rotate(0deg); 	 }
     to   		{ -webkit-transform: rotate(360deg); }
 }
+@-webkit-keyframes spin {
+    from 	{ -webkit-transform: rotate(0deg); 	 }
+    to   		{ -webkit-transform: rotate(360deg); }
+}
+@-moz-keyframes spin {
+    from 	{ -moz-transform: rotate(0deg); 	 }
+    to   		{ -moz-transform: rotate(360deg); }
+}
+@-o-keyframes spin {
+    from 	{ -o-transform: rotate(0deg); 	 }
+    to   		{ -o-transform: rotate(360deg); }
+}
+@keyframes spin {
+    from 	{ transform: rotate(0deg); 	 }
+    to   		{ transform: rotate(360deg); }
+}
 
 .ui-icon {
     .show; .size(34px, 34px); .mauto; .opacity(0.9);
     background: url("@{img-folder}/icon_ajaxloader.png") transparent top left no-repeat;
     
-    &.spin {
-        -webkit-transform: rotate(360deg);
-        -webkit-animation-name: spin;
-        -webkit-animation-duration: 0.85s;
-        -webkit-animation-iteration-count: infinite;
-        -webkit-animation-timing-function: linear;
-    }
-    
-    &.inline { maring: 0 5px 0 0 !important; .iblock; .position(relative, 9px); }
+    &.spin   { .animation(spin, 0.85s, infinite, linear); .rotate(360deg); }
+    &.inline  { maring: 0 5px 0 0 !important; .iblock; .position(relative, 9px); }
 }
