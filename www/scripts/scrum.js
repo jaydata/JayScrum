@@ -365,6 +365,7 @@ Q.all([jqReady.promise, pgReady.promise])
     console.log("!!!init");
     initEnvironment(window);
     console.log("!!!env init");
+
     if (window['android']) {
         console.log("!!!backbtn");
         document.addEventListener("backbutton", function (e) {
@@ -377,6 +378,7 @@ Q.all([jqReady.promise, pgReady.promise])
             }
         }, false);
     }
+
     initApplication();
 });
 

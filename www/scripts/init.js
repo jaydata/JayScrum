@@ -1,4 +1,6 @@
 function initEnvironment(wnd) {
+    console.log('IE - initEnvironment');
+
     $data.ajax = wnd.$.ajax;
 
     wnd.ua = navigator.userAgent.toLowerCase();
@@ -53,8 +55,10 @@ function initEnvironment(wnd) {
         }, 1000);
     }
 
+    console.log('IE - before Live');
+
     // HTML EVENTS
-    $("span.chbox-icon").live(eventName, function () {
+    /*$("span.chbox-icon").live(eventName, function () {
         $(this).prev().trigger(eventName);
         $(this).toggleClass('checked');
     });
@@ -88,7 +92,9 @@ function initEnvironment(wnd) {
         $(this).addClass("active");
 
         setSettingsByValue('theme', theme);
-    });
+    });*/
+
+    console.log('IE - after Live');
 
     // LOCAL STORAGE
     wnd.setSetting = function (name, object) {
