@@ -1,6 +1,4 @@
 function initEnvironment(wnd) {
-    console.log('IE - initEnvironment');
-
     $data.ajax = wnd.$.ajax;
 
     wnd.ua = navigator.userAgent.toLowerCase();
@@ -55,46 +53,27 @@ function initEnvironment(wnd) {
         }, 1000);
     }
 
-    console.log('IE - before Live');
-
-    // HTML EVENTS
-    /*$("span.chbox-icon").live(eventName, function () {
-        $(this).prev().trigger(eventName);
-        $(this).toggleClass('checked');
-    });
-    $("div.slider-action.prev").live(eventName, function () {
-        JayScrum.app.selectedFrame().selectedView().swipeView.prev();
-    });
-    $("div.slider-action.next").live(eventName, function () {
-        JayScrum.app.selectedFrame().selectedView().swipeView.next();
-    });
-    $("div.floating-box").live(eventName, function () {
-        $(this).removeClass("visible");
-    });
-
-    // FONT
-    $(".theme-font").live(eventName, function () {
-        var font = this.dataset.font;
+    // UI
+    wnd.setFont = function (element) {
+        var $elem = $(element),
+            font = $elem.attr('data-font');
 
         document.body.setAttribute('data-font', font);
         $(".theme-font.active").removeClass("active");
-        $(this).addClass("active");
+        $elem.addClass("active");
 
         setSettingsByValue('font', font);
-    });
-
-    // THEME
-    $(".theme-box").live(eventName, function () {
-        var theme = this.dataset.theme;
+    }
+    wnd.setTheme = function (element) {
+        var $elem = $(element),
+            theme = $elem.attr('data-theme');
 
         document.body.setAttribute('data-theme', theme);
         $(".theme-box.active").removeClass("active");
-        $(this).addClass("active");
+        $elem.addClass("active");
 
         setSettingsByValue('theme', theme);
-    });*/
-
-    console.log('IE - after Live');
+    }
 
     // LOCAL STORAGE
     wnd.setSetting = function (name, object) {

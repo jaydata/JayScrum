@@ -24,6 +24,7 @@ $data.Class.define('JayScrum.FrameApp', null, null, {
             contentId = 'JayScrumContent';
         }
         this.contentElement = this._createContainer(contentId, this.mainElement);
+        this.contentElement.className = 'jayscrum-content';
 
         //Add databinding
         this.menuElement.setAttribute('data-bind', 'visible: $root.visibleMetaData, template: { name: "jayAppMenu", data: $data }');

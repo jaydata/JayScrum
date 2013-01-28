@@ -50,7 +50,7 @@
 <body data-accent="blue" data-theme="black" data-font="segoeuilight" class="theme-black font-segoeuilight">
     <div id="page" class="app-container">
         <div class="metro-loading">
-            <h1>JayScrum <br /><span class="ui-icon spin"></span></h1>
+            <h1 class="loading-header">JayScrum <br /><span class="ui-icon spin"></span></h1>
         </div>
     </div>
 
@@ -76,41 +76,29 @@
                             <!--/ko-->
                         </li>
                         <!-- /ko -->
-                        <li class="metro-tile metro-tile-wide">
-                            <span data-bind="click: $data.onProjectListShow">
-                                <span class="middle"><span class="icon icon-57 projects"></span></span>
-                                <span class="text">Projects</span>
-                            </span>
+                        <li class="metro-tile metro-tile-wide"  data-bind="click: $data.onProjectListShow">
+                            <span class="icon icon-57 projects"></span>
+                            <span class="text">Projects</span>
                         </li>
-                        <li class="metro-tile metro-tile-wide">
-                            <span data-bind="click: $data.onSprintListShow">
-                                <span class="middle"><span class="icon icon-57 sprints"></span></span>
-                                <span class="text">Sprints</span>
-                            </span>
+                        <li class="metro-tile metro-tile-wide" data-bind="click: $data.onSprintListShow">
+                            <span class="icon icon-57 sprints"></span>
+                            <span class="text">Sprints</span>
                         </li>
-                        <li class="metro-tile metro-tile-wide">
-                            <span data-bind="click: $data.onUserStoryListShow">
-                                <span class="middle"><span class="icon icon-57 us"></span></span>
-                                <span class="text">User Stories</span>
-                            </span>
+                        <li class="metro-tile metro-tile-wide" data-bind="click: $data.onUserStoryListShow">
+                            <span class="icon icon-57 us"></span>
+                            <span class="text">User Stories</span>
                         </li>
-                        <li class="metro-tile tile">
-                            <span data-bind="click: $data.onSettingsShow">
-                                <span class="middle"><span class="icon icon-57 settings"></span></span>
-                                <span class="text">UI Settings</span>
-                            </span>
+                        <li class="metro-tile tile"  data-bind="click: $data.onSettingsShow">
+                            <span class="icon icon-57 settings"></span>
+                            <span class="text">UI Settings</span>
                         </li>
-                        <li class="metro-tile tile">
-                            <span data-bind="click: $data.onRepositorySettingShow">
-                                <span class="middle"><span class="icon icon-57 repos"></span></span>
-                                <span class="text">Repositories</span>
-                            </span>
+                        <li class="metro-tile tile" data-bind="click: $data.onRepositorySettingShow">
+                            <span class="icon icon-57 repos"></span>
+                            <span class="text">Repositories</span>
                         </li>
-                        <li class="metro-tile tile">
-                            <span data-bind="click: $data.onUserSettingShow">
-                                <span class="middle"><span class="icon icon-57 users"></span></span>
-                                <span class="text">Users</span>
-                            </span>
+                        <li class="metro-tile tile" data-bind="click: $data.onUserSettingShow">
+                            <span class="icon icon-57 users"></span>
+                            <span class="text">Users</span>
                         </li>
                     </ul>
                 </div>
@@ -351,52 +339,48 @@
             <div class="icon-action back topleft absolute" data-bind="with: $data.data().selectedWorkItem">
                 <span data-bind="click: $root.selectedFrame().onCancelWorkItem"></span>
             </div>
-            <div id="wrapper-detailed" class="wrapper-detailed scroll-out ohidden">
-                <div class="slider-action prev">‹</div>
-                <div id="swipeview" class="scroller-in">
-                    <div class="list maxlist">
-                        <div id="swipeview-slider" class="swipeview-slider">
-                            <div id="swipeview-masterpage-0" data-bind="with: $data.data().selectedWorkItemPrev">
-                                <div class="pivot-content">
-                                    <div data-bind="attr: { 'class': 'item task noborder' + State() }">
-                                        <div id="swipeview-inside-0" class="swipeview-item">
-                                            <div class="tolower">
-                                                <!-- ko template: { name: 'workItemSelector-template', data: $data }-->
-                                                <!-- /ko-->
-                                            </div>
-                                        </div>
+            <div class="slider-action prev" onclick="JayScrum.app.selectedFrame().selectedView().swipeView.prev();"><span class="arrow">‹</span></div>
+            <div id="swipeview" class="swipeview-container scroller-in">
+                <div id="swipeview-slider" class="swipeview-slider">
+                    <div id="swipeview-masterpage-0" data-bind="with: $data.data().selectedWorkItemPrev">
+                        <div class="pivot-content">
+                            <div data-bind="attr: { 'class': 'item task noborder' + State() }">
+                                <div id="swipeview-inside-0" class="swipeview-item">
+                                    <div class="tolower">
+                                        <!-- ko template: { name: 'workItemSelector-template', data: $data }-->
+                                        <!-- /ko-->
                                     </div>
                                 </div>
                             </div>
-                            <div id="swipeview-masterpage-1" data-bind="with: $data.data().selectedWorkItem">
-                                <div class="pivot-content">
-                                    <div class="item task" data-bind="attr: { 'class': 'item task ' + State() }">
-                                        <div id="swipeview-inside-1" class="swipeview-item">
-                                            <div class="tolower">
-                                                <!-- ko template: { name: 'workItemSelector-template', data: $data }-->
-                                                <!-- /ko-->
-                                            </div>
-                                        </div>
+                        </div>
+                    </div>
+                    <div id="swipeview-masterpage-1" data-bind="with: $data.data().selectedWorkItem">
+                        <div class="pivot-content">
+                            <div class="item task" data-bind="attr: { 'class': 'item task ' + State() }">
+                                <div id="swipeview-inside-1" class="swipeview-item">
+                                    <div class="tolower">
+                                        <!-- ko template: { name: 'workItemSelector-template', data: $data }-->
+                                        <!-- /ko-->
                                     </div>
                                 </div>
                             </div>
-                            <div id="swipeview-masterpage-2" data-bind="with: $data.data().selectedWorkItemNext">
-                                <div class="pivot-content">
-                                    <div class="item task" data-bind="attr: { 'class': 'item task ' + State() }">
-                                        <div id="swipeview-inside-2" class="swipeview-item">
-                                            <div class="tolower">
-                                                <!-- ko template: { name: 'workItemSelector-template', data: $data }-->
-                                                <!-- /ko-->
-                                            </div>
-                                        </div>
+                        </div>
+                    </div>
+                    <div id="swipeview-masterpage-2" data-bind="with: $data.data().selectedWorkItemNext">
+                        <div class="pivot-content">
+                            <div class="item task" data-bind="attr: { 'class': 'item task ' + State() }">
+                                <div id="swipeview-inside-2" class="swipeview-item">
+                                    <div class="tolower">
+                                        <!-- ko template: { name: 'workItemSelector-template', data: $data }-->
+                                        <!-- /ko-->
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="slider-action next">›</div>
             </div>
+            <div class="slider-action next" onclick="JayScrum.app.selectedFrame().selectedView().swipeView.next();"><span class="arrow">›</span></div>
         </div>
         <div class="metro-actionbar detail-view opened" data-bind="with: $data.data().selectedWorkItemActive">
             <ul>
@@ -1129,21 +1113,21 @@
                                 <div class="field pointer">
                                     <div><span class="iblock marginb10">Theme</span></div>
                                     <div class="themes">
-                                        <div data-theme="black" class="theme-box theme-black pointer"></div>
-                                        <div data-theme="darkgray" class="theme-box theme-darkgray pointer"></div>
-                                        <div data-theme="darkblue" class="theme-box theme-darkblue pointer"></div>
-                                        <div data-theme="img_1" class="theme-box theme-bg-thumb thumb-img_1 pointer"></div>
-                                        <div data-theme="img_2" class="theme-box theme-bg-thumb thumb-img_2 pointer"></div>
-                                        <div data-theme="img_3" class="theme-box theme-bg-thumb thumb-img_3 pointer"></div>
-                                        <div data-theme="img_4" class="theme-box theme-bg-thumb thumb-img_4 pointer"></div>
-                                        <div data-theme="img_5" class="theme-box theme-bg-thumb thumb-img_5 pointer"></div>
-                                        <div data-theme="img_6" class="theme-box theme-bg-thumb thumb-img_6 pointer"></div>
+                                        <div onclick="setTheme(this);" data-theme="black" class="theme-box theme-black pointer"></div>
+                                        <div onclick="setTheme(this);" data-theme="darkgray" class="theme-box theme-darkgray pointer"></div>
+                                        <div onclick="setTheme(this);" data-theme="darkblue" class="theme-box theme-darkblue pointer"></div>
+                                        <div onclick="setTheme(this);" data-theme="img_1" class="theme-box theme-bg-thumb thumb-img_1 pointer"></div>
+                                        <div onclick="setTheme(this);" data-theme="img_2" class="theme-box theme-bg-thumb thumb-img_2 pointer"></div>
+                                        <div onclick="setTheme(this);" data-theme="img_3" class="theme-box theme-bg-thumb thumb-img_3 pointer"></div>
+                                        <div onclick="setTheme(this);" data-theme="img_4" class="theme-box theme-bg-thumb thumb-img_4 pointer"></div>
+                                        <div onclick="setTheme(this);" data-theme="img_5" class="theme-box theme-bg-thumb thumb-img_5 pointer"></div>
+                                        <div onclick="setTheme(this);" data-theme="img_6" class="theme-box theme-bg-thumb thumb-img_6 pointer"></div>
                                     </div>
                                 </div>
 
                                 <div class="field fonts pointer">
                                     <div><span class="iblock marginb10">Font</span></div>
-                                    <div data-font="segoewp" class="theme-font font-segoewp field">
+                                    <div data-font="segoewp" class="theme-font font-segoewp field" onclick="setFont(this);">
                                         <h5 class="toupper">Segoe WP</h5>
                                         <h3 class="nomargin">Lorem ipsum dolor</h3>
                                         <p class="nomargin">
@@ -1151,7 +1135,7 @@
                                             veniam.
                                         </p>
                                     </div>
-                                    <div data-font="segoeuilight" class="theme-font font-segoeuilight field">
+                                    <div data-font="segoeuilight" class="theme-font font-segoeuilight field" onclick="setFont(this);">
                                         <h5 class="toupper">Segoe UI Light</h5>
                                         <h3 class="nomargin">Lorem ipsum dolor</h3>
                                         <p class="nomargin">
@@ -1159,7 +1143,7 @@
                                             veniam.
                                         </p>
                                     </div>
-                                    <div data-font="mixed" class="theme-font font-mixed field">
+                                    <div data-font="mixed" class="theme-font font-mixed field" onclick="setFont(this);">
                                         <h5 class="toupper">Segoe UI Light header & SegoeWP content</h5>
                                         <h3 class="nomargin">Lorem ipsum dolor</h3>
                                         <p class="nomargin">
@@ -1433,7 +1417,7 @@
                 <li class="icon-action question abs-right"><span data-bind="click: $data.toggleInfoBox"></span></li>
             </ul>
         </div>
-        <div class="floating-box">
+        <div class="floating-box" onclick="$(this).removeClass('visible');">
             <span class="icon-mini fright">x</span>
             <h3>Need help?</h3>
             <p><span class="icon-action add"><span>&nbsp;</span></span> Connect to epository</p>
