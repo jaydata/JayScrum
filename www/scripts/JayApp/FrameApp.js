@@ -32,7 +32,8 @@ $data.Class.define('JayScrum.FrameApp', null, null, {
         this.visibleContent = ko.observable(true);
         this.visibleLoadingScreen = ko.observable(false);
         this._frameHashTable = {};
-        //TODO csinád meg
+
+        //TODO: fix this
         this.loading = $("div.metro-loading");
     },
     _createContainer:function (elementId, parent) {
@@ -53,7 +54,7 @@ $data.Class.define('JayScrum.FrameApp', null, null, {
     hideLoading:function () {
         JayScrum.app.loading.animate({
             opacity: 0
-        }, 500, 'ease-out', function () {
+        }, 500, function () {
             JayScrum.app.loading.hide();
         });
 

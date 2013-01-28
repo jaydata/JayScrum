@@ -46,7 +46,7 @@ function initEnvironment(wnd) {
         setTimeout(function () {
             loading.animate({
                 opacity: 0
-            }, 500, 'ease-out', function () {
+            }, 500, function () {
                 loading.hide();
 
                 setupScroll();

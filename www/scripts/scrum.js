@@ -297,7 +297,7 @@ $data.Class.define('JayScrum.ScrumApp', JayScrum.FrameApp, null, {
     ApplicationUrl: "http://720007a3-c93e-4410-af6d-16efcc5d3d91.jaystack.net",
     iScrollOptions: function (fn, fn2, checkDomChanges) {
         this.useTransition = true;
-        this.useTransform = !$.os.android;
+        this.useTransform = !window["android"];
         this.hScroll = false;
         this.vScroll = true;
         this.fixedScrollbar = false;
