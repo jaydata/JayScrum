@@ -100,7 +100,7 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
         this.registerMetaView('scrumWallMeta', new JayScrum.FrameView('jayAppMetaDefault'));
         this.defaultViewName = 'scrumWall';
         this.selectMetaView('scrumWallMeta');
-        this.listLoadSize = 7;
+        this.listLoadSize = window['isDesktop'] ? 9999 : 7;
         this.data = ko.observable({
             currentSprint: ko.observable(),
             name: 'scrumWall',

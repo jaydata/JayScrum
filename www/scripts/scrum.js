@@ -81,7 +81,7 @@ $data.Class.define('JayScrum.ScrumApp', JayScrum.FrameApp, null, {
         transition.addClass("animate").parent().find('h1.pivot-default').addClass("animate");
 
         // pull up to load more
-        if (fn) {
+        if (fn && window['isMobileBrowser']) {
             var d = document.createElement('div');
             d.className = "scroll-up list-item";
             d.innerHTML = "<span class='pullUpIcon'></span><span class='pullUpLabel'>Pull up to load more...</span>";
@@ -89,7 +89,7 @@ $data.Class.define('JayScrum.ScrumApp', JayScrum.FrameApp, null, {
         }
 
         // pull down to refresh
-        if (fn2) {
+        if (fn2 && window['isMobileBrowser']) {
             var d = document.createElement('div');
             d.className = "scroll-down list-item";
             d.innerHTML = "<span class='pullDownIcon'></span><span class='pullDownLabel'>Pull down to refresh...</span>";
