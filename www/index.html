@@ -131,7 +131,7 @@
                                 <div class="list" data-bind="foreach: $data.data().recentlyChangedTasks">
                                     <div class="item task list-item" data-bind="attr: { 'class': 'item task list-item ' + State() + ' ' + IsBlocked() }">
                                         <!-- ko if: Title -->
-                                        <h2 class="title margintop tolower" data-isinrecentlychangedlist="true" data-bind="text: Title, click: $root.selectedFrame().onSelectWorkItem"></h2>
+                                        <h2 class="title margintop tolower click-fade" data-isinrecentlychangedlist="true" data-bind="text: Title, click: $root.selectedFrame().onSelectWorkItem"></h2>
                                         <!-- /ko -->
 
                                         <!-- ko if: ParentName -->
@@ -171,7 +171,7 @@
                                 <div class="list" data-bind="foreach: $data.data().todoList">
                                     <div data-bind="attr: { 'class': 'item task list-item ' + IsBlocked() }">
                                         <!-- ko if: Title -->
-                                        <h2 class="title margintop tolower" data-bind="text: Title, click: $root.selectedFrame().onSelectWorkItem"></h2>
+                                        <h2 class="title margintop tolower click-fade" data-bind="text: Title, click: $root.selectedFrame().onSelectWorkItem"></h2>
                                         <!-- /ko -->
 
                                         <!-- ko if: ParentName -->
@@ -212,7 +212,7 @@
                                     <div class="task-template-inprog">
                                         <div data-bind="attr: { 'class': 'item task list-item ' + IsBlocked() }">
                                             <!-- ko if: Title -->
-                                            <h2 class="title margintop tolower" data-bind="text: Title, click: $root.selectedFrame().onSelectWorkItem"></h2>
+                                            <h2 class="title margintop tolower click-fade" data-bind="text: Title, click: $root.selectedFrame().onSelectWorkItem"></h2>
                                             <!-- /ko -->
 
                                             <!-- ko if: AssignedTo -->
@@ -249,7 +249,7 @@
                                 <div class="list" data-bind="foreach: $data.data().doneList">
                                     <div class="item task list-item" data-bind="attr: { 'class': 'item task list-item ' + IsBlocked() }">
                                         <!-- ko if: Title -->
-                                        <h2 class="title margintop tolower" data-bind="text: Title, click: $root.selectedFrame().onSelectWorkItem"></h2>
+                                        <h2 class="title margintop tolower click-fade" data-bind="text: Title, click: $root.selectedFrame().onSelectWorkItem"></h2>
                                         <!-- /ko -->
 
                                         <!-- ko if: ParentName -->
@@ -349,7 +349,7 @@
                 <div id="swipeview-slider" class="swipeview-slider">
                     <div id="swipeview-masterpage-0" data-bind="with: $data.data().selectedWorkItemPrev">
                         <div class="pivot-content">
-                            <div data-bind="attr: { 'class': 'item task noborder' + State() }">
+                            <div data-bind="attr: { 'class': 'item task noborder ' + State() }">
                                 <div id="swipeview-inside-0" class="swipeview-item">
                                     <div class="tolower">
                                         <!-- ko template: { name: 'workItemSelector-template', data: $data }-->
