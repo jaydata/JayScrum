@@ -71,7 +71,7 @@
 
                     <ul class="metro-tiles tolower">
                         <!-- ko foreach: $data.data().activeSprintList -->
-                        <li data-bind="attr: { 'class': $parent.isPinnedSprint($data) ? 'metro-tile metro-tile-wide pinned' : 'metro-tile metro-tile-wide' }, click: $parent.onTaskListShow">
+                        <li data-bind="attr: { 'class': $parent.isPinnedSprint($data) ? 'metro-tile metro-tile-wide pinned chart' : 'metro-tile metro-tile-wide chart' }, click: $parent.onTaskListShow">
                             <span class="day" data-bind="text: Name"></span>
                             <span class="b-right" data-bind="text: moment(FinishDate).diff(moment(), 'days') + ' days left'"></span>
                             <span class="text" data-bind="text: tasksLeft+' task left'"></span>
@@ -519,7 +519,7 @@
         </div>
     </script>
     <script id="workItemSelector-template" type="text/html">
-        <div class="tile-mini accent-bg fright">
+        <div class="tile-mini accent-bg fright" data-bind="click: $root.selectedFrame().onStateChangeWorkItem">
             <span class="icon" data-bind="attr: { 'class': 'icon ' + State() }"></span>
         </div>
         <h1 class="accent-color detail-title" data-bind="text: Title"></h1>
@@ -528,20 +528,40 @@
         <p class="description clear" data-bind="text: Description"></p>
         <!-- /ko -->
 
-        <!-- ko if: ProjectName -->
+        <!-- ko if: Type() == 'Task' -->
+        <!-- ko if: RemainingWork -->
         <div class="field">
-            <div class="tile-small project"></div>
+            <div class="tile-small remaining"></div>
             <div>
-                <span>Project</span><span class="text-medium accent-color" data-bind="text: ProjectName"></span>
+                <span>Remaining Work</span>
+                <!--<span class="text-medium accent-color" data-bind="text: RemainingWork"></span>-->
+
+                <div class="field-holder">
+                    <span class="button-action arrow-up accent-bg click-fade" data-bind="click: $root.selectedFrame().onSubtractHour">-</span>
+                    <input type="number" class="input-mini text-medium accent-bg" data-bind="value: RemainingWork" />
+                    <span class="button-action arrow-down accent-bg click-fade" data-bind="click: $root.selectedFrame().onAddHour">+</span>
+                </div>
+            </div>
+        </div>
+        <!-- /ko -->
+        <!-- /ko -->
+
+        <!-- ko if: AssignedTo -->
+        <div class="field">
+            <div class="tile-small user"></div>
+            <div>
+                <span>Assigned To</span>
+                <!--<span class="text-medium accent-color" data-bind="text: $root.globalData().userFullNames()[AssignedTo()]"></span>-->
+                <select class="input-dropdown accent-bg with-icon" data-bind="options: $root.globalData().userList, optionsText:function(item){return item?JayScrum.app.globalData().userFullNames()[item]+' ('+item+')':'';}, value: AssignedTo"></select>
             </div>
         </div>
         <!-- /ko -->
 
-        <!-- ko if: SprintName -->
+        <!-- ko if: State -->
         <div class="field">
-            <div class="tile-small sprint"></div>
+            <div class="tile-small state"></div>
             <div>
-                <span>Sprint</span><span class="text-medium accent-color" data-bind="text: SprintName"></span>
+                <span>State</span><span class="text-medium accent-color" data-bind="text: State"></span>
             </div>
         </div>
         <!-- /ko -->
@@ -557,11 +577,20 @@
         <!-- /ko -->
         <!-- /ko -->
 
-        <!-- ko if: State -->
+        <!-- ko if: SprintName -->
         <div class="field">
-            <div class="tile-small state"></div>
+            <div class="tile-small sprint"></div>
             <div>
-                <span>State</span><span class="text-medium accent-color" data-bind="text: State"></span>
+                <span>Sprint</span><span class="text-medium accent-color" data-bind="text: SprintName"></span>
+            </div>
+        </div>
+        <!-- /ko -->
+
+        <!-- ko if: ProjectName -->
+        <div class="field">
+            <div class="tile-small project"></div>
+            <div>
+                <span>Project</span><span class="text-medium accent-color" data-bind="text: ProjectName"></span>
             </div>
         </div>
         <!-- /ko -->
@@ -575,14 +604,6 @@
         </div>
         <!-- /ko -->
 
-        <!-- ko if: AssignedTo -->
-        <div class="field">
-            <div class="tile-small user"></div>
-            <div>
-                <span>Assigned To</span><span class="text-medium accent-color" data-bind="text: $root.globalData().userFullNames()[AssignedTo()]"></span>
-            </div>
-        </div>
-        <!-- /ko -->
 
         <!-- ko if: Priority -->
         <div class="field">
@@ -594,15 +615,6 @@
         <!-- /ko -->
 
         <!-- ko if: Type() == 'Task' -->
-        <!-- ko if: RemainingWork -->
-        <div class="field">
-            <div class="tile-small remaining"></div>
-            <div>
-                <span>Remaining Work</span><span class="text-medium accent-color" data-bind="text: RemainingWork"></span>
-            </div>
-        </div>
-        <!-- /ko -->
-
         <!-- ko if: Effort -->
         <div class="field">
             <div class="tile-small effort"></div>

@@ -239,6 +239,8 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
             });
     },
     onSaveWorkItem: function (wrkItem, isEventCall) {
+        console.log("Saving workitem..", wrkItem);
+
         if (!wrkItem.innerInstance.isValid()) {
             $("div#error-msg").addClass("opened");
             $("div#wrapper-detailed-edit").css("bottom", "90px");
@@ -369,6 +371,41 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
         JayScrum.repository.saveChanges(function () {
             JayScrum.app.selectedFrame().onCancelWorkItem(workItem);
         });
+    },
+    onStateChangeWorkItem: function (workItem) {
+        console.log('state changing..', workItem);
+
+        if (workItem.State() == 'To Do') {
+            console.log("TODO > INPROGRESS");
+            workItem.State("In Progress");
+
+        } else if (workItem.State() == 'In Progress') {
+            console.log("INPROGRESS > DONE");
+            workItem.State("Done");
+
+        } else if (workItem.State() == 'Done') {
+            console.log("DONE > TODO");
+            workItem.State("To Do");
+        }
+
+        JayScrum.app.selectedFrame().onSaveWorkItem(workItem);
+    },
+    onSubtractHour: function (workItem, event) {
+        console.log("Subtract workHour", workItem);
+
+        var hourSub = parseInt($(event.target).next().val()) - 1;
+        if (hourSub > 0) {
+            workItem.RemainingWork(hourSub);
+
+            // TODO: save workItem
+        }
+    },
+    onAddHour: function (workItem) {
+        console.log("Add workHour", workItem);
+
+        var hourAdd = parseInt($(event.target).prev().val()) + 1;
+        workItem.RemainingWork(hourAdd);
+        // TODO: save workItem
     },
 
     // Pull up to load more functions
