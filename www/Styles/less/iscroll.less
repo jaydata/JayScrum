@@ -151,7 +151,7 @@
 }
 
 .swipeview-item {
-    .position(absolute, 45px, auto, 0);
+    .position(absolute, 45px, auto, 45px);
 	width: 100%; overflow: auto; z-index: 1;
         
     .tolower {
@@ -172,9 +172,10 @@
     .position(absolute, 0, auto, 0, auto); .size(50px); .pointer; color: rgba(255, 255, 255, 0.3);
     z-index: 4500; font-size: 150px;
     
-    &.prev 	{ left: 0; text-indent: -10px; }
-    &.next 	{ right: 0; text-indent: 10px; }
-	
+    &.prev 	 { left: 0; }
+    &.next 	 { right: 0; text-indent: 10px; }
+	&:active { .tap(); outline: none; }
+
 	.arrow {
 		.show; .size(60px, 100px);
 		.position(absolute, 50%, auto, auto, 50%);	

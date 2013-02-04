@@ -26,11 +26,11 @@
 	&.greenblue     	{ background: #00586d; border: 1px solid lighten(#00586d, 10%); }
 	&.brown         	{ background: #833801; border: 1px solid lighten(#833801, 10%); }
 
-	.text 	{ .capitalize; }
+	.text, .b-right 	{ .capitalize; }
 	
 	.day {  
-		.show; .size(100%, 55px, 30px);  .tacenter; .to-ellipsis;
-		margin: 40px auto 0; max-width: 190px;
+		.show; .size(100%, 55px, 30px);  .taright; .to-ellipsis;
+		margin: 40px auto 0; max-width: 220px;
 		font-size: 28px;
 	}
 
@@ -40,6 +40,13 @@
 .metro-tile-wide {
 	/* LESS */
 	#metro > .tilewide;  .pointer;
+
+	&.chart {
+		background-image: url(../Images/chart.png) !important;
+		background-repeat: no-repeat !important;
+		background-size: 30% !important;
+		background-position: 10px 10px !important;
+	}
 }
 
 .tile-group-item 
