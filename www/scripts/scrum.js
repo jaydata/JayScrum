@@ -80,20 +80,22 @@ $data.Class.define('JayScrum.ScrumApp', JayScrum.FrameApp, null, {
         i_scroll = new iScroll(id, new JayScrum.ScrumApp.iScrollOptions(fn, fn2, checkDomChanges));
         transition.addClass("animate").parent().find('h1.pivot-default').addClass("animate");
 
-        // pull up to load more
-        if (fn && window['isMobileBrowser']) {
-            var d = document.createElement('div');
-            d.className = "scroll-up list-item";
-            d.innerHTML = "<span class='pullUpIcon'></span><span class='pullUpLabel'>Pull up to load more...</span>";
-            transition.find('div.scroller-list').append(d);
-        }
+        if (window['isMobileBrowser']){
+            // pull up to load more
+            if (fn) {
+                var d = document.createElement('div');
+                d.className = "scroll-up list-item";
+                d.innerHTML = "<span class='pullUpIcon'></span><span class='pullUpLabel'>Pull up to load more...</span>";
+                transition.find('div.scroller-list').append(d);
+            }
 
-        // pull down to refresh
-        if (fn2 && window['isMobileBrowser']) {
-            var d = document.createElement('div');
-            d.className = "scroll-down list-item";
-            d.innerHTML = "<span class='pullDownIcon'></span><span class='pullDownLabel'>Pull down to refresh...</span>";
-            transition.find('div.scroller-list').prepend(d);
+            // pull down to refresh
+            if (fn2) {
+                var d = document.createElement('div');
+                d.className = "scroll-down list-item";
+                d.innerHTML = "<span class='pullDownIcon'></span><span class='pullDownLabel'>Pull down to refresh...</span>";
+                transition.find('div.scroller-list').prepend(d);
+            }
         }
         return i_scroll;
     },
@@ -185,6 +187,7 @@ $data.Class.define('JayScrum.ScrumApp', JayScrum.FrameApp, null, {
 
             vScroll = new iScroll(id, {
                 snap: '.pivot',
+                //bounce: false,
                 momentum: false,
                 hScrollbar: false,
                 vScrollbar: false,
@@ -303,7 +306,7 @@ $data.Class.define('JayScrum.ScrumApp', JayScrum.FrameApp, null, {
         this.fixedScrollbar = false;
         this.hideScrollbar = false;
         this.scrollbarClass = "iscrollbar";
-        this.bounce = true; //TODO: this prop should come from property
+        this.bounce = fn && fn2 && window['isMobileBrowser'];
         this.lockDirection = true;
         this.checkDOMChanges = checkDomChanges;
         this.onScrollStart = function () {
