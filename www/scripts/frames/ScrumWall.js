@@ -238,7 +238,7 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
                 JayScrum.app.selectedFrame().selectView('taskEdit')
             });
     },
-    onSaveWorkItem: function (wrkItem, isEventCall) {
+    onSaveWorkItem: function (wrkItem, isEventCall, disableBack) {
         console.log("Saving workitem..", wrkItem);
 
         if (!wrkItem.innerInstance.isValid()) {
@@ -292,7 +292,7 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
         wrkItem.ChangedBy(JayScrum.app.globalData().user().Login());
         //wrkItem.IsBlocked(wrkItem.IsBlocked()==='true'?true:false);
 
-        
+
         JayScrum.app.selectedFrame().data().todoList.remove(function (item) { return item.Id() == wrkItem.Id() });
         JayScrum.app.selectedFrame().data().inProgList.remove(function (item) { return item.Id() == wrkItem.Id() });
         JayScrum.app.selectedFrame().data().doneList.remove(function (item) { return item.Id() == wrkItem.Id() });
@@ -311,7 +311,7 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
             }
         }
         JayScrum.repository.saveChanges(function (error) {
-            JayScrum.app.backView();
+            if (!disableBack) { JayScrum.app.backView(); }
         });
     },
     onCancelWorkItem: function (wrkItem, isEventCall) {
@@ -372,7 +372,8 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
             JayScrum.app.selectedFrame().onCancelWorkItem(workItem);
         });
     },
-    onStateChangeWorkItem: function (workItem) {
+    onStateChangeWorkItem: function (workItem, isEventCall) {
+        JayScrum.repository.WorkItems.attach(workItem);
         console.log('state changing..', workItem);
 
         if (workItem.State() == 'To Do') {
@@ -388,24 +389,25 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
             workItem.State("To Do");
         }
 
-        JayScrum.app.selectedFrame().onSaveWorkItem(workItem);
+        JayScrum.app.selectedFrame().onSaveWorkItem(workItem, isEventCall, true);
     },
     onSubtractHour: function (workItem, event) {
+        JayScrum.repository.WorkItems.attach(workItem);
         console.log("Subtract workHour", workItem);
 
         var hourSub = parseInt($(event.target).next().val()) - 1;
         if (hourSub > 0) {
             workItem.RemainingWork(hourSub);
-
-            // TODO: save workItem
+            JayScrum.app.selectedFrame().onSaveWorkItem(workItem, event, true);
         }
     },
-    onAddHour: function (workItem) {
+    onAddHour: function (workItem, event) {
+        JayScrum.repository.WorkItems.attach(workItem);
         console.log("Add workHour", workItem);
 
         var hourAdd = parseInt($(event.target).prev().val()) + 1;
         workItem.RemainingWork(hourAdd);
-        // TODO: save workItem
+        JayScrum.app.selectedFrame().onSaveWorkItem(workItem, event, true);
     },
 
     // Pull up to load more functions
