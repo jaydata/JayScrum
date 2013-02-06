@@ -99,6 +99,9 @@ $data.Class.define('JayScrum.ScrumApp', JayScrum.FrameApp, null, {
         }
         return i_scroll;
     },
+    initScrollPosition: function (swipeId, swipeMasterId) {
+        $("#" + swipeId).css("top", 20 + $(swipeMasterId + " .detail-title")[0].clientHeight + "px");
+    },
     initSwipeviewById: function (id, list, wrkItemId) {
 
         var swipe = $("div#" + id),
@@ -152,25 +155,22 @@ $data.Class.define('JayScrum.ScrumApp', JayScrum.FrameApp, null, {
                     scroll0.destroy();
                     scroll0 = null;
                 }
+                JayScrum.app.initScrollPosition("swipeview-inside-0", "#swipeview-masterpage-0");
                 scroll0 = JayScrum.app.initScrollById("swipeview-inside-0", null, null, false);
 
                 if (scroll1 != null) {
                     scroll1.destroy();
                     scroll1 = null;
                 }
+                JayScrum.app.initScrollPosition("swipeview-inside-1", "#swipeview-masterpage-1");
                 scroll1 = JayScrum.app.initScrollById("swipeview-inside-1", null, null, false);
 
                 if (scroll2 != null) {
                     scroll2.destroy();
                     scroll2 = null;
                 }
+                JayScrum.app.initScrollPosition("swipeview-inside-2", "#swipeview-masterpage-2");
                 scroll2 = JayScrum.app.initScrollById("swipeview-inside-2", null, null, false);
-
-                /*if ($("div.metro-loading").get(0).style.opacity == "1") {
-                    setTimeout(function () {
-                        JayScrum.app.hideLoading();
-                    }, 0);
-                }*/
             });
             gallery.goToPage(currentIndex);
         }

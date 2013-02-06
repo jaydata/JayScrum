@@ -348,8 +348,9 @@
             <div id="swipeview" class="swipeview-container scroller-in">
                 <div id="swipeview-slider" class="swipeview-slider">
                     <div id="swipeview-masterpage-0" data-bind="with: $data.data().selectedWorkItemPrev">
-                        <div class="pivot-content">
-                            <div data-bind="attr: { 'class': 'item task noborder ' + State() }">
+                        <div class="pivot-content" data-bind="attr: { 'class': State() }">
+                            <h1 class="accent-color detail-title" data-bind="text: Title"></h1>
+                            <div class="item noborder">
                                 <div id="swipeview-inside-0" class="swipeview-item">
                                     <div class="tolower">
                                         <!-- ko template: { name: 'workItemSelector-template', data: $data }-->
@@ -360,8 +361,9 @@
                         </div>
                     </div>
                     <div id="swipeview-masterpage-1" data-bind="with: $data.data().selectedWorkItem">
-                        <div class="pivot-content">
-                            <div class="item task" data-bind="attr: { 'class': 'item task ' + State() }">
+                        <div class="pivot-content" data-bind="attr: { 'class': State() }">
+                            <h1 class="accent-color detail-title" data-bind="text: Title"></h1>
+                            <div class="item noborder">
                                 <div id="swipeview-inside-1" class="swipeview-item">
                                     <div class="tolower">
                                         <!-- ko template: { name: 'workItemSelector-template', data: $data }-->
@@ -372,8 +374,9 @@
                         </div>
                     </div>
                     <div id="swipeview-masterpage-2" data-bind="with: $data.data().selectedWorkItemNext">
-                        <div class="pivot-content">
-                            <div class="item task" data-bind="attr: { 'class': 'item task ' + State() }">
+                        <div class="pivot-content" data-bind="attr: { 'class': State() }">
+                            <h1 class="accent-color detail-title" data-bind="text: Title"></h1>
+                            <div class="item noborder">
                                 <div id="swipeview-inside-2" class="swipeview-item">
                                     <div class="tolower">
                                         <!-- ko template: { name: 'workItemSelector-template', data: $data }-->
@@ -519,8 +522,6 @@
         </div>
     </script>
     <script id="workItemSelector-template" type="text/html">
-        <h1 class="accent-color detail-title" data-bind="text: Title"></h1>
-
         <!-- ko if: Description -->
         <p class="description clear" data-bind="text: Description"></p>
         <!-- /ko -->
