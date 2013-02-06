@@ -312,7 +312,6 @@ function updateConnectedData() {
                         if (project) { wrkItem.ProjectName = project.Name; }
                         if (sprint) { wrkItem.SprintName = sprint.Name; }
                         if (parent) { wrkItem.ParentName = parent.Title; }
-                        console.log("next");
                     }
                     callBackHandler();
                 });
