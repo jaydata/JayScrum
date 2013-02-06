@@ -186,7 +186,7 @@ body:not(.android)
 }
 
 .repo-info {
-    height: auto; z-index: 50; background: rgba(45, 45, 45, 1);
+    height: auto; top: 44px; z-index: 50; background: rgba(45, 45, 45, 1);
     
     ul 	{ padding: 0; }
     p  	{ .taleft; padding: 0 10px; }
@@ -194,6 +194,7 @@ body:not(.android)
     &.opened {
         .transition(); 
         -webkit-transform: translateY(-44px);
+        top: 44px;
     }
 }
 /*#endregion ACTIONBAR */
