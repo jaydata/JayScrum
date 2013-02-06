@@ -233,10 +233,10 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
     },
     onEditWorkItem: function (wrkItem, isEventCall) {
         JayScrum.repository.WorkItems.attach(wrkItem);
-        JayScrum.app.selectedFrame()._onRefreshDropDownLists()
-            .then(function () {
+        /*JayScrum.app.selectedFrame()._onRefreshDropDownLists()
+            .then(function () {*/
                 JayScrum.app.selectedFrame().selectView('taskEdit')
-            });
+            /*});*/
     },
     onSaveWorkItem: function (wrkItem, isEventCall, disableBack) {
         console.log("Saving workitem..", wrkItem);

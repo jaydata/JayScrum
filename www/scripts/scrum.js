@@ -205,7 +205,7 @@ $data.Class.define('JayScrum.ScrumApp', JayScrum.FrameApp, null, {
     },
     _initializeRepositories: function (url, userName, psw) {
         var connectDefer = Q.defer();
-        console.log('!!!! Initialize repository, username: ' + userName + ', password: ' + psw);
+        
         $data.ajax({
             url: url + "/ApplicationDB/sessionlogout",
             success: function () {
@@ -365,9 +365,7 @@ JayScrum.pushObservablesToList = function (list, rawData) {
 
 Q.all([jqReady.promise, pgReady.promise])
 .then(function () {
-    console.log("!!!init");
     initEnvironment(window);
-    console.log("!!!env init");
 
     if (window['android']) {
         console.log("!!!backbtn");
