@@ -1,4 +1,5 @@
 .accent-bg 			{ background-color:#24A0DA; color: #fff; }
+.bg-inactive 		{ background-color:@metro-gray; color: #fff; }
 .theme-bg  			{ background: #000; }
 .accent-color, a 	{ color:#24A0DA; }
 .hint-screen 		{ background: url("@{img-folder}/promo_bg.png") top right black no-repeat; }
@@ -153,6 +154,7 @@
     }
 }
 
+// ============================ TODO ============================ //
 .To {
 	border-left: 4px solid @colorTodo;
 	                
@@ -160,36 +162,57 @@
 	.accent-bg {
 	    background-color: @colorTodo;
 	    color: #fff;
-	    padding: 2px 5px; margin-right: 5px;
 	    
 	    &:focus { background: white; color: Black ; }
 	}
-}
-.In.Progress.item {
-	border-left: 4px solid @colorInprog; 	                
-	                
-	.accent-color { color: @colorInprog; }
-	.accent-bg {
-	    background-color: @colorInprog;
-	    color: #fff;
-	    padding: 2px 5px; margin-right: 5px;
+	&.accent-border {
+	    padding-left: 10px;
 	    
-	    &:focus { background: white; color: Black; }
-	}
-}
-.Done.item {
-	border-left: 4px solid @colorDone;
-	                
-	.accent-color { color: @colorDone; }
-	.accent-bg {
-	    background-color: @colorDone;
-	    color: #fff;
-	    padding: 2px 5px; margin-right: 5px;
-	    
-	    &:focus { background: white; color: Black; }
+	    &.left { border-left: 4px solid @colorTodo; }
 	}
 }
 
+// ============================ IN PROGRESS ============================ //
+.In.Progress {
+	.accent-bg {
+		background-color: @colorInprog; 
+		color: #fff;
+
+	    &:focus { background: white; color: Black; }
+	}
+	.accent-color { color: @colorInprog; }
+	
+	&.accent-border {
+	    padding-left: 10px;
+	    
+	    &.left { border-left: 4px solid @colorInprog; }
+	}
+	&.item {
+		border-left: 4px solid @colorInprog; 	                
+	}
+}
+
+// ============================ DONE ============================ //
+.Done {
+	.accent-bg {
+		background-color: @colorDone;
+		color: #fff;
+
+	    &:focus { background: white; color: Black; }
+	}
+	.accent-color { color: @colorDone; }
+	
+	&.accent-border {
+	    padding-left: 10px;
+	    
+	    &.left { border-left: 4px solid @colorDone; }
+	}
+	&.item {
+		border-left: 4px solid @colorDone;
+	}
+}
+
+// ============================ REMOVED ============================ //
 .Removed.item {
 	border-left: 4px solid @colorRemoved;
 	                    
@@ -202,51 +225,6 @@
 	    padding: 2px 5px; margin-right: 5px;
 	    
 	    &:focus { background: white; color: Black; }
-	}
-}
-
-.In.Progress {
-	.accent-bg {
-		background-color: @colorInprog; 
-		color: #fff;
-	    padding: 2px 5px; margin-right: 5px;
-	}
-	.accent-color { color: @colorInprog; }
-	
-	&.accent-border {
-	    padding-left: 10px;
-	    
-	    &.left { border-left: 4px solid @colorInprog; }
-	}
-}
-				
-.To {
-	.accent-bg {
-		background-color: @colorTodo;
-		color: #fff;
-	    padding: 2px 5px; margin-right: 5px;   
-	}
-	.accent-color { color: @colorTodo; }
-	
-	&.accent-border {
-	    padding-left: 10px;
-	    
-	    &.left { border-left: 4px solid @colorTodo; }
-	}
-}
-
-.Done {
-	.accent-bg {
-		background-color: @colorDone;
-		color: #fff;
-	    padding: 2px 5px; margin-right: 5px;
-	}
-	.accent-color { color: @colorDone; }
-	
-	&.accent-border {
-	    padding-left: 10px;
-	    
-	    &.left { border-left: 4px solid @colorDone; }
 	}
 }
 
