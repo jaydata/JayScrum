@@ -49,6 +49,7 @@ $data.Class.define('JayScrum.Views.UserStorySelected', JayScrum.FrameView, null,
         JayScrum.app.hideLoading();
 
         var self = this;
+        JayScrum.app.initScrollPosition("swipeview-inside-1", "#swipeview");
         setTimeout(function () {
             self.i_scroll = JayScrum.app.initScrollById('swipeview-inside-1', null, null, true);
         }, 350);
