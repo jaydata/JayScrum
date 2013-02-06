@@ -552,7 +552,7 @@
             <div>
                 <span>Assigned To</span>
                 <!--<span class="text-medium accent-color" data-bind="text: $root.globalData().userFullNames()[AssignedTo()]"></span>-->
-                <select class="input-dropdown accent-bg with-icon" data-bind="options: $root.globalData().userList, optionsText:function(item){return item?JayScrum.app.globalData().userFullNames()[item]+' ('+item+')':'';}, value: AssignedTo"></select>
+                <select class="input-dropdown accent-bg with-icon" data-bind="event:{change:$root.selectedFrame().onChangeAssignTo}, options: $root.globalData().userList, optionsText:function(item){return item?JayScrum.app.globalData().userFullNames()[item]+' ('+item+')':'';}, value: AssignedTo"></select>
             </div>
         </div>
         <!-- /ko -->

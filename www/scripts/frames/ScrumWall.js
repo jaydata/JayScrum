@@ -409,6 +409,13 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
         workItem.RemainingWork(hourAdd);
         JayScrum.app.selectedFrame().onSaveWorkItem(workItem, event, true);
     },
+    onChangeAssignTo: function(workItem, event){
+        JayScrum.repository.WorkItems.attach(workItem);
+
+        workItem.AssignedTo(event.currentTarget.value);
+        JayScrum.app.selectedFrame().onSaveWorkItem(workItem, event, true);
+    },
+
 
     // Pull up to load more functions
     onRecentlyChangedListPullUp: function (scroller) {
