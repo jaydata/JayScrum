@@ -1,7 +1,7 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-    <title>JayScrum</title>
+    <title>JayScrum - Agile Task Manager</title>
     <meta charset="utf-8" />
     <meta name="HandheldFriendly" content="True" />
     <meta name="MobileOptimized" content="320" />
@@ -529,13 +529,10 @@
         <!-- /ko -->
 
         <!-- ko if: Type() == 'Task' -->
-        <!-- ko if: RemainingWork -->
         <div class="field">
             <div class="tile-small remaining"></div>
             <div>
                 <span>Remaining Work</span>
-                <!--<span class="text-medium accent-color" data-bind="text: RemainingWork"></span>-->
-
                 <div class="field-holder">
                     <span class="button-action arrow-up accent-bg click-fade" data-bind="click: $root.selectedFrame().onSubtractHour">-</span>
                     <input type="number" class="input-mini text-medium accent-bg" data-bind="value: RemainingWork" />
@@ -544,18 +541,14 @@
             </div>
         </div>
         <!-- /ko -->
-        <!-- /ko -->
 
-        <!-- ko if: AssignedTo -->
         <div class="field">
             <div class="tile-small user"></div>
             <div>
                 <span>Assigned To</span>
-                <!--<span class="text-medium accent-color" data-bind="text: $root.globalData().userFullNames()[AssignedTo()]"></span>-->
-                <select class="input-dropdown accent-bg with-icon" data-bind="event:{change:$root.selectedFrame().onChangeAssignTo}, options: $root.globalData().userList, optionsText:function(item){return item?JayScrum.app.globalData().userFullNames()[item]+' ('+item+')':'';}, value: AssignedTo"></select>
+                <select class="input-dropdown accent-bg with-icon" data-bind="event: { change:$root.selectedFrame().onChangeAssignTo }, options: $root.globalData().userList, optionsText:function(item){return item?JayScrum.app.globalData().userFullNames()[item]+' ('+item+')':'';}, value: AssignedTo"></select>
             </div>
         </div>
-        <!-- /ko -->
 
         <!-- ko if: State -->
         <div class="field">
