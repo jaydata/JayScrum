@@ -442,8 +442,7 @@
 
                                 <div class="field">
                                     <div><span>Assigned To</span></div>
-                                    <select class="input-dropdown accent-bg with-icon" data-bind="options: $root.globalData().userList, optionsText:function(item){return item?JayScrum.app.globalData().userFullNames()[item]+' ('+item+')':'';}, value: AssignedTo">
-                                    </select>
+                                    <select class="input-dropdown accent-bg with-icon" data-bind="options: $root.globalData().userList, optionsText:function(item){return item?JayScrum.app.globalData().userFullNames()[item]+' ('+item+')':'';}, value: AssignedTo"></select>
                                     <span class="icon-action update fright" data-bind="click: $root.onRefreshUserList"><span></span></span>
                                 </div>
 
@@ -556,18 +555,14 @@
         <div class="field">
             <div class="tile-small user"></div>
             <div>
-                <span>Change Assign</span>
-                <div class="field-holder">
-                    <span class="accent-bg btn-metro btn-medium" data-bind="click: $root.selectedFrame().onAssignToMe">Assign work item to me</span>
-                </div>
-            </div>
-        </div>
-
-        <div class="field">
-            <div class="tile-small user"></div>
-            <div>
                 <span>Currently Assigned To</span>
                 <span class="text-medium accent-color" data-bind="text: AssignedTo() == '' ? '-' : AssignedTo()"></span>
+
+                <!--ko if: AssignedTo() != $root.globalData().user().Login() -->
+                <div class="field-holder inner">
+                    <span class="accent-bg btn-metro btn-medium" data-bind="click: $root.selectedFrame().onAssignToMe">Assign work item to me</span>
+                </div>
+                <!-- /ko -->
             </div>
         </div>
 

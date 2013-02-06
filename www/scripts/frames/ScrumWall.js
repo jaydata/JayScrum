@@ -287,6 +287,8 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
         wrkItem.ChangedBy(JayScrum.app.globalData().user().Login());
         //wrkItem.IsBlocked(wrkItem.IsBlocked()==='true'?true:false);
 
+        // TODO: error on Save from workItemEditor View
+        //console.log(typeof isEventCall.currentTarget.value == "undefined", wrkItem.AssignedTo());
 
         JayScrum.app.selectedFrame().data().todoList.remove(function (item) { return item.Id() == wrkItem.Id() });
         JayScrum.app.selectedFrame().data().inProgList.remove(function (item) { return item.Id() == wrkItem.Id() });
@@ -431,7 +433,6 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
     },
     onAssignToMe: function (workItem, event) {
         if (workItem.AssignedTo() == JayScrum.app.globalData().user().Login()) { return; }
-        console.log(workItem.AssignedTo(), JayScrum.app.globalData().user().Login());
 
         JayScrum.repository.WorkItems.attach(workItem);
         workItem.AssignedTo(JayScrum.app.globalData().user().Login());
