@@ -555,8 +555,18 @@
         <div class="field">
             <div class="tile-small user"></div>
             <div>
-                <span>Assigned To</span>
-                <select class="input-dropdown accent-bg with-icon" data-bind="event: { change:$root.selectedFrame().onChangeAssignTo }, options: $root.globalData().userList, optionsText:function(item){return item?JayScrum.app.globalData().userFullNames()[item]+' ('+item+')':'';}, value: AssignedTo"></select>
+                <span>Change Assign</span>
+                <div class="field-holder">
+                    <span class="accent-bg btn-metro btn-medium" data-bind="click: $root.selectedFrame().onAssignToMe">Assign work item to me</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="field">
+            <div class="tile-small user"></div>
+            <div>
+                <span>Currently Assigned To</span>
+                <span class="text-medium accent-color" data-bind="text: AssignedTo() == '' ? '-' : AssignedTo()"></span>
             </div>
         </div>
 

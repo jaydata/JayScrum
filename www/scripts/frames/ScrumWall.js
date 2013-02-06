@@ -429,6 +429,14 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
         workItem.AssignedTo(event.currentTarget.value);
         JayScrum.app.selectedFrame().onSaveWorkItem(workItem, event, true);
     },
+    onAssignToMe: function (workItem, event) {
+        if (workItem.AssignedTo() == JayScrum.app.globalData().user().Login()) { return; }
+        console.log(workItem.AssignedTo(), JayScrum.app.globalData().user().Login());
+
+        JayScrum.repository.WorkItems.attach(workItem);
+        workItem.AssignedTo(JayScrum.app.globalData().user().Login());
+        JayScrum.app.selectedFrame().onSaveWorkItem(workItem, event, true);
+    },
 
     // ================================================ PULL UP TO LOAD MORE ================================================ // 
     onRecentlyChangedListPullUp: function (scroller) {
