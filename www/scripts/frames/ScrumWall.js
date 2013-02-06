@@ -233,14 +233,9 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
     },
     onEditWorkItem: function (wrkItem, isEventCall) {
         JayScrum.repository.WorkItems.attach(wrkItem);
-        /*JayScrum.app.selectedFrame()._onRefreshDropDownLists()
-            .then(function () {*/
-                JayScrum.app.selectedFrame().selectView('taskEdit')
-            /*});*/
+        JayScrum.app.selectedFrame().selectView('taskEdit')
     },
     onSaveWorkItem: function (wrkItem, isEventCall, disableBack) {
-        console.log("Saving workitem..", wrkItem);
-
         if (!wrkItem.innerInstance.isValid()) {
             $("div#error-msg").addClass("opened");
             $("div#wrapper-detailed-edit").css("bottom", "90px");
@@ -372,28 +367,48 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
             JayScrum.app.selectedFrame().onCancelWorkItem(workItem);
         });
     },
+
+    // ================================================ STATE CHANGING ================================================ //
     onStateChangeWorkItem: function (workItem, isEventCall) {
         JayScrum.repository.WorkItems.attach(workItem);
-        console.log('state changing..', workItem);
 
         if (workItem.State() == 'To Do') {
-            console.log("TODO > INPROGRESS");
             workItem.State("In Progress");
 
         } else if (workItem.State() == 'In Progress') {
-            console.log("INPROGRESS > DONE");
             workItem.State("Done");
 
         } else if (workItem.State() == 'Done') {
-            console.log("DONE > TODO");
             workItem.State("To Do");
         }
 
         JayScrum.app.selectedFrame().onSaveWorkItem(workItem, isEventCall, true);
     },
+    onStateToTodo: function (workItem, isEventCall) {
+        if (workItem.State() == "To Do") { return; }
+
+        JayScrum.repository.WorkItems.attach(workItem);
+        workItem.State("To Do");
+        JayScrum.app.selectedFrame().onSaveWorkItem(workItem, isEventCall, true);
+    },
+    onStateToInprog: function (workItem, isEventCall) {
+        if (workItem.State() == "In Progress") { return; }
+
+        JayScrum.repository.WorkItems.attach(workItem);
+        workItem.State("In Progress");
+        JayScrum.app.selectedFrame().onSaveWorkItem(workItem, isEventCall, true);
+    },
+    onStateToDone: function (workItem, isEventCall) {
+        if (workItem.State() == "Done") { return; }
+
+        JayScrum.repository.WorkItems.attach(workItem);
+        workItem.State("Done");
+        JayScrum.app.selectedFrame().onSaveWorkItem(workItem, isEventCall, true);
+    },
+
+    // ================================================ FIELD CHANGING ================================================ //
     onSubtractHour: function (workItem, event) {
         JayScrum.repository.WorkItems.attach(workItem);
-        console.log("Subtract workHour", workItem);
 
         var hourSub = parseInt($(event.target).next().val()) - 1;
         if (hourSub > 0) {
@@ -403,7 +418,6 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
     },
     onAddHour: function (workItem, event) {
         JayScrum.repository.WorkItems.attach(workItem);
-        console.log("Add workHour", workItem);
 
         var hourAdd = parseInt($(event.target).prev().val()) + 1;
         workItem.RemainingWork(hourAdd);
@@ -416,8 +430,7 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
         JayScrum.app.selectedFrame().onSaveWorkItem(workItem, event, true);
     },
 
-
-    // Pull up to load more functions
+    // ================================================ PULL UP TO LOAD MORE ================================================ // 
     onRecentlyChangedListPullUp: function (scroller) {
         var q = JayScrum.app.selectedFrame().recentlyChangedListQuery;
         if (JayScrum.app.selectedFrame().data().myTasks()) {
@@ -481,7 +494,7 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
             });
     },
 
-    // Pull  down to refresh
+    // ================================================ PULL DOWN TO REFRESH ================================================ // 
     onRecentlyChangedListPullDown: function (scroller) {
         var loadingPromise = Q.defer();
         var q = JayScrum.app.selectedFrame().recentlyChangedListQuery;

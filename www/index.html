@@ -519,14 +519,24 @@
         </div>
     </script>
     <script id="workItemSelector-template" type="text/html">
-        <div class="tile-mini accent-bg fright" data-bind="click: $root.selectedFrame().onStateChangeWorkItem">
-            <span class="icon" data-bind="attr: { 'class': 'icon ' + State() }"></span>
-        </div>
         <h1 class="accent-color detail-title" data-bind="text: Title"></h1>
 
         <!-- ko if: Description -->
         <p class="description clear" data-bind="text: Description"></p>
         <!-- /ko -->
+
+        <div class="field">
+            <div class="tile-small state"></div>
+            <div>
+                <span>State</span>
+
+                <div class="field-holder">
+                    <span class="tile-mini accent-bg" data-bind="click: $root.selectedFrame().onStateToTodo, attr: { 'class': State() == 'To Do' ? 'tile-mini accent-bg' : 'tile-mini bg-inactive' }"><span class="icon To Do"></span></span>
+                    <span class="tile-mini accent-bg" data-bind="click: $root.selectedFrame().onStateToInprog, attr: { 'class': State() == 'In Progress' ? 'tile-mini accent-bg' : 'tile-mini bg-inactive' }"><span class="icon In Progress"></span></span>
+                    <span class="tile-mini accent-bg" data-bind="click: $root.selectedFrame().onStateToDone, attr: { 'class': State() == 'Done' ? 'tile-mini accent-bg' : 'tile-mini bg-inactive' }"><span class="icon Done"></span></span>
+                </div>
+            </div>
+        </div>
 
         <!-- ko if: Type() == 'Task' -->
         <div class="field">
@@ -549,15 +559,6 @@
                 <select class="input-dropdown accent-bg with-icon" data-bind="event: { change:$root.selectedFrame().onChangeAssignTo }, options: $root.globalData().userList, optionsText:function(item){return item?JayScrum.app.globalData().userFullNames()[item]+' ('+item+')':'';}, value: AssignedTo"></select>
             </div>
         </div>
-
-        <!-- ko if: State -->
-        <div class="field">
-            <div class="tile-small state"></div>
-            <div>
-                <span>State</span><span class="text-medium accent-color" data-bind="text: State"></span>
-            </div>
-        </div>
-        <!-- /ko -->
 
         <!-- ko if: Type() == 'Task' -->
         <!-- ko if: ParentName -->
