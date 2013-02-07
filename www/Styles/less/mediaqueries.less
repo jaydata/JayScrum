@@ -1,4 +1,4 @@
-/*#region Screen (-480) */
+//====================================================== Screen (-480) ======================================================//
 @media only screen and (max-width : 480px), (max-device-width : 480px) {
 	.main-page-header {
 		.maxsize(@wide-tile-width, 65px); max-width: 230px;
@@ -53,9 +53,8 @@
 		.metro-tile-wide 	{ .size(100%, 107px); }
 	}
 }
-/*#endregion Screen (-480) */
 
-/*#region Screen (480-768) */
+//====================================================== Screen (480-768) ======================================================//
 @media only screen and (min-width: 481px) and (max-width : 768px), (min-device-width : 480px) and (max-device-width : 768px) {
 	
 	.main-page-header  {
@@ -118,10 +117,18 @@
 	.detail .field .with-icon {
 		width: 89%;
 	}
-}
-/*#endregion Screen (480-768) */
 
-/*#region iPad Portrait */
+	.swipeview-container {
+		max-width: 75%;
+		margin: 0 auto;
+	}
+
+	.detail-title {
+		margin-left: 0;
+	}
+}
+
+//====================================================== Screen iPad Portrait ======================================================//
 @media only screen and (max-width: 768px) and (min-width: 768px) and (orientation:portrait){
     .metro-tiles-scroll {
         top: 0;
@@ -141,9 +148,8 @@
     
     .slider-action { width: 100px; }
 }
-/*#endregion iPad Portrait */
 
-/*#region Screen (768+) */
+//====================================================== Screen (768+) ======================================================//
 @media only screen and (min-width: 769px) {
 	
 	.pivot h1 { font-size: 32px; margin-bottom: 5px; }
@@ -233,9 +239,8 @@
 		width: 93%;
 	}
 }
-/*#endregion  Screen (768+) */
     
-/*#region Screen (1024+) */
+//====================================================== Screen (1024+) ======================================================//
 @media only screen and (min-width:1024px) {
 	h1 { .font-size(45); }
 		
@@ -253,4 +258,3 @@
         > .icon-action { margin-left: 0; }
     }
 }
-/*#endregion Screen (1024+) */
