@@ -174,7 +174,10 @@
     
     &.prev 	 { left: 0; }
     &.next 	 { right: 0; text-indent: 10px; }
-	&:active { .tap(); outline: none; }
+	&:active, &:focus { 
+		.tap(); outline: none; 
+		-webkit-user-modify: read-write-plaintext-only;
+	}
 
 	.arrow {
 		.show; .size(60px, 100px);
