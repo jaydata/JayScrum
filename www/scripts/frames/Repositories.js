@@ -168,11 +168,13 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
         });
     },
     _initializeRepositoriesFrame: function () {
-        console.log('-== 1. initialize repository frame');
+        //console.log('-== 1. initialize repository frame');
+
         var app = this;
         var redirect = !arguments[0];
         this.localContext.Repositories.toArray(function (result) {
-            console.log("-== 2. Load repo settings: " + JSON.stringify(result));
+            //console.log("-== 2. Load repo settings: " + JSON.stringify(result));
+
             app.data().settings([]);
             result.forEach(function (repo) {
                 app.data().settings.push(repo.asKoObservable());
@@ -183,10 +185,13 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
             JayScrum.app.hideLoading();
 
             if (JayScrum.app.selectedFrame().data().isSupportedPurchase()) {
-                console.log('-== 3. Call cordova transactions');
+                //console.log('-== 3. Call cordova transactions');
+
                 cordova.exec(function (transactions) {
-                    console.log('-== 4. Load transactions: ' + JSON.stringify(transactions));
+                    //console.log('-== 4. Load transactions: ' + JSON.stringify(transactions));
+
                     var newTransactions = [];
+
                     //TODO: 1st run hack fix it
                     if (transactions.length == 0 && redirect) {
                         setTimeout(function () {
@@ -218,8 +223,10 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
 
     _sendProvisionReq: function (transactions) {
         var provisionReqDef = Q.defer();
-        console.log(JSON.stringify(transactions));
-        console.log("-== 5.1. Request to Service metadata: " + JayScrum.ScrumApp.ApplicationUrl + "/Service/$metadata");
+
+        //console.log(JSON.stringify(transactions));
+        //console.log("-== 5.1. Request to Service metadata: " + JayScrum.ScrumApp.ApplicationUrl + "/Service/$metadata");
+
         $data.service(JayScrum.ScrumApp.ApplicationUrl + "/Service/$metadata", function (factory, contextType) {
             var provisionContext = factory();
             provisionContext.Provision(JSON.stringify(transactions))
@@ -230,8 +237,9 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
         return provisionReqDef.promise;
     },
     _createNewRepoOrUpdateStatus: function (transactions) {
-        console.log("-== 5. create or update tran");
-        console.log(JSON.stringify(transactions));
+        //console.log("-== 5. create or update tran");
+        //console.log(JSON.stringify(transactions));
+
         for (var i = 0; i < transactions.length; i++) {
             if (!transactions[i].DevPayLoad.Title) {
                 transactions[i].DevPayLoad.Title = transactions[i].DevPayLoad.title;
@@ -242,15 +250,17 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
         }
         JayScrum.app.selectedFrame()._sendProvisionReq(transactions)
         .then(function (result) {
-            console.log("-== 6. create database ok");
-            console.log(result);
+            //console.log("-== 6. create database ok");
+            //console.log(result);
+
             var redirect = false;
             for (var i = 0; i < result.length; i++) {
                 console.log("-== 7/0 i count: " + i + ", tracked entities: " + JayScrum.app.selectedFrame().localContext.stateManager.trackedEntities.length)
                 var repoItem = JayScrum.app.selectedFrame().data().settings().filter(function (item) { return item.OrderId() == result[i].OrderId })[0];
                 if (repoItem) {
                     if (repoItem.Status() != result[i].Status) {
-                        console.log("-== 7/1. update status")
+                        //console.log("-== 7/1. update status")
+
                         repoItem.Status(result[i].Status);
                         var updatItem = new JayScrum.Settings.Repository({ Id: repoItem.Id(), Status: '' });
                         JayScrum.app.selectedFrame().localContext.Repositories.attach(updatItem);
@@ -258,7 +268,8 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
                         redirect = true;
                     }
                 } else {
-                    console.log("-== 7/2. Add new repo: " + JSON.stringify(result[i]));
+                    //console.log("-== 7/2. Add new repo: " + JSON.stringify(result[i]));
+
                     if (result[i].DevPayLoad.Title) {
                         var repo = new JayScrum.Settings.Repository({
                             Title: result[i].DevPayLoad.Title,
@@ -268,17 +279,19 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
                             UserName: result[i].DevPayLoad.UserName,
                             Password: result[i].DevPayLoad.Password
                         });
-                        console.log("###!!! new repo orderid: " + repo.OrderId);
+                        //console.log("###!!! new repo orderid: " + repo.OrderId);
+
                         JayScrum.app.selectedFrame().localContext.add(repo);
                         redirect = true;
                     }
                 }
             }
-            console.log("-== 8. redirect: " + redirect + " tracked entities: " + JayScrum.app.selectedFrame().localContext.stateManager.trackedEntities.length);
+            //console.log("-== 8. redirect: " + redirect + " tracked entities: " + JayScrum.app.selectedFrame().localContext.stateManager.trackedEntities.length);
+
             if (redirect) {
                 JayScrum.app.selectedFrame().localContext.saveChanges({
                     success: function () {
-                        console.log("-== 9/1. save new repos");
+                        //console.log("-== 9/1. save new repos");
                         JayScrum.app.selectedFrame()._initializeRepositoriesFrame();
                     },
                     error: function (error) {
@@ -308,12 +321,13 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
             return;
         }
         JayScrum.app.showLoading();
+
         var url = repoSetting.RealUrl() || repoSetting.Url();
         //If url is only 4 char, it is a smart url and must resolve it
         if (url.length == 4) {
             JayScrum.app._getFullUrl(url, 'admin', 'admin')
             .then(function (realUrl) {
-                console.log("Resolved url: " + url);
+                //console.log("Resolved url: " + url);
                 JayScrum.app.selectedFrame().localContext.attach(repoSetting);
                 repoSetting.RealUrl(realUrl);
                 JayScrum.app.selectedFrame().localContext.saveChanges(function () {
@@ -344,10 +358,6 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
         var entity = JayScrum.app.selectedFrame().localContext.Repositories.attachOrGet(item);
         JayScrum.app.selectedFrame().data().selectedSetting(entity.asKoObservable());
         JayScrum.app.selectedFrame().data().settings(null);
-
-        /*JayScrum.app.selectedFrame().hideActionBar();
-        JayScrum.app.selectedFrame().selectedView().i_scroll.destroy();
-        JayScrum.app.selectedFrame().selectedView().i_scroll = JayScrum.app.initScrollById('settingPageScroll');*/
         JayScrum.app.selectedFrame().selectView("addsetting");
     },
     deleteSetting: function (item) {
@@ -361,12 +371,6 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
         this.localContext.Repositories.add(newItem);
         this.data().settings(null);
         this.data().selectedSetting(newItem.asKoObservable());
-        /*
-        JayScrum.app.selectedFrame().hideActionBar();
-        JayScrum.app.selectedFrame().selectedView().i_scroll.destroy();
-        JayScrum.app.selectedFrame().selectedView().i_scroll = JayScrum.app.initScrollById('settingPageScroll');
-        */
-
         JayScrum.app.selectedFrame().selectView("addsetting");
     },
     buyDatabase: function () {
@@ -390,9 +394,6 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
         JayScrum.app.selectedFrame().localContext.saveChanges(function () {
             JayScrum.app.selectedFrame()._initializeRepositoriesFrame();
         });
-
-        /*JayScrum.app.selectedFrame().selectedView().i_scroll.destroy();
-        JayScrum.app.selectedFrame().selectedView().i_scroll = JayScrum.app.initScrollById("settingPageScroll");*/
         JayScrum.app.selectedFrame().selectView("settings");
     },
     cancelSetting: function (item) {
@@ -400,10 +401,6 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
         JayScrum.app.selectedFrame().data().selectedSetting(null);
         JayScrum.app.selectedFrame().data().isRegistration(false);
         JayScrum.app.selectedFrame()._initializeRepositoriesFrame();
-
-        //JayScrum.app.selectedFrame().hideActionBar();
-        //JayScrum.app.selectedFrame().selectedView().i_scroll.destroy();
-        //JayScrum.app.selectedFrame().selectedView().i_scroll = JayScrum.app.initScrollById("settingPageScroll");
         JayScrum.app.backView();
     },
     onFrameChangingFrom: function (newFrameMeta, oldFrameMeta, initData, frame) {
@@ -445,7 +442,7 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
         if (item.UserName() && item.Password()) {
             JayScrum.app.selectedFrame().data().subscriptionState('appStore');
             JayScrum.app.selectedFrame().selectView('subscription');
-            console.log('-== 91. subscribe db: ' + JSON.stringify(item.innerInstance));
+            //console.log('-== 91. subscribe db: ' + JSON.stringify(item.innerInstance));
             cordova.exec(JayScrum.app.selectedFrame()._successSubscriptionRequest,
                 JayScrum.app.selectedFrame()._cordovaFailCallback,
                 "InAppBilling",
@@ -464,19 +461,21 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
             return;
         }
         JayScrum.app.selectedFrame().data().subscriptionState('storm');
-        console.log('-== 92/2. success subscribe');
+        //console.log('-== 92/2. success subscribe');
 
         var getTranCount = 0;
         var getTranFn = function () {
             cordova.exec(function (transactions) {
-                console.log('-== 4. Load transactions: ' + JSON.stringify(transactions));
+                //console.log('-== 4. Load transactions: ' + JSON.stringify(transactions));
                 var newTransactions = [];
                 var oId = JayScrum.app.selectedFrame().data().selectedSetting().OrderId();
                 var tran = transactions.filter(function (t) { return t.OrderId == oId; })[0];
+
                 //TODO: remove before publish
                 //if (getTranCount < 5) {
                 //    tran = undefined;
                 //}
+
                 //transaction is not ready at AppStore, wait and retry 3 times
                 if (!tran) {
                     if (getTranCount < 5) {
@@ -498,7 +497,7 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
                         JayScrum.app.selectedFrame().localContext.saveChanges(function () {
                             JayScrum.app.selectedFrame().data().subscriptionState('finish');
                         });
-                        console.log("result: ", result);
+                        //console.log("result: ", result);
                     })
                     .fail(function (error) { console.log(error);JayScrum.app.selectedFrame().data().subscriptionState('faild');});
 
@@ -531,7 +530,8 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
     },
 
     getTransactionsClick: function (item) {
-        console.log('getTransactions: ' + JSON.stringify(item));
+        //console.log('getTransactions: ' + JSON.stringify(item));
+
         cordova.exec(JayScrum.app.selectedFrame()._cordovaSuccessCallback,
             JayScrum.app.selectedFrame()._cordovaFailCallback,
             "InAppBilling",
