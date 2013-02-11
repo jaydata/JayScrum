@@ -85,7 +85,8 @@ $data.Class.define('JayScrum.Frames.Projects', JayScrum.Frame, null, {
         return dataLoadPromis.promise;
     },
     _restData:function(){
-        console.log('reset data');
+        //console.log('reset data');
+
         this.data().projectList.removeAll();
         this.data().userStoriesOfProject.removeAll();
         this.data().selectedProject(null);

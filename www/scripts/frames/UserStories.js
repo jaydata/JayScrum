@@ -123,7 +123,8 @@ $data.Class.define('JayScrum.Frames.UserStories', JayScrum.Frame, null, {
         return loadingPromise.promise;
     },
     _resetData: function(){
-        console.log('reset data');
+        //console.log('reset data');
+
         this.data().userStoryList.removeAll();
         this.data().userStoriesInSprintList.removeAll();
         this.data().selectedUserStoryTaskList.removeAll();

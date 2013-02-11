@@ -76,7 +76,8 @@ $data.Class.define('JayScrum.Frames.Sprints', JayScrum.Frame, null, {
         return loadingPromise.promise;
     },
     _resetData: function(){
-        console.log('reset data');
+        //console.log('reset data');
+
         this.data().sprintList.removeAll();
         this.data().selectedSprint(null);
     },
