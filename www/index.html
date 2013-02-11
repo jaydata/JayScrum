@@ -873,12 +873,12 @@
         </div>
     </script>
     <script type="text/html" id="sprintEditView-template">
-        <div class="maxw768">
-            <div class="icon-action back topleft" data-bind="with: $data.data().selectedSprint, click: onCancelSprint"></div>
+        <div class="maxw768" data-bind="with: $data.data().selectedSprint">
+            <div class="icon-action back topleft" data-bind="click: $parent.onCancelSprint"></div>
             <div class="'main-header not-main-page">
                 <h1 class="title">Sprint data</h1>
             </div>
-            <div class="detail edit" data-bind="with: $data.data().selectedSprint">
+            <div class="detail edit">
                 <div id="transition-iteration-edit" class="scroll-out">
                     <div class="scroll-in">
                         <div class="list">
@@ -962,12 +962,12 @@
         </div>
     </script>
     <script type="text/html" id="projectEditView-template">
-        <div class="maxw768">
-            <div class="icon-action back topleft" data-bind="with: $data.data().selectedProject, click: onCancelProject"></div>
+        <div class="maxw768" data-bind="with: $data.data().selectedProject">
+            <div class="icon-action back topleft" data-bind="click: $parent.onCancelProject"></div>
             <div class="main-header with-back">
                 <h1 class="title">Project data</h1>
             </div>
-            <div class="detail edit" data-bind="with: $data.data().selectedProject">
+            <div class="detail edit">
                 <div id="transition-projects" class="scroll-out">
                     <div class="scroll-in">
                         <div class="list">
