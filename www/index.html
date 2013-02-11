@@ -112,15 +112,11 @@
     </script>
 
     <script type="text/html" id="scrumWall-template">
-        <div class="icon-action back topleft">
-            <span data-bind="click: $root.backView"></span>
-        </div>
+        <div class="icon-action back topleft" data-bind="click: $root.backView"></div>
         <div class="main-header not-main-page with-back">
             <h1 class="title pivot-default animate click-via" data-bind="text: $root.selectedFrame().data().name"></h1>
         </div>
-        <div class="icon-action main-top-right more-circle">
-            <span data-bind="click: $root.selectedFrame().onShowToolbar"></span>
-        </div>
+        <div class="icon-action main-top-right more-circle" data-bind="click: $root.selectedFrame().onShowToolbar"></div>
         <div id="wrapper" class="iscroll-wrapper metro-pivot reset">
             <div id="scroller" class="iscroll-scroller">
                 <div class="pivot-list">
@@ -329,21 +325,19 @@
         </div>
         <div class="metro-actionbar">
             <ul>
-                <li class="icon-action add"><span data-bind="click: $root.selectedFrame().onAddWorkItem"></span></li>
+                <li class="icon-action add" data-bind="click: $root.selectedFrame().onAddWorkItem"></li>
                 <!-- ko ifnot: $data.data().myTasks -->
-                <li class="icon-action user"><span data-bind="click: $root.selectedFrame().onChangeMyTasksFilter"></span></li>
+                <li class="icon-action user" data-bind="click: $root.selectedFrame().onChangeMyTasksFilter"></li>
                 <!-- /ko -->
                 <!-- ko if: $data.data().myTasks -->
-                <li class="icon-action list"><span data-bind="click: $root.selectedFrame().onChangeMyTasksFilter"></span></li>
+                <li class="icon-action list" data-bind="click: $root.selectedFrame().onChangeMyTasksFilter"></li>
                 <!-- /ko -->
             </ul>
         </div>
     </script>
     <script type="text/html" id="taskSelectView-template">
         <div class="detail maxw768">
-            <div class="icon-action back topleft absolute" data-bind="with: $data.data().selectedWorkItem">
-                <span data-bind="click: $root.selectedFrame().onCancelWorkItem"></span>
-            </div>
+            <div class="icon-action back topleft absolute" data-bind="with: $data.data().selectedWorkItem, click: $root.selectedFrame().onCancelWorkItem"></div>
             <div class="slider-action prev" onclick="JayScrum.app.selectedFrame().selectedView().swipeView.prev();"><span class="arrow">‹</span></div>
             <div id="swipeview" class="swipeview-container scroller-in">
                 <div id="swipeview-slider" class="swipeview-slider">
@@ -392,17 +386,15 @@
         </div>
         <div class="metro-actionbar detail-view opened" data-bind="with: $data.data().selectedWorkItemActive">
             <ul>
-                <li class="icon-action edit"><span data-bind="click: $root.selectedFrame().onEditWorkItem"></span></li>
-                <li class="icon-action update"><span data-bind="click: $root.selectedFrame().onUpdateWorkItem"></span></li>
-                <li class="icon-action delete"><span data-bind="click: $root.selectedFrame().onDeleteWorkItem"></span></li>
+                <li class="icon-action edit" data-bind="click: $root.selectedFrame().onEditWorkItem"></li>
+                <li class="icon-action update" data-bind="click: $root.selectedFrame().onUpdateWorkItem"></li>
+                <li class="icon-action delete" data-bind="click: $root.selectedFrame().onDeleteWorkItem"></li>
             </ul>
         </div>
     </script>
     <script type="text/html" id="taskEditView-template">
         <div class="maxw768">
-            <div class="icon-action back topleft" data-bind="with: $data.data().selectedWorkItemActive">
-                <span data-bind="click: $root.selectedFrame().onCancelWorkItem"></span>
-            </div>
+            <div class="icon-action back topleft" data-bind="with: $data.data().selectedWorkItemActive, click: $root.selectedFrame().onCancelWorkItem"></div>
             <div class="main-header">
                 <h1 class="title">Edit workitem</h1>
             </div>
@@ -413,7 +405,7 @@
         </div>
         <div class="metro-actionbar detail-view-edit opened" data-bind="with: $data.data().selectedWorkItemActive">
             <ul>
-                <li class="icon-action save"><span data-bind="click: $root.selectedFrame().onSaveWorkItem"></span></li>
+                <li class="icon-action save" data-bind="click: $root.selectedFrame().onSaveWorkItem"></li>
             </ul>
         </div>
         <div id="error-msg" class="metro-actionbar" style="height: 88px; z-index: 50; color: Red;" data-bind="with: $data.data().selectedWorkItemActive">
@@ -443,7 +435,7 @@
                                 <div class="field">
                                     <div><span>Assigned To</span></div>
                                     <select class="input-dropdown accent-bg with-icon" data-bind="options: $root.globalData().userList, optionsText:function(item){return item?JayScrum.app.globalData().userFullNames()[item]+' ('+item+')':'';}, value: AssignedTo"></select>
-                                    <span class="icon-action update fright" data-bind="click: $root.onRefreshUserList"><span></span></span>
+                                    <span class="icon-action update fright" data-bind="click: $root.onRefreshUserList"></span>
                                 </div>
 
                                 <div class="field">
@@ -488,7 +480,7 @@
                                     <div><span>User story</span></div>
                                     <select class="input-dropdown accent-bg with-icon" data-bind="options: $root.globalData().userStoryList, optionsText: 'Title', optionsValue: 'Id', value: WorkItem_WorkItem">
                                     </select>
-                                    <span class="icon-action update fright" data-bind="click: $root.onRefreshUserStoryList"><span></span></span>
+                                    <span class="icon-action update fright" data-bind="click: $root.onRefreshUserStoryList"></span>
                                 </div>
                                 <!-- /ko -->
 
@@ -496,14 +488,14 @@
                                     <div><span>Sprint</span></div>
                                     <select class="input-dropdown accent-bg with-icon" data-bind="options: $root.globalData().sprintList, optionsText: 'Name', optionsValue: 'Id', value: WorkItem_Sprint">
                                     </select>
-                                    <span class="icon-action update fright" data-bind="click: $root.onRefreshSprintListForDropDown"><span></span></span>
+                                    <span class="icon-action update fright" data-bind="click: $root.onRefreshSprintListForDropDown"></span>
                                 </div>
 
                                 <div class="field">
                                     <div><span>Project</span></div>
                                     <select class="input-dropdown accent-bg with-icon" data-bind="options: $root.globalData().projectList, optionsText: 'Name', optionsValue: 'Id', value: WorkItem_Project">
                                     </select>
-                                    <span class="icon-action update fright" data-bind="click: $root.onRefreshProjectList"><span></span></span>
+                                    <span class="icon-action update fright" data-bind="click: $root.onRefreshProjectList"></span>
                                 </div>
 
                                 <div class="field">
@@ -636,15 +628,11 @@
     </script>
 
     <script type="text/html" id="userStory-template">
-        <div class="icon-action back topleft">
-            <span data-bind="click: $root.backView"></span>
-        </div>
+        <div class="icon-action back topleft" data-bind="click: $root.backView"></div>
         <div class="main-header not-main-page">
             <h1 class="title" data-bind="text: $root.selectedFrame().data().name"></h1>
         </div>
-        <div class="icon-action main-top-right add">
-            <span data-bind="click: $root.selectedFrame().onAddUserStory"></span>
-        </div>
+        <div class="icon-action main-top-right add" data-bind="click: $root.selectedFrame().onAddUserStory"></div>
         <div id="wrapper" class="iscroll-wrapper metro-pivot reset wrapper-container">
             <div id="scroller" class="iscroll-scroller">
                 <div class="pivot-list us-dated-list">
@@ -681,7 +669,7 @@
         <div class="list" data-bind="foreach: $data">
             <div class="item task list-item" data-bind="attr: { 'class': 'item task list-item ' + State() + ' ' + IsBlocked() }">
                 <!-- ko if: Title -->
-                <h2 class="title margintop tolower" data-bind="text: Title, click: $root.selectedFrame().onSelectUserStory"></h2>
+                <h2 class="title margintop tolower click-fade" data-bind="text: Title, click: $root.selectedFrame().onSelectUserStory"></h2>
                 <!-- /ko -->
 
                 <!-- ko if: ProjectName -->
@@ -709,9 +697,7 @@
     </script>
     <script type="text/html" id="userStorySelectView-template">
         <div class="detail maxw768" data-bind="with: $data.data().selectedUserStory">
-            <div class="icon-action back topleft absolute">
-                <span data-bind="click: $root.selectedFrame().onCancelUserStory"></span>
-            </div>
+            <div class="icon-action back topleft absolute"  data-bind="click: $root.selectedFrame().onCancelUserStory"></div>
             <div id="wrapper-detailed" class="wrapper-detailed scroll-out ohidden">
                 <div id="swipeview" class="scroller-in">
                     <div class="list maxlist" data-bind="attr: { 'class': State() }">
@@ -731,15 +717,12 @@
 
                                                 <span class="fright">
                                                     <!-- ko if: $parent.data().selectedUserStoryTaskList().length < 1 -->
-                                                    <span class="icon-action download marginr5_" data-bind="click: $root.selectedFrame().onRefreshWorkItemsOfUserStory">
-                                                        <span></span></span>
+                                                    <span class="icon-action download marginr5_" data-bind="click: $root.selectedFrame().onRefreshWorkItemsOfUserStory"></span>
                                                     <!-- /ko -->
                                                     <!-- ko if: $parent.data().selectedUserStoryTaskList().length > 0 -->
-                                                    <span class="icon-action update marginr5_" data-bind="click: $root.selectedFrame().onRefreshWorkItemsOfUserStory">
-                                                        <span></span></span>
+                                                    <span class="icon-action update marginr5_" data-bind="click: $root.selectedFrame().onRefreshWorkItemsOfUserStory"></span>
                                                     <!-- /ko -->
-                                                    <span class="icon-action add marginr5_" data-bind="width:$data.data, click: $root.selectedFrame().onAddNewTaskToUserStory">
-                                                        <span></span></span>
+                                                    <span class="icon-action add marginr5_" data-bind="width:$data.data, click: $root.selectedFrame().onAddNewTaskToUserStory"></span>
                                                 </span>
                                             </h2>
 
@@ -748,7 +731,7 @@
                                                 <!--ko foreach: $parent.data().selectedUserStoryTaskList()-->
                                                 <div data-bind="attr: { 'class': IsBlocked() == true ? 'item task list-item pointer ' + IsBlocked() : 'item task list-item pointer ' + State() }, click: $root.selectedFrame().onSelectWorkItemOfUserStory">
                                                     <!-- ko if: Title -->
-                                                    <h2 class="title margintop" data-bind="text: Title"></h2>
+                                                    <h2 class="title margintop click-fade" data-bind="text: Title"></h2>
                                                     <!-- /ko -->
 
                                                     <!-- ko if: ParentName -->
@@ -791,17 +774,15 @@
         </div>
         <div class="metro-actionbar detail-view opened" data-bind="with: $data.data().selectedUserStory">
             <ul>
-                <li class="icon-action edit"><span data-bind="click: $root.selectedFrame().onEditUserStory"></span></li>
-                <li class="icon-action update"><span data-bind="click: $root.selectedFrame().onUpdateUserStory"></span></li>
-                <li class="icon-action delete"><span data-bind="click: $root.selectedFrame().onDeleteUserStory"></span></li>
+                <li class="icon-action edit" data-bind="click: $root.selectedFrame().onEditUserStory"></li>
+                <li class="icon-action update" data-bind="click: $root.selectedFrame().onUpdateUserStory"></li>
+                <li class="icon-action delete" data-bind="click: $root.selectedFrame().onDeleteUserStory"></li>
             </ul>
         </div>
     </script>
     <script type="text/html" id="userStoryEditView-template">
         <div class="maxw768">
-            <div class="icon-action back topleft" data-bind="with: $data.data().selectedUserStory">
-                <span data-bind="click: $root.selectedFrame().onCancelUserStory"></span>
-            </div>
+            <div class="icon-action back topleft" data-bind="with: $data.data().selectedUserStory, click: $root.selectedFrame().onCancelUserStory"></div>
             <div class="main-header">
                 <h1 class="title">Edit userstory</h1>
             </div>
@@ -812,7 +793,7 @@
         </div>
         <div class="metro-actionbar detail-view-edit opened" data-bind="with: $data.data().selectedUserStory">
             <ul>
-                <li class="icon-action save"><span data-bind="click: $root.selectedFrame().onSaveUserStory"></span></li>
+                <li class="icon-action save" data-bind="click: $root.selectedFrame().onSaveUserStory"></li>
             </ul>
         </div>
     </script>
@@ -838,9 +819,7 @@
 
     <script type="text/html" id="sprint-template">
         <div class="maxw768">
-            <div class="icon-action back topleft">
-                <span data-bind="click: $root.backView"></span>
-            </div>
+            <div class="icon-action back topleft" data-bind="click: $root.backView"></div>
             <div class="main-header not-main-page">
                 <h1 class="title" data-bind="text: $root.selectedFrame().data().name"></h1>
             </div>
@@ -855,12 +834,12 @@
                                         <h2 class="title margintop tolower accent-color">
                                             <span class="value click-fade" data-bind="text: Name, click: $parent.onSelectSprint"></span>
                                             
-                                            <span class="icon-action edit fright click-fade" data-bind="click: $parent.onEditSprint"><span></span></span>
+                                            <span class="icon-action edit fright click-fade" data-bind="click: $parent.onEditSprint"></span>
                                             <!-- ko if: $data.isPinned() -->
-                                            <span class="icon-action unpin fright click-fade" title="Click to unpin from dashboard"><span data-bind="click: $parent.onPinSprint"></span></span>
+                                            <span class="icon-action unpin fright click-fade" title="Click to unpin from dashboard" data-bind="click: $parent.onPinSprint"></span>
                                             <!-- /ko -->
                                             <!-- ko ifnot: $data.isPinned() -->
-                                            <span class="icon-action pin fright click-fade" title="Click to pin to dashboard"><span data-bind="click: $parent.onPinSprint"></span></span>
+                                            <span class="icon-action pin fright click-fade" title="Click to pin to dashboard"data-bind="click: $parent.onPinSprint"></span>
                                             <!-- /ko -->
                                         </h2>
 
@@ -889,15 +868,13 @@
                 <!-- ko if: $data.data().sprintList().length == 0 -->
                 <li class="hint-bubble">Click to add a Sprint</li>
                 <!-- /ko -->
-                <li class="icon-action add"><span data-bind="click: $data.onAddSprint"></span></li>
+                <li class="icon-action add" data-bind="click: $data.onAddSprint"></li>
             </ul>
         </div>
     </script>
     <script type="text/html" id="sprintEditView-template">
         <div class="maxw768">
-            <div class="icon-action back topleft" data-bind="with: $data.data().selectedSprint">
-                <span data-bind="click: $parent.onCancelSprint"></span>
-            </div>
+            <div class="icon-action back topleft" data-bind="with: $data.data().selectedSprint, click: onCancelSprint"></div>
             <div class="'main-header not-main-page">
                 <h1 class="title">Sprint data</h1>
             </div>
@@ -930,11 +907,9 @@
         </div>
         <div class="metro-actionbar detail-view-edit" data-bind="with: $data.data().selectedSprint">
             <ul>
-                <li class="icon-action save"><span data-bind="click: $parent.onSaveSprint"></span>
-                </li>
+                <li class="icon-action save" data-bind="click: $parent.onSaveSprint"></li>
                 <!--ko if:$data.Id()!==null-->
-                <li class="icon-action delete"><span data-bind="click: $parent.onDeleteSprint"></span>
-                </li>
+                <li class="icon-action delete" data-bind="click: $parent.onDeleteSprint"></li>
                 <!--/ko-->
             </ul>
         </div>
@@ -942,9 +917,7 @@
 
     <script type="text/html" id="project-template">
         <div class="maxw768">
-            <div class="icon-action back topleft">
-                <span data-bind="click: $root.backView"></span>
-            </div>
+            <div class="icon-action back topleft" data-bind="click: $root.backView"></div>
             <div class="main-header with-back not-main-page">
                 <h1 class="title" data-bind="text: $root.selectedFrame().data().name"></h1>
             </div>
@@ -959,7 +932,7 @@
                                     <div class="item task list-item reset-p clear">
                                         <h2 class="title margintop tolower accent-color">
                                             <span class="value click-fade" data-bind="text: Name, click: $parent.onSelectProject"></span>
-                                            <span class="icon-action edit fright" data-bind="click: $parent.onEditProject"><span></span></span>
+                                            <span class="icon-action edit fright" data-bind="click: $parent.onEditProject"></span>
                                         </h2>
 
                                         <p data-bind="text: Description"></p>
@@ -982,9 +955,7 @@
                         <!-- ko if: $data.data().projectList().length == 0 -->
                         <li class="hint-bubble">Click to add a Project</li>
                         <!-- /ko -->
-                        <li class="icon-action add">
-                            <span data-bind="click: $data.onAddProject"></span>
-                        </li>
+                        <li class="icon-action add" data-bind="click: $data.onAddProject"></li>
                     </ul>
                 </div>
             </div>
@@ -992,9 +963,7 @@
     </script>
     <script type="text/html" id="projectEditView-template">
         <div class="maxw768">
-            <div class="icon-action back topleft" data-bind="with: $data.data().selectedProject">
-                <span data-bind="click: $parent.onCancelProject"></span>
-            </div>
+            <div class="icon-action back topleft" data-bind="with: $data.data().selectedProject, click: onCancelProject"></div>
             <div class="main-header with-back">
                 <h1 class="title">Project data</h1>
             </div>
@@ -1024,20 +993,16 @@
         </div>
         <div class="metro-actionbar detail-view-edit" data-bind="with: $data.data().selectedProject">
             <ul>
-                <li class="icon-action save"><span data-bind="click: $parent.onSaveProject"></span>
-                </li>
+                <li class="icon-action save" data-bind="click: $parent.onSaveProject"></li>
                 <!--ko if: $data.Id-->
-                <li class="icon-action delete"><span data-bind="click: $parent.onDeleteProject"></span>
-                </li>
+                <li class="icon-action delete" data-bind="click: $parent.onDeleteProject"></li>
                 <!--/ko-->
             </ul>
         </div>
     </script>
     <script type="text/html" id="projectSelectView-template">
         <div class="maxw768">
-            <div class="icon-action back topleft">
-                <span data-bind="click: $root.backView"></span>
-            </div>
+            <div class="icon-action back topleft" data-bind="click: $root.backView"></div>
             <div class="main-header with-back not-main-page">
                 <h1 class="title" data-bind="text: $data.data().selectedProject().Name"></h1>
             </div>
@@ -1056,15 +1021,12 @@
 
                                                 <span class="fright">
                                                     <!-- ko if: $parent.data().userStoriesOfProject().length < 1 -->
-                                                    <span class="icon-action download marginr5_" data-bind="click: $root.selectedFrame().onRefreshUserStoriesOfProject">
-                                                        <span></span></span>
+                                                    <span class="icon-action download marginr5_" data-bind="click: $root.selectedFrame().onRefreshUserStoriesOfProject"></span>
                                                     <!-- /ko -->
                                                     <!-- ko if: $parent.data().userStoriesOfProject().length > 0 -->
-                                                    <span class="icon-action update marginr5_" data-bind="click: $root.selectedFrame().onRefreshUserStoriesOfProject">
-                                                        <span></span></span>
+                                                    <span class="icon-action update marginr5_" data-bind="click: $root.selectedFrame().onRefreshUserStoriesOfProject"></span>
                                                     <!-- /ko -->
-                                                    <span class="icon-action add marginr5_" data-bind="width:$data.data, click: $root.selectedFrame().onAddNewUserStoryToProject">
-                                                        <span></span></span>
+                                                    <span class="icon-action add marginr5_" data-bind="width:$data.data, click: $root.selectedFrame().onAddNewUserStoryToProject"></span>
                                                 </span>
                                             </h2>
 
@@ -1074,7 +1036,7 @@
                                                 <!--ko foreach: $parent.data().userStoriesOfProject()-->
                                                 <div data-bind="attr: { 'class': IsBlocked() == true ? 'item task list-item pointer ' + IsBlocked() : 'item task list-item pointer ' + State() }, click: $root.selectedFrame().onSelectUserStoryOfProject">
                                                     <!-- ko if: Title -->
-                                                    <h2 class="title margintop" data-bind="text: Title"></h2>
+                                                    <h2 class="title margintop click-fade" data-bind="text: Title"></h2>
                                                     <!-- /ko -->
 
                                                     <!-- ko if: ProjectName -->
@@ -1117,9 +1079,7 @@
 
     <script type="text/html" id="guiSettingPage-template">
         <div class="maxw768">
-            <div class="icon-action back topleft">
-                <span data-bind="click: $root.backView"></span>
-            </div>
+            <div class="icon-action back topleft" data-bind="click: $root.backView"></div>
             <div class="main-header not-main-page">
                 <h1 class="title" data-bind="text: $root.selectedFrame().data().name"></h1>
             </div>
@@ -1233,9 +1193,7 @@
     </script>
     <script type="text/html" id="repositories-addsetting">
         <div id="settingPage" class="page-setting">
-            <div class="icon-action back topleft" data-bind="with: $data.data().selectedSetting">
-                <span data-bind="click: $parent.cancelSetting"></span>
-            </div>
+            <div class="icon-action back topleft" data-bind="with: $data.data().selectedSetting, click: cancelSetting"></div>
 
             <div class="main-header with-back">
                 <h1 class="title">add online repository</h1>
@@ -1287,9 +1245,7 @@
     </script>
     <script type="text/html" id="repositories-addsubscription">
         <div id="settingPage" class="page-setting">
-            <div class="icon-action back topleft" data-bind="with: $data.data().selectedSetting">
-                <span data-bind="click: $parent.cancelSetting"></span>
-            </div>
+            <div class="icon-action back topleft" data-bind="with: $data.data().selectedSetting, click: cancelSetting"></div>
 
             <div class="main-header with-back">
                 <h1 class="title">Subscribe for an online repo</h1>
@@ -1343,9 +1299,7 @@
     </script>
     <script type="text/html" id="repositories-template">
         <div id="settingPage" class="page-setting">
-            <div class="icon-action back topleft">
-                <span data-bind="click: $root.backView"></span>
-            </div>
+            <div class="icon-action back topleft" data-bind="click: $root.backView"></div>
 
             <div class="main-header with-back">
                 <h1 class="title">repositories</h1>
@@ -1369,16 +1323,16 @@
 
                                 <div class="actions actions-right">
                                     <!--ko if: $data.Status() == 'static' || $data.Status() == 'ready'-->
-                                    <span class="icon-action connect" data-bind="click: $parent.connectTo"><span></span></span>
+                                    <span class="icon-action connect" data-bind="click: $parent.connectTo"></span>
                                     <!--/ko-->
                                     <!--ko ifnot: $data.Id() == -1-->
-                                    <span class="icon-action edit" data-bind="click: $parent.editSetting"><span></span></span>
+                                    <span class="icon-action edit" data-bind="click: $parent.editSetting"></span>
                                     <!--ko if: $data.Status() == 'static'-->
-                                    <span class="icon-action delete" data-bind="click: $parent.deleteSetting"><span></span></span>
+                                    <span class="icon-action delete" data-bind="click: $parent.deleteSetting"></span>
                                     <!--/ko-->
                                     <!--ko ifnot: $data.Status() == 'static'-->
                                     <!--ko if: $data.Status() == 'ready'-->
-                                    <span class="icon-action nomoney" data-bind="click: $parent.unSubscriptionDatabase"><span></span></span>
+                                    <span class="icon-action nomoney" data-bind="click: $parent.unSubscriptionDatabase"></span>
                                     <!--/ko-->
 
                                     <!--ko2 ifnot: $data.Status() == 'ready'-->
@@ -1404,9 +1358,7 @@
         <div id="repo-info" class="repo-info metro-actionbar">
             <ul id="repo-info-scroll">
                 <li>
-                    <div class="icon-action back topleft">
-                        <span data-bind="click: $data.toggleInfoBox"></span>
-                    </div>
+                    <div class="icon-action back topleft" data-bind="click: $data.toggleInfoBox"></div>
                     <h1 class="title-left">About JayScrum</h1>
                     <p>Version: JayScrum 1.0 </p>
 
@@ -1429,19 +1381,19 @@
         </div>
         <div id="settingPageActionBar" class="metro-actionbar opened">
             <ul>
-                <li class="icon-action add"><span data-bind="click: $data.addSetting"></span></li>
+                <li class="icon-action add" data-bind="click: $data.addSetting"></li>
                 <!--ko if: $data.data().isSupportedPurchase-->
-                <li class="icon-action money"><span data-bind="click: $data.buyDatabase"></span></li>
-                <li class="icon-action update last"><span data-bind="click: $data.refreshSettings"></span></li>
+                <li class="icon-action money" data-bind="click: $data.buyDatabase"></li>
+                <li class="icon-action update last" data-bind="click: $data.refreshSettings"></li>
                 <!--/ko-->
-                <li class="icon-action question abs-right"><span data-bind="click: $data.toggleInfoBox"></span></li>
+                <li class="icon-action question abs-right" data-bind="click: $data.toggleInfoBox"></li>
             </ul>
         </div>
         <div class="floating-box" onclick="$(this).removeClass('visible');">
             <span class="icon-mini fright">x</span>
             <h3>Need help?</h3>
-            <p><span class="icon-action add"><span>&nbsp;</span></span> Connect to repository</p>
-            <p><span class="icon-action money"><span>&nbsp;</span></span> Subscribe for an online repository</p>
+            <p><span class="icon-action add"></span> Connect to repository</p>
+            <p><span class="icon-action money"></span> Subscribe for an online repository</p>
             <p>If you need help please <a class="color-white" href="mailto:support@jaystack.com">contact us</a>!</p>
 
             <span class="tail-down">&nbsp;</span>
@@ -1449,9 +1401,7 @@
     </script>
     <script type="text/html" id="repositories-subscription">
         <div id="settingPage" class="page-setting">
-            <div class="icon-action back topleft">
-                <span data-bind="click: $root.backView"></span>
-            </div>
+            <div class="icon-action back topleft" data-bind="click: $root.backView"></div>
             <div class="main-header with-back">
                 <h1 class="title">Creating new repository</h1>
             </div>
@@ -1475,7 +1425,7 @@
                         <!--/ko-->
 
                         <!--ko if: $data.data().subscriptionState() == 'finish'-->
-                        <h3 class="accent-color"><span class="icon-action good mini"><span></span></span>successfull repository creation</h3>
+                        <h3 class="accent-color"><span class="icon-action good mini"></span> successfull repository creation</h3>
                         <p>
                             Your repository has been created sucessfully!
                             <br />
@@ -1488,7 +1438,7 @@
                         <!--/ko-->
                         <!--/ko-->
                         <!--ko if: $data.data().subscriptionState() == 'faild'-->
-                        <h3 class="accent-color"><span class="icon-action wrong mini"><span></span></span>Repository creation has failed!</h3>
+                        <h3 class="accent-color"><span class="icon-action wrong mini"></span> Repository creation has failed!</h3>
                         <p>Please try it later, or contact us!</p>
                         <span class="btn-metro btn-large" data-bind="click: $data._goToRepository">Go to my repository</span>
                         <!--/ko-->
@@ -1513,16 +1463,14 @@
             <div class="tacenter">
                 <span class="iblock">
                     <input type="submit" class="icon-action save marginr10 fleft" value="" />
-                    <span class="icon-action undo fleft"><span data-bind="click: close"></span></span>
+                    <span class="icon-action undo fleft" data-bind="click: close"></span>
                 </span>
             </div>
         </form>
     </script>
     <script type="text/html" id="usersPage-template">
         <div id="settingPage" class="page-setting maxw768">
-            <div class="icon-action back topleft">
-                <span data-bind="click: $root.backView"></span>
-            </div>
+            <div class="icon-action back topleft" data-bind="click: $root.backView"></div>
             <div class="main-header">
                 <h1 class="title">users</h1>
             </div>
@@ -1534,7 +1482,7 @@
                     <!--<a href="#">&nbsp;</a>-->
                 </div>
                 <div type="text/html" data-name-template="Password-display" class="hide">
-                    <span class="icon-action lock mini"><span data-bind="click: $data.showControls.bind({}, 'setPasswordUI', SetPasswordModel, $data)"></span></span>
+                    <span class="icon-action lock mini" data-bind="click: $data.showControls.bind({}, 'setPasswordUI', SetPasswordModel, $data)"></span>
                 </div>
             </div>
         </div>

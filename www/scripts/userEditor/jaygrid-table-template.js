@@ -27,7 +27,7 @@
                 </div>\
                 <div id='user-actionbar' class='metro-actionbar opened'>\
                     <ul>\
-                        <li class='icon-action add'><span data-bind='click: addNew'></span></li>\
+                        <li class='icon-action add' data-bind='click: addNew'></li>\
                         <li class='icon-action save' data-bind='visible: pendingChanges'><input class='btn btn-success icon-action save' type='submit' value='' /></li>\
                     </ul>\
                 </div>\
@@ -60,7 +60,7 @@
             "<td>\
                 <div class='tacenter' data-bind='foreach: itemCommands'>\
                     <span class='icon-action' data-bind='click: execute.bind($data,$parents[1]), \
-                                           visible: visible.call($data,$parents[1]), attr: { class: \"icon-action \" + displayName.toLowerCase() }'><span></span></span>\
+                                           visible: visible.call($data,$parents[1]), attr: { class: \"icon-action \" + displayName.toLowerCase() }'></span>\
                 </div>\
             </td>"],
 

@@ -31,51 +31,48 @@
 }
 
 .icon-action {
-	.iblock; .size(30px, 30px); margin: 0 15px 0 0;
+	.iblock; .size(30px, 30px); 
+	background: url("@{img-folder}/icon_actions.png") no-repeat;
+	margin: 0 15px 0 0;
 	
+	&:hover { cursor: pointer; z-index: 4500; }
+
 	&.topleft  			{ margin: 10px 5px 5px 10px; z-index: 5500; }
 	&.topright 			{ margin: 10px 10px 0 5px; }
 	&.main-top-right    	{ margin: 0 0 0 10px; .position(absolute, 10px, 10px); }
 	&.mini 				{ margin: 0; .position(relative, 9px); }
-	
-	a, span { 
-		.iblock; .size(100%, 100%); background: url("@{img-folder}/icon_actions.png") no-repeat;
-		
-		&:hover { cursor: pointer; z-index: 4500; }
-	}
-	
-	&.back span         	{ background-position: 0 -30px;   }
-	&.more span         	{ background-position: 0 -120px;  }
-	&.save span         	{ background-position: 0 -240px;  }
-	&.save              		{ background-position: 0 -240px;  }
-	&.edit span         	{ background-position: 0 -270px;  }
-	&.userstory span 	{ background-position: 0 -300px;  }
-	&.settings span     	{ background-position: 0 -390px;  }
-	&.add span          		{ background-position: 0 -420px;  }
-	&.update span       	{ background-position: 0 -540px;  }
-	&.clock span        	{ background-position: 0 -570px;  }
-	&.revert span       	{ background-position: 0 -600px;  }
-	&.delete span       	{ background-position: 0 -630px;  }
-	&.user span			{ background-position: 0 -690px;  }
-	&.undo span         	{ background-position: 0 -720px;  }
-	&.pin span          		{ background-position: 0 -750px;  }
-	&.lock span         	{ background-position: 0 -780px;  }
-	&.unlock span       	{ background-position: 0 -810px;  }
-	&.client span       	{ background-position: 0 -870px;  }
-	&.server span       	{ background-position: 0 -900px;  }
-	&.money span        	{ background-position: 0 -930px;  }
-	&.list span         	{ background-position: 0 -960px;  }
-	&.user span         	{ background-position: 0 -1020px; }
-	&.upload span       	{ background-position: 0 -1110px; }
-	&.download span     	{ background-position: 0 -1110px; .rotate(180deg); }
-	&.unpin span        	{ background-position: 0 -1140px; }
-	&.question span     	{ background-position: 0 -1230px; }
-	&.nomoney span      	{ background-position: 0 -1260px; }
-	&.delete.undo span  	{ background-position: 0 -1290px; }
-	&.edit.mini span    	{ background-position: 0 -1320px; }
-	&.more-circle span  	{ background-position: 0 -1380px; }
-	&.wrong span        	{ background-position: 0 -1410px; }
-	&.good span         	{ background-position: 0 -1440px; }
+
+	&.back         	{ background-position: 0 -30px;   }
+	&.more         	{ background-position: 0 -120px;  }
+	&.save         	{ background-position: 0 -240px;  }
+	&.edit         	{ background-position: 0 -270px;  }
+	&.userstory 	{ background-position: 0 -300px;  }
+	&.settings      { background-position: 0 -390px;  }
+	&.add          	{ background-position: 0 -420px;  }
+	&.update       	{ background-position: 0 -540px;  }
+	&.clock        	{ background-position: 0 -570px;  }
+	&.revert       	{ background-position: 0 -600px;  }
+	&.delete       	{ background-position: 0 -630px;  }
+	&.user			{ background-position: 0 -690px;  }
+	&.undo         	{ background-position: 0 -720px;  }
+	&.pin          	{ background-position: 0 -750px;  }
+	&.lock         	{ background-position: 0 -780px;  }
+	&.unlock       	{ background-position: 0 -810px;  }
+	&.client       	{ background-position: 0 -870px;  }
+	&.server       	{ background-position: 0 -900px;  }
+	&.money        	{ background-position: 0 -930px;  }
+	&.list         	{ background-position: 0 -960px;  }
+	&.user         	{ background-position: 0 -1020px; }
+	&.upload       	{ background-position: 0 -1110px; }
+	&.download     	{ background-position: 0 -1110px; .rotate(180deg); }
+	&.unpin        	{ background-position: 0 -1140px; }
+	&.question     	{ background-position: 0 -1230px; }
+	&.nomoney      	{ background-position: 0 -1260px; }
+	&.delete.undo  	{ background-position: 0 -1290px; }
+	&.edit.mini    	{ background-position: 0 -1320px; }
+	&.more-circle  	{ background-position: 0 -1380px; }
+	&.wrong        	{ background-position: 0 -1410px; }
+	&.good         	{ background-position: 0 -1440px; }
 }
 
 input.icon-action {
