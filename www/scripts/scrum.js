@@ -275,9 +275,9 @@ $data.Class.define('JayScrum.ScrumApp', JayScrum.FrameApp, null, {
     },
     _getFullUrl: function (shortUrl, userName, psw) {
         var connectDefer = Q.defer();
-        console.log("Get full url, short URL: " + shortUrl);
-        console.log("Request: " + JayScrum.ScrumApp.ApplicationUrl + "/JayScrum/$metadata");
-        console.log("user: " + userName + " psw: " + psw);
+        //console.log("Get full url, short URL: " + shortUrl);
+        //console.log("Request: " + JayScrum.ScrumApp.ApplicationUrl + "/JayScrum/$metadata");
+        //console.log("user: " + userName + " psw: " + psw);
         $data.service(JayScrum.ScrumApp.ApplicationUrl + "/JayScrum/$metadata", {
             success: function (factory, contextType) {
                 var ctx = factory({ user: userName, password: psw });
@@ -368,7 +368,8 @@ Q.all([jqReady.promise, pgReady.promise])
     initEnvironment(window);
 
     if (window['android']) {
-        console.log("!!!backbtn");
+        //console.log("!!!backbtn");
+
         document.addEventListener("backbutton", function (e) {
             if (JayScrum.app.framePath().length > 1) {
                 JayScrum.app.backView();
