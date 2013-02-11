@@ -579,7 +579,25 @@
                             target = point.target;
                             while (target.nodeType != 1) target = target.parentNode;
 
-                            if (target.tagName != 'SELECT' && target.tagName != 'INPUT' && target.tagName != 'TEXTAREA') {
+                            /*
+                             * This piece of code was added to fix the android Jelly Bean issue of click events firing twice.  To temporarily fix this issue
+                             * we want to also check for HTML Buttons and anchors before creating the click events.
+                             * NOTE: This fix couples iScroll with Phonegap libraries and should be removed as soon as a patch is released by iScroll.
+                             * see https://github.com/cubiq/iscroll/pull/274 for more info
+                             * 
+                             * Devin Jett
+                             */
+
+                            var isTagNameOk = (target.tagName != 'SELECT' && target.tagName != 'INPUT' && target.tagName != 'TEXTAREA');
+                            if (window["android"]) {
+                                var version = window["ua"].slice(ua.indexOf("android") + 8, ua.indexOf("android") + 13);
+
+                                if (parseFloat(version) >= 4.1) {
+                                    isTagNameOk = (isTagNameOk && target.tagName.toLowerCase() != 'button' && target.tagName.toLowerCase() != 'a' && target.tagName.toLowerCase() != 'span');
+                                }
+                            }
+
+                            if(isTagNameOk){
                                 ev = doc.createEvent('MouseEvents');
                                 ev.initMouseEvent('click', true, true, e.view, 1,
                                     point.screenX, point.screenY, point.clientX, point.clientY,
