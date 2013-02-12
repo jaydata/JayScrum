@@ -410,20 +410,36 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
 
     // ================================================ FIELD CHANGING ================================================ //
     onSubtractHour: function (workItem, event) {
-        JayScrum.repository.WorkItems.attach(workItem);
+        try {
+            var hourSub = parseInt($(event.target).next().val()) - 1;
+            if (typeof hourSub != "integer" || isNaN(hourSub)) {
+                console.error("Error in parsing value!");
+                return;
+            }
 
-        var hourSub = parseInt($(event.target).next().val()) - 1;
-        if (hourSub > 0) {
-            workItem.RemainingWork(hourSub);
-            JayScrum.app.selectedFrame().onSaveWorkItem(workItem, event, true);
+            if (hourSub > 0) {
+                JayScrum.repository.WorkItems.attach(workItem);
+                workItem.RemainingWork(hourSub);
+                JayScrum.app.selectedFrame().onSaveWorkItem(workItem, event, true);
+            }
+        } catch (e) {
+            console.log("Error in parse: " + e);
         }
     },
     onAddHour: function (workItem, event) {
-        JayScrum.repository.WorkItems.attach(workItem);
+        try {
+            var hourAdd = parseInt($(event.target).prev().val()) + 1;
+            if (typeof hourAdd != "integer" || isNaN(hourAdd)) {
+                console.error("Error in parsing value!");
+                return;
+            }
 
-        var hourAdd = parseInt($(event.target).prev().val()) + 1;
-        workItem.RemainingWork(hourAdd);
-        JayScrum.app.selectedFrame().onSaveWorkItem(workItem, event, true);
+            JayScrum.repository.WorkItems.attach(workItem);
+            workItem.RemainingWork(hourAdd);
+            JayScrum.app.selectedFrame().onSaveWorkItem(workItem, event, true);
+        } catch (e) {
+            console.log("Error in parse: " + e);
+        }
     },
     onChangeAssignTo: function (workItem, event) {
         JayScrum.repository.WorkItems.attach(workItem);
