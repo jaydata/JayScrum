@@ -117,19 +117,18 @@
 	.detail .field .with-icon {
 		width: 89%;
 	}
+}
 
+//====================================================== Screen (700-1023) ======================================================//
+@media only screen and (min-width: 700px) and (max-width: 1023px) {
 	.swipeview-container {
 		max-width: 75%;
 		margin: 0 auto;
 	}
-
-	.detail-title {
-		margin-left: 0;
-	}
 }
 
 //====================================================== Screen iPad Portrait ======================================================//
-@media only screen and (max-width: 768px) and (min-width: 768px) and (orientation:portrait){
+@media only screen and (max-width: 768px) and (min-width: 768px) and (orientation: portrait){
     .metro-tiles-scroll {
         top: 0;
                 
@@ -238,10 +237,15 @@
     .detail .field .with-icon {
 		width: 93%;
 	}
+
+	.swipeview-container {
+		max-width: 75%;
+		margin: 0 auto;
+	}
 }
     
 //====================================================== Screen (1024+) ======================================================//
-@media only screen and (min-width:1024px) {
+@media only screen and (min-width: 1024px) {
 	h1 { .font-size(45); }
 		
 	.page-setting {
@@ -257,4 +261,9 @@
         
         > .icon-action { margin-left: 0; }
     }
+
+    .swipeview-container {
+		max-width: 100%;
+		margin: 0;
+	}
 }
