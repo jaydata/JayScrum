@@ -4,9 +4,14 @@
     z-index: 7000;
 	
     .loading-header { 
-		.show; .size(250px, 100px); 
-		margin: -50px auto 0; .position(relative, 50%);
-		font-size: 50px;  
+		.show; min-height: 100px;
+		margin: -100px auto 0; .position(relative, 50%);
+		font-size: 70px; text-transform: capitalize;
+	}
+
+	.loading-subheader { 
+		position: relative; top: 50%;margin-top: -12px;
+		font-size: 28px; color: gray; text-transform: uppercase;
 	}
 }
 
@@ -87,8 +92,8 @@
 }
 
 .ui-icon {
-    .show; .size(34px, 34px); margin: 15px auto 0; .opacity(0.9);
-    background: url("@{img-folder}/icon_ajaxloader.png") transparent top left no-repeat;
+    .show; .size(64px, 64px); margin: 15px auto 0; .opacity(0.9);
+    background: url("@{img-folder}/icon_refresh_loading.png") transparent top left no-repeat;
     
     &.spin   { .animation(spin, 0.85s, infinite, linear); .rotate(360deg); }
     &.inline  { maring: 0 5px 0 0 !important; .iblock; .position(relative, 9px); }
