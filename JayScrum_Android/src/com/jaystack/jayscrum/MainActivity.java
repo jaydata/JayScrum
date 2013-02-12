@@ -55,8 +55,9 @@ public class MainActivity extends DroidGap implements BillingController.IConfigu
 			Log.d("InApp", "Restoring transactions");
 			BillingController.restoreTransactions(this);
 		}
-        
-        super.loadUrl("file:///android_asset/www/index.html");
+		
+		super.setIntegerProperty("splashscreen", R.drawable.splash);
+        super.loadUrl("file:///android_asset/www/index.html", 4000);
     }
 	
 	public void onBillingChecked(boolean supported){
@@ -99,12 +100,11 @@ public class MainActivity extends DroidGap implements BillingController.IConfigu
 		Transaction t = new Transaction("orderid"+System.currentTimeMillis(), "productId","com.jaystack.jayscrum", PurchaseState.PURCHASED, "notificationId", 1243124, data, "purchasetoken");
 		BillingDB db = new BillingDB(this);
 		db.insert(t);
-		
+
 		PluginResult result = new PluginResult(PluginResult.Status.OK, "RESULT_OK");
 		result.setKeepCallback(true);
 		this._plugin.success(result, this._plugin._callbackId);*/
 	}
-	
 	
 	public byte[] getObfuscationSalt() {
 		// TODO Auto-generated method stub
