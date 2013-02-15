@@ -32,12 +32,11 @@ $data.Class.define('JayScrum.Views.RepositorySettings', JayScrum.FrameView, null
         JayScrum.app.selectedFrame().data().errorMsg('');
         JayScrum.app.hideLoading();
 
-        $("div#error-msg").removeClass("opened");
-
         this.i_scroll = JayScrum.app.initScrollById('settingPageScroll', null, null, false, true);
 
         if (android) {
             setTimeout(function () {
+                $("div#error-msg").removeClass("opened");
                 $("div.floating-box").addClass("visible");
             }, 3000);
         }
@@ -456,6 +455,7 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
                 [item.innerInstance]);
         } else {
             JayScrum.app.selectedFrame().data().errorMsg("You must specify username and password!");
+            $(".error-subscribe").addClass("opened");
         }
     },
     _successSubscriptionRequest: function (result) {
