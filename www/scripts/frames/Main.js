@@ -8,17 +8,20 @@
 $data.Class.define('JayScrum.Views.Main', JayScrum.FrameView, null, {
     constructor:function(name, path, tplSource){
         this.templateName = name || 'dashBoard-template';
-        this.i_scroll = null;
+        //this.i_scroll = null;
     },
     initializeView:function(){
         JayScrum.app.hideLoading();
-        this.i_scroll = JayScrum.app.initScrollById("metro-tiles-scroll", null, null, true);
+
+        /*if (!this.i_scroll) {
+            this.i_scroll = JayScrum.app.initScrollById("metro-tiles-scroll", null, null, true);
+        }*/
     },
     tearDownView:function(){
-        if(this.i_scroll){
+        /*if(this.i_scroll){
             this.i_scroll.destroy();
         }
-        this.i_scroll = null;
+        this.i_scroll = null;*/
     }
 }, null);
 $data.Class.define('JayScrum.Frames.Main', JayScrum.Frame, null, {
