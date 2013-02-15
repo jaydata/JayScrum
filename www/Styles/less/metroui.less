@@ -160,6 +160,14 @@
     &.sprint         	{ background-position: 0 -1170px; }
     &.type           	{ background-position: 0 -1230px; }
 }
+
+.label-required {
+	&:after {
+		content: '*'; color: Red;
+		display: inline-block;
+		.position(relative, -2px, -4px);
+	}
+}
 /*#endregion METRO-TILE-ICONS */
 
 /*#region METRO-TABLE */
@@ -203,6 +211,11 @@
     }
     
     .error-msg { font-size: 15px; margin: 5px 0; color: Red; }
+}
+.error-container {
+	color: Red; font-size: 15px;
+	border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+	margin: 5px 0 15px;	padding: 0 0 10px;
 }
 /*#endregion METRO-TABLE */
 
