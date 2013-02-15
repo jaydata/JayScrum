@@ -37,7 +37,7 @@
     </script>
     
     <script type="text/javascript" src="scripts/libs/q.js"></script>
-
+    
     <!--<script type="text/javascript" src="cordova_mock.js"></script>-->
     <!--<script type="text/javascript" src="scripts/cordova-2.2.0.js"></script>-->
     <script type="text/javascript">
@@ -1209,22 +1209,22 @@
                                 <input class="text-medium accent-bg" type="number" readonly="true" data-bind="value: Id" />
                             </div>
                             <div class="field">
-                                <div><span data-bind="text: Id()?'edit repository name':'add repository name'"></span></div>
+                                <div><span class="label-required" data-bind="text: Id()?'edit repository name':'add repository name'"></span></div>
                                 <input class="text-medium accent-bg" type="text" data-bind="value: Title, valueUpdate:['afterkeydown','propertychange','input']" />
                             </div>
                             <div class="field">
                                 <div>
-                                    <span>add repository url</span>
+                                    <span class="label-required">add repository url</span>
                                 </div>
                                 <input class="text-medium accent-bg" type="text" data-bind="value: Url, valueUpdate:['afterkeydown','propertychange','input'], attr:{'placeholder': 'Online repository name or full URL'}" />
                             </div>
                             <div class="field">
-                                <div><span>Username</span></div>
+                                <div><span class="label-required">Username</span></div>
                                 <input class="text-medium accent-bg" type="text" data-bind="value: UserName, valueUpdate:['afterkeydown','propertychange','input']" />
                             </div>
 
                             <div class="field">
-                                <div><span>Password</span></div>
+                                <div><span class="label-required">Password</span></div>
                                 <input class="text-medium accent-bg" type="password" data-bind="value: Password, valueUpdate:['afterkeydown','propertychange','input']" />
                             </div>
                             <div class="field">
@@ -1252,7 +1252,7 @@
                 <h1 class="title">Subscribe for an online repo</h1>
             </div>
 
-            <div class="scroll-list scrollable-list" id="addSubscriptionScroller">
+            <div class="scroll-list scrollable-list bottom45" id="addSubscriptionScroller">
                 <div class="scroller-list">
                     <div class="edit detail reset-p maxw768" data-bind="with: $data.data().selectedSetting">
                         <div class="tolower item reset-m">
@@ -1261,15 +1261,15 @@
                                 <input class="text-medium accent-bg" type="number" readonly="true" data-bind="value: Id" />
                             </div>
                             <div class="field">
-                                <div><span>repository name</span></div>
+                                <div><span class="label-required">repository name</span></div>
                                 <input class="text-medium accent-bg" type="text" data-bind="value: Title, valueUpdate:['afterkeydown','propertychange','input']" />
                             </div>
                             <div class="field">
-                                <div><span>admin user name</span></div>
+                                <div><span class="label-required">admin user name</span></div>
                                 <input class="text-medium accent-bg" type="text" data-bind="value: UserName, valueUpdate:['afterkeydown','propertychange','input']" />
                             </div>
                             <div class="field">
-                                <div><span>admin user password</span></div>
+                                <div><span class="label-required">admin user password</span></div>
                                 <input class="text-medium accent-bg" type="password" data-bind="value: Password, valueUpdate:['afterkeydown','propertychange','input']" />
                             </div>
 
@@ -1289,13 +1289,9 @@
                     </div>
                 </div>
             </div>
-            <!--ko if: $data.data().errorMsg-->
-            <div class="metro-actionbar opened" style="height: 88px">
-                <ul>
-                    <li><span class="text-medium" data-bind="text: $data.data().errorMsg"></span></li>
-                </ul>
+            <div class="metro-actionbar error-subscribe">
+                <p class="text-medium error" data-bind="text: $data.data().errorMsg"></p>
             </div>
-            <!--/ko-->
         </div>
     </script>
     <script type="text/html" id="repositories-template">
@@ -1349,10 +1345,8 @@
                 </div>
             </div>
             <!--ko if: $data.data().errorMsg-->
-            <div id="error-msg" class="metro-actionbar opened" style="height: 88px">
-                <ul>
-                    <li><span class="text-medium" data-bind="text: $data.data().errorMsg"></span></li>
-                </ul>
+            <div id="error-msg" class="metro-actionbar opened error-msg" style="height: 88px">
+                <p class="text-medium error" data-bind="text: $data.data().errorMsg"></p>
             </div>
             <!--/ko-->
         </div>
