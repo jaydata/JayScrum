@@ -121,7 +121,11 @@ $data.Class.define('JayScrum.ScrumApp', JayScrum.FrameApp, null, {
             JayScrum.app.selectedFrame().data().selectedWorkItemNext(list[1]);
 
             gallery = new SwipeView("#" + id, { numberOfPages: list.length });
-            gallery.refreshMethods = [];
+            window.removeEventListener('orientationchange', gallery, false);
+            window.addEventListener('resize', function (e) {
+                gallery.__resize();
+            });
+
             gallery.onFlip(function () {
                 for (i = 0; i < 3; i++) {
                     upcoming = gallery.masterPages[i].dataset.upcomingPageIndex;
