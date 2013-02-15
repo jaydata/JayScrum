@@ -28,12 +28,16 @@ $data.Class.define('JayScrum.Views.RepositorySettings', JayScrum.FrameView, null
         this.i_scroll_popup = null;
     },
     initializeView: function () {
+        JayScrum.app.selectedFrame()._initializeRepositoriesFrame();
+        JayScrum.app.selectedFrame().data().errorMsg('');
         JayScrum.app.hideLoading();
+
+        $("div#error-msg").removeClass("opened");
+
         this.i_scroll = JayScrum.app.initScrollById('settingPageScroll', null, null, false, true);
 
         if (android) {
             setTimeout(function () {
-                $("div#error-msg").removeClass("opened");
                 $("div.floating-box").addClass("visible");
             }, 3000);
         }
@@ -397,10 +401,12 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
         JayScrum.app.selectedFrame().selectView("settings");
     },
     cancelSetting: function (item) {
+        $('div#error-msg').removeClass('opened');
+
         JayScrum.app.selectedFrame().localContext.Repositories.detach(arguments[0]);
         JayScrum.app.selectedFrame().data().selectedSetting(null);
         JayScrum.app.selectedFrame().data().isRegistration(false);
-        JayScrum.app.selectedFrame()._initializeRepositoriesFrame();
+        //JayScrum.app.selectedFrame()._initializeRepositoriesFrame();
         JayScrum.app.backView();
     },
     onFrameChangingFrom: function (newFrameMeta, oldFrameMeta, initData, frame) {
@@ -449,7 +455,7 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
                 "subscribe",
                 [item.innerInstance]);
         } else {
-            JayScrum.app.selectedFrame().data().errorMsg("You must set UserName and Password field!");
+            JayScrum.app.selectedFrame().data().errorMsg("You must specify username and password!");
         }
     },
     _successSubscriptionRequest: function (result) {
