@@ -258,6 +258,10 @@ $data.Class.define('JayScrum.ScrumApp', JayScrum.FrameApp, null, {
             error: function () {
                 console.log('Error to reset session!');
                 connectDefer.reject();
+
+                if ($(".floating-box").hasClass("visible")) {
+                    $(".floating-box").removeClass("visible");
+                }
             }
         });
         return connectDefer.promise;
