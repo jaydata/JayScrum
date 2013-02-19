@@ -1,9 +1,9 @@
 /*#region NEW SCROLL */
 .app-container 			{ .position(absolute, 0, 0, 0, 0); .size(100%, 100%); .ohidden; }
-.metro-tiles-scroll 		{ top: 150px; bottom: 0; }
+.metro-tiles-scroll 	{ top: 150px; bottom: 0; }
 
 .scroll-out {
-	.position(absolute, 0, auto, 45px, 0); 
+	.position(absolute, 0, auto, 45px, 0);
 	width: 100%; z-index:1;
 	overflow-x: hidden; overflow-y: auto;
 
@@ -13,7 +13,7 @@
         -webkit-tap-highlight-color: rgba(0,0,0,0);
 	}
 	
-	&.wrapper-detailed-edit { bottom: 90px; right: 10px; left: 10px; width: auto; }
+	&.wrapper-detailed-edit { bottom: 90px; right: 10px; left: 10px; width: auto; border-top: 1px solid transparent; }
 }
 /*#endregion NEW SCROLL */
 
@@ -153,6 +153,7 @@
 .swipeview-item {
     .position(absolute, 45px, auto, 45px);
 	width: 100%; overflow: auto; z-index: 1;
+	border-top: 1px solid transparent; // Android elements scrolling overflow fix
         
     .tolower {
         .absolute; .size(100%, auto);
@@ -209,7 +210,7 @@
     }
 }
 
-.scroll-out, .scrollable-list {
+.scroll-out, .scrollable-list, .swipeview-item {
 	&::-webkit-scrollbar 		{ background: transparent; width: 5px; }
 	&::-webkit-scrollbar-track 	{ background: transparent; }
 	&::-webkit-scrollbar-thumb 	{ background: rgba(255, 255, 255, 0.25); .rounded(4px); }
