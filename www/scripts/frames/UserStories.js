@@ -72,7 +72,7 @@ $data.Class.define('JayScrum.Views.UserStoryEditor', JayScrum.FrameView, null, {
         var swipeHeight = $("div.detail-edit-fix-header h1").height();
         $("div#wrapper-detailed-edit").css('top', swipeHeight);
         
-        if (android23) {
+        if (android23 || window["IsNote404"]) {
             this.i_scroll = JayScrum.app.initScrollById('wrapper-detailed-edit');
         }
     },

@@ -160,21 +160,27 @@ $data.Class.define('JayScrum.ScrumApp', JayScrum.FrameApp, null, {
                     scroll0 = null;
                 }
                 JayScrum.app.initScrollPosition("swipeview-inside-0", "#swipeview-masterpage-0");
-                scroll0 = JayScrum.app.initScrollById("swipeview-inside-0", null, null, false);
+                if (window["IsNote404"]){
+                    scroll0 = JayScrum.app.initScrollById("swipeview-inside-0", null, null, false);
+                }
 
                 if (scroll1 != null) {
                     scroll1.destroy();
                     scroll1 = null;
                 }
                 JayScrum.app.initScrollPosition("swipeview-inside-1", "#swipeview-masterpage-1");
-                scroll1 = JayScrum.app.initScrollById("swipeview-inside-1", null, null, false);
+                if (window["IsNote404"]){
+                    scroll1 = JayScrum.app.initScrollById("swipeview-inside-1", null, null, false);
+                }
 
                 if (scroll2 != null) {
                     scroll2.destroy();
                     scroll2 = null;
                 }
                 JayScrum.app.initScrollPosition("swipeview-inside-2", "#swipeview-masterpage-2");
-                scroll2 = JayScrum.app.initScrollById("swipeview-inside-2", null, null, false);
+                if (window["IsNote404"]){
+                    scroll2 = JayScrum.app.initScrollById("swipeview-inside-2", null, null, false);
+                }
             });
             gallery.goToPage(currentIndex);
         }

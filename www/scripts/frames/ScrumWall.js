@@ -78,7 +78,7 @@ $data.Class.define('JayScrum.Views.TaskEdit', JayScrum.FrameView, null, {
 
         $("h1.main-header").addClass("animate");
 
-        if (android23) {
+        if (android23 || window["IsNote404"]) {
             self.i_scroll = JayScrum.app.initScrollById('wrapper-detailed-edit', null, null, true);
         }
     },
