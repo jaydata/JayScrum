@@ -188,31 +188,19 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
             JayScrum.app.hideLoading();
 
             if (JayScrum.app.selectedFrame().data().isSupportedPurchase()) {
-                //console.log('-== 3. Call cordova transactions');
-
                 cordova.exec(function (transactions) {
-                    //console.log('-== 4. Load transactions: ' + JSON.stringify(transactions));
-
                     var newTransactions = [];
-
-                    //TODO: 1st run hack fix it
-                    if (transactions.length == 0 && redirect) {
-                        setTimeout(function () {
-                            JayScrum.app.selectedFrame()._initializeRepositoriesFrame(true);
-                        }, 2000);
-                    } else {
-                        for (var i = 0; i < transactions.length; i++) {
-                            var repoItem = JayScrum.app.selectedFrame().data().settings().filter(function (item) { return item.OrderId() == transactions[i].OrderId })[0];
-                            if (repoItem === null || repoItem === undefined || (repoItem && repoItem.Status() !== 'ready')) {
-                                if (repoItem) {
-                                    transactions[i].DevPayLoad = repoItem.innerInstance.initData;
-                                }
-                                newTransactions.push(transactions[i]);
+                    for (var i = 0; i < transactions.length; i++) {
+                        var repoItem = JayScrum.app.selectedFrame().data().settings().filter(function (item) { return item.OrderId() == transactions[i].OrderId })[0];
+                        if (repoItem === null || repoItem === undefined || (repoItem && repoItem.Status() !== 'ready')) {
+                            if (repoItem) {
+                                transactions[i].DevPayLoad = repoItem.innerInstance.initData;
                             }
+                            newTransactions.push(transactions[i]);
                         }
-                        if (newTransactions.length > 0) {
-                            JayScrum.app.selectedFrame()._createNewRepoOrUpdateStatus(newTransactions);
-                        }
+                    }
+                    if (newTransactions.length > 0) {
+                        JayScrum.app.selectedFrame()._createNewRepoOrUpdateStatus(newTransactions);
                     }
                 },
                 JayScrum.app.selectedFrame()._cordovaFailCallback,
@@ -375,6 +363,7 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
         this.data().settings(null);
         this.data().selectedSetting(newItem.asKoObservable());
         JayScrum.app.selectedFrame().selectView("addsetting");
+
     },
     buyDatabase: function () {
         this.data().isRegistration(true);
@@ -505,7 +494,7 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
                         });
                         //console.log("result: ", result);
                     })
-                    .fail(function (error) { console.log(error);JayScrum.app.selectedFrame().data().subscriptionState('faild');});
+                    .fail(function (error) { console.log(error); JayScrum.app.selectedFrame().data().subscriptionState('faild'); });
 
                     //TODO: remove before publish
                     //tran.DevPayLoad = JayScrum.app.selectedFrame().data().selectedSetting().innerInstance.initData;
@@ -542,7 +531,7 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
             JayScrum.app.selectedFrame()._cordovaFailCallback,
             "InAppBilling",
             "transactions",
-            [{ usr: item.UserName(), psw: item.Password(), dbName: item.Url(), title: item.Title()}]);
+            [{ usr: item.UserName(), psw: item.Password(), dbName: item.Url(), title: item.Title() }]);
     }
 }, {
     ServerUrl: '.jaystack.net',
