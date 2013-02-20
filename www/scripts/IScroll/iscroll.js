@@ -586,14 +586,16 @@
                              * see https://github.com/cubiq/iscroll/pull/274 for more info
                              * 
                              * Devin Jett
+                             *
+                             * Only occurs in Phonegap Application!
                              */
 
                             var isTagNameOk = (target.tagName != 'SELECT' && target.tagName != 'INPUT' && target.tagName != 'TEXTAREA');
-                            if (window["android"]) {
+                            if (window["android"] && window['cordova']) {
                                 var version = window["ua"].slice(ua.indexOf("android") + 8, ua.indexOf("android") + 13);
 
                                 if (parseFloat(version) >= 4.1) {
-                                    isTagNameOk = (isTagNameOk && target.tagName.toLowerCase() != 'button' && target.tagName.toLowerCase() != 'a' && target.tagName.toLowerCase() != 'span');
+                                    isTagNameOk = (isTagNameOk && target.tagName.toLowerCase() != 'button' && target.tagName.toLowerCase() != 'a' && target.tagName.toLowerCase() != 'span' && target.tagName.toLowerCase() != 'label');
                                 }
                             }
 
