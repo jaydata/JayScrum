@@ -591,7 +591,7 @@
                              */
 
                             var isTagNameOk = (target.tagName != 'SELECT' && target.tagName != 'INPUT' && target.tagName != 'TEXTAREA');
-                            if (window["android"] && window['cordova']) {
+                            if (window["android"] && window["cordova"] && window["isNexus4"]) {
                                 var version = window["ua"].slice(ua.indexOf("android") + 8, ua.indexOf("android") + 13);
 
                                 if (parseFloat(version) >= 4.1) {
