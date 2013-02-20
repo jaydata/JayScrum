@@ -1151,39 +1151,31 @@
                 <br />
 
                 <div class="tile-group-item blue">
-                    <div class="metro-tile metro-tile-wide">
-                        <span data-bind="click: $data.getDemoDb">
-                            <span class="middle"><span class="icon icon-57 devices"></span></span>
-                        </span>
+                    <div class="metro-tile metro-tile-wide" data-bind="click: $data.getDemoDb">
+                        <span class="icon icon-57 devices"></span>
                     </div>
                     <h3 class="click-fade pointer marginb5 color-blue" data-bind="click: $data.getDemoDb">Create local demo database</h3>
                     <p>If you would like to try this app, click here to create a local demo database and get started now!</p>
                 </div>
                 <div class="tile-group-item blue">
-                    <div class="metro-tile metro-tile-wide">
-                        <span data-bind="click: $data.addSetting">
-                            <span class="middle"><span class="icon icon-57 connect"></span></span>
-                        </span>
+                    <div class="metro-tile metro-tile-wide" data-bind="click: $data.addSetting">
+                        <span class="icon icon-57 connect"></span>
                     </div>
                     <h3 class="click-fade pointer marginb5 color-blue" data-bind="click: $data.addSetting">Connect to repository</h3>
                     <p>If your team already has an online repository click here to setup your connection.</p>
                 </div>
                 <!--ko if: $data.data().isSupportedPurchase-->
                 <div class="tile-group-item blue">
-                    <div class="metro-tile metro-tile-wide">
-                        <span data-bind="click: $data.buyDatabase">
-                            <span class="middle"><span class="icon icon-57 subscribe"></span></span>
-                        </span>
+                    <div class="metro-tile metro-tile-wide" data-bind="click: $data.buyDatabase">
+                        <span class="icon icon-57 subscribe"></span>
                     </div>
                     <h3 class="click-fade pointer marginb5 color-blue" data-bind="click: $data.buyDatabase">Subscribe for an online repository</h3>
                     <p class="color-lightgreen close-p">Start your 7 days free trial today!</p>
                     <p>If you would like to have your own online repository click here and subscribe for an online repository.</p>
                 </div>
                 <div class="tile-group-item blue">
-                    <div class="metro-tile metro-tile-wide">
-                        <span data-bind="click: $data._goToRepository">
-                            <span class="middle"><span class="icon icon-57 repos"></span></span>
-                        </span>
+                    <div class="metro-tile metro-tile-wide" data-bind="click: $data._goToRepository">
+                        <span class="icon icon-57 repos"></span>
                     </div>
                     <h3 class="click-fade pointer marginb5 color-blue" data-bind="click: $data._goToRepository">My repository</h3>
                     <p>If you already have a subscription for an online repository click here and go to your repository.</p>
@@ -1222,7 +1214,6 @@
                                 <div><span class="label-required">Username</span></div>
                                 <input class="text-medium accent-bg" type="text" data-bind="value: UserName, valueUpdate:['afterkeydown','propertychange','input']" />
                             </div>
-
                             <div class="field">
                                 <div><span class="label-required">Password</span></div>
                                 <input class="text-medium accent-bg" type="password" data-bind="value: Password, valueUpdate:['afterkeydown','propertychange','input']" />
