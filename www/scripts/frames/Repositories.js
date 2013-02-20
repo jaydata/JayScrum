@@ -359,7 +359,6 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
         this.data().settings(null);
         this.data().selectedSetting(newItem.asKoObservable());
         JayScrum.app.selectedFrame().selectView("addsetting");
-
     },
     buyDatabase: function () {
         this.data().isRegistration(true);
@@ -382,7 +381,7 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
         JayScrum.app.selectedFrame().localContext.saveChanges(function () {
             JayScrum.app.selectedFrame()._initializeRepositoriesFrame();
         });
-        JayScrum.app.selectedFrame().selectView("settings");
+        JayScrum.app.backView();
     },
     cancelSetting: function (item) {
         $('div#error-msg').removeClass('opened');
