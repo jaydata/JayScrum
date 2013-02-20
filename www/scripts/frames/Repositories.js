@@ -80,7 +80,7 @@ $data.Class.define('JayScrum.Views.RepositoryAddSetting', JayScrum.FrameView, nu
     },
     initializeView: function () {
         JayScrum.app.hideLoading();
-        if (android23 || android && !window['cordova']) {
+        if (android23 || android && !window['cordova'] || window['IsNote404']) {
             this.i_scroll = JayScrum.app.initScrollById('addSettingScroller');
         }
     },
@@ -99,7 +99,7 @@ $data.Class.define('JayScrum.Views.RepositoryAddSubscription', JayScrum.FrameVie
     initializeView: function () {
         JayScrum.app.hideLoading();
 
-        if (android23 || android && !window['cordova']) {
+        if (android23 || android && !window['cordova'] || window['IsNote404']) {
             this.i_scroll = JayScrum.app.initScrollById('addSubscriptionScroller');
         }
     },
@@ -133,7 +133,6 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
             isSupportedPurchase: ko.observable(window['android']),
             subscriptionState: ko.observable()
         });
-
     },
     _resetData: function () {
         if (this.data().settings() !== null) {
@@ -154,7 +153,6 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
                     JayScrum.app.selectedFrame().selectView("settings");
                 }
             });
-
         }
     },
     getDemoDb: function () {
@@ -167,7 +165,6 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
             JayScrum.app.selectedFrame().localContext.saveChanges(function () {
                 JayScrum.app._initializeDemoRepositories(JayScrum.app.selectedFrame().localContext);
             });
-
         });
     },
     _initializeRepositoriesFrame: function () {
@@ -208,7 +205,6 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
                 "transactions",
                 []);
             }
-
         });
     },
 
@@ -523,7 +519,6 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
     refreshSettings: function () {
         JayScrum.app.selectedFrame()._initializeRepositoriesFrame();
     },
-
     getTransactionsClick: function (item) {
         //console.log('getTransactions: ' + JSON.stringify(item));
 
