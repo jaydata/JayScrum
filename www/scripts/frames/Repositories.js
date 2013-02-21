@@ -381,7 +381,8 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
         JayScrum.app.selectedFrame().localContext.saveChanges(function () {
             JayScrum.app.selectedFrame()._initializeRepositoriesFrame();
         });
-        JayScrum.app.backView();
+        JayScrum.app.selectedFrame().selectView("settings");
+        //JayScrum.app.backView();
     },
     cancelSetting: function (item) {
         $('div#error-msg').removeClass('opened');
