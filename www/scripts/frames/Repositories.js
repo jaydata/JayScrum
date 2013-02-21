@@ -130,7 +130,7 @@ $data.Class.define('JayScrum.Frames.Repositories', JayScrum.Frame, null, {
             settings: ko.observableArray(),
             errorMsg: ko.observable(),
             isRegistration: ko.observable(false),
-            isSupportedPurchase: ko.observable(window['android']),
+            isSupportedPurchase: ko.observable(window['android'] && window['cordova']),
             subscriptionState: ko.observable()
         });
     },
