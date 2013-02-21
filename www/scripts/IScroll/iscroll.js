@@ -595,7 +595,9 @@
                                 var version = window["ua"].slice(ua.indexOf("android") + 8, ua.indexOf("android") + 13);
 
                                 if (parseFloat(version) >= 4.1) {
-                                    isTagNameOk = (isTagNameOk && target.tagName.toLowerCase() != 'button' && target.tagName.toLowerCase() != 'a' && target.tagName.toLowerCase() != 'span' && target.tagName.toLowerCase() != 'label');
+                                    isTagNameOk = (isTagNameOk && target.tagName.toLowerCase() != 'button' && target.tagName.toLowerCase() != 'a'
+                                                    && target.tagName.toLowerCase() != 'span' && target.tagName.toLowerCase() != 'label'
+                                                    && target.tagName.toLowerCase() != 'h2' && target.tagName.toLowerCase() != 'h3');
                                 }
                             }
 
