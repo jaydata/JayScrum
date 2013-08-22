@@ -92,6 +92,7 @@ $data.Class.define('JayScrum.Frames.UserStories', JayScrum.Frame, null, {
         this.registerMetaView('defaultMeta', new JayScrum.FrameView('jayAppMetaDefault'));
         this.defaultViewName='userStory';
         this.selectMetaView('defaultMeta');
+        this.listLoadSize = window['isDesktop'] ? 9999 : 7;
         this.data = ko.observable({
             name:'User Stories',
             userStoryList: ko.observableArray(),
@@ -106,7 +107,7 @@ $data.Class.define('JayScrum.Frames.UserStories', JayScrum.Frame, null, {
             .where(function (item) { return item.Type == "UserStory" && item.WorkItem_Sprint == null })
             .orderBy(function(item){return item.Priority;})
             .orderBy(function(item){return item.Title;})
-            .take(7)
+            .take(JayScrum.app.selectedFrame().listLoadSize)
             .toArray(function (userStoryResult) {
                 JayScrum.pushObservablesToList(JayScrum.app.selectedFrame().data().userStoryList, userStoryResult);
 
@@ -143,7 +144,7 @@ $data.Class.define('JayScrum.Frames.UserStories', JayScrum.Frame, null, {
             .where(function (item) { return item.Type == "UserStory" && item.WorkItem_Sprint == this.sprintId }, { sprintId: sprintData.Id })
             .orderBy(function(item){return item.Priority;})
             .orderBy(function(item){return item.Title;})
-            .take(7)
+            .take(JayScrum.app.selectedFrame().listLoadSize)
             .toArray(function (usList) {
 
                 var actualList = ko.observableArray();
@@ -179,7 +180,7 @@ $data.Class.define('JayScrum.Frames.UserStories', JayScrum.Frame, null, {
             .orderBy(function(item){return item.Priority;})
             .orderBy(function(item){return item.Title;})
             .skip(JayScrum.app.selectedFrame().data().userStoryList().length)
-            .take(7)
+            .take(JayScrum.app.selectedFrame().listLoadSize)
             .toArray(function (userStoryResult) {
                 JayScrum.app.selectedFrame().data().userStoryList(JayScrum.app.selectedFrame().data().userStoryList().concat(
                     userStoryResult.map(function (item) { return item.asKoObservable(); })
@@ -192,7 +193,7 @@ $data.Class.define('JayScrum.Frames.UserStories', JayScrum.Frame, null, {
             .where(function (item) { return item.Type == "UserStory" && item.WorkItem_Sprint == null })
             .orderBy(function(item){return item.Priority;})
             .orderBy(function(item){return item.Title;})
-            .take(7)
+            .take(JayScrum.app.selectedFrame().listLoadSize)
             .toArray(function (userStoryResult) {
                 JayScrum.pushObservablesToList(JayScrum.app.selectedFrame().data().userStoryList, userStoryResult);
                 scroller.refresh();
@@ -207,7 +208,7 @@ $data.Class.define('JayScrum.Frames.UserStories', JayScrum.Frame, null, {
             .orderBy(function(item){return item.Priority;})
             .orderBy(function(item){return item.Title;})
             .skip(currentList.list().length)
-            .take(7)
+            .take(JayScrum.app.selectedFrame().listLoadSize)
             .toArray(function (usList) {
                 currentList.list(currentList.list().concat(
                     usList.map(function (item) { return item.asKoObservable(); })
@@ -223,7 +224,7 @@ $data.Class.define('JayScrum.Frames.UserStories', JayScrum.Frame, null, {
             .where(function (item) { return item.Type == "UserStory" && item.WorkItem_Sprint == this.sprintId }, { sprintId: currentList.sprintId })
             .orderBy(function(item){return item.Priority;})
             .orderBy(function(item){return item.Title;})
-            .take(7)
+            .take(JayScrum.app.selectedFrame().listLoadSize)
             .toArray(function (usList) {
                 var newData = usList.map(function (item) { return item.asKoObservable(); });
                 currentList.list(newData);
@@ -321,7 +322,7 @@ $data.Class.define('JayScrum.Frames.UserStories', JayScrum.Frame, null, {
             ///remove item from lists
             JayScrum.app.selectedFrame().data().userStoriesInSprintList().forEach(function(sprint){sprint.list.remove(wrkItem)});
             JayScrum.app.selectedFrame().data().userStoryList.remove(wrkItem);
-            //add item to new list
+            //add item to new lists
             var sprint = [];
             if(wrkItem.WorkItem_Sprint() === null){
                 sprint.push({list: JayScrum.app.selectedFrame().data().userStoryList});

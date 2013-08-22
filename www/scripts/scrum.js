@@ -31,16 +31,29 @@ $data.Class.define('JayScrum.ScrumApp', JayScrum.FrameApp, null, {
         });
         return loadPromise.promise;
     },
-    onRefreshUserStoryList: function () {
+    onRefreshUserStoryList: function (projectId) {
+        console.log("projectID: " + projectId);
         var loadPromise = Q.defer();
-        JayScrum.repository.WorkItems
-            .where(function (item) {
-                return item.Type == "UserStory"
-            })
-            .toArray(function (userStoryResult) {
-                JayScrum.pushObservablesToList(JayScrum.app.globalData().userStoryList, userStoryResult);
-                loadPromise.resolve();
-            });
+        var skip = 0;
+        var result = [];
+        var getData = function () {
+            JayScrum.repository.WorkItems
+                .where(function (item) {
+                    return item.Type == "UserStory"
+                })
+                .skip(skip)
+                .toArray(function (userStoryResult) {
+                    result = result.concat(userStoryResult);
+                    if (userStoryResult.length > 99) {
+                        skip = skip + userStoryResult.length;
+                        getData();
+                    } else {
+                        JayScrum.pushObservablesToList(JayScrum.app.globalData().userStoryList, result);
+                        loadPromise.resolve();
+                    }
+                });
+        }
+        getData();
         return loadPromise.promise;
     },
     onRefreshUserList: function () {

@@ -211,7 +211,10 @@ $data.Class.define('JayScrum.Frames.ScrumWall', JayScrum.Frame, null, {
     _onRefreshDropDownLists: function () {
         var loadingPromise = Q.defer();
 
-        var refreshLists = [JayScrum.app.onRefreshProjectList(), JayScrum.app.onRefreshUserStoryList(), JayScrum.app.onRefreshUserList(), JayScrum.app.onRefreshSprintListForDropDown()];
+        var refreshLists = [JayScrum.app.onRefreshProjectList(),
+                            JayScrum.app.onRefreshUserStoryList(),
+                            JayScrum.app.onRefreshUserList(),
+                            JayScrum.app.onRefreshSprintListForDropDown()];
         Q.all(refreshLists)
             .then(function () { loadingPromise.resolve() });
 
